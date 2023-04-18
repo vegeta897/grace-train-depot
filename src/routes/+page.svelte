@@ -1,12 +1,12 @@
 <script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import Counter from './Counter.svelte'
+	import welcome from '$lib/images/svelte-welcome.webp'
+	import welcome_fallback from '$lib/images/svelte-welcome.png'
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Grace Train Depot</title>
+	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
 
 <section>
