@@ -17,7 +17,7 @@
 
 <section>
 	<h1 class="nunito mb-4 text-center text-3xl uppercase">Grace Train Depot</h1>
-	<div class="mx-auto mb-6 w-64"><TrainCar /></div>
+	<div class="mx-auto my-6 w-64"><TrainCar /></div>
 	<p class="my-2">Customize your Grace train car!</p>
 	<p class="mb-4">Get started with one of these cool buttons 👇</p>
 	<div class="nunito flex flex-col space-y-2">
