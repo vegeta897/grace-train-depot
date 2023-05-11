@@ -1,1 +1,11 @@
-/* fontsource imports here? */
+.nunito {
+	font-family: 'Nunito', sans-serif;
+	font-weight: 900;
+}
+
+@supports (font-variation-settings: normal) {
+	.nunito {
+		font-family: 'NunitoVariable', sans-serif;
+		font-variation-settings: 'wght' 900;
+	}
+}
