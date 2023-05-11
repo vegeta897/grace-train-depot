@@ -1,4 +1,4 @@
-<svg viewBox="0 0 375 300" class="mx-auto w-64">
+<svg viewBox="0 0 375 300" class="w-full">
 	<circle
 		cx="87.5"
 		cy="262.5"
