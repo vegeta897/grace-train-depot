@@ -15,7 +15,7 @@
 		<TrainCar />
 		<div
 			use:draggable={dragOptions}
-			class="absolute top-0 cursor-move text-8xl opacity-70"
+			class="absolute top-0 cursor-move rounded-md border-4 border-dashed text-8xl opacity-70"
 		>
 			💚
 		</div>
