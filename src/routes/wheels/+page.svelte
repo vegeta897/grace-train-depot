@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TrainCar } from 'grace-train-lib'
+	import UserCar from '$lib/components/UserCar.svelte'
 
 	const wheels = [
 		['#f00', 'rose'],
@@ -13,7 +13,7 @@
 
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Wheels</h1>
-	<div class="mx-auto my-6 w-64"><TrainCar /></div>
+	<div class="mx-auto my-6 w-64"><UserCar /></div>
 	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
 		{#each wheels as [color, name]}
 			<button class="btn-block btn-lg btn justify-start gap-4 text-xl">

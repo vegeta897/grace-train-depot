@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { TrainCar } from 'grace-train-lib'
 	import { draggable, type DragOptions } from '@neodrag/svelte'
+	import UserCar from '$lib/components/UserCar.svelte'
 
 	const slots = [{ text: '💚' }, {}, {}, {}, {}, {}]
 
@@ -12,7 +12,7 @@
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
 	<div class="relative mx-auto my-6 w-64">
-		<TrainCar />
+		<UserCar />
 		<div
 			use:draggable={dragOptions}
 			class="absolute top-0 cursor-move rounded-md border-4 border-dashed text-8xl opacity-70"
