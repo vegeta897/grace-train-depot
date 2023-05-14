@@ -1,5 +1,5 @@
 <script lang="ts">
-	import TrainCar from '../../components/TrainCar.svelte'
+	import { TrainCar } from 'grace-train-lib'
 	import { draggable, type DragOptions } from '@neodrag/svelte'
 
 	const slots = [{ text: '💚' }, {}, {}, {}, {}, {}]

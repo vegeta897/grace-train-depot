@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ComponentType } from 'svelte'
-	import TrainCar from '../../components/TrainCar.svelte'
+	import { TrainCar } from 'grace-train-lib'
 
 	const bodies: [ComponentType, string][] = [
 		[TrainCar, 'boxy'],

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import TrainCar from '../../components/TrainCar.svelte'
+	import { TrainCar } from 'grace-train-lib'
 
 	const wheels = [
 		['#f00', 'rose'],
