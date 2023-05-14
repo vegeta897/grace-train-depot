@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { ComponentType } from 'svelte'
-	import { TrainCar } from 'grace-train-lib'
+	import { TrainCar, TankerCar } from 'grace-train-lib'
 
 	const bodies: [ComponentType, string][] = [
 		[TrainCar, 'boxy'],
-		[TrainCar, 'tanky'],
+		[TankerCar, 'tanky'],
 	]
 </script>
 
