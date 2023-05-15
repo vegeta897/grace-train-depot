@@ -22,7 +22,7 @@
 		"@types/cookie": "^0.5.1",
 		"autoprefixer": "^10.4.7",
 		"daisyui": "^2.18.1",
-		"grace-train-lib": "^0.0.8",
+		"grace-train-lib": "^0.0.9",
 		"postcss": "^8.4.14",
 		"postcss-load-config": "^4.0.1",
 		"prettier": "^2.8.7",
