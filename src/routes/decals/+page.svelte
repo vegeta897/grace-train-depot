@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { draggable, type DragOptions } from '@neodrag/svelte'
+	import { draggable, type DragEventData, type DragOptions } from '@neodrag/svelte'
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { Star } from 'grace-train-lib'
 	import { onMount } from 'svelte'
@@ -8,26 +8,30 @@
 
 	let decalPosition = { x: 0, y: 0 }
 	let decalScale = 2
+	let dragPosition = { x: 62.5 + 375 / 2 - 50 * decalScale - 4, y: 100 }
 
-	const initPosition = { x: 62.5 + 375 / 2 - 50 * decalScale - 4, y: 100 }
-
-	let dragOptions: DragOptions = {
-		bounds: 'parent',
-		position: { ...initPosition },
-		onDrag: ({ offsetX, offsetY }) => {
-			updateDecalPosition(offsetX, offsetY)
-		},
+	function onDrag({ offsetX, offsetY }: DragEventData) {
+		dragPosition = { x: offsetX, y: offsetY }
+		updateDecalPosition()
 	}
 
-	function updateDecalPosition(x: number, y: number) {
+	function updateDecalPosition() {
 		decalPosition = {
-			x: x - 62.5 + 50 * decalScale + 4,
-			y: y - 100 + 50 * decalScale + 4,
+			x: dragPosition.x - 62.5 + 50 * decalScale + 4,
+			y: dragPosition.y - 100 + 50 * decalScale + 4,
 		}
 	}
 
+	function changeDecalScale(amount: number) {
+		const prevScale = decalScale
+		decalScale = Math.max(0.5, decalScale + amount * 0.5)
+		dragPosition.x -= (decalScale - prevScale) * 50
+		dragPosition.y -= (decalScale - prevScale) * 50
+		updateDecalPosition()
+	}
+
 	onMount(() => {
-		updateDecalPosition(initPosition.x, initPosition.y)
+		updateDecalPosition()
 	})
 </script>
 
@@ -41,14 +45,18 @@
 				</UserCar>
 			</div>
 			<div
-				use:draggable={dragOptions}
+				use:draggable={{ bounds: 'parent', position: dragPosition, onDrag }}
 				class="absolute left-0 top-0 box-border cursor-move rounded-md border-4 border-dashed opacity-30"
 			>
 				<svg viewBox="-50 -50 100 100" width={100 * decalScale}><Star /></svg>
 			</div>
 		</div>
 	</div>
-	{decalPosition.x}, {decalPosition.y}
+	<p>{decalPosition.x}, {decalPosition.y}</p>
+	<div class="nunito btn-group my-2">
+		<button on:click={() => changeDecalScale(-1)} class="btn-lg btn text-3xl">-</button>
+		<button on:click={() => changeDecalScale(1)} class="btn-lg btn text-3xl">+</button>
+	</div>
 	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
 		{#each slots as slot}
 			<button class="btn-block btn-lg btn gap-4 text-4xl"> {slot.text || '+'} </button>
