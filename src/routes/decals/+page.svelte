@@ -8,6 +8,7 @@
 
 	let decalPosition = { x: 0, y: 0 }
 	let decalScale = 2
+	let decalRotate = 0
 	let dragPosition = { x: 62.5 + 375 / 2 - 50 * decalScale - 4, y: 100 }
 
 	function onDrag({ offsetX, offsetY }: DragEventData) {
@@ -30,6 +31,10 @@
 		updateDecalPosition()
 	}
 
+	function rotateDecal(amount: number) {
+		decalRotate = (decalRotate + amount * 15) % 360
+	}
+
 	onMount(() => {
 		updateDecalPosition()
 	})
@@ -41,21 +46,29 @@
 		<div class="absolute left-[-50px] top-[-50px] h-[500px] w-[500px]">
 			<div class="absolute left-[62.5px] top-[100px] w-[375px]">
 				<UserCar>
-					<Star translate={decalPosition} scale={decalScale} />
+					<Star translate={decalPosition} scale={decalScale} rotate={decalRotate} />
 				</UserCar>
 			</div>
 			<div
 				use:draggable={{ bounds: 'parent', position: dragPosition, onDrag }}
 				class="absolute left-0 top-0 box-border cursor-move rounded-md border-4 border-dashed opacity-30"
 			>
-				<svg viewBox="-50 -50 100 100" width={100 * decalScale}><Star /></svg>
+				<svg viewBox="-50 -50 100 100" width={100 * decalScale}
+					><Star rotate={decalRotate} /></svg
+				>
 			</div>
 		</div>
 	</div>
 	<p>{decalPosition.x}, {decalPosition.y}</p>
-	<div class="nunito btn-group my-2">
+	<div class="nunito my-4 flex space-x-2">
 		<button on:click={() => changeDecalScale(-1)} class="btn-lg btn text-3xl">-</button>
 		<button on:click={() => changeDecalScale(1)} class="btn-lg btn text-3xl">+</button>
+		<button on:click={() => rotateDecal(-1)} class="btn-lg btn text-3xl"
+			>&circlearrowleft;</button
+		>
+		<button on:click={() => rotateDecal(1)} class="btn-lg btn text-3xl"
+			>&circlearrowright;</button
+		>
 	</div>
 	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
 		{#each slots as slot}
