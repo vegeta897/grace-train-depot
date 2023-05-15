@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { draggable, type DragEventData, type DragOptions } from '@neodrag/svelte'
+	import { draggable, type DragEventData } from '@neodrag/svelte'
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { Star } from 'grace-train-lib'
 	import { onMount } from 'svelte'
