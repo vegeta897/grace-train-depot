@@ -6,6 +6,6 @@ export default defineConfig({
 	server: { port: 5180 },
 	optimizeDeps: {
 		exclude: ['grace-train-lib'],
-		// force: true,
+		force: true, // is this necessary?
 	},
 })

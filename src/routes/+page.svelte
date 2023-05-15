@@ -16,7 +16,9 @@
 </svelte:head>
 
 <section>
-	<h1 class="nunito mb-4 text-center text-3xl uppercase">Grace Train Depot</h1>
+	<h1 class="nunito mb-4 text-center text-2xl uppercase min-[408px]:text-3xl">
+		Grace Train Depot
+	</h1>
 	<div class="mx-auto my-6 w-64"><UserCar /></div>
 	<p class="my-2">Customize your Grace train car!</p>
 	<p class="mb-4">Get started with one of these cool buttons 👇</p>

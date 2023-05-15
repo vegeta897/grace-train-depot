@@ -5,4 +5,6 @@
 	$: bodyComponent = BODY.find((b) => b.name === $userCar.body)!.component
 </script>
 
-<svelte:component this={bodyComponent} />
+<svelte:component this={bodyComponent}>
+	<slot />
+</svelte:component>
