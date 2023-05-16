@@ -9,31 +9,27 @@
 	let decalPosition = { x: 0, y: 0 }
 	let decalScale = 2
 	let decalRotate = 0
-	let dragPosition = { x: 62.5 + 375 / 2 - 50 * decalScale - 4, y: 100 }
+	let dragPosition = { x: 62.5 + 375 / 2 - 50, y: 180 }
+	let dragging = false
 
 	function onDrag({ offsetX, offsetY }: DragEventData) {
 		dragPosition = { x: offsetX, y: offsetY }
 		updateDecalPosition()
 	}
+	const onDragStart = () => (dragging = true)
+	const onDragEnd = () => (dragging = false)
 
 	function updateDecalPosition() {
 		decalPosition = {
-			x: dragPosition.x - 62.5 + 50 * decalScale + 4,
-			y: dragPosition.y - 100 + 50 * decalScale + 4,
+			x: dragPosition.x - 62.5 + 50,
+			y: dragPosition.y - 100 + 50,
 		}
 	}
 
-	function changeDecalScale(amount: number) {
-		const prevScale = decalScale
-		decalScale = Math.max(0.5, decalScale + amount * 0.5)
-		dragPosition.x -= (decalScale - prevScale) * 50
-		dragPosition.y -= (decalScale - prevScale) * 50
-		updateDecalPosition()
-	}
+	const scaleDecal = (amount: number) =>
+		(decalScale = Math.max(0.5, decalScale + amount * 0.5))
 
-	function rotateDecal(amount: number) {
-		decalRotate = (decalRotate + amount * 15) % 360
-	}
+	const rotateDecal = (amount: number) => (decalRotate += amount * 15)
 
 	onMount(() => {
 		updateDecalPosition()
@@ -46,33 +42,66 @@
 		<div class="absolute left-[-50px] top-[-50px] h-[500px] w-[500px]">
 			<div class="absolute left-[62.5px] top-[100px] w-[375px]">
 				<UserCar>
-					<Star translate={decalPosition} scale={decalScale} rotate={decalRotate} />
+					<Star
+						translate={decalPosition}
+						scale={decalScale}
+						rotate={decalRotate}
+						transition={!dragging}
+					/>
 				</UserCar>
 			</div>
 			<div
-				use:draggable={{ bounds: 'parent', position: dragPosition, onDrag }}
-				class="absolute left-0 top-0 box-border cursor-move rounded-md border-4 border-dashed opacity-30"
+				use:draggable={{
+					bounds: 'parent',
+					position: dragPosition,
+					onDrag,
+					onDragStart,
+					onDragEnd,
+				}}
+				class="absolute left-0 top-0 cursor-move opacity-30"
 			>
-				<svg viewBox="-50 -50 100 100" width={100 * decalScale}
-					><Star rotate={decalRotate} /></svg
+				<svg
+					class="box-border overflow-visible rounded-md border-dashed transition-transform"
+					viewBox="-50 -50 100 100"
+					width="100"
+					style:transform-origin="50px 50px"
+					style:transform="rotate({decalRotate}deg) translate(0,0) scale({decalScale})"
 				>
+					<rect
+						x="-52"
+						y="-52"
+						rx="12"
+						width="104"
+						height="104"
+						fill="none"
+						stroke="#fff"
+						stroke-width="4"
+						stroke-dasharray="16 6"
+					/>
+					<Star />
+				</svg>
 			</div>
 		</div>
 	</div>
-	<p>{decalPosition.x}, {decalPosition.y}</p>
-	<div class="nunito my-4 flex space-x-2">
-		<button on:click={() => changeDecalScale(-1)} class="btn-lg btn text-3xl">-</button>
-		<button on:click={() => changeDecalScale(1)} class="btn-lg btn text-3xl">+</button>
-		<button on:click={() => rotateDecal(-1)} class="btn-lg btn text-3xl"
+	<div class="nunito my-4 flex justify-center space-x-2">
+		<button on:click={() => scaleDecal(-1)} class="btn-lg btn w-20 text-4xl font-black"
+			>-</button
+		>
+		<button on:click={() => scaleDecal(1)} class="btn-lg btn w-20 text-4xl font-black"
+			>+</button
+		>
+		<button on:click={() => rotateDecal(-1)} class="btn-lg btn w-20 text-3xl"
 			>&circlearrowleft;</button
 		>
-		<button on:click={() => rotateDecal(1)} class="btn-lg btn text-3xl"
+		<button on:click={() => rotateDecal(1)} class="btn-lg btn w-20 text-3xl"
 			>&circlearrowright;</button
 		>
 	</div>
 	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
 		{#each slots as slot}
-			<button class="btn-block btn-lg btn gap-4 text-4xl"> {slot.text || '+'} </button>
+			<button class="btn-block btn-lg btn gap-4 text-4xl font-black">
+				{slot.text || '+'}
+			</button>
 		{/each}
 	</div>
 	<a href=".." class="btn-block btn-lg btn text-xl"> Back </a>
