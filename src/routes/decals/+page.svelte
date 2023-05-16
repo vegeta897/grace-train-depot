@@ -58,14 +58,14 @@
 					onDragStart,
 					onDragEnd,
 				}}
-				class="absolute left-0 top-0 cursor-move opacity-30"
+				class="absolute left-0 top-0 cursor-move opacity-20"
 			>
 				<svg
-					class="box-border overflow-visible rounded-md border-dashed transition-transform"
+					class="overflow-visible transition-transform"
 					viewBox="-50 -50 100 100"
 					width="100"
 					style:transform-origin="50px 50px"
-					style:transform="rotate({decalRotate}deg) translate(0,0) scale({decalScale})"
+					style:transform="rotate({decalRotate}deg) scale({decalScale})"
 				>
 					<rect
 						x="-52"
@@ -76,7 +76,8 @@
 						fill="none"
 						stroke="#fff"
 						stroke-width="4"
-						stroke-dasharray="16 6"
+						stroke-dasharray="16 10"
+						stroke-linecap="round"
 					/>
 					<Star />
 				</svg>
@@ -84,17 +85,21 @@
 		</div>
 	</div>
 	<div class="nunito my-4 flex justify-center space-x-2">
-		<button on:click={() => scaleDecal(-1)} class="btn-lg btn w-20 text-4xl font-black"
-			>-</button
+		<button
+			on:click={() => scaleDecal(-1)}
+			class="btn-lg btn w-20 touch-manipulation text-4xl font-black">-</button
 		>
-		<button on:click={() => scaleDecal(1)} class="btn-lg btn w-20 text-4xl font-black"
-			>+</button
+		<button
+			on:click={() => scaleDecal(1)}
+			class="btn-lg btn w-20 touch-manipulation text-4xl font-black">+</button
 		>
-		<button on:click={() => rotateDecal(-1)} class="btn-lg btn w-20 text-3xl"
-			>&circlearrowleft;</button
+		<button
+			on:click={() => rotateDecal(-1)}
+			class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowleft;</button
 		>
-		<button on:click={() => rotateDecal(1)} class="btn-lg btn w-20 text-3xl"
-			>&circlearrowright;</button
+		<button
+			on:click={() => rotateDecal(1)}
+			class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowright;</button
 		>
 	</div>
 	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
