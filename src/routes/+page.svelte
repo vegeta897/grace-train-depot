@@ -10,11 +10,6 @@
 	]
 </script>
 
-<svelte:head>
-	<title>Grace Train Depot</title>
-	<meta name="description" content="Customize your Grace Train car" />
-</svelte:head>
-
 <section>
 	<h1 class="nunito mb-4 text-center text-2xl uppercase min-[408px]:text-3xl">
 		Grace Train Depot
