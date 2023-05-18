@@ -5,39 +5,44 @@
 	import { userCar } from '$lib/store'
 	import type { Transform } from '$lib/util'
 
-	const slots = [{}, {}, {}, {}, {}, {}]
 	let selectedDecalIndex: number | null = null
-	let dragTransform: Transform | null = null
 
 	$: userDecals = $userCar.decals
-	$: selectedDecal = userDecals && selectDecal(selectedDecalIndex)
+	$: dragTransforms = userDecals.map((d) => ({
+		name: d.name,
+		...d.transform,
+		translate: { ...d.transform.translate },
+	}))
 
-	function selectDecal(index: number | null) {
-		if (index === null || index >= userDecals.length) {
-			dragTransform = null
-			return null
-		}
-		const decal = userDecals[index]
-		dragTransform = {
-			...decal.transform,
-			translate: { ...decal.transform.translate },
-		}
-		return decal
+	function addDecal() {
+		selectedDecalIndex = userDecals.length
+		userCar.update((uc) => {
+			uc.decals = [
+				...uc.decals,
+				{
+					name: 'star',
+					transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
+				},
+			]
+			return uc
+		})
 	}
 
 	let dragging = false
 
-	function onDrag({ offsetX, offsetY }: DragEventData) {
-		dragTransform!.translate = { x: offsetX, y: offsetY }
-		updateDecalTransform(dragTransform!)
+	function onDrag({ offsetX, offsetY }: DragEventData, index: number) {
+		dragTransforms[index].translate = { x: offsetX, y: offsetY }
+		updateDecalTransform(index, dragTransforms[index])
 	}
-	const onDragStart = () => (dragging = true)
+	const onDragStart = (index: number) => {
+		dragging = true
+		selectedDecalIndex = index
+	}
 	const onDragEnd = () => (dragging = false)
 
-	function updateDecalTransform(transform: Transform) {
-		if (!selectedDecal) return
+	function updateDecalTransform(index: number, transform: Transform) {
 		userCar.update((uc) => {
-			uc.decals[selectedDecalIndex!].transform = {
+			uc.decals[index].transform = {
 				...transform,
 				translate: { ...transform.translate },
 			}
@@ -45,16 +50,17 @@
 		})
 	}
 
-	const scaleDecal = (amount: number) => {
-		if (!dragTransform) return
-		dragTransform.scale = Math.max(0.5, dragTransform.scale + amount * 0.5)
-		updateDecalTransform(dragTransform)
+	const scaleDecal = (index: number, amount: number) => {
+		dragTransforms[index].scale = Math.max(
+			0.5,
+			dragTransforms[index].scale + amount * 0.5
+		)
+		updateDecalTransform(index, dragTransforms[index])
 	}
 
-	const rotateDecal = (amount: number) => {
-		if (!dragTransform) return
-		dragTransform.rotate += amount * 15
-		updateDecalTransform(dragTransform)
+	const rotateDecal = (index: number, amount: number) => {
+		dragTransforms[index].rotate += amount * 15
+		updateDecalTransform(index, dragTransforms[index])
 	}
 </script>
 
@@ -65,79 +71,90 @@
 			<div class="absolute left-[62.5px] top-[100px] w-[375px]">
 				<UserCar transition={!dragging} />
 			</div>
-			{#if selectedDecal && dragTransform}
+			{#each dragTransforms as transform, d (d)}
 				<div
+					class="absolute left-[12.5px] top-[50px] h-[100px] w-[100px]"
 					use:draggable={{
 						bounds: 'parent',
-						position: dragTransform.translate,
-						onDrag,
-						onDragStart,
+						position: transform.translate,
+						onDrag: (dragEvent) => onDrag(dragEvent, d),
+						onDragStart: () => onDragStart(d),
 						onDragEnd,
 					}}
-					class="absolute left-[12.5px] top-[50px] cursor-move opacity-20"
 				>
-					<svg
-						class="overflow-visible transition-transform"
-						viewBox="-50 -50 100 100"
-						width="100"
+					<button
+						class="h-full w-full cursor-move opacity-20"
 						style:transform-origin="50px 50px"
-						style:transform="rotate({dragTransform.rotate}deg) scale({dragTransform.scale})"
+						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
 					>
-						<rect
-							x="-52"
-							y="-52"
-							rx="12"
-							width="104"
-							height="104"
-							fill="none"
-							stroke="#fff"
-							stroke-width="4"
-							stroke-dasharray="16 10"
-							stroke-linecap="round"
-						/>
-						<Decal name={selectedDecal.name} />
-					</svg>
+						{#if selectedDecalIndex === d}
+							<svg
+								class="w-full overflow-visible transition-transform"
+								viewBox="-50 -50 100 100"
+							>
+								<rect
+									x="-52"
+									y="-52"
+									rx="12"
+									width="104"
+									height="104"
+									fill="none"
+									stroke="#fff"
+									stroke-width="4"
+									stroke-dasharray="16 10"
+									stroke-linecap="round"
+								/>
+								<Decal name={transform.name} />
+							</svg>
+						{/if}
+					</button>
 				</div>
-			{/if}
+			{/each}
 		</div>
 	</div>
-	{#if dragTransform}
+	{#if selectedDecalIndex !== null}
+		{@const index = selectedDecalIndex}
 		<div class="nunito my-4 flex justify-center space-x-2">
 			<button
-				on:click={() => scaleDecal(-1)}
+				on:click={() => scaleDecal(index, -1)}
 				class="btn-lg btn w-20 touch-manipulation text-4xl font-black">-</button
 			>
 			<button
-				on:click={() => scaleDecal(1)}
+				on:click={() => scaleDecal(index, 1)}
 				class="btn-lg btn w-20 touch-manipulation text-4xl font-black">+</button
 			>
 			<button
-				on:click={() => rotateDecal(-1)}
+				on:click={() => rotateDecal(index, -1)}
 				class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowleft;</button
 			>
 			<button
-				on:click={() => rotateDecal(1)}
+				on:click={() => rotateDecal(index, 1)}
 				class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowright;</button
 			>
 		</div>
 	{/if}
-	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
-		{#each slots as slot, s (s)}
-			{@const name = userDecals[s]?.name}
+	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-4">
+		{#each userDecals as decal, d (d)}
 			<button
-				class="btn-block btn-lg btn gap-4 text-4xl font-black"
-				disabled={s === selectedDecalIndex}
-				on:click={() => (selectedDecalIndex = s)}
+				class="btn-block btn-lg btn h-24 gap-4 text-5xl font-black"
+				class:outline={d === selectedDecalIndex}
+				class:outline-4={d === selectedDecalIndex}
+				class:outline-primary={d === selectedDecalIndex}
+				on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
 			>
-				{#if name}
-					<svg viewBox="-50 -50 100 100" class="w-12">
-						<Decal {name} />
-					</svg>
-				{:else}
-					+
-				{/if}
+				<svg viewBox="-50 -50 100 100" class="w-14">
+					<Decal name={decal.name} />
+				</svg>
 			</button>
 		{/each}
+		{#if userDecals.length < 6}
+			<button
+				class="btn-block btn-lg btn h-24 gap-4 text-5xl font-black"
+				on:click={addDecal}
+			>
+				+
+			</button>
+		{/if}
 	</div>
 	<a href=".." class="btn-block btn-lg btn text-xl"> Back </a>
 </section>

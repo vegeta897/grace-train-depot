@@ -12,7 +12,7 @@ export const userCar: Writable<UserCar> = writable({
 	decals: [
 		{
 			name: 'heart',
-			transform: { translate: { x: 375 / 2, y: 120 }, scale: 1.5, rotate: 0 },
+			transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
 		},
 	],
 })
