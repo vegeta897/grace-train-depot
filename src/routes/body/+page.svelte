@@ -20,8 +20,7 @@
 			<button
 				on:click={() => setBody(name)}
 				class="btn-lg btn h-32 justify-start gap-8 text-xl"
-				class:no-animation={current}
-				class:opacity-50={current}
+				disabled={current}
 			>
 				<div class="w-32"><svelte:component this={component} /></div>
 				{name}
