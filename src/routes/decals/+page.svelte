@@ -83,15 +83,12 @@
 					}}
 				>
 					<button
-						class="h-full w-full cursor-move opacity-20"
+						class="h-full w-full cursor-move opacity-20 transition-transform"
 						style:transform-origin="50px 50px"
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
 					>
 						{#if selectedDecalIndex === d}
-							<svg
-								class="w-full overflow-visible transition-transform"
-								viewBox="-50 -50 100 100"
-							>
+							<svg class="w-full overflow-visible" viewBox="-50 -50 100 100">
 								<rect
 									x="-52"
 									y="-52"
