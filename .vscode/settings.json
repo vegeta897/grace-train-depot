@@ -10,5 +10,6 @@
 	"editor.renderWhitespace": "trailing",
 	"[svelte]": {
 		"editor.defaultFormatter": "svelte.svelte-vscode"
-	}
+	},
+	"prettier.prettierPath": "./node_modules/prettier"
 }
