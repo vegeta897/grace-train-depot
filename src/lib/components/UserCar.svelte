@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { BODY } from '$lib/body'
+	import { Body, Decal, type BodyName } from 'grace-train-lib'
 	import { userCar } from '../store'
 
-	$: bodyComponent = BODY.find((b) => b.name === $userCar.body)!.component
+	export let bodyOverride: BodyName | null = null
+	export let transition = false
 </script>
 
-<svelte:component this={bodyComponent}>
-	<slot />
-</svelte:component>
+<Body name={bodyOverride || $userCar.body}>
+	{#each $userCar.decals as userDecal}
+		<Decal {...userDecal} {transition} />
+	{/each}
+</Body>

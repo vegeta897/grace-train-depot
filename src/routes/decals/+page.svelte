@@ -1,19 +1,15 @@
 <script lang="ts">
 	import { draggable, type DragEventData } from '@neodrag/svelte'
 	import UserCar from '$lib/components/UserCar.svelte'
-	import { Star } from 'grace-train-lib'
+	import { Decal } from 'grace-train-lib'
 	import { userCar } from '$lib/store'
-	import { DECALS } from '$lib/decals'
 	import type { Transform } from '$lib/util'
 
 	const slots = [{}, {}, {}, {}, {}, {}]
 	let selectedDecalIndex: number | null = null
 	let dragTransform: Transform | null = null
 
-	$: userDecals = $userCar.decals.map(({ name, transform }) => ({
-		transform,
-		component: DECALS.find((d) => d.name === name)!.component,
-	}))
+	$: userDecals = $userCar.decals
 	$: selectedDecal = userDecals && selectDecal(selectedDecalIndex)
 
 	function selectDecal(index: number | null) {
@@ -33,25 +29,17 @@
 
 	function onDrag({ offsetX, offsetY }: DragEventData) {
 		dragTransform!.translate = { x: offsetX, y: offsetY }
+		updateDecalTransform(dragTransform!)
 	}
 	const onDragStart = () => (dragging = true)
-	const onDragEnd = ({ offsetX, offsetY }: DragEventData) => {
-		dragging = false
-		updateDecalTransform({ translate: { x: offsetX, y: offsetY } })
-	}
+	const onDragEnd = () => (dragging = false)
 
-	function updateDecalTransform(
-		transform: Partial<{
-			translate: { x: number; y: number }
-			scale: number
-			rotate: number
-		}>
-	) {
+	function updateDecalTransform(transform: Transform) {
 		if (!selectedDecal) return
 		userCar.update((uc) => {
 			uc.decals[selectedDecalIndex!].transform = {
-				...selectedDecal!.transform,
 				...transform,
+				translate: { ...transform.translate },
 			}
 			return uc
 		})
@@ -60,13 +48,13 @@
 	const scaleDecal = (amount: number) => {
 		if (!dragTransform) return
 		dragTransform.scale = Math.max(0.5, dragTransform.scale + amount * 0.5)
-		updateDecalTransform({ scale: dragTransform.scale })
+		updateDecalTransform(dragTransform)
 	}
 
 	const rotateDecal = (amount: number) => {
 		if (!dragTransform) return
 		dragTransform.rotate += amount * 15
-		updateDecalTransform({ rotate: dragTransform.rotate })
+		updateDecalTransform(dragTransform)
 	}
 </script>
 
@@ -75,17 +63,9 @@
 	<div class="relative mx-auto h-[400px] w-[400px] overflow-hidden">
 		<div class="absolute left-[-50px] top-[-50px] h-[500px] w-[500px]">
 			<div class="absolute left-[62.5px] top-[100px] w-[375px]">
-				<UserCar>
-					{#if selectedDecal && dragTransform}
-						<svelte:component
-							this={selectedDecal.component}
-							{...dragTransform}
-							transition={!dragging}
-						/>
-					{/if}
-				</UserCar>
+				<UserCar transition={!dragging} />
 			</div>
-			{#if dragTransform}
+			{#if selectedDecal && dragTransform}
 				<div
 					use:draggable={{
 						bounds: 'parent',
@@ -115,41 +95,43 @@
 							stroke-dasharray="16 10"
 							stroke-linecap="round"
 						/>
-						<Star />
+						<Decal name={selectedDecal.name} />
 					</svg>
 				</div>
 			{/if}
 		</div>
 	</div>
-	<div class="nunito my-4 flex justify-center space-x-2">
-		<button
-			on:click={() => scaleDecal(-1)}
-			class="btn-lg btn w-20 touch-manipulation text-4xl font-black">-</button
-		>
-		<button
-			on:click={() => scaleDecal(1)}
-			class="btn-lg btn w-20 touch-manipulation text-4xl font-black">+</button
-		>
-		<button
-			on:click={() => rotateDecal(-1)}
-			class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowleft;</button
-		>
-		<button
-			on:click={() => rotateDecal(1)}
-			class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowright;</button
-		>
-	</div>
+	{#if dragTransform}
+		<div class="nunito my-4 flex justify-center space-x-2">
+			<button
+				on:click={() => scaleDecal(-1)}
+				class="btn-lg btn w-20 touch-manipulation text-4xl font-black">-</button
+			>
+			<button
+				on:click={() => scaleDecal(1)}
+				class="btn-lg btn w-20 touch-manipulation text-4xl font-black">+</button
+			>
+			<button
+				on:click={() => rotateDecal(-1)}
+				class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowleft;</button
+			>
+			<button
+				on:click={() => rotateDecal(1)}
+				class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowright;</button
+			>
+		</div>
+	{/if}
 	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
 		{#each slots as slot, s (s)}
-			{@const component = userDecals[s]?.component}
+			{@const name = userDecals[s]?.name}
 			<button
 				class="btn-block btn-lg btn gap-4 text-4xl font-black"
 				disabled={s === selectedDecalIndex}
 				on:click={() => (selectedDecalIndex = s)}
 			>
-				{#if component}
+				{#if name}
 					<svg viewBox="-50 -50 100 100" class="w-12">
-						<svelte:component this={component} />
+						<Decal {name} />
 					</svg>
 				{:else}
 					+
