@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.postcss'
-	import Header from './Header.svelte'
 	import '@fontsource/nunito/900.css'
 	import '@fontsource/nunito/variable.css'
 	import './styles.css'
@@ -10,8 +9,8 @@
 	<title>Grace Train Depot</title>
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
-<div class="flex flex-col items-center justify-center bg-base-100 p-4 md:p-8">
-	<div class="w-full max-w-lg rounded-2xl bg-base-200 p-6 text-neutral-content md:p-10">
+<div class="flex flex-col items-center justify-center bg-base-200 p-4 md:p-8">
+	<div class="w-full max-w-lg rounded-2xl bg-base-100 p-6 text-neutral-content md:p-10">
 		<slot />
 	</div>
 </div>
