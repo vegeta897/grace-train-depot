@@ -75,6 +75,7 @@
 			if (selectedDecalIndex > index) selectedDecalIndex -= 1
 			else if (selectedDecalIndex === index) selectedDecalIndex = null
 		}
+		if (userDecals.length - 1 === 0) decalButtonMode = 'none'
 		userCar.update((uc) => ({
 			...uc,
 			decals: uc.decals.filter((_, i) => i !== index),
@@ -83,6 +84,12 @@
 
 	const flipDurationMs = 150
 	let sortDragDisabled = true
+	const decalButtonModes = ['sort', 'delete'] as const
+	let decalButtonMode: 'none' | (typeof decalButtonModes)[number] = 'none'
+	const decalButtonModeIcons = {
+		sort: '&updownarrow;',
+		delete: 'X',
+	}
 
 	function handleSortConsider(e: CustomEvent<DndEvent<DecalData>>) {
 		const {
@@ -184,8 +191,18 @@
 			{/each}
 		</div>
 	</div>
-	<div class="nunito my-4 flex h-16 justify-center space-x-2">
-		{#if selectedDecalIndex !== null}
+	<div class="nunito my-4 flex h-16 justify-end space-x-2">
+		{#if selectedDecalIndex === null}
+			{#each decalButtonModes as mode}
+				<button
+					on:click={() => (decalButtonMode = decalButtonMode === mode ? 'none' : mode)}
+					class="btn-lg btn w-20 touch-manipulation text-4xl font-black"
+					class:btn-primary={decalButtonMode === mode}
+					disabled={(mode === 'sort' && userDecals.length < 2) || userDecals.length === 0}
+					>{@html decalButtonModeIcons[mode]}</button
+				>
+			{/each}
+		{:else}
 			{@const index = selectedDecalIndex}
 			<button
 				on:click={() => scaleDecal(index, -1)}
@@ -219,11 +236,11 @@
 			items: userDecals,
 			flipDurationMs,
 			dragDisabled: sortDragDisabled,
-			dropTargetClasses: [],
+			dropTargetClasses: ['!outline-none'],
 		}}
 		on:consider={handleSortConsider}
 		on:finalize={handleSortFinalize}
-		class="nunito mb-8 flex flex-col gap-4 rounded-lg"
+		class="nunito mb-8 flex flex-col-reverse gap-4 rounded-lg"
 	>
 		{#each userDecals as decal, d (decal.id)}
 			<li
@@ -233,37 +250,52 @@
 				class:outline-primary={d === selectedDecalIndex}
 				class="btn-group w-full rounded-lg"
 			>
-				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-				<div
-					tabindex={sortDragDisabled ? 0 : -1}
-					aria-label="drag-handle"
-					on:mousedown={startSortDrag}
-					on:touchstart={startSortDrag}
-					on:keydown={handleSortKeyDown}
-					class="btn-lg btn pointer-events-auto h-24 select-all text-3xl font-black"
-				>
-					&updownarrow;
-				</div>
-				<button
-					class="btn-lg btn h-24 grow gap-4 text-5xl font-black"
-					on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
-					on:mouseenter={() => (hoveredDecalIndex = d)}
-					on:mouseleave={() => (hoveredDecalIndex = null)}
-					on:focus={() => (hoveredDecalIndex = d)}
-					on:blur={() => (hoveredDecalIndex = null)}
-				>
-					<svg viewBox="-50 -50 100 100" class="w-14">
-						<Decal name={decal.name} />
-					</svg>
-				</button>
-				<button
-					on:click={() => deleteDecal(d)}
-					class="btn-lg btn h-24 text-3xl font-black hover:btn-error"
-					on:mouseenter={() => (hoveredDecalIndex = d)}
-					on:mouseleave={() => (hoveredDecalIndex = null)}
-					on:focus={() => (hoveredDecalIndex = d)}
-					on:blur={() => (hoveredDecalIndex = null)}>X</button
-				>
+				{#if decalButtonMode === 'none'}
+					<button
+						class="btn-lg btn h-24 grow"
+						on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
+						on:mouseenter={() => (hoveredDecalIndex = d)}
+						on:mouseleave={() => (hoveredDecalIndex = null)}
+						on:focus={() => (hoveredDecalIndex = d)}
+						on:blur={() => (hoveredDecalIndex = null)}
+					>
+						<svg viewBox="-50 -50 100 100" class="w-14">
+							<Decal name={decal.name} />
+						</svg>
+					</button>
+				{:else}
+					<div class="no-animation btn-lg btn pointer-events-none h-24 grow">
+						<svg viewBox="-50 -50 100 100" class="w-14">
+							<Decal name={decal.name} />
+						</svg>
+					</div>
+				{/if}
+				{#if decalButtonMode === 'sort'}
+					<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+					<div
+						class="btn-outline btn-primary btn-lg btn pointer-events-auto h-24 w-24 select-all border-4 text-3xl font-black"
+						tabindex={sortDragDisabled ? 0 : -1}
+						aria-label="drag-handle"
+						on:mousedown={startSortDrag}
+						on:touchstart={startSortDrag}
+						on:keydown={handleSortKeyDown}
+						on:mouseenter={() => (hoveredDecalIndex = d)}
+						on:mouseleave={() => (hoveredDecalIndex = null)}
+						on:focus={() => (hoveredDecalIndex = d)}
+						on:blur={() => (hoveredDecalIndex = null)}
+					>
+						&updownarrow;
+					</div>
+				{:else if decalButtonMode === 'delete'}
+					<button
+						class="btn-outline btn-error btn-lg btn h-24 w-24 border-4 text-3xl font-black"
+						on:click={() => deleteDecal(d)}
+						on:mouseenter={() => (hoveredDecalIndex = d)}
+						on:mouseleave={() => (hoveredDecalIndex = null)}
+						on:focus={() => (hoveredDecalIndex = d)}
+						on:blur={() => (hoveredDecalIndex = null)}>X</button
+					>
+				{/if}
 			</li>
 		{/each}
 	</ol>
