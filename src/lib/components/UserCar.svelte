@@ -7,7 +7,7 @@
 </script>
 
 <Body name={bodyOverride || $userCar.body}>
-	{#each $userCar.decals as userDecal}
-		<Decal {...userDecal} {transition} />
+	{#each $userCar.decals as userDecal (userDecal.id)}
+		<Decal name={userDecal.name} transform={userDecal.transform} {transition} />
 	{/each}
 </Body>
