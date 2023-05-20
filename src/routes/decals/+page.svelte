@@ -2,10 +2,12 @@
 	import { draggable, type DragEventData } from '@neodrag/svelte'
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { Decal } from 'grace-train-lib'
-	import { userCar } from '$lib/store'
+	import { userCar, type DecalData } from '$lib/store'
 	import type { Transform } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
+	import { dndzone, SOURCES, TRIGGERS } from 'svelte-dnd-action'
+	import { flip } from 'svelte/animate'
 
 	let selectedDecalIndex: number | null = null
 	let hoveredDecalIndex: number | null = null
@@ -73,12 +75,44 @@
 			if (selectedDecalIndex > index) selectedDecalIndex -= 1
 			else if (selectedDecalIndex === index) selectedDecalIndex = null
 		}
-		userCar.update((uc) => {
-			return {
-				...uc,
-				decals: uc.decals.filter((_, i) => i !== index),
-			}
-		})
+		userCar.update((uc) => ({
+			...uc,
+			decals: uc.decals.filter((_, i) => i !== index),
+		}))
+	}
+
+	const flipDurationMs = 150
+	let sortDragDisabled = true
+
+	function handleSortConsider(e: CustomEvent<DndEvent<DecalData>>) {
+		const {
+			items,
+			info: { source, trigger },
+		} = e.detail
+		userCar.update((uc) => ({ ...uc, decals: items }))
+		if (source === SOURCES.KEYBOARD && trigger === TRIGGERS.DRAG_STOPPED) {
+			sortDragDisabled = true
+		}
+	}
+
+	function handleSortFinalize(e: CustomEvent<DndEvent<DecalData>>) {
+		const {
+			items,
+			info: { source },
+		} = e.detail
+		userCar.update((uc) => ({ ...uc, decals: items }))
+		if (source === SOURCES.POINTER) sortDragDisabled = true
+	}
+
+	function startSortDrag(e: Event) {
+		e.preventDefault()
+		sortDragDisabled = false
+	}
+
+	function handleSortKeyDown(e: KeyboardEvent) {
+		if ((e.key === 'Enter' || e.key === ' ') && sortDragDisabled) {
+			sortDragDisabled = false
+		}
 	}
 </script>
 
@@ -171,14 +205,47 @@
 			>
 		{/if}
 	</div>
-	<div class="nunito mb-8 flex flex-col-reverse gap-4">
+
+	{#if userDecals.length < 6}
+		<button
+			class="nunito btn-block btn-lg btn mb-4 h-20 text-5xl font-black"
+			on:click={addDecal}
+		>
+			+
+		</button>
+	{/if}
+	<ol
+		use:dndzone={{
+			items: userDecals,
+			flipDurationMs,
+			dragDisabled: sortDragDisabled,
+			dropTargetClasses: [],
+		}}
+		on:consider={handleSortConsider}
+		on:finalize={handleSortFinalize}
+		class="nunito mb-8 flex flex-col gap-4 rounded-lg"
+	>
 		{#each userDecals as decal, d (decal.id)}
-			<div class="relative w-full" out:fade={{ duration: 150 }}>
+			<li
+				animate:flip={{ duration: flipDurationMs }}
+				class:outline={d === selectedDecalIndex}
+				class:outline-4={d === selectedDecalIndex}
+				class:outline-primary={d === selectedDecalIndex}
+				class="btn-group w-full rounded-lg"
+			>
+				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+				<div
+					tabindex={sortDragDisabled ? 0 : -1}
+					aria-label="drag-handle"
+					on:mousedown={startSortDrag}
+					on:touchstart={startSortDrag}
+					on:keydown={handleSortKeyDown}
+					class="btn-lg btn pointer-events-auto h-24 select-all text-3xl font-black"
+				>
+					&updownarrow;
+				</div>
 				<button
-					class="btn-block btn-lg btn h-24 gap-4 text-5xl font-black"
-					class:outline={d === selectedDecalIndex}
-					class:outline-4={d === selectedDecalIndex}
-					class:outline-primary={d === selectedDecalIndex}
+					class="btn-lg btn h-24 grow gap-4 text-5xl font-black"
 					on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
 					on:mouseenter={() => (hoveredDecalIndex = d)}
 					on:mouseleave={() => (hoveredDecalIndex = null)}
@@ -191,22 +258,14 @@
 				</button>
 				<button
 					on:click={() => deleteDecal(d)}
-					class="btn-error btn-ghost btn-lg btn absolute right-4 top-4 text-3xl font-black hover:btn-error"
+					class="btn-lg btn h-24 text-3xl font-black hover:btn-error"
 					on:mouseenter={() => (hoveredDecalIndex = d)}
 					on:mouseleave={() => (hoveredDecalIndex = null)}
 					on:focus={() => (hoveredDecalIndex = d)}
 					on:blur={() => (hoveredDecalIndex = null)}>X</button
 				>
-			</div>
+			</li>
 		{/each}
-		{#if userDecals.length < 6}
-			<button
-				class="btn-block btn-lg btn h-24 gap-4 text-5xl font-black"
-				on:click={addDecal}
-			>
-				+
-			</button>
-		{/if}
-	</div>
+	</ol>
 	<a href=".." class="btn-block btn-lg btn text-xl"> Back </a>
 </section>

@@ -2,9 +2,11 @@ import { writable, type Writable } from 'svelte/store'
 import type { Transform } from './util'
 import type { DecalName, BodyName } from 'grace-train-lib'
 
+export type DecalData = { name: DecalName; transform: Transform; id: number }
+
 type UserCar = {
 	body: BodyName
-	decals: { name: DecalName; transform: Transform; id: number }[]
+	decals: DecalData[]
 }
 
 export const userCar: Writable<UserCar> = writable({
