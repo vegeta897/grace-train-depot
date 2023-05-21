@@ -129,11 +129,58 @@
 			sortDragDisabled = false
 		}
 	}
+
+	const corners: [number, number][] = [
+		[-1, -1],
+		[1, -1],
+		[-1, 1],
+		[1, 1],
+	]
+	let resizing: {
+		index: number
+		transform: Transform
+		origin: { x: number; y: number }
+		polarity: [number, number]
+	} | null = null
+	function startResize(e: PointerEvent, corner: [number, number]) {
+		if (selectedDecalIndex === null) return
+		const transform = dragTransforms[selectedDecalIndex]
+		resizing = {
+			index: selectedDecalIndex,
+			transform,
+			origin: {
+				x: e.clientX - 50 * transform.scale * corner[0],
+				y: e.clientY - 50 * transform.scale * corner[1],
+			},
+			polarity: corner,
+		}
+	}
+	function onResize(e: PointerEvent) {
+		if (!resizing) return
+		// TODO: Take rotation into account
+		const xDistance = (e.clientX - resizing.origin.x) * resizing.polarity[0]
+		const yDistance = (e.clientY - resizing.origin.y) * resizing.polarity[1]
+		const avgDistance = (xDistance + yDistance) / 2
+		resizing.transform.scale = Math.max(0.5, avgDistance / 50)
+		updateDecalTransform(resizing.index, resizing.transform)
+	}
+	let resizeCooldown = false
+	function stopResize() {
+		if (!resizing) return
+		resizing = null
+		resizeCooldown = true
+		setTimeout(() => (resizeCooldown = false), 100)
+	}
 </script>
 
-<svelte:window on:resize={updateCanvasScale} />
+<svelte:window
+	on:resize={updateCanvasScale}
+	on:pointermove={onResize}
+	on:pointerup={stopResize}
+/>
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
+	<h2 class="text-center text-4xl">look at adobe express!</h2>
 	<div
 		class="relative mx-auto h-[350px] w-full overflow-hidden"
 		bind:this={userTrainContainer}
@@ -145,7 +192,7 @@
 			bind:this={canvasElement}
 		>
 			<div class="relative top-[100px] mx-auto w-[375px]">
-				<UserCar transition={!dragging} />
+				<UserCar transition={!dragging && !resizing} />
 			</div>
 			{#each dragTransforms as transform, d (d)}
 				<div
@@ -159,10 +206,14 @@
 					}}
 				>
 					<button
-						class="h-full w-full cursor-move rounded-xl opacity-50 transition-transform"
+						class="h-full w-full cursor-move rounded-xl"
+						class:transition-transform={!resizing}
 						style:transform-origin="50px 50px"
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
-						use:clickoutside={{ limit: { parent: canvasElement } }}
+						use:clickoutside={{
+							limit: { parent: canvasElement },
+							enabled: !resizeCooldown,
+						}}
 						on:mouseenter={() => !dragging && (hoveredDecalIndex = d)}
 						on:mouseleave={() => (hoveredDecalIndex = null)}
 						on:focus={() => (hoveredDecalIndex = d)}
@@ -181,6 +232,7 @@
 							class:opacity-80={selectedDecalIndex === d}
 						>
 							<rect
+								class:transition-[stroke-width]={!resizing}
 								x="-52"
 								y="-52"
 								rx="12"
@@ -188,7 +240,7 @@
 								height="104"
 								fill="none"
 								stroke="#fff"
-								stroke-width="4"
+								stroke-width={4 / transform.scale}
 								stroke-dasharray="16 10"
 								stroke-linecap="round"
 							/>
@@ -202,6 +254,24 @@
 						</svg>
 					</button>
 				</div>
+				{#if selectedDecalIndex === d}
+					<div
+						class="pointer-events-none absolute left-[12.5px] top-[50px] h-[100px] w-[100px] transition-transform"
+						class:transition-transform={!dragging && !resizing}
+						style:transform="translate({transform.translate.x}px,{transform.translate
+							.y}px) rotate({transform.rotate}deg)"
+					>
+						{#each corners as corner}
+							<button
+								on:pointerdown={(e) => startResize(e, corner)}
+								style:transform="translate({((transform.scale - 1) * 50 + 64) *
+									corner[0]}px,{((transform.scale - 1) * 50 + 64) * corner[1]}px)"
+								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 touch-none rounded-xl bg-primary"
+								class:transition-transform={!resizing}
+							/>
+						{/each}
+					</div>
+				{/if}
 			{/each}
 		</div>
 	</div>
@@ -290,8 +360,7 @@
 						class="btn-outline btn-primary btn-lg btn pointer-events-auto h-24 w-24 select-all border-4 text-3xl font-black"
 						tabindex={sortDragDisabled ? 0 : -1}
 						aria-label="drag-handle"
-						on:mousedown={startSortDrag}
-						on:touchstart={startSortDrag}
+						on:pointerdown={startSortDrag}
 						on:keydown={handleSortKeyDown}
 						on:mouseenter={() => (hoveredDecalIndex = d)}
 						on:mouseleave={() => (hoveredDecalIndex = null)}
