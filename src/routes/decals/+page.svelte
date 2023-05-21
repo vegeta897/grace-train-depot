@@ -8,10 +8,18 @@
 	import { fade } from 'svelte/transition'
 	import { dndzone, SOURCES, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
+	import { onMount } from 'svelte'
 
 	let selectedDecalIndex: number | null = null
 	let hoveredDecalIndex: number | null = null
 	let canvasElement: HTMLDivElement
+	let userTrainContainer: HTMLDivElement
+
+	let canvasScale: number
+	onMount(updateCanvasScale)
+	function updateCanvasScale() {
+		canvasScale = userTrainContainer.clientWidth / 464
+	}
 
 	$: userDecals = $userCar.decals
 	$: dragTransforms = userDecals.map((d) => ({
@@ -123,14 +131,20 @@
 	}
 </script>
 
+<svelte:window on:resize={updateCanvasScale} />
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
-	<div class="relative mx-auto h-[350px] w-[400px] overflow-hidden">
+	<div
+		class="relative mx-auto h-[350px] w-full overflow-hidden"
+		bind:this={userTrainContainer}
+	>
 		<div
-			class="absolute left-[-50px] top-[-50px] h-[400px] w-[500px]"
+			class="absolute top-[-50px] h-[400px] w-[500px] origin-center"
+			style:left="calc((100% - 500px) / 2)"
+			style:transform="scale({canvasScale})"
 			bind:this={canvasElement}
 		>
-			<div class="absolute left-[62.5px] top-[100px] w-[375px]">
+			<div class="relative top-[100px] mx-auto w-[375px]">
 				<UserCar transition={!dragging} />
 			</div>
 			{#each dragTransforms as transform, d (d)}
