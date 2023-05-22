@@ -136,6 +136,9 @@
 		[-1, 1],
 		[1, 1],
 	]
+	const cornerCursors = ['nesw-resize', 'ew-resize', 'nwse-resize', 'ns-resize'] as const
+	const getCornerCursor = (index: number, angle: number) =>
+		cornerCursors[(index + Math.round(((angle % 360) + 360) / 45)) % 4]
 	let resizing: {
 		index: number
 		transform: Transform
@@ -247,7 +250,7 @@
 								fill="none"
 								stroke="#fff"
 								stroke-width={4 / transform.scale}
-								stroke-dasharray="16 10"
+								stroke-dasharray="16 12"
 								stroke-linecap="round"
 							/>
 							<g
@@ -274,7 +277,7 @@
 									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
 								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 touch-none rounded-xl bg-primary"
 								class:transition-transform={!resizing}
-								style:cursor="{xDir + yDir === 0 ? 'nesw' : 'nwse'}-resize"
+								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
 							/>
 						{/each}
 					</div>
