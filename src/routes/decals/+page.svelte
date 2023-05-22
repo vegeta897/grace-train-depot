@@ -282,16 +282,16 @@
 						>
 							<rect
 								class:transition-all={!resizing}
-								x={-50 - 13 / transform.scale}
-								y={-50 - 13 / transform.scale}
-								width={100 + 26 / transform.scale}
-								height={100 + 26 / transform.scale}
+								x={-50 - 14 / transform.scale}
+								y={-50 - 14 / transform.scale}
+								width={100 + 28 / transform.scale}
+								height={100 + 28 / transform.scale}
 								fill="none"
 								stroke="#fff"
 								stroke-width={5 / transform.scale}
-								stroke-dashoffset={(100 + 26 / transform.scale) * 0.075}
-								stroke-dasharray="{(100 + 26 / transform.scale) * 0.15} {(100 +
-									26 / transform.scale) *
+								stroke-dashoffset={(100 + 28 / transform.scale) * 0.075}
+								stroke-dasharray="{(100 + 28 / transform.scale) * 0.15} {(100 +
+									28 / transform.scale) *
 									0.1}"
 								stroke-linecap="round"
 							/>
@@ -304,12 +304,15 @@
 							</g>
 							<line
 								class:opacity-0={!rotating?.snap}
-								y1="-50"
-								y2={50 + 20 / transform.scale}
+								y1={-50 - 5 / transform.scale}
+								y2={50 + 5 / transform.scale}
 								class="stroke-secondary transition-opacity"
 								stroke-width={10 / transform.scale}
 								stroke-linecap="round"
-								stroke-dasharray="{1 / transform.scale} {15 / transform.scale}"
+								stroke-dashoffset={((100 + 10 / transform.scale) %
+									(15 / transform.scale)) /
+									2}
+								stroke-dasharray="{0.1 / transform.scale} {14.9 / transform.scale}"
 							/>
 						</svg>
 					</button>
@@ -327,24 +330,24 @@
 								style:transform="translate({((transform.scale - 1) * 50 + 64) *
 									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px) scale({(resizing &&
 									getCornerScale(c)) ||
-									1})"
+									(rotating ? 0.5 : 1)})"
 								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl bg-primary"
 								class:transition-transform={!resizing}
 								class:transition-opacity={!resizing}
-								class:opacity-60={resizing}
+								class:opacity-60={resizing || rotating}
 								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
 							/>
-							<button
-								on:pointerdown={() => startRotate()}
-								style:transform="translate(0,{(transform.scale - 1) * 50 + 90}px) scale({rotating
-									? 1.5
-									: 1})"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl bg-secondary"
-								class:transition-transform={!resizing && !rotating}
-								class:transition-opacity={!resizing}
-								class:opacity-60={resizing}
-							/>
 						{/each}
+						<button
+							on:pointerdown={() => startRotate()}
+							style:transform="translate(0,{(transform.scale - 1) * 50 + 90}px) scale({rotating
+								? 1.5
+								: 1})"
+							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl bg-secondary transition-opacity"
+							class:transition-transform={!resizing}
+							class:opacity-60={rotating}
+							class:opacity-0={resizing}
+						/>
 					</div>
 				{/if}
 			{/each}
