@@ -139,12 +139,14 @@
 	const cornerCursors = ['nesw-resize', 'ew-resize', 'nwse-resize', 'ns-resize'] as const
 	const getCornerCursor = (index: number, angle: number) =>
 		cornerCursors[(index + Math.round(((angle % 360) + 360) / 45)) % 4]
+	const getCornerScale = (corner: number) => (resizing!.corner === corner ? 1.5 : 0.5)
 	let resizing: {
+		corner: number
 		index: number
 		transform: Transform
 		calcScale: (x: number, y: number) => number
 	} | null = null
-	function startResize(e: PointerEvent, xDir: number, yDir: number) {
+	function startResize(corner: number) {
 		if (selectedDecalIndex === null) return
 		const transform = dragTransforms[selectedDecalIndex]
 		const canvasBox = canvasElement.getBoundingClientRect()
@@ -154,13 +156,14 @@
 		const cos = Math.cos(radians)
 		const sin = Math.sin(radians)
 		resizing = {
+			corner,
 			index: selectedDecalIndex,
 			transform,
 			calcScale: (x: number, y: number) => {
 				const nx = cos * (x - originX) + sin * (y - originY) + originX
 				const ny = cos * (y - originY) - sin * (x - originX) + originY
-				const xDistance = ((nx - originX) * xDir) / canvasScale
-				const yDistance = ((ny - originY) * yDir) / canvasScale
+				const xDistance = ((nx - originX) * corners[corner][0]) / canvasScale
+				const yDistance = ((ny - originY) * corners[corner][1]) / canvasScale
 				const avgDistance = (xDistance + yDistance) / 2
 				return Math.max(0.5, Math.min(4, (avgDistance - 14) / 50))
 			},
@@ -242,15 +245,17 @@
 						>
 							<rect
 								class:transition-[stroke-width]={!resizing}
-								x="-52"
-								y="-52"
-								rx="12"
-								width="104"
-								height="104"
+								x={-50 - 13 / transform.scale}
+								y={-50 - 13 / transform.scale}
+								width={100 + 26 / transform.scale}
+								height={100 + 26 / transform.scale}
 								fill="none"
 								stroke="#fff"
 								stroke-width={4 / transform.scale}
-								stroke-dasharray="16 12"
+								stroke-dashoffset={(100 + 26 / transform.scale) * 0.075}
+								stroke-dasharray="{(100 + 26 / transform.scale) * 0.15} {(100 +
+									26 / transform.scale) *
+									0.1}"
 								stroke-linecap="round"
 							/>
 							<g
@@ -270,13 +275,17 @@
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
 					>
-						{#each corners as [xDir, yDir]}
+						{#each corners as [xDir, yDir], c}
 							<button
-								on:pointerdown={(e) => startResize(e, xDir, yDir)}
+								on:pointerdown={() => startResize(c)}
 								style:transform="translate({((transform.scale - 1) * 50 + 64) *
-									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 touch-none rounded-xl bg-primary"
+									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px) scale({(resizing &&
+									getCornerScale(c)) ||
+									1})"
+								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl bg-primary"
 								class:transition-transform={!resizing}
+								class:transition-opacity={!resizing}
+								class:opacity-60={resizing}
 								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
 							/>
 						{/each}
