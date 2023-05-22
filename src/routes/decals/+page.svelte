@@ -130,7 +130,7 @@
 		}
 	}
 
-	const corners: [number, number][] = [
+	const corners = [
 		[-1, -1],
 		[1, -1],
 		[-1, 1],
@@ -139,29 +139,33 @@
 	let resizing: {
 		index: number
 		transform: Transform
-		origin: { x: number; y: number }
-		polarity: [number, number]
+		calcScale: (x: number, y: number) => number
 	} | null = null
-	function startResize(e: PointerEvent, corner: [number, number]) {
+	function startResize(e: PointerEvent, xDir: number, yDir: number) {
 		if (selectedDecalIndex === null) return
 		const transform = dragTransforms[selectedDecalIndex]
+		const canvasBox = canvasElement.getBoundingClientRect()
+		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
+		const originY = canvasBox.y + (transform.translate.y + 100) * canvasScale
+		const radians = transform.rotate * (Math.PI / 180)
+		const cos = Math.cos(radians)
+		const sin = Math.sin(radians)
 		resizing = {
 			index: selectedDecalIndex,
 			transform,
-			origin: {
-				x: e.clientX - 50 * transform.scale * corner[0],
-				y: e.clientY - 50 * transform.scale * corner[1],
+			calcScale: (x: number, y: number) => {
+				const nx = cos * (x - originX) + sin * (y - originY) + originX
+				const ny = cos * (y - originY) - sin * (x - originX) + originY
+				const xDistance = ((nx - originX) * xDir) / canvasScale
+				const yDistance = ((ny - originY) * yDir) / canvasScale
+				const avgDistance = (xDistance + yDistance) / 2
+				return Math.max(0.5, Math.min(4, (avgDistance - 14) / 50))
 			},
-			polarity: corner,
 		}
 	}
 	function onResize(e: PointerEvent) {
 		if (!resizing) return
-		// TODO: Take rotation into account
-		const xDistance = (e.clientX - resizing.origin.x) * resizing.polarity[0]
-		const yDistance = (e.clientY - resizing.origin.y) * resizing.polarity[1]
-		const avgDistance = (xDistance + yDistance) / 2
-		resizing.transform.scale = Math.max(0.5, avgDistance / 50)
+		resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
 		updateDecalTransform(resizing.index, resizing.transform)
 	}
 	let resizeCooldown = false
@@ -171,6 +175,8 @@
 		resizeCooldown = true
 		setTimeout(() => (resizeCooldown = false), 100)
 	}
+
+	const testDot = { x: -9, y: -9 } // Position a red dot on the page
 </script>
 
 <svelte:window
@@ -261,13 +267,14 @@
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
 					>
-						{#each corners as corner}
+						{#each corners as [xDir, yDir]}
 							<button
-								on:pointerdown={(e) => startResize(e, corner)}
+								on:pointerdown={(e) => startResize(e, xDir, yDir)}
 								style:transform="translate({((transform.scale - 1) * 50 + 64) *
-									corner[0]}px,{((transform.scale - 1) * 50 + 64) * corner[1]}px)"
+									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
 								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 touch-none rounded-xl bg-primary"
 								class:transition-transform={!resizing}
+								style:cursor="{xDir + yDir === 0 ? 'nesw' : 'nwse'}-resize"
 							/>
 						{/each}
 					</div>
@@ -383,4 +390,8 @@
 		{/each}
 	</ol>
 	<a href=".." class="btn-block btn-lg btn text-xl"> Back </a>
+	<div
+		class="absolute left-0 top-0 h-[3px] w-[3px] rounded-sm bg-red-600"
+		style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"
+	/>
 </section>
