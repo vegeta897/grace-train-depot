@@ -146,6 +146,11 @@
 		transform: Transform
 		calcScale: (x: number, y: number) => number
 	} | null = null
+	let rotating: {
+		index: number
+		transform: Transform
+		calcRotate: (x: number, y: number) => number
+	} | null = null
 	function startResize(corner: number) {
 		if (selectedDecalIndex === null) return
 		const transform = dragTransforms[selectedDecalIndex]
@@ -169,17 +174,36 @@
 			},
 		}
 	}
-	function onResize(e: PointerEvent) {
-		if (!resizing) return
-		resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
-		updateDecalTransform(resizing.index, resizing.transform)
+	function startRotate() {
+		if (selectedDecalIndex === null) return
+		const transform = dragTransforms[selectedDecalIndex]
+		const canvasBox = canvasElement.getBoundingClientRect()
+		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
+		const originY = canvasBox.y + (transform.translate.y + 100) * canvasScale
+		rotating = {
+			index: selectedDecalIndex,
+			transform,
+			calcRotate: (x: number, y: number) => {
+				return Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
+			},
+		}
 	}
-	let resizeCooldown = false
-	function stopResize() {
-		if (!resizing) return
+	function onPointerMove(e: PointerEvent) {
+		if (resizing) {
+			resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
+			updateDecalTransform(resizing.index, resizing.transform)
+		} else if (rotating) {
+			rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
+			updateDecalTransform(rotating.index, rotating.transform)
+		}
+	}
+	let resizeRotateCooldown = false
+	function onPointerUp() {
+		if (!resizing && !rotating) return
 		resizing = null
-		resizeCooldown = true
-		setTimeout(() => (resizeCooldown = false), 100)
+		rotating = null
+		resizeRotateCooldown = true
+		setTimeout(() => (resizeRotateCooldown = false), 100)
 	}
 
 	const testDot = { x: -9, y: -9 } // Position a red dot on the page
@@ -187,8 +211,8 @@
 
 <svelte:window
 	on:resize={updateCanvasScale}
-	on:pointermove={onResize}
-	on:pointerup={stopResize}
+	on:pointermove={onPointerMove}
+	on:pointerup={onPointerUp}
 />
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
@@ -204,7 +228,7 @@
 			bind:this={canvasElement}
 		>
 			<div class="relative top-[100px] mx-auto w-[375px]">
-				<UserCar transition={!dragging && !resizing} />
+				<UserCar transition={!dragging && !resizing && !rotating} />
 			</div>
 			{#each dragTransforms as transform, d (d)}
 				<div
@@ -219,12 +243,12 @@
 				>
 					<button
 						class="h-full w-full cursor-move rounded-xl"
-						class:transition-transform={!resizing}
+						class:transition-transform={!resizing && !rotating}
 						style:transform-origin="50px 50px"
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
 						use:clickoutside={{
 							limit: { parent: canvasElement },
-							enabled: !resizeCooldown,
+							enabled: !resizeRotateCooldown,
 						}}
 						on:mouseenter={() => !dragging && (hoveredDecalIndex = d)}
 						on:mouseleave={() => (hoveredDecalIndex = null)}
@@ -244,14 +268,14 @@
 							class:opacity-80={selectedDecalIndex === d}
 						>
 							<rect
-								class:transition-[stroke-width]={!resizing}
+								class:transition-all={!resizing}
 								x={-50 - 13 / transform.scale}
 								y={-50 - 13 / transform.scale}
 								width={100 + 26 / transform.scale}
 								height={100 + 26 / transform.scale}
 								fill="none"
 								stroke="#fff"
-								stroke-width={4 / transform.scale}
+								stroke-width={5 / transform.scale}
 								stroke-dashoffset={(100 + 26 / transform.scale) * 0.075}
 								stroke-dasharray="{(100 + 26 / transform.scale) * 0.15} {(100 +
 									26 / transform.scale) *
@@ -271,7 +295,7 @@
 				{#if selectedDecalIndex === d}
 					<div
 						class="pointer-events-none absolute left-[12.5px] top-[50px] h-[100px] w-[100px] transition-transform"
-						class:transition-transform={!dragging && !resizing}
+						class:transition-transform={!dragging && !resizing && !rotating}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
 					>
@@ -287,6 +311,16 @@
 								class:transition-opacity={!resizing}
 								class:opacity-60={resizing}
 								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
+							/>
+							<button
+								on:pointerdown={() => startRotate()}
+								style:transform="translate(0,{(transform.scale - 1) * 50 + 90}px) scale({rotating
+									? 1.5
+									: 1})"
+								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl bg-secondary"
+								class:transition-transform={!resizing && !rotating}
+								class:transition-opacity={!resizing}
+								class:opacity-60={resizing}
 							/>
 						{/each}
 					</div>
@@ -334,6 +368,8 @@
 			+
 		</button>
 	{/if}
+	<!-- Maybe don't need drag n drop or hover layers, or drag n drop and delete mode -->
+	<!-- Prefer using buttons under canvas for deleting and re-ordering -->
 	<ol
 		use:dndzone={{
 			items: userDecals,
