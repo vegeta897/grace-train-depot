@@ -235,7 +235,7 @@
 						out:fade={{ duration: 150 }}
 					>
 						<svg
-							class="w-full overflow-visible"
+							class="pointer-events-none w-full overflow-visible"
 							viewBox="-50 -50 100 100"
 							class:transition-opacity={selectedDecalIndex !== d &&
 								hoveredDecalIndex !== d}
