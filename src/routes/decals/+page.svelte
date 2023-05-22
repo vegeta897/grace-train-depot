@@ -175,6 +175,10 @@
 			},
 		}
 	}
+	const snapRotation = (a: number) => {
+		const snapped = Math.round(a / 45) * 45
+		return Math.abs(a - snapped) < 5 && snapped
+	}
 	function startRotate() {
 		if (selectedDecalIndex === null) return
 		const transform = dragTransforms[selectedDecalIndex]
@@ -184,13 +188,13 @@
 		rotating = {
 			index: selectedDecalIndex,
 			transform,
-			snap: false,
+			snap: snapRotation(transform.rotate) === false ? false : true,
 			calcRotate: (x: number, y: number) => {
 				let angle = Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
-				const snapAngle = Math.round(angle / 45) * 45
+				const snapped = snapRotation(angle)
 				rotating!.snap = false
-				if (Math.abs(angle - snapAngle) < 5) {
-					angle = snapAngle
+				if (snapped !== false) {
+					angle = snapped
 					rotating!.snap = true
 				}
 				return angle
@@ -298,16 +302,15 @@
 							>
 								<Decal name={transform.name} />
 							</g>
-							{#if rotating?.snap}
-								<line
-									y1="-50"
-									y2={50 + 20 / transform.scale}
-									class="stroke-secondary"
-									stroke-width={10 / transform.scale}
-									stroke-linecap="round"
-									stroke-dasharray="{1 / transform.scale} {15 / transform.scale}"
-								/>
-							{/if}
+							<line
+								class:opacity-0={!rotating?.snap}
+								y1="-50"
+								y2={50 + 20 / transform.scale}
+								class="stroke-secondary transition-opacity"
+								stroke-width={10 / transform.scale}
+								stroke-linecap="round"
+								stroke-dasharray="{1 / transform.scale} {15 / transform.scale}"
+							/>
 						</svg>
 					</button>
 				</div>
