@@ -149,6 +149,7 @@
 	let rotating: {
 		index: number
 		transform: Transform
+		snap: boolean
 		calcRotate: (x: number, y: number) => number
 	} | null = null
 	function startResize(corner: number) {
@@ -183,8 +184,16 @@
 		rotating = {
 			index: selectedDecalIndex,
 			transform,
+			snap: false,
 			calcRotate: (x: number, y: number) => {
-				return Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
+				let angle = Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
+				const snapAngle = Math.round(angle / 45) * 45
+				rotating!.snap = false
+				if (Math.abs(angle - snapAngle) < 5) {
+					angle = snapAngle
+					rotating!.snap = true
+				}
+				return angle
 			},
 		}
 	}
@@ -289,6 +298,16 @@
 							>
 								<Decal name={transform.name} />
 							</g>
+							{#if rotating?.snap}
+								<line
+									y1="-50"
+									y2={50 + 20 / transform.scale}
+									class="stroke-secondary"
+									stroke-width={10 / transform.scale}
+									stroke-linecap="round"
+									stroke-dasharray="{1 / transform.scale} {15 / transform.scale}"
+								/>
+							{/if}
 						</svg>
 					</button>
 				</div>
