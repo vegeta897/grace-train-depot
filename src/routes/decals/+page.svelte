@@ -333,20 +333,21 @@
 									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px) scale({(resizing &&
 									getCornerScale(c)) ||
 									(rotating ? 0.5 : 1)})"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 bg-primary"
+								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
 								class:transition-transform={!resizing}
 								class:transition-opacity={!resizing}
-								class:opacity-60={resizing || rotating}
+								class:opacity-30={resizing || rotating}
+								class:!opacity-60={resizing?.corner === c}
 								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
 							/>
 						{/each}
 						<button
 							on:pointerdown={() => startRotate()}
-							style:transform="translate(0,{(transform.scale - 1) * 50 + 90}px) scale({rotating
+							style:transform="translate(0,{(transform.scale - 1) * 50 + 100}px) scale({rotating
 								? 1.5
 								: 1})"
-							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 bg-secondary transition-opacity"
-							class:transition-transform={!resizing}
+							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
+							class:transition-all={!resizing}
 							class:opacity-60={rotating}
 							class:opacity-0={resizing}
 						/>
