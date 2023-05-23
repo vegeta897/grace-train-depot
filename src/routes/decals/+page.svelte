@@ -278,7 +278,7 @@
 								hoveredDecalIndex !== d}
 							class:opacity-0={selectedDecalIndex !== d && hoveredDecalIndex !== d}
 							class:opacity-40={hoveredDecalIndex === d && selectedDecalIndex !== d}
-							class:opacity-80={selectedDecalIndex === d}
+							class:opacity-85={selectedDecalIndex === d}
 						>
 							<rect
 								class:transition-all={!resizing}
@@ -286,6 +286,7 @@
 								y={-50 - 14 / transform.scale}
 								width={100 + 28 / transform.scale}
 								height={100 + 28 / transform.scale}
+								class:opacity-30={resizing || rotating}
 								fill="none"
 								stroke="#fff"
 								stroke-width={5 / transform.scale}
@@ -323,6 +324,7 @@
 						class:transition-transform={!dragging && !resizing && !rotating}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
+						transition:fade={{ duration: 50 }}
 					>
 						{#each corners as [xDir, yDir], c}
 							<button
@@ -331,7 +333,7 @@
 									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px) scale({(resizing &&
 									getCornerScale(c)) ||
 									(rotating ? 0.5 : 1)})"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl bg-primary"
+								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 bg-primary"
 								class:transition-transform={!resizing}
 								class:transition-opacity={!resizing}
 								class:opacity-60={resizing || rotating}
@@ -343,7 +345,7 @@
 							style:transform="translate(0,{(transform.scale - 1) * 50 + 90}px) scale({rotating
 								? 1.5
 								: 1})"
-							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl bg-secondary transition-opacity"
+							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 bg-secondary transition-opacity"
 							class:transition-transform={!resizing}
 							class:opacity-60={rotating}
 							class:opacity-0={resizing}
