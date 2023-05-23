@@ -251,6 +251,7 @@
 			{#each dragTransforms as transform, d (transform.id)}
 				<div
 					class="absolute left-[62.5px] top-[50px] h-0 w-0"
+					class:z-10={selectedDecalIndex === d}
 					use:draggable={{
 						bounds: 'parent',
 						position: transform.translate,
