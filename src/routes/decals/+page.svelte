@@ -157,7 +157,7 @@
 		const transform = dragTransforms[selectedDecalIndex]
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
-		const originY = canvasBox.y + (transform.translate.y + 100) * canvasScale
+		const originY = canvasBox.y + (transform.translate.y + 50) * canvasScale
 		const radians = transform.rotate * (Math.PI / 180)
 		const cos = Math.cos(radians)
 		const sin = Math.sin(radians)
@@ -184,7 +184,7 @@
 		const transform = dragTransforms[selectedDecalIndex]
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
-		const originY = canvasBox.y + (transform.translate.y + 100) * canvasScale
+		const originY = canvasBox.y + (transform.translate.y + 50) * canvasScale
 		rotating = {
 			index: selectedDecalIndex,
 			transform,
@@ -235,17 +235,17 @@
 		bind:this={userTrainContainer}
 	>
 		<div
-			class="absolute top-[-50px] h-[400px] w-[500px] origin-center"
+			class="absolute h-[400px] w-[500px] origin-center"
 			style:left="calc((100% - 500px) / 2)"
 			style:transform="scale({canvasScale})"
 			bind:this={canvasElement}
 		>
-			<div class="relative top-[100px] mx-auto w-[375px]">
+			<div class="relative top-[50px] mx-auto w-[375px]">
 				<UserCar transition={!dragging && !resizing && !rotating} />
 			</div>
 			{#each dragTransforms as transform, d (d)}
 				<div
-					class="absolute left-[12.5px] top-[50px] h-[100px] w-[100px]"
+					class="absolute left-[62.5px] top-[50px] h-0 w-0"
 					use:draggable={{
 						bounds: 'parent',
 						position: transform.translate,
@@ -255,7 +255,7 @@
 					}}
 				>
 					<button
-						class="h-full w-full cursor-move rounded-xl"
+						class="relative left-[-50px] top-[-50px] h-[100px] w-[100px] cursor-move rounded-xl"
 						class:transition-transform={!resizing && !rotating}
 						style:transform-origin="50px 50px"
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
@@ -320,7 +320,7 @@
 				</div>
 				{#if selectedDecalIndex === d}
 					<div
-						class="pointer-events-none absolute left-[12.5px] top-[50px] h-[100px] w-[100px] transition-transform"
+						class="pointer-events-none absolute left-[12.5px] top-0 h-[100px] w-[100px] transition-transform"
 						class:transition-transform={!dragging && !resizing && !rotating}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
