@@ -12,6 +12,7 @@
 
 	let selectedDecalIndex: number | null = null
 	let hoveredDecalIndex: number | null = null
+	let clickOutsideCooldown = false
 	let canvasElement: HTMLDivElement
 	let userTrainContainer: HTMLDivElement
 
@@ -24,6 +25,7 @@
 	$: userDecals = $userCar.decals
 	$: dragTransforms = userDecals.map((d) => ({
 		name: d.name,
+		id: d.id,
 		...d.transform,
 		translate: { ...d.transform.translate },
 	}))
@@ -37,6 +39,7 @@
 					name: 'star',
 					transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
 					id: Date.now(),
+					fill: '#f2ef0d',
 				},
 			]
 			return uc
@@ -53,7 +56,11 @@
 		dragging = true
 		selectedDecalIndex = index
 	}
-	const onDragEnd = () => (dragging = false)
+	const onDragEnd = () => {
+		dragging = false
+		clickOutsideCooldown = true
+		setTimeout(() => (clickOutsideCooldown = false), 100)
+	}
 
 	function updateDecalTransform(index: number, transform: Transform) {
 		userCar.update((uc) => {
@@ -210,13 +217,12 @@
 			updateDecalTransform(rotating.index, rotating.transform)
 		}
 	}
-	let resizeRotateCooldown = false
 	function onPointerUp() {
 		if (!resizing && !rotating) return
 		resizing = null
 		rotating = null
-		resizeRotateCooldown = true
-		setTimeout(() => (resizeRotateCooldown = false), 100)
+		clickOutsideCooldown = true
+		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
 
 	const testDot = { x: -9, y: -9 } // Position a red dot on the page
@@ -229,7 +235,6 @@
 />
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
-	<h2 class="text-center text-4xl">look at adobe express!</h2>
 	<div
 		class="relative mx-auto h-[350px] w-full overflow-hidden"
 		bind:this={userTrainContainer}
@@ -243,7 +248,7 @@
 			<div class="relative top-[50px] mx-auto w-[375px]">
 				<UserCar transition={!dragging && !resizing && !rotating} />
 			</div>
-			{#each dragTransforms as transform, d (d)}
+			{#each dragTransforms as transform, d (transform.id)}
 				<div
 					class="absolute left-[62.5px] top-[50px] h-0 w-0"
 					use:draggable={{
@@ -261,7 +266,7 @@
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
 						use:clickoutside={{
 							limit: { parent: canvasElement },
-							enabled: !resizeRotateCooldown,
+							enabled: !clickOutsideCooldown,
 						}}
 						on:mouseenter={() => !dragging && (hoveredDecalIndex = d)}
 						on:mouseleave={() => (hoveredDecalIndex = null)}
@@ -272,7 +277,7 @@
 						out:fade={{ duration: 150 }}
 					>
 						<svg
-							class="pointer-events-none w-full overflow-visible"
+							class="w-full overflow-visible"
 							viewBox="-50 -50 100 100"
 							class:transition-opacity={selectedDecalIndex !== d &&
 								hoveredDecalIndex !== d}
@@ -287,7 +292,7 @@
 								width={100 + 28 / transform.scale}
 								height={100 + 28 / transform.scale}
 								class:opacity-30={resizing || rotating}
-								fill="none"
+								fill="#fff0"
 								stroke="#fff"
 								stroke-width={5 / transform.scale}
 								stroke-dashoffset={(100 + 28 / transform.scale) * 0.075}
@@ -301,9 +306,9 @@
 									hoveredDecalIndex !== d}
 								class:opacity-50={selectedDecalIndex === d}
 							>
-								<Decal name={transform.name} />
+								<Decal name={transform.name} fill={userDecals[d].fill} />
 							</g>
-							<line
+							<!-- <line
 								class:opacity-0={!rotating?.snap}
 								y1={-50 - 5 / transform.scale}
 								y2={50 + 5 / transform.scale}
@@ -314,11 +319,14 @@
 									(15 / transform.scale)) /
 									2}
 								stroke-dasharray="{0.1 / transform.scale} {14.9 / transform.scale}"
-							/>
+							/> -->
 						</svg>
 					</button>
 				</div>
-				{#if selectedDecalIndex === d}
+			{/each}
+			{#if selectedDecalIndex !== null}
+				{@const transform = dragTransforms[selectedDecalIndex]}
+				{#key transform.id}
 					<div
 						class="pointer-events-none absolute left-[12.5px] top-0 h-[100px] w-[100px] transition-transform"
 						class:transition-transform={!dragging && !resizing && !rotating}
@@ -352,8 +360,8 @@
 							class:opacity-0={resizing}
 						/>
 					</div>
-				{/if}
-			{/each}
+				{/key}
+			{/if}
 		</div>
 	</div>
 	<div class="nunito my-4 flex h-16 justify-end space-x-2">
@@ -427,13 +435,13 @@
 						on:blur={() => (hoveredDecalIndex = null)}
 					>
 						<svg viewBox="-50 -50 100 100" class="w-14">
-							<Decal name={decal.name} />
+							<Decal name={decal.name} fill={decal.fill} />
 						</svg>
 					</button>
 				{:else}
 					<div class="no-animation btn-lg btn pointer-events-none h-24 grow">
 						<svg viewBox="-50 -50 100 100" class="w-14">
-							<Decal name={decal.name} />
+							<Decal name={decal.name} fill={decal.fill} />
 						</svg>
 					</div>
 				{/if}

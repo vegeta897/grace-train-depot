@@ -8,6 +8,11 @@
 
 <Body name={bodyOverride || $userCar.body}>
 	{#each $userCar.decals as userDecal (userDecal.id)}
-		<Decal name={userDecal.name} transform={userDecal.transform} {transition} />
+		<Decal
+			name={userDecal.name}
+			transform={userDecal.transform}
+			fill={userDecal.fill}
+			{transition}
+		/>
 	{/each}
 </Body>
