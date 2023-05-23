@@ -282,16 +282,15 @@
 							class:transition-opacity={selectedDecalIndex !== d &&
 								hoveredDecalIndex !== d}
 							class:opacity-0={selectedDecalIndex !== d && hoveredDecalIndex !== d}
-							class:opacity-40={hoveredDecalIndex === d && selectedDecalIndex !== d}
-							class:opacity-85={selectedDecalIndex === d}
+							class:opacity-40={selectedDecalIndex !== d && hoveredDecalIndex === d}
 						>
 							<rect
-								class:transition-all={!resizing}
+								class:transition-all={!resizing && !dragging}
 								x={-50 - 14 / transform.scale}
 								y={-50 - 14 / transform.scale}
 								width={100 + 28 / transform.scale}
 								height={100 + 28 / transform.scale}
-								class:opacity-30={resizing || rotating}
+								class:opacity-30={resizing || rotating || dragging}
 								fill="#fff0"
 								stroke="#fff"
 								stroke-width={5 / transform.scale}
@@ -304,7 +303,7 @@
 							<g
 								class:transition-opacity={selectedDecalIndex !== d &&
 									hoveredDecalIndex !== d}
-								class:opacity-50={selectedDecalIndex === d}
+								class:opacity-25={selectedDecalIndex === d}
 							>
 								<Decal name={transform.name} fill={userDecals[d].fill} />
 							</g>
@@ -340,11 +339,11 @@
 								style:transform="translate({((transform.scale - 1) * 50 + 64) *
 									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px) scale({(resizing &&
 									getCornerScale(c)) ||
-									(rotating ? 0.5 : 1)})"
+									(rotating || dragging ? 0.5 : 1)})"
 								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
 								class:transition-transform={!resizing}
 								class:transition-opacity={!resizing}
-								class:opacity-30={resizing || rotating}
+								class:opacity-30={resizing || rotating || dragging}
 								class:!opacity-60={resizing?.corner === c}
 								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
 							/>
@@ -357,7 +356,7 @@
 							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
 							class:transition-all={!resizing}
 							class:opacity-60={rotating}
-							class:opacity-0={resizing}
+							class:opacity-0={resizing || dragging}
 						/>
 					</div>
 				{/key}
