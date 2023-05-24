@@ -2,12 +2,10 @@
 	import { draggable, type DragEventData } from '@neodrag/svelte'
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { Decal } from 'grace-train-lib'
-	import { userCar, type DecalData } from '$lib/store'
+	import { userCar } from '$lib/store'
 	import type { Transform } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
-	import { dndzone, SOURCES, TRIGGERS } from 'svelte-dnd-action'
-	import { flip } from 'svelte/animate'
 	import { onMount } from 'svelte'
 
 	let selectedDecalIndex: number | null = null
@@ -90,51 +88,10 @@
 			if (selectedDecalIndex > index) selectedDecalIndex -= 1
 			else if (selectedDecalIndex === index) selectedDecalIndex = null
 		}
-		if (userDecals.length - 1 === 0) decalButtonMode = 'none'
 		userCar.update((uc) => ({
 			...uc,
 			decals: uc.decals.filter((_, i) => i !== index),
 		}))
-	}
-
-	const flipDurationMs = 150
-	let sortDragDisabled = true
-	const decalButtonModes = ['sort', 'delete'] as const
-	let decalButtonMode: 'none' | (typeof decalButtonModes)[number] = 'none'
-	const decalButtonModeIcons = {
-		sort: '&updownarrow;',
-		delete: 'X',
-	}
-
-	function handleSortConsider(e: CustomEvent<DndEvent<DecalData>>) {
-		const {
-			items,
-			info: { source, trigger },
-		} = e.detail
-		userCar.update((uc) => ({ ...uc, decals: items }))
-		if (source === SOURCES.KEYBOARD && trigger === TRIGGERS.DRAG_STOPPED) {
-			sortDragDisabled = true
-		}
-	}
-
-	function handleSortFinalize(e: CustomEvent<DndEvent<DecalData>>) {
-		const {
-			items,
-			info: { source },
-		} = e.detail
-		userCar.update((uc) => ({ ...uc, decals: items }))
-		if (source === SOURCES.POINTER) sortDragDisabled = true
-	}
-
-	function startSortDrag(e: Event) {
-		e.preventDefault()
-		sortDragDisabled = false
-	}
-
-	function handleSortKeyDown(e: KeyboardEvent) {
-		if ((e.key === 'Enter' || e.key === ' ') && sortDragDisabled) {
-			sortDragDisabled = false
-		}
 	}
 
 	const corners = [
@@ -328,7 +285,7 @@
 				{@const transform = dragTransforms[selectedDecalIndex]}
 				{#key transform.id}
 					<div
-						class="pointer-events-none absolute left-[12.5px] top-0 h-[100px] w-[100px] transition-transform"
+						class="pointer-events-none absolute left-[12.5px] top-0 z-10 h-[100px] w-[100px] transition-transform"
 						class:transition-transform={!dragging && !resizing && !rotating}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
@@ -366,15 +323,7 @@
 	</div>
 	<div class="nunito my-4 flex h-16 justify-end space-x-2">
 		{#if selectedDecalIndex === null}
-			{#each decalButtonModes as mode}
-				<button
-					on:click={() => (decalButtonMode = decalButtonMode === mode ? 'none' : mode)}
-					class="btn-lg btn w-20 touch-manipulation text-4xl font-black"
-					class:btn-primary={decalButtonMode === mode}
-					disabled={(mode === 'sort' && userDecals.length < 2) || userDecals.length === 0}
-					>{@html decalButtonModeIcons[mode]}</button
-				>
-			{/each}
+			<button>&colon;&rpar;</button>
 		{:else}
 			{@const index = selectedDecalIndex}
 			<button
@@ -406,70 +355,26 @@
 	{/if}
 	<!-- Maybe don't need drag n drop or hover layers, or drag n drop and delete mode -->
 	<!-- Prefer using buttons under canvas for deleting and re-ordering -->
-	<ol
-		use:dndzone={{
-			items: userDecals,
-			flipDurationMs,
-			dragDisabled: sortDragDisabled,
-			dropTargetClasses: ['!outline-none'],
-		}}
-		on:consider={handleSortConsider}
-		on:finalize={handleSortFinalize}
-		class="nunito mb-8 flex flex-col-reverse gap-4 rounded-lg"
-	>
+	<ol class="nunito mb-8 flex flex-col-reverse gap-4 rounded-lg">
 		{#each userDecals as decal, d (decal.id)}
 			<li
-				animate:flip={{ duration: flipDurationMs }}
 				class:outline={d === selectedDecalIndex}
 				class:outline-4={d === selectedDecalIndex}
 				class:outline-primary={d === selectedDecalIndex}
 				class="btn-group w-full rounded-lg"
 			>
-				{#if decalButtonMode === 'none'}
-					<button
-						class="btn-lg btn h-24 grow"
-						on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
-						on:mouseenter={() => (hoveredDecalIndex = d)}
-						on:mouseleave={() => (hoveredDecalIndex = null)}
-						on:focus={() => (hoveredDecalIndex = d)}
-						on:blur={() => (hoveredDecalIndex = null)}
-					>
-						<svg viewBox="-50 -50 100 100" class="w-14">
-							<Decal name={decal.name} fill={decal.fill} />
-						</svg>
-					</button>
-				{:else}
-					<div class="no-animation btn-lg btn pointer-events-none h-24 grow">
-						<svg viewBox="-50 -50 100 100" class="w-14">
-							<Decal name={decal.name} fill={decal.fill} />
-						</svg>
-					</div>
-				{/if}
-				{#if decalButtonMode === 'sort'}
-					<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-					<div
-						class="btn-outline btn-primary btn-lg btn pointer-events-auto h-24 w-24 select-all border-4 text-3xl font-black"
-						tabindex={sortDragDisabled ? 0 : -1}
-						aria-label="drag-handle"
-						on:pointerdown={startSortDrag}
-						on:keydown={handleSortKeyDown}
-						on:mouseenter={() => (hoveredDecalIndex = d)}
-						on:mouseleave={() => (hoveredDecalIndex = null)}
-						on:focus={() => (hoveredDecalIndex = d)}
-						on:blur={() => (hoveredDecalIndex = null)}
-					>
-						&updownarrow;
-					</div>
-				{:else if decalButtonMode === 'delete'}
-					<button
-						class="btn-outline btn-error btn-lg btn h-24 w-24 border-4 text-3xl font-black"
-						on:click={() => deleteDecal(d)}
-						on:mouseenter={() => (hoveredDecalIndex = d)}
-						on:mouseleave={() => (hoveredDecalIndex = null)}
-						on:focus={() => (hoveredDecalIndex = d)}
-						on:blur={() => (hoveredDecalIndex = null)}>X</button
-					>
-				{/if}
+				<button
+					class="btn-lg btn h-24 grow"
+					on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
+					on:mouseenter={() => (hoveredDecalIndex = d)}
+					on:mouseleave={() => (hoveredDecalIndex = null)}
+					on:focus={() => (hoveredDecalIndex = d)}
+					on:blur={() => (hoveredDecalIndex = null)}
+				>
+					<svg viewBox="-50 -50 100 100" class="w-14">
+						<Decal name={decal.name} fill={decal.fill} />
+					</svg>
+				</button>
 			</li>
 		{/each}
 	</ol>
