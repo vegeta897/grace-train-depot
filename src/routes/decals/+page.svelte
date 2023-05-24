@@ -8,6 +8,8 @@
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 
+	const MAX_DECALS = 5
+
 	let selectedDecalIndex: number | null = null
 	let hoveredDecalIndex: number | null = null
 	let clickOutsideCooldown = false
@@ -92,6 +94,16 @@
 			...uc,
 			decals: uc.decals.filter((_, i) => i !== index),
 		}))
+	}
+
+	function orderDecal(index: number, direction: number) {
+		const newIndex = Math.max(0, Math.min(userDecals.length - 1, index + direction))
+		if (newIndex === index) return
+		userCar.update((uc) => {
+			uc.decals.splice(newIndex, 0, uc.decals.splice(index, 1)[0])
+			return uc
+		})
+		selectedDecalIndex = newIndex
 	}
 
 	const corners = [
@@ -321,11 +333,9 @@
 			{/if}
 		</div>
 	</div>
-	<div class="nunito my-4 flex h-16 justify-end space-x-2">
-		{#if selectedDecalIndex === null}
-			<button>&colon;&rpar;</button>
-		{:else}
-			{@const index = selectedDecalIndex}
+	{#if selectedDecalIndex !== null}
+		{@const index = selectedDecalIndex}
+		<div class="nunito my-2 flex flex-wrap justify-center space-x-2">
 			<button
 				on:click={() => scaleDecal(index, -1)}
 				class="btn-lg btn w-20 touch-manipulation text-4xl font-black">-</button
@@ -342,10 +352,26 @@
 				on:click={() => rotateDecal(index, 1)}
 				class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowright;</button
 			>
-		{/if}
-	</div>
+		</div>
+		<div class="nunito my-2 mb-4 flex flex-wrap justify-center space-x-2">
+			<button
+				on:click={() => orderDecal(index, -1)}
+				disabled={index === 0}
+				class="btn-lg btn w-20 touch-manipulation text-3xl">&ShortDownArrow;</button
+			>
+			<button
+				on:click={() => orderDecal(index, 1)}
+				disabled={index === userDecals.length - 1}
+				class="btn-lg btn w-20 touch-manipulation text-3xl">&ShortUpArrow;</button
+			>
+			<button
+				on:click={() => deleteDecal(index)}
+				class="btn-lg btn w-20 touch-manipulation text-2xl font-black">x</button
+			>
+		</div>
+	{/if}
 
-	{#if userDecals.length < 6}
+	{#if userDecals.length < MAX_DECALS}
 		<button
 			class="nunito btn-block btn-lg btn mb-4 h-20 text-5xl font-black"
 			on:click={addDecal}
