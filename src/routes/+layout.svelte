@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.postcss'
 	import '@fontsource/nunito/900.css'
-	import '@fontsource/nunito/variable.css'
+	import '@fontsource-variable/nunito'
 	import './styles.css'
 </script>
 
