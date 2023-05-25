@@ -50,13 +50,13 @@
 
 	let dragging = false
 
-	function onDrag({ offsetX, offsetY }: DragEventData, index: number) {
-		dragTransforms[index].translate = { x: offsetX, y: offsetY }
-		updateDecalTransform(index, dragTransforms[index])
-	}
 	const onDragStart = (index: number) => {
 		dragging = true
 		selectedDecalIndex = index
+	}
+	function onDrag({ offsetX, offsetY }: DragEventData, index: number) {
+		dragTransforms[index].translate = { x: offsetX, y: offsetY }
+		updateDecalTransform(index, dragTransforms[index])
 	}
 	const onDragEnd = () => {
 		dragging = false
@@ -135,7 +135,7 @@
 		const transform = dragTransforms[selectedDecalIndex]
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
-		const originY = canvasBox.y + (transform.translate.y + 50) * canvasScale
+		const originY = canvasBox.y + transform.translate.y * canvasScale
 		const radians = transform.rotate * (Math.PI / 180)
 		const cos = Math.cos(radians)
 		const sin = Math.sin(radians)
@@ -162,7 +162,7 @@
 		const transform = dragTransforms[selectedDecalIndex]
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
-		const originY = canvasBox.y + (transform.translate.y + 50) * canvasScale
+		const originY = canvasBox.y + transform.translate.y * canvasScale
 		rotating = {
 			index: selectedDecalIndex,
 			transform,
@@ -207,21 +207,22 @@
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
 	<div
-		class="relative mx-auto h-[350px] w-full overflow-hidden"
+		class="relative mx-auto w-full overflow-hidden"
+		style:height="{350 * canvasScale}px"
 		bind:this={userTrainContainer}
 	>
 		<div
-			class="absolute h-[400px] w-[500px] origin-center"
+			class="absolute h-[350px] w-[500px] origin-top"
 			style:left="calc((100% - 500px) / 2)"
 			style:transform="scale({canvasScale})"
 			bind:this={canvasElement}
 		>
-			<div class="relative top-[50px] mx-auto w-[375px]">
+			<div class="relative mx-auto w-[375px]">
 				<UserCar transition={!transforming} />
 			</div>
 			{#each dragTransforms as transform, d (transform.id)}
 				<div
-					class="absolute left-[62.5px] top-[50px] h-0 w-0"
+					class="absolute left-[62.5px] top-0 h-0 w-0"
 					class:z-10={selectedDecalIndex === d}
 					use:draggable={{
 						bounds: 'parent',
@@ -288,7 +289,7 @@
 				{@const transform = dragTransforms[selectedDecalIndex]}
 				{#key transform.id}
 					<div
-						class="pointer-events-none absolute left-[12.5px] top-0 z-10 h-[100px] w-[100px] transition-transform"
+						class="pointer-events-none absolute left-[12.5px] top-[-50px] z-10 h-[100px] w-[100px] transition-transform"
 						class:transition-transform={!transforming}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
