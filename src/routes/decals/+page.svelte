@@ -48,18 +48,22 @@
 		})
 	}
 
-	let dragging = false
+	let dragging: Transform['translate'] | null = null
 
 	const onDragStart = (index: number) => {
-		dragging = true
+		dragging = { ...dragTransforms[index].translate }
 		selectedDecalIndex = index
 	}
 	function onDrag({ offsetX, offsetY }: DragEventData, index: number) {
-		dragTransforms[index].translate = { x: offsetX, y: offsetY }
+		if (!dragging) return
+		dragTransforms[index].translate = {
+			x: dragging.x + (offsetX - dragging.x) / canvasScale,
+			y: dragging.y + (offsetY - dragging.y) / canvasScale,
+		}
 		updateDecalTransform(index, dragTransforms[index])
 	}
 	const onDragEnd = () => {
-		dragging = false
+		dragging = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
@@ -269,18 +273,6 @@
 							>
 								<Decal name={transform.name} fill={userDecals[d].fill} />
 							</g>
-							<!-- <line
-								class:opacity-0={!rotating?.snap}
-								y1={-50 - 5 / transform.scale}
-								y2={50 + 5 / transform.scale}
-								class="stroke-secondary transition-opacity"
-								stroke-width={10 / transform.scale}
-								stroke-linecap="round"
-								stroke-dashoffset={((100 + 10 / transform.scale) %
-									(15 / transform.scale)) /
-									2}
-								stroke-dasharray="{0.1 / transform.scale} {14.9 / transform.scale}"
-							/> -->
 						</svg>
 					</button>
 				</div>
