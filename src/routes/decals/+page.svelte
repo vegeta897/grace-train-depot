@@ -8,6 +8,8 @@
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 	import BoundingBox from './BoundingBox.svelte'
+	import { updateDecalTransform } from './decals'
+	import Controls from './Controls.svelte'
 
 	const MAX_DECALS = 5
 
@@ -66,50 +68,6 @@
 		dragging = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
-	}
-
-	function updateDecalTransform(index: number, transform: Transform) {
-		userCar.update((uc) => {
-			uc.decals[index].transform = {
-				...transform,
-				translate: { ...transform.translate },
-			}
-			return uc
-		})
-	}
-
-	const scaleDecal = (index: number, amount: number) => {
-		dragTransforms[index].scale = Math.max(
-			0.5,
-			dragTransforms[index].scale + amount * 0.5
-		)
-		updateDecalTransform(index, dragTransforms[index])
-	}
-
-	const rotateDecal = (index: number, amount: number) => {
-		dragTransforms[index].rotate += amount * 15
-		updateDecalTransform(index, dragTransforms[index])
-	}
-
-	function deleteDecal(index: number) {
-		if (selectedDecalIndex !== null) {
-			if (selectedDecalIndex > index) selectedDecalIndex -= 1
-			else if (selectedDecalIndex === index) selectedDecalIndex = null
-		}
-		userCar.update((uc) => ({
-			...uc,
-			decals: uc.decals.filter((_, i) => i !== index),
-		}))
-	}
-
-	function orderDecal(index: number, direction: number) {
-		const newIndex = Math.max(0, Math.min(userDecals.length - 1, index + direction))
-		if (newIndex === index) return
-		userCar.update((uc) => {
-			uc.decals.splice(newIndex, 0, uc.decals.splice(index, 1)[0])
-			return uc
-		})
-		selectedDecalIndex = newIndex
 	}
 
 	const corners = [
@@ -211,12 +169,12 @@
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
 	<div
-		class="relative mx-auto w-full overflow-hidden"
-		style:height="{350 * canvasScale}px"
+		class="relative mx-auto my-4 w-full overflow-hidden"
+		style:height="{300 * canvasScale}px"
 		bind:this={userTrainContainer}
 	>
 		<div
-			class="absolute h-[350px] w-[500px] origin-top"
+			class="absolute h-[300px] w-[500px] origin-top"
 			style:left="calc((100% - 500px) / 2)"
 			style:transform="scale({canvasScale})"
 			bind:this={canvasElement}
@@ -319,40 +277,11 @@
 	</div>
 	{#if selectedDecalIndex !== null}
 		{@const index = selectedDecalIndex}
-		<div class="nunito my-2 flex flex-wrap justify-center space-x-2">
-			<button
-				on:click={() => scaleDecal(index, -1)}
-				class="btn-lg btn w-20 touch-manipulation text-4xl font-black">-</button
-			>
-			<button
-				on:click={() => scaleDecal(index, 1)}
-				class="btn-lg btn w-20 touch-manipulation text-4xl font-black">+</button
-			>
-			<button
-				on:click={() => rotateDecal(index, -1)}
-				class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowleft;</button
-			>
-			<button
-				on:click={() => rotateDecal(index, 1)}
-				class="btn-lg btn w-20 touch-manipulation text-3xl">&circlearrowright;</button
-			>
-		</div>
-		<div class="nunito my-2 mb-4 flex flex-wrap justify-center space-x-2">
-			<button
-				on:click={() => orderDecal(index, -1)}
-				disabled={index === 0}
-				class="btn-lg btn w-20 touch-manipulation text-3xl">&ShortDownArrow;</button
-			>
-			<button
-				on:click={() => orderDecal(index, 1)}
-				disabled={index === userDecals.length - 1}
-				class="btn-lg btn w-20 touch-manipulation text-3xl">&ShortUpArrow;</button
-			>
-			<button
-				on:click={() => deleteDecal(index)}
-				class="btn-lg btn w-20 touch-manipulation text-2xl font-black">x</button
-			>
-		</div>
+		<Controls
+			{index}
+			{dragTransforms}
+			setSelectedIndex={(i) => (selectedDecalIndex = i)}
+		/>
 	{/if}
 
 	{#if userDecals.length < MAX_DECALS}
@@ -388,7 +317,7 @@
 			</li>
 		{/each}
 	</ol>
-	<a href=".." class="btn-block btn-lg btn text-xl"> Back </a>
+	<a href=".." class="btn-block btn-lg btn text-xl"> Done </a>
 	<div
 		class="absolute left-0 top-0 h-[3px] w-[3px] rounded-sm bg-red-600"
 		style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"
