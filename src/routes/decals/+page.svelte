@@ -30,6 +30,7 @@
 		...d.transform,
 		translate: { ...d.transform.translate },
 	}))
+	$: transforming = !!(dragging || resizing || rotating)
 
 	function addDecal() {
 		selectedDecalIndex = userDecals.length
@@ -216,7 +217,7 @@
 			bind:this={canvasElement}
 		>
 			<div class="relative top-[50px] mx-auto w-[375px]">
-				<UserCar transition={!dragging && !resizing && !rotating} />
+				<UserCar transition={!transforming} />
 			</div>
 			{#each dragTransforms as transform, d (transform.id)}
 				<div
@@ -232,7 +233,7 @@
 				>
 					<button
 						class="relative left-[-50px] top-[-50px] h-[100px] w-[100px] cursor-move rounded-xl"
-						class:transition-transform={!resizing && !rotating}
+						class:transition-transform={!transforming}
 						style:transform-origin="50px 50px"
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
 						use:clickoutside={{
@@ -258,7 +259,7 @@
 							<BoundingBox
 								scale={transform.scale}
 								selected={selectedDecalIndex === d}
-								transforming={!!(resizing || rotating || dragging)}
+								{transforming}
 							/>
 							<g
 								class:transition-opacity={selectedDecalIndex !== d &&
@@ -288,7 +289,7 @@
 				{#key transform.id}
 					<div
 						class="pointer-events-none absolute left-[12.5px] top-0 z-10 h-[100px] w-[100px] transition-transform"
-						class:transition-transform={!dragging && !resizing && !rotating}
+						class:transition-transform={!transforming}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
 						transition:fade={{ duration: 50 }}
@@ -303,7 +304,7 @@
 								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
 								class:transition-transform={!resizing}
 								class:transition-opacity={!resizing}
-								class:opacity-30={resizing || rotating || dragging}
+								class:opacity-30={transforming}
 								class:!opacity-60={resizing?.corner === c}
 								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
 							/>
