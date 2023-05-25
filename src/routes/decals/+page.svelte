@@ -7,6 +7,7 @@
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
+	import BoundingBox from './BoundingBox.svelte'
 
 	const MAX_DECALS = 5
 
@@ -254,21 +255,10 @@
 							class:opacity-0={selectedDecalIndex !== d && hoveredDecalIndex !== d}
 							class:opacity-40={selectedDecalIndex !== d && hoveredDecalIndex === d}
 						>
-							<rect
-								class:transition-all={!resizing && !dragging}
-								x={-50 - 14 / transform.scale}
-								y={-50 - 14 / transform.scale}
-								width={100 + 28 / transform.scale}
-								height={100 + 28 / transform.scale}
-								class:opacity-30={resizing || rotating || dragging}
-								fill="#fff0"
-								stroke="#fff"
-								stroke-width={5 / transform.scale}
-								stroke-dashoffset={(100 + 28 / transform.scale) * 0.075}
-								stroke-dasharray="{(100 + 28 / transform.scale) * 0.15} {(100 +
-									28 / transform.scale) *
-									0.1}"
-								stroke-linecap="round"
+							<BoundingBox
+								scale={transform.scale}
+								selected={selectedDecalIndex === d}
+								transforming={!!(resizing || rotating || dragging)}
 							/>
 							<g
 								class:transition-opacity={selectedDecalIndex !== d &&
