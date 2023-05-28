@@ -279,6 +279,7 @@
 		{@const index = selectedDecalIndex}
 		<Controls
 			{index}
+			{userDecals}
 			{dragTransforms}
 			setSelectedIndex={(i) => (selectedDecalIndex = i)}
 		/>
