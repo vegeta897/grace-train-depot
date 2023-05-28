@@ -12,32 +12,39 @@
 		'stroke-width': 5 / scale,
 		'stroke-dasharray': `${dashSize} ${gapSize}`,
 	}
-	$: pathData = selected ? drawCornerlessPath(size) : ''
+	$: pathData = drawPath(size, !selected)
 
-	function drawCornerlessPath(size: number) {
-		const cornerSize = dashSize / 2 + gapSize
-		const sideSize = size - cornerSize * 2
-		return `M${rect.x + cornerSize},${
-			rect.y
-		} h${sideSize} m${cornerSize},${cornerSize} v${sideSize} m${-cornerSize},${cornerSize} h${-sideSize} m${-cornerSize},${-cornerSize} v${-sideSize}`
+	const sides = [
+		[1, 0, 1, 1, 0, 1],
+		[0, 1, -1, 1, -1, 0],
+		[-1, 0, -1, -1, 0, -1],
+		[0, -1, 1, -1, 0, 0],
+	]
+
+	function drawPath(size: number, corners: boolean) {
+		const halfDash = dashSize / 2
+		const cornerSize = halfDash + gapSize
+		const sideSize = size - cornerSize * 2 + (corners ? gapSize : 0)
+		let pathData = `M${rect.x + cornerSize},${rect.y}`
+		for (let side = 0; side < 4; side++) {
+			const [sx, sy, cx, cy, mx, my] = sides[side]
+			pathData += `l${sx * sideSize},${sy * sideSize} `
+			pathData += corners
+				? `a${halfDash} ${halfDash} 0 0 1 ${cx * halfDash} ${cy * halfDash} m${
+						mx * gapSize
+				  },${my * gapSize}`
+				: `m${cx * cornerSize} ${cy * cornerSize}`
+		}
+		return pathData
 	}
 </script>
 
 <rect {...rect} fill="#fff0" stroke="none" />
-{#if selected}
-	<path
-		class:transition-all={!transforming}
-		class:opacity-30={transforming}
-		d={pathData}
-		{...stroke}
-		stroke-linecap="round"
-	/>
-{:else}
-	<rect
-		{...rect}
-		{...stroke}
-		stroke-dashoffset={dashSize / 2}
-		stroke-linecap="round"
-		fill="none"
-	/>
-{/if}
+<path
+	class:transition-all={selected && !transforming}
+	class:opacity-30={selected && transforming}
+	d={pathData}
+	{...stroke}
+	stroke-linecap="round"
+	fill="none"
+/>
