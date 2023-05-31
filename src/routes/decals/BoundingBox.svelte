@@ -41,7 +41,7 @@
 
 <rect {...rect} fill="#fff0" stroke="none" />
 <path
-	class:transition-all={selected && !transforming}
+	class:transition-opacity={selected && !transforming}
 	class:opacity-30={selected && transforming}
 	d={pathData}
 	{...stroke}

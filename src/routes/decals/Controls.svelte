@@ -5,29 +5,33 @@
 <script lang="ts">
 	import { userCar, type DecalData } from '$lib/store'
 	import type { Transform } from '$lib/util'
-	import { updateDecalTransform } from './decals'
+	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE, updateDecalTransform } from './decals'
 
 	export let index: number
 	export let userDecals: DecalData[]
 	export let dragTransforms: (Pick<DecalData, 'name' | 'id'> & Transform)[]
 	export let setSelectedIndex: (i: number | null) => void
+	export let setTransforming: (value: boolean) => void
+	// TODO: This is stupid, remove all transitions from decal/gizmo
 
 	$: selectedDecal = userDecals[index]
 
-	let toolMode: null | 'colors' = null
+	let toolMode: null | 'scale' | 'rotate' | 'order' | 'colors' = null
 
 	const scaleDecal = (amount: number) => {
 		dragTransforms[index].scale = Math.max(
-			0.5,
-			dragTransforms[index].scale + amount * 0.5
+			DECAL_MIN_SCALE,
+			Math.min(DECAL_MAX_SCALE, dragTransforms[index].scale + amount * 0.5)
 		)
-		updateDecalTransform(index, dragTransforms[index])
+		updateTransform()
 	}
 
 	const rotateDecal = (amount: number) => {
 		dragTransforms[index].rotate += amount * 15
-		updateDecalTransform(index, dragTransforms[index])
+		updateTransform()
 	}
+
+	const updateTransform = () => updateDecalTransform(index, dragTransforms[index])
 
 	function deleteDecal() {
 		setSelectedIndex(null)
@@ -58,7 +62,11 @@
 
 <div class="nunito my-2 grid grid-cols-4 gap-2">
 	{#if toolMode === null}
-		<div class="btn-group col-span-2">
+		<button
+			on:click={() => (toolMode = 'scale')}
+			class="btn-lg btn touch-manipulation text-3xl font-black">-/+</button
+		>
+		<!-- <div class="btn-group col-span-2">
 			<button
 				on:click={() => scaleDecal(-1)}
 				class="btn-lg btn w-1/2 touch-manipulation text-4xl font-black">-</button
@@ -67,8 +75,12 @@
 				on:click={() => scaleDecal(1)}
 				class="btn-lg btn w-1/2 touch-manipulation text-4xl font-black">+</button
 			>
-		</div>
-		<div class="btn-group col-span-2">
+		</div> -->
+		<button
+			on:click={() => (toolMode = 'rotate')}
+			class="btn-lg btn touch-manipulation text-4xl font-black">&circlearrowright;</button
+		>
+		<!-- <div class="btn-group col-span-2">
 			<button
 				on:click={() => rotateDecal(-1)}
 				class="btn-lg btn w-1/2 touch-manipulation text-3xl">&circlearrowleft;</button
@@ -77,8 +89,13 @@
 				on:click={() => rotateDecal(1)}
 				class="btn-lg btn w-1/2 touch-manipulation text-3xl">&circlearrowright;</button
 			>
-		</div>
-		<div class="btn-group col-span-2">
+		</div> -->
+		<button
+			on:click={() => (toolMode = 'order')}
+			class="btn-lg btn touch-manipulation text-3xl font-black"
+			>&ShortDownArrow;&ShortUpArrow;</button
+		>
+		<!-- <div class="btn-group col-span-2">
 			<button
 				on:click={() => orderDecal(-1)}
 				disabled={index === 0}
@@ -89,7 +106,7 @@
 				disabled={index === dragTransforms.length - 1}
 				class="btn-lg btn w-1/2 touch-manipulation text-3xl">&ShortUpArrow;</button
 			>
-		</div>
+		</div> -->
 		<button on:click={() => (toolMode = 'colors')} class="btn-lg btn touch-manipulation">
 			<svg viewBox="0 0 1 1" class="h-8 w-8">
 				<rect width="1" height="1" fill={selectedDecal.fill} rx="0.2" />
@@ -97,8 +114,50 @@
 		</button>
 		<button
 			on:click={() => deleteDecal()}
-			class="btn-lg btn touch-manipulation text-2xl font-black hover:btn-error">x</button
+			class="btn-lg btn touch-manipulation text-3xl font-black hover:btn-error">🗑️</button
 		>
+	{:else if toolMode === 'scale'}
+		<button
+			on:click={() => (toolMode = null)}
+			class="btn-lg btn touch-manipulation text-3xl font-black">&ShortLeftArrow;</button
+		>
+		<div class="col-span-4 flex h-16 flex-col justify-center px-2">
+			<input
+				type="range"
+				min={DECAL_MIN_SCALE}
+				max={DECAL_MAX_SCALE}
+				step="0.05"
+				value={dragTransforms[index].scale}
+				on:input={(e) => {
+					dragTransforms[index].scale = +e.currentTarget.value
+					updateTransform()
+				}}
+				on:pointerdown={() => setTransforming(true)}
+				on:pointerup={() => setTransforming(false)}
+				class="range range-primary"
+			/>
+		</div>
+	{:else if toolMode === 'rotate'}
+		<button
+			on:click={() => (toolMode = null)}
+			class="btn-lg btn touch-manipulation text-3xl font-black">&ShortLeftArrow;</button
+		>
+		<div class="col-span-4 flex h-16 flex-col justify-center px-2">
+			<input
+				type="range"
+				min={-180}
+				max={180}
+				step="1"
+				value={-(dragTransforms[index].rotate + (180 % 360) - 180)}
+				on:input={(e) => {
+					dragTransforms[index].rotate = -e.currentTarget.value
+					updateTransform()
+				}}
+				on:pointerdown={() => setTransforming(true)}
+				on:pointerup={() => setTransforming(false)}
+				class="range range-secondary"
+			/>
+		</div>
 	{:else if toolMode === 'colors'}
 		{#each colors as color}
 			<button on:click={() => setDecalColor(color)} class="btn-lg btn touch-manipulation">

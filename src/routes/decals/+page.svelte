@@ -8,7 +8,7 @@
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 	import BoundingBox from './BoundingBox.svelte'
-	import { updateDecalTransform } from './decals'
+	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE, updateDecalTransform } from './decals'
 	import Controls from './Controls.svelte'
 
 	const MAX_DECALS = 5
@@ -19,7 +19,7 @@
 	let canvasElement: HTMLDivElement
 	let userTrainContainer: HTMLDivElement
 
-	let canvasScale: number
+	let canvasScale: number = 0.635
 	onMount(updateCanvasScale)
 	function updateCanvasScale() {
 		canvasScale = userTrainContainer.clientWidth / 464
@@ -32,7 +32,9 @@
 		...d.transform,
 		translate: { ...d.transform.translate },
 	}))
-	$: transforming = !!(dragging || resizing || rotating)
+	$: transforming = !!(dragging || resizing || rotating || transformingOverride)
+
+	let transformingOverride = false
 
 	function addDecal() {
 		selectedDecalIndex = userDecals.length
@@ -111,7 +113,10 @@
 				const xDistance = ((nx - originX) * corners[corner][0]) / canvasScale
 				const yDistance = ((ny - originY) * corners[corner][1]) / canvasScale
 				const avgDistance = (xDistance + yDistance) / 2
-				return Math.max(0.5, Math.min(4, (avgDistance - 14) / 50))
+				return Math.max(
+					DECAL_MIN_SCALE,
+					Math.min(DECAL_MAX_SCALE, (avgDistance - 14) / 50)
+				)
 			},
 		}
 	}
@@ -169,14 +174,16 @@
 <section>
 	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
 	<div
-		class="relative mx-auto my-4 w-full overflow-hidden"
-		style:height="{300 * canvasScale}px"
+		class="relative mx-auto my-4 min-h-[190px] w-full overflow-hidden"
+		style:height="{300 * canvasScale || 0}px"
+		style="transition: height 150ms ease-out"
 		bind:this={userTrainContainer}
 	>
 		<div
 			class="absolute h-[300px] w-[500px] origin-top"
 			style:left="calc((100% - 500px) / 2)"
 			style:transform="scale({canvasScale})"
+			style="transition: transform 150ms ease-out, left 150ms ease-out"
 			bind:this={canvasElement}
 		>
 			<div class="relative mx-auto w-[375px]">
@@ -239,7 +246,7 @@
 				{@const transform = dragTransforms[selectedDecalIndex]}
 				{#key transform.id}
 					<div
-						class="pointer-events-none absolute left-[12.5px] top-[-50px] z-10 h-[100px] w-[100px] transition-transform"
+						class="pointer-events-none absolute left-[12.5px] top-[-50px] z-10 h-[100px] w-[100px]"
 						class:transition-transform={!transforming}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
@@ -253,7 +260,7 @@
 									getCornerScale(c)) ||
 									(rotating || dragging ? 0.5 : 1)})"
 								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
-								class:transition-transform={!resizing}
+								class:transition-transform={!transforming}
 								class:transition-opacity={!resizing}
 								class:opacity-30={transforming}
 								class:!opacity-60={resizing?.corner === c}
@@ -266,7 +273,7 @@
 								? 1.5
 								: 1})"
 							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
-							class:transition-all={!resizing}
+							class:transition-all={!transforming}
 							class:opacity-60={rotating}
 							class:opacity-0={resizing || dragging}
 						/>
@@ -282,6 +289,7 @@
 			{userDecals}
 			{dragTransforms}
 			setSelectedIndex={(i) => (selectedDecalIndex = i)}
+			setTransforming={(value) => (transformingOverride = value)}
 		/>
 	{/if}
 
