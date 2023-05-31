@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { Body, Decal, type BodyName } from 'grace-train-lib'
 	import { userCar } from '../store'
+	import type { ComponentProps } from 'svelte'
 
 	export let bodyOverride: BodyName | null = null
-	export let transition = false
+	export let transition: ComponentProps<Decal>['transition'] = 'none'
 </script>
 
 <Body name={bodyOverride || $userCar.body}>

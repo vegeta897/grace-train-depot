@@ -11,8 +11,6 @@
 	export let userDecals: DecalData[]
 	export let dragTransforms: (Pick<DecalData, 'name' | 'id'> & Transform)[]
 	export let setSelectedIndex: (i: number | null) => void
-	export let setTransforming: (value: boolean) => void
-	// TODO: This is stupid, remove all transitions from decal/gizmo
 
 	$: selectedDecal = userDecals[index]
 
@@ -108,8 +106,8 @@
 			>
 		</div> -->
 		<button on:click={() => (toolMode = 'colors')} class="btn-lg btn touch-manipulation">
-			<svg viewBox="0 0 1 1" class="h-8 w-8">
-				<rect width="1" height="1" fill={selectedDecal.fill} rx="0.2" />
+			<svg viewBox="0 0 32 32" class="h-8 w-8">
+				<rect width="32" height="32" fill={selectedDecal.fill} rx="8" />
 			</svg>
 		</button>
 		<button
@@ -132,8 +130,6 @@
 					dragTransforms[index].scale = +e.currentTarget.value
 					updateTransform()
 				}}
-				on:pointerdown={() => setTransforming(true)}
-				on:pointerup={() => setTransforming(false)}
 				class="range range-primary"
 			/>
 		</div>
@@ -153,16 +149,14 @@
 					dragTransforms[index].rotate = -e.currentTarget.value
 					updateTransform()
 				}}
-				on:pointerdown={() => setTransforming(true)}
-				on:pointerup={() => setTransforming(false)}
 				class="range range-secondary"
 			/>
 		</div>
 	{:else if toolMode === 'colors'}
 		{#each colors as color}
 			<button on:click={() => setDecalColor(color)} class="btn-lg btn touch-manipulation">
-				<svg viewBox="0 0 1 1" class="h-8 w-8">
-					<rect width="1" height="1" fill={color} rx="0.2" />
+				<svg viewBox="0 0 32 32" class="h-8 w-8">
+					<rect width="32" height="32" fill={color} rx="8" />
 				</svg>
 			</button>
 		{/each}

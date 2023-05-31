@@ -32,9 +32,7 @@
 		...d.transform,
 		translate: { ...d.transform.translate },
 	}))
-	$: transforming = !!(dragging || resizing || rotating || transformingOverride)
-
-	let transformingOverride = false
+	$: transforming = !!(dragging || resizing || rotating)
 
 	function addDecal() {
 		selectedDecalIndex = userDecals.length
@@ -187,7 +185,7 @@
 			bind:this={canvasElement}
 		>
 			<div class="relative mx-auto w-[375px]">
-				<UserCar transition={!transforming} />
+				<UserCar transition={['fill', 'opacity']} />
 			</div>
 			{#each dragTransforms as transform, d (transform.id)}
 				<div
@@ -203,7 +201,6 @@
 				>
 					<button
 						class="relative left-[-50px] top-[-50px] h-[100px] w-[100px] cursor-move rounded-xl"
-						class:transition-transform={!transforming}
 						style:transform-origin="50px 50px"
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
 						use:clickoutside={{
@@ -236,7 +233,11 @@
 									hoveredDecalIndex !== d}
 								class:opacity-25={selectedDecalIndex === d}
 							>
-								<Decal name={transform.name} fill={userDecals[d].fill} />
+								<Decal
+									name={transform.name}
+									fill={userDecals[d].fill}
+									transition={['fill', 'opacity']}
+								/>
 							</g>
 						</svg>
 					</button>
@@ -247,36 +248,38 @@
 				{#key transform.id}
 					<div
 						class="pointer-events-none absolute left-[12.5px] top-[-50px] z-10 h-[100px] w-[100px]"
-						class:transition-transform={!transforming}
 						style:transform="translate({transform.translate.x}px,{transform.translate
 							.y}px) rotate({transform.rotate}deg)"
 						transition:fade={{ duration: 50 }}
 					>
 						{#each corners as [xDir, yDir], c}
-							<button
-								on:pointerdown={() => startResize(c)}
+							<div
 								style:transform="translate({((transform.scale - 1) * 50 + 64) *
-									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px) scale({(resizing &&
-									getCornerScale(c)) ||
-									(rotating || dragging ? 0.5 : 1)})"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
-								class:transition-transform={!transforming}
-								class:transition-opacity={!resizing}
-								class:opacity-30={transforming}
-								class:!opacity-60={resizing?.corner === c}
-								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
-							/>
+									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
+							>
+								<button
+									on:pointerdown={() => startResize(c)}
+									style:transform="scale({(resizing && getCornerScale(c)) ||
+										(rotating || dragging ? 0.5 : 1)})"
+									class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
+									class:transition-transform={!resizing}
+									class:transition-opacity={!resizing}
+									class:opacity-30={transforming}
+									class:!opacity-60={resizing?.corner === c}
+									style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
+								/>
+							</div>
 						{/each}
-						<button
-							on:pointerdown={() => startRotate()}
-							style:transform="translate(0,{(transform.scale - 1) * 50 + 100}px) scale({rotating
-								? 1.5
-								: 1})"
-							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
-							class:transition-all={!transforming}
-							class:opacity-60={rotating}
-							class:opacity-0={resizing || dragging}
-						/>
+						<div style:transform="translate(0,{(transform.scale - 1) * 50 + 100}px)">
+							<button
+								on:pointerdown={() => startRotate()}
+								style:transform="scale({rotating ? 1.5 : 1})"
+								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
+								class:transition-all={!resizing}
+								class:opacity-60={rotating}
+								class:opacity-0={resizing || dragging}
+							/>
+						</div>
 					</div>
 				{/key}
 			{/if}
@@ -289,7 +292,6 @@
 			{userDecals}
 			{dragTransforms}
 			setSelectedIndex={(i) => (selectedDecalIndex = i)}
-			setTransforming={(value) => (transformingOverride = value)}
 		/>
 	{/if}
 
@@ -320,7 +322,7 @@
 					on:blur={() => (hoveredDecalIndex = null)}
 				>
 					<svg viewBox="-50 -50 100 100" class="w-14">
-						<Decal name={decal.name} fill={decal.fill} />
+						<Decal name={decal.name} fill={decal.fill} transition={['fill', 'opacity']} />
 					</svg>
 				</button>
 			</li>
