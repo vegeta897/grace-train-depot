@@ -314,10 +314,10 @@
 				class:outline={d === selectedDecalIndex}
 				class:outline-4={d === selectedDecalIndex}
 				class:outline-primary={d === selectedDecalIndex}
-				class="btn-group w-full rounded-lg"
+				class="w-full rounded-lg"
 			>
 				<button
-					class="btn-lg btn h-24 grow"
+					class="btn-block btn-lg btn h-24"
 					on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
 					on:mouseenter={() => (hoveredDecalIndex = d)}
 					on:mouseleave={() => (hoveredDecalIndex = null)}

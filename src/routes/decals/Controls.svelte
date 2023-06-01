@@ -64,28 +64,28 @@
 			on:click={() => (toolMode = 'scale')}
 			class="btn-lg btn touch-manipulation text-3xl font-black">-/+</button
 		>
-		<!-- <div class="btn-group col-span-2">
+		<!-- <div class="join col-span-2">
 			<button
 				on:click={() => scaleDecal(-1)}
-				class="btn-lg btn w-1/2 touch-manipulation text-4xl font-black">-</button
+				class="btn-lg join-item btn w-1/2 touch-manipulation text-4xl font-black">-</button
 			>
 			<button
 				on:click={() => scaleDecal(1)}
-				class="btn-lg btn w-1/2 touch-manipulation text-4xl font-black">+</button
+				class="btn-lg join-item btn w-1/2 touch-manipulation text-4xl font-black">+</button
 			>
 		</div> -->
 		<button
 			on:click={() => (toolMode = 'rotate')}
 			class="btn-lg btn touch-manipulation text-4xl font-black">&circlearrowright;</button
 		>
-		<!-- <div class="btn-group col-span-2">
+		<!-- <div class="join col-span-2">
 			<button
 				on:click={() => rotateDecal(-1)}
-				class="btn-lg btn w-1/2 touch-manipulation text-3xl">&circlearrowleft;</button
+				class="btn-lg join-item btn w-1/2 touch-manipulation text-3xl">&circlearrowleft;</button
 			>
 			<button
 				on:click={() => rotateDecal(1)}
-				class="btn-lg btn w-1/2 touch-manipulation text-3xl">&circlearrowright;</button
+				class="btn-lg join-item btn w-1/2 touch-manipulation text-3xl">&circlearrowright;</button
 			>
 		</div> -->
 		<button
@@ -93,16 +93,16 @@
 			class="btn-lg btn touch-manipulation text-3xl font-black"
 			>&ShortDownArrow;&ShortUpArrow;</button
 		>
-		<!-- <div class="btn-group col-span-2">
+		<!-- <div class="join col-span-2">
 			<button
 				on:click={() => orderDecal(-1)}
 				disabled={index === 0}
-				class="btn-lg btn w-1/2 touch-manipulation text-3xl">&ShortDownArrow;</button
+				class="btn-lg join-item btn w-1/2 touch-manipulation text-3xl">&ShortDownArrow;</button
 			>
 			<button
 				on:click={() => orderDecal(1)}
 				disabled={index === dragTransforms.length - 1}
-				class="btn-lg btn w-1/2 touch-manipulation text-3xl">&ShortUpArrow;</button
+				class="btn-lg join-item btn w-1/2 touch-manipulation text-3xl">&ShortUpArrow;</button
 			>
 		</div> -->
 		<button on:click={() => (toolMode = 'colors')} class="btn-lg btn touch-manipulation">

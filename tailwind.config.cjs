@@ -8,6 +8,9 @@ const config = {
 	},
 
 	plugins: [daisyui],
+	daisyui: {
+		themes: ['synthwave'],
+	},
 }
 
 module.exports = config
