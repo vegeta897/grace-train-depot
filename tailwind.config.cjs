@@ -4,7 +4,7 @@ const config = {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 
 	theme: {
-		extend: { borderWidth: { 5: '5px' } },
+		extend: { borderWidth: { 5: '5px' }, saturate: { 30: '.30' } },
 	},
 
 	plugins: [daisyui],

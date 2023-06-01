@@ -185,7 +185,10 @@
 			bind:this={canvasElement}
 		>
 			<div class="relative mx-auto w-[375px]">
-				<UserCar transition={['fill', 'opacity']} />
+				<UserCar
+					transition={['fill', 'opacity']}
+					focusDecalZone={selectedDecalIndex !== null}
+				/>
 			</div>
 			{#each dragTransforms as transform, d (transform.id)}
 				<div
@@ -221,7 +224,7 @@
 							class:transition-opacity={selectedDecalIndex !== d &&
 								hoveredDecalIndex !== d}
 							class:opacity-0={selectedDecalIndex !== d && hoveredDecalIndex !== d}
-							class:opacity-40={selectedDecalIndex !== d && hoveredDecalIndex === d}
+							class:opacity-25={selectedDecalIndex !== d && hoveredDecalIndex === d}
 						>
 							<BoundingBox
 								scale={transform.scale}
