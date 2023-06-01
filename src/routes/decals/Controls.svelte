@@ -16,6 +16,9 @@
 
 	let toolMode: null | 'scale' | 'rotate' | 'order' | 'colors' = null
 
+	const setToolMode = (mode: typeof toolMode) =>
+		(toolMode = toolMode === mode ? null : mode)
+
 	const scaleDecal = (amount: number) => {
 		dragTransforms[index].scale = Math.max(
 			DECAL_MIN_SCALE,
@@ -59,12 +62,15 @@
 </script>
 
 <div class="nunito my-2 grid grid-cols-4 gap-2">
-	{#if toolMode === null}
-		<button
-			on:click={() => (toolMode = 'scale')}
-			class="btn-lg btn touch-manipulation text-3xl font-black">-/+</button
-		>
-		<!-- <div class="join col-span-2">
+	<button
+		on:click={() => setToolMode('scale')}
+		class="btn-md btn touch-manipulation text-lg font-black md:text-xl"
+		class:text-primary={toolMode !== 'scale'}
+		class:btn-primary={toolMode === 'scale'}
+	>
+		Size
+	</button>
+	<!-- <div class="join col-span-2">
 			<button
 				on:click={() => scaleDecal(-1)}
 				class="btn-lg join-item btn w-1/2 touch-manipulation text-4xl font-black">-</button
@@ -74,11 +80,15 @@
 				class="btn-lg join-item btn w-1/2 touch-manipulation text-4xl font-black">+</button
 			>
 		</div> -->
-		<button
-			on:click={() => (toolMode = 'rotate')}
-			class="btn-lg btn touch-manipulation text-4xl font-black">&circlearrowright;</button
-		>
-		<!-- <div class="join col-span-2">
+	<button
+		on:click={() => setToolMode('rotate')}
+		class="btn-md btn touch-manipulation text-lg font-black md:text-xl"
+		class:text-secondary={toolMode !== 'rotate'}
+		class:btn-secondary={toolMode === 'rotate'}
+	>
+		Spin
+	</button>
+	<!-- <div class="join col-span-2">
 			<button
 				on:click={() => rotateDecal(-1)}
 				class="btn-lg join-item btn w-1/2 touch-manipulation text-3xl">&circlearrowleft;</button
@@ -88,12 +98,14 @@
 				class="btn-lg join-item btn w-1/2 touch-manipulation text-3xl">&circlearrowright;</button
 			>
 		</div> -->
-		<button
-			on:click={() => (toolMode = 'order')}
-			class="btn-lg btn touch-manipulation text-3xl font-black"
-			>&ShortDownArrow;&ShortUpArrow;</button
-		>
-		<!-- <div class="join col-span-2">
+	<button
+		on:click={() => setToolMode('order')}
+		class="btn-md btn touch-manipulation text-lg font-black md:text-xl"
+		class:btn-info={toolMode === 'order'}
+	>
+		Sort
+	</button>
+	<!-- <div class="join col-span-2">
 			<button
 				on:click={() => orderDecal(-1)}
 				disabled={index === 0}
@@ -105,21 +117,20 @@
 				class="btn-lg join-item btn w-1/2 touch-manipulation text-3xl">&ShortUpArrow;</button
 			>
 		</div> -->
-		<button on:click={() => (toolMode = 'colors')} class="btn-lg btn touch-manipulation">
-			<svg viewBox="0 0 32 32" class="h-8 w-8">
-				<rect width="32" height="32" fill={selectedDecal.fill} rx="8" />
-			</svg>
-		</button>
+	<button
+		on:click={() => setToolMode('colors')}
+		class="btn-md btn touch-manipulation text-lg font-black md:text-xl"
+		class:btn-info={toolMode === 'colors'}
+	>
+		Color
+	</button>
+	{#if toolMode === null}
 		<button
 			on:click={() => deleteDecal()}
-			class="btn-lg btn touch-manipulation text-3xl font-black hover:btn-error">🗑️</button
+			class="btn-md btn touch-manipulation text-3xl font-black hover:btn-error">🗑️</button
 		>
 	{:else if toolMode === 'scale'}
-		<button
-			on:click={() => (toolMode = null)}
-			class="btn-lg btn touch-manipulation text-3xl font-black">&ShortLeftArrow;</button
-		>
-		<div class="col-span-4 flex h-16 flex-col justify-center px-2">
+		<div class="col-span-4 flex h-12 flex-col justify-center px-2">
 			<input
 				type="range"
 				min={DECAL_MIN_SCALE}
@@ -134,11 +145,7 @@
 			/>
 		</div>
 	{:else if toolMode === 'rotate'}
-		<button
-			on:click={() => (toolMode = null)}
-			class="btn-lg btn touch-manipulation text-3xl font-black">&ShortLeftArrow;</button
-		>
-		<div class="col-span-4 flex h-16 flex-col justify-center px-2">
+		<div class="col-span-4 flex h-12 flex-col justify-center px-2">
 			<input
 				type="range"
 				min={-180}
@@ -153,12 +160,18 @@
 			/>
 		</div>
 	{:else if toolMode === 'colors'}
-		{#each colors as color}
-			<button on:click={() => setDecalColor(color)} class="btn-lg btn touch-manipulation">
-				<svg viewBox="0 0 32 32" class="h-8 w-8">
-					<rect width="32" height="32" fill={color} rx="8" />
-				</svg>
-			</button>
-		{/each}
+		<div class="col-span-4 grid grid-cols-6 gap-2">
+			<!-- TODO: Preview decal color on hover -->
+			{#each colors as color}
+				<button
+					on:click={() => setDecalColor(color)}
+					class="btn-lg btn touch-manipulation p-0"
+				>
+					<svg viewBox="0 0 32 32" class="h-8 w-8">
+						<rect width="32" height="32" fill={color} rx="8" />
+					</svg>
+				</button>
+			{/each}
+		</div>
 	{/if}
 </div>

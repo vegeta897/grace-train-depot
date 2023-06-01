@@ -9,7 +9,14 @@ const config = {
 
 	plugins: [daisyui],
 	daisyui: {
-		themes: ['synthwave'],
+		themes: [
+			{
+				synthwave: {
+					...require('daisyui/src/theming/themes')['[data-theme=synthwave]'],
+					'base-200': '#160d34',
+				},
+			},
+		],
 	},
 }
 
