@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import { userCar, type DecalData } from '$lib/store'
-	import type { Transform } from '$lib/util'
+	import { wrapNumber, type Transform } from '$lib/util'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE, updateDecalTransform } from './decals'
 
 	export let index: number
@@ -13,6 +13,7 @@
 	export let setSelectedIndex: (i: number | null) => void
 
 	$: selectedDecal = userDecals[index]
+	$: dragTransform = dragTransforms[index]
 
 	let toolMode: null | 'scale' | 'rotate' | 'order' | 'colors' = null
 
@@ -20,19 +21,19 @@
 		(toolMode = toolMode === mode ? null : mode)
 
 	const scaleDecal = (amount: number) => {
-		dragTransforms[index].scale = Math.max(
+		dragTransform.scale = Math.max(
 			DECAL_MIN_SCALE,
-			Math.min(DECAL_MAX_SCALE, dragTransforms[index].scale + amount * 0.5)
+			Math.min(DECAL_MAX_SCALE, dragTransform.scale + amount * 0.5)
 		)
 		updateTransform()
 	}
 
 	const rotateDecal = (amount: number) => {
-		dragTransforms[index].rotate += amount * 15
+		dragTransform.rotate += amount * 15
 		updateTransform()
 	}
 
-	const updateTransform = () => updateDecalTransform(index, dragTransforms[index])
+	const updateTransform = () => updateDecalTransform(index, dragTransform)
 
 	function deleteDecal() {
 		setSelectedIndex(null)
@@ -136,9 +137,9 @@
 				min={DECAL_MIN_SCALE}
 				max={DECAL_MAX_SCALE}
 				step="0.05"
-				value={dragTransforms[index].scale}
+				value={dragTransform.scale}
 				on:input={(e) => {
-					dragTransforms[index].scale = +e.currentTarget.value
+					dragTransform.scale = +e.currentTarget.value
 					updateTransform()
 				}}
 				class="range range-primary"
@@ -151,9 +152,9 @@
 				min={-180}
 				max={180}
 				step="1"
-				value={-(dragTransforms[index].rotate + (180 % 360) - 180)}
+				value={wrapNumber(-dragTransform.rotate, -180, 180)}
 				on:input={(e) => {
-					dragTransforms[index].rotate = -e.currentTarget.value
+					dragTransform.rotate = wrapNumber(-e.currentTarget.value, 0, 360)
 					updateTransform()
 				}}
 				class="range range-secondary"

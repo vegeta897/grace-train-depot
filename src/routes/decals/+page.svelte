@@ -3,7 +3,7 @@
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { Decal } from 'grace-train-lib'
 	import { userCar } from '$lib/store'
-	import type { Transform } from '$lib/util'
+	import { wrapNumber, type Transform } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
@@ -134,6 +134,7 @@
 			snap: snapRotation(transform.rotate) === false ? false : true,
 			calcRotate: (x: number, y: number) => {
 				let angle = Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
+				angle = wrapNumber(angle, 0, 360)
 				const snapped = snapRotation(angle)
 				rotating!.snap = false
 				if (snapped !== false) {
@@ -216,7 +217,7 @@
 						on:blur={() => (hoveredDecalIndex = null)}
 						on:clickoutside={() => (selectedDecalIndex = null)}
 						on:click|stopPropagation
-						out:fade={{ duration: 150 }}
+						out:fade|local={{ duration: 150 }}
 					>
 						<svg
 							class="w-full overflow-visible"
