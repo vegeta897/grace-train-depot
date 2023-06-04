@@ -297,6 +297,12 @@
 			{dragTransforms}
 			setSelectedIndex={(i) => (selectedDecalIndex = i)}
 		/>
+	{:else}
+		<div class="my-2 grid grid-cols-4 gap-2">
+			{#each Array(8) as _}
+				<div class="h-12 rounded-lg bg-base-100 opacity-50" />
+			{/each}
+		</div>
 	{/if}
 
 	{#if userDecals.length < MAX_DECALS}
