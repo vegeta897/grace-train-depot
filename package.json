@@ -21,7 +21,7 @@
 		"@sveltejs/kit": "^1.20.0",
 		"@types/cookie": "^0.5.1",
 		"autoprefixer": "^10.4.14",
-		"daisyui": "^3.0.0",
+		"daisyui": "^3.0.3",
 		"grace-train-lib": "^0.0.22",
 		"postcss": "^8.4.24",
 		"postcss-load-config": "^4.0.1",
