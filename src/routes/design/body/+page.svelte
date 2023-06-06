@@ -30,5 +30,4 @@
 			</button>
 		{/each}
 	</div>
-	<a href=".." class="btn-block btn-lg btn text-xl"> Back </a>
 </section>

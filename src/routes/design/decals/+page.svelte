@@ -313,8 +313,6 @@
 			+
 		</button>
 	{/if}
-	<!-- Maybe don't need drag n drop or hover layers, or drag n drop and delete mode -->
-	<!-- Prefer using buttons under canvas for deleting and re-ordering -->
 	<ol class="nunito mb-8 flex flex-col-reverse gap-4 rounded-lg">
 		{#each userDecals as decal, d (decal.id)}
 			<li
@@ -338,7 +336,6 @@
 			</li>
 		{/each}
 	</ol>
-	<a href=".." class="btn-block btn-lg btn text-xl"> Done </a>
 	<div
 		class="absolute left-0 top-0 h-[3px] w-[3px] rounded-sm bg-red-600"
 		style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"

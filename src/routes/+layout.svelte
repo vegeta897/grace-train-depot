@@ -9,11 +9,9 @@
 	<title>Grace Train Depot</title>
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
-<div class="flex flex-col items-center justify-center p-4 md:p-8">
-	<div class="w-full max-w-lg rounded-2xl bg-neutral p-6 text-neutral-content md:p-10">
-		<slot />
-	</div>
+<div class="mx-auto w-full max-w-5xl p-4">
+	<h1 class="nunito mb-4 text-center text-2xl uppercase min-[408px]:text-3xl">
+		Grace Train Depot
+	</h1>
+	<slot />
 </div>
-
-<style>
-</style>
