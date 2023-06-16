@@ -168,7 +168,7 @@
 					on:click={() => setDecalColor(color)}
 					class="btn-lg btn touch-manipulation p-0"
 				>
-					<svg viewBox="0 0 32 32" class="h-8 w-8">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-8 w-8">
 						<rect width="32" height="32" fill={color} rx="8" />
 					</svg>
 				</button>

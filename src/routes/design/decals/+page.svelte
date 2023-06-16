@@ -220,6 +220,7 @@
 						out:fade|local={{ duration: 150 }}
 					>
 						<svg
+							xmlns="http://www.w3.org/2000/svg"
 							class="w-full overflow-visible"
 							viewBox="-50 -50 100 100"
 							class:transition-opacity={selectedDecalIndex !== d &&
@@ -329,7 +330,7 @@
 					on:focus={() => (hoveredDecalIndex = d)}
 					on:blur={() => (hoveredDecalIndex = null)}
 				>
-					<svg viewBox="-50 -50 100 100" class="w-14">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100" class="w-14">
 						<Decal name={decal.name} fill={decal.fill} transition={['fill', 'opacity']} />
 					</svg>
 				</button>
