@@ -16,7 +16,7 @@
 </script>
 
 <div class="lg:flex lg:items-start">
-	<div class="nunito hidden w-80 flex-col space-y-2 rounded-lg bg-neutral p-6 lg:flex">
+	<div class="nunito rounded-box hidden w-80 flex-col space-y-2 bg-neutral p-6 lg:flex">
 		{#each pages as [icon, name]}
 			{@const route = `/design/${name}`}
 			{#if route !== $page.route.id}

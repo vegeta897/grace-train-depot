@@ -3,6 +3,11 @@
 	import '@fontsource/nunito/900.css'
 	import '@fontsource-variable/nunito'
 	import './styles.css'
+	import { clickoutside } from '@svelte-put/clickoutside'
+
+	function closeMenu(e: CustomEvent<MouseEvent>) {
+		if (e.target) (e.target as HTMLDetailsElement).removeAttribute('open')
+	}
 </script>
 
 <svelte:head>
@@ -10,10 +15,33 @@
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
 <div class="mx-auto w-full max-w-5xl p-6">
-	<h1
-		class="nunito mb-4 text-center text-2xl uppercase min-[408px]:text-3xl lg:text-left"
-	>
-		Grace Train Depot
-	</h1>
+	<header class="navbar rounded-box mb-4 bg-base-200 px-6">
+		<h1 class="nunito flex-1 text-left text-2xl uppercase">
+			<span class="text-3xl sm:hidden">🚂</span>
+			<span class="hidden sm:inline">Grace Train Depot</span>
+		</h1>
+		<nav class="flex-none">
+			<details class="dropdown-end dropdown" use:clickoutside on:clickoutside={closeMenu}>
+				<summary class="btn m-1"
+					><svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						class="inline-block h-6 w-6 stroke-current"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 6h16M4 12h16M4 18h16"
+						/></svg
+					></summary
+				>
+				<ul class="dropdown-content menu rounded-box w-32 bg-base-200 p-2 shadow">
+					<li><a href="/" class="justify-end">Home</a></li>
+					<li><a href="/logout" class="justify-end text-error">Log out</a></li>
+				</ul>
+			</details>
+		</nav>
+	</header>
 	<slot />
 </div>
