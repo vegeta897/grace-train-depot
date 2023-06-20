@@ -4,6 +4,5 @@
 
 <section>
 	<div class="mx-auto my-6 w-64"><UserCar /></div>
-	<p class="my-2">Customize your Grace train car!</p>
-	<p class="mb-4">Get started with one of these cool buttons 👇</p>
+	<p class="my-2 text-center text-xl">Let's design a Grace Train car!</p>
 </section>

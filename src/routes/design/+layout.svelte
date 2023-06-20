@@ -13,6 +13,8 @@
 	$: pageIndex = pages.findIndex((b) => b[1] === pageName)
 	$: prevPage = pages[pageIndex - 1]
 	$: nextPage = pages[pageIndex + 1]
+
+	// TODO: Try accordion layout on mobile?
 </script>
 
 <div class="lg:flex lg:items-start">

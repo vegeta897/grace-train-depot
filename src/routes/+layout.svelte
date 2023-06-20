@@ -5,9 +5,11 @@
 	import './styles.css'
 	import { clickoutside } from '@svelte-put/clickoutside'
 
-	function closeMenu(e: CustomEvent<MouseEvent>) {
-		if (e.target) (e.target as HTMLDetailsElement).removeAttribute('open')
-	}
+	let menuElement: HTMLDetailsElement
+
+	const closeMenu = () => menuElement.removeAttribute('open')
+
+	// TODO: Bento grid? https://bentogrids.com/
 </script>
 
 <svelte:head>
@@ -21,7 +23,12 @@
 			<span class="hidden sm:inline">Grace Train Depot</span>
 		</h1>
 		<nav class="flex-none">
-			<details class="dropdown-end dropdown" use:clickoutside on:clickoutside={closeMenu}>
+			<details
+				bind:this={menuElement}
+				class="dropdown-end dropdown"
+				use:clickoutside
+				on:clickoutside={closeMenu}
+			>
 				<summary class="btn m-1"
 					><svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -37,8 +44,14 @@
 					></summary
 				>
 				<ul class="dropdown-content menu rounded-box w-32 bg-base-200 p-2 shadow">
-					<li><a href="/" class="justify-end">Home</a></li>
-					<li><a href="/logout" class="justify-end text-error">Log out</a></li>
+					<li>
+						<a on:click={closeMenu} href="/" class="justify-end">Home</a>
+					</li>
+					<li>
+						<a on:click={closeMenu} href="/logout" class="justify-end text-error"
+							>Log out</a
+						>
+					</li>
 				</ul>
 			</details>
 		</nav>
