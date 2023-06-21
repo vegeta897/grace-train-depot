@@ -13,7 +13,9 @@ const config = {
 			{
 				synthwave: {
 					...require('daisyui/src/theming/themes')['[data-theme=synthwave]'],
-					'base-200': '#160d34',
+					'base-100': '#1d124a',
+					'base-200': '#140d35',
+					'base-300': '#0e0925',
 				},
 			},
 		],
