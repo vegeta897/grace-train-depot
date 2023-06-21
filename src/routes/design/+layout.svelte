@@ -13,8 +13,6 @@
 	$: pageIndex = pages.findIndex((b) => b[1] === pageName)
 	$: prevPage = pages[pageIndex - 1]
 	$: nextPage = pages[pageIndex + 1]
-
-	// TODO: Try accordion layout on mobile?
 </script>
 
 <div class="lg:flex lg:items-start">
@@ -34,10 +32,30 @@
 			{/if}
 		{/each}
 	</div>
-	<div class="lg:flex-grow lg:px-8">
-		<slot />
+	<div class="flex-grow space-y-2">
+		{#each pages as [icon, name]}
+			{@const route = `/design/${name}`}
+			{@const currentPage = route === $page.route.id}
+			{#if currentPage}
+				<div class="p-4 lg:flex-grow lg:px-8 lg:py-0">
+					<slot />
+				</div>
+			{:else}
+				<a
+					data-sveltekit-noscroll
+					class="nunito rounded-box mx-4 flex gap-4 bg-base-200 px-6 py-3 text-xl uppercase lg:hidden"
+					href="/design/{name}"
+				>
+					<span>{icon}</span>
+					{name}
+				</a>
+			{/if}
+		{/each}
 	</div>
-	<div class="nunito grid grid-cols-2 gap-4 lg:hidden">
+	<!-- <div class="lg:flex-grow lg:px-8">
+		<slot />
+	</div> -->
+	<!-- <div class="nunito grid grid-cols-2 gap-4 lg:hidden">
 		{#each [prevPage, nextPage] as navPage}
 			{#if navPage}
 				<a
@@ -48,5 +66,5 @@
 				>
 			{/if}
 		{/each}
-	</div>
+	</div> -->
 </div>
