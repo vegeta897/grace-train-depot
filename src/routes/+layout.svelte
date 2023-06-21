@@ -16,8 +16,8 @@
 	<title>Grace Train Depot</title>
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
-<div class="mx-auto w-full max-w-5xl p-6">
-	<header class="navbar rounded-box mb-4 bg-base-200 px-6">
+<div class="mx-auto w-full max-w-5xl lg:p-6">
+	<header class="navbar mb-4 bg-base-200 px-6 lg:rounded-box">
 		<h1 class="nunito flex-1 text-left text-2xl uppercase">
 			<span class="text-3xl sm:hidden">🚂</span>
 			<span class="hidden sm:inline">Grace Train Depot</span>
