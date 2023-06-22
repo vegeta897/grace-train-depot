@@ -171,7 +171,6 @@
 	on:pointerup={onPointerUp}
 />
 <section>
-	<h1 class="nunito mb-4 text-center text-5xl uppercase">Decals</h1>
 	<div
 		class="relative mx-auto my-4 min-h-[190px] w-full overflow-hidden"
 		style:height="{300 * canvasScale || 0}px"

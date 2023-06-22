@@ -1,6 +1,6 @@
 import { writable, type Writable } from 'svelte/store'
 import type { Transform } from './util'
-import type { DecalName, BodyName } from 'grace-train-lib'
+import { type DecalName, type BodyName, COLORS } from 'grace-train-lib'
 
 export type DecalData = {
 	name: DecalName
@@ -12,6 +12,7 @@ export type DecalData = {
 type UserCar = {
 	body: BodyName
 	decals: DecalData[]
+	wheelColor: string
 }
 
 export const userCar: Writable<UserCar> = writable({
@@ -24,4 +25,5 @@ export const userCar: Writable<UserCar> = writable({
 			fill: '#2ae3ff',
 		},
 	],
+	wheelColor: COLORS.POP,
 })

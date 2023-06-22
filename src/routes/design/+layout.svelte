@@ -3,68 +3,48 @@
 
 	const pages = [
 		['🚌', 'body'],
-		['💜', 'decals'],
-		['🎡', 'wheels'],
 		['🎓', 'toppers'],
+		['🎡', 'wheels'],
+		['💜', 'decals'],
 		['✨', 'effects'],
 	]
-
-	$: pageName = $page.route.id?.split('/')[2]
-	$: pageIndex = pages.findIndex((b) => b[1] === pageName)
-	$: prevPage = pages[pageIndex - 1]
-	$: nextPage = pages[pageIndex + 1]
 </script>
 
 <div class="lg:flex lg:items-start">
 	<div class="nunito rounded-box hidden w-80 flex-col space-y-2 bg-neutral p-6 lg:flex">
 		{#each pages as [icon, name]}
 			{@const route = `/design/${name}`}
-			{#if route !== $page.route.id}
-				<a href={route} class="btn-block btn-lg btn justify-start gap-8 text-xl">
-					<div class="w-12 text-center text-4xl">{icon}</div>
-					{name}
-				</a>
-			{:else}
-				<div class="btn-disabled btn-block btn-lg btn flex justify-start gap-8 text-xl">
-					<div class="w-12 text-center text-4xl">{icon}</div>
-					{name}
-				</div>
-			{/if}
+			{@const currentPage = route === $page.route.id}
+			<a
+				href={route}
+				class="btn-block btn-lg btn justify-start gap-8 text-xl"
+				class:pointer-events-none={currentPage}
+				class:btn-neutral={currentPage}
+			>
+				<div class="w-12 text-center text-4xl">{icon}</div>
+				{name}
+			</a>
 		{/each}
 	</div>
 	<div class="flex-grow space-y-2">
 		{#each pages as [icon, name]}
 			{@const route = `/design/${name}`}
 			{@const currentPage = route === $page.route.id}
+			<a
+				data-sveltekit-noscroll
+				class="nunito btn mx-4 flex justify-start gap-4 text-xl uppercase lg:hidden"
+				class:pointer-events-none={currentPage}
+				class:btn-neutral={currentPage}
+				href="/design/{name}"
+			>
+				<span>{icon}</span>
+				{name}
+			</a>
 			{#if currentPage}
 				<div class="p-4 lg:flex-grow lg:px-8 lg:py-0">
 					<slot />
 				</div>
-			{:else}
-				<a
-					data-sveltekit-noscroll
-					class="nunito rounded-box mx-4 flex gap-4 bg-base-200 px-6 py-3 text-xl uppercase lg:hidden"
-					href="/design/{name}"
-				>
-					<span>{icon}</span>
-					{name}
-				</a>
 			{/if}
 		{/each}
 	</div>
-	<!-- <div class="lg:flex-grow lg:px-8">
-		<slot />
-	</div> -->
-	<!-- <div class="nunito grid grid-cols-2 gap-4 lg:hidden">
-		{#each [prevPage, nextPage] as navPage}
-			{#if navPage}
-				<a
-					href="/design/{navPage[1]}"
-					class:col-start-2={!prevPage}
-					class:btn-primary={navPage === nextPage}
-					class="btn-lg btn">{navPage[1]}</a
-				>
-			{/if}
-		{/each}
-	</div> -->
 </div>

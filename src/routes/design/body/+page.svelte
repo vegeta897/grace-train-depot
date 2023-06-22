@@ -16,7 +16,6 @@
 </script>
 
 <section>
-	<h1 class="nunito mb-4 text-center text-5xl uppercase">Body</h1>
 	<div class="nunito mb-8 flex flex-col space-y-2">
 		{#each bodies as name}
 			{@const current = $userCar.body === name}

@@ -6,6 +6,7 @@
 		ContainerSvg,
 		COLORS,
 		DECAL_CLIP_PATHS,
+		Wheels,
 	} from 'grace-train-lib'
 	import { userCar } from '../store'
 	import type { ComponentProps } from 'svelte'
@@ -24,16 +25,19 @@
 	class:saturate-30={focusDecalZone}
 >
 	<Body {name}>
-		{#if !focusDecalZone}
-			{#each $userCar.decals as userDecal (userDecal.id)}
-				<Decal
-					name={userDecal.name}
-					transform={userDecal.transform}
-					fill={userDecal.fill}
-					{transition}
-				/>
-			{/each}
-		{/if}
+		<svelte:fragment slot="decals">
+			{#if !focusDecalZone}
+				{#each $userCar.decals as userDecal (userDecal.id)}
+					<Decal
+						name={userDecal.name}
+						transform={userDecal.transform}
+						fill={userDecal.fill}
+						{transition}
+					/>
+				{/each}
+			{/if}
+		</svelte:fragment>
+		<Wheels rimColor={$userCar.wheelColor} slot="wheels" />
 	</Body>
 </div>
 {#if focusDecalZone}
