@@ -48,9 +48,7 @@
 						<a on:click={closeMenu} href="/" class="justify-end">Home</a>
 					</li>
 					<li>
-						<a on:click={closeMenu} href="/logout" class="justify-end text-error"
-							>Log out</a
-						>
+						<a on:click={closeMenu} href="/" class="justify-end text-error">Log out</a>
 					</li>
 				</ul>
 			</details>
