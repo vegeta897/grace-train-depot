@@ -37,7 +37,11 @@
 				{/each}
 			{/if}
 		</svelte:fragment>
-		<WheelsChange rimColor={$userCar.wheelColor} slot="wheels" />
+		<WheelsChange
+			rimColor={$userCar.wheels.color}
+			fromCenter={$userCar.wheels.fromCenter}
+			slot="wheels"
+		/>
 	</Body>
 </div>
 {#if focusDecalZone}

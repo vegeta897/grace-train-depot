@@ -14,7 +14,7 @@
 
 	function setWheelColor(color: string) {
 		userCar.update((car) => {
-			car.wheelColor = color
+			car.wheels.color = color
 			return car
 		})
 	}
@@ -22,10 +22,10 @@
 
 <section>
 	<div class="mx-auto my-6 w-64"><UserCar /></div>
-	<div class="nunito mb-8 grid grid-flow-row grid-cols-2 gap-3">
+	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each wheels as [color, name]}
 			<button
-				class="btn-block btn-lg btn justify-start gap-4 text-xl"
+				class="btn-block btn-lg btn flex h-28 flex-col justify-center gap-2 text-xl lg:h-32 lg:gap-3"
 				on:click={() => setWheelColor(color)}
 			>
 				<ContainerSvg class="h-10 w-10" viewBox="150 225 75 75">
@@ -35,5 +35,12 @@
 			</button>
 		{/each}
 	</div>
-	Set carriage height:
+	<h3 class="nunito mb-4 text-2xl uppercase">Spread</h3>
+	<input
+		type="range"
+		min="80"
+		max="115"
+		bind:value={$userCar.wheels.fromCenter}
+		class="range range-primary"
+	/>
 </section>

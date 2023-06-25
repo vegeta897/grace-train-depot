@@ -12,7 +12,10 @@ export type DecalData = {
 type UserCar = {
 	body: BodyName
 	decals: DecalData[]
-	wheelColor: string
+	wheels: {
+		color: string
+		fromCenter: number
+	}
 }
 
 export const userCar: Writable<UserCar> = writable({
@@ -25,5 +28,8 @@ export const userCar: Writable<UserCar> = writable({
 			fill: '#2ae3ff',
 		},
 	],
-	wheelColor: COLORS.POP,
+	wheels: {
+		color: COLORS.POP,
+		fromCenter: 100,
+	},
 })
