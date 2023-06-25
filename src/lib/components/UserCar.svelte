@@ -6,7 +6,7 @@
 		ContainerSvg,
 		COLORS,
 		DECAL_CLIP_PATHS,
-		Wheels,
+		WheelsChange,
 	} from 'grace-train-lib'
 	import { userCar } from '../store'
 	import type { ComponentProps } from 'svelte'
@@ -37,7 +37,7 @@
 				{/each}
 			{/if}
 		</svelte:fragment>
-		<Wheels rimColor={$userCar.wheelColor} slot="wheels" />
+		<WheelsChange rimColor={$userCar.wheelColor} slot="wheels" />
 	</Body>
 </div>
 {#if focusDecalZone}
