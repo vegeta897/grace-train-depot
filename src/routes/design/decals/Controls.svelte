@@ -3,7 +3,6 @@
 </script>
 
 <script lang="ts">
-	import { userCar, type DecalData } from '$lib/store'
 	import { wrapNumber, type Transform } from '$lib/util'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE, updateDecalTransform } from './decals'
 

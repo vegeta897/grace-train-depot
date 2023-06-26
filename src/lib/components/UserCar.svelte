@@ -8,15 +8,16 @@
 		DECAL_CLIP_PATHS,
 		WheelsChange,
 	} from 'grace-train-lib'
-	import { userCar } from '../store'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
+	import type { Car } from '$lib/types'
 
+	export let car: Car
 	export let bodyOverride: BodyName | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
 
-	$: name = bodyOverride || $userCar.body
+	$: name = bodyOverride || car.body
 </script>
 
 <div
@@ -27,7 +28,7 @@
 	<Body {name}>
 		<svelte:fragment slot="decals">
 			{#if !focusDecalZone}
-				{#each $userCar.decals as userDecal (userDecal.id)}
+				{#each car.decals as userDecal (userDecal.id)}
 					<Decal
 						name={userDecal.name}
 						transform={userDecal.transform}
@@ -38,8 +39,8 @@
 			{/if}
 		</svelte:fragment>
 		<WheelsChange
-			rimColor={$userCar.wheels.color}
-			fromCenter={$userCar.wheels.fromCenter}
+			rimColor={car.wheels.color}
+			fromCenter={car.wheels.fromCenter}
 			slot="wheels"
 		/>
 	</Body>
@@ -49,7 +50,7 @@
 		<ContainerSvg>
 			<path fill={COLORS.BASE} d={DECAL_CLIP_PATHS[name]} />
 			<g clip-path="url(#usercar-decal-clip)">
-				{#each $userCar.decals as userDecal (userDecal.id)}
+				{#each car.decals as userDecal (userDecal.id)}
 					<Decal
 						name={userDecal.name}
 						transform={userDecal.transform}

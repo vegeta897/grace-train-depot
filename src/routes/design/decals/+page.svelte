@@ -2,7 +2,6 @@
 	import { draggable, type DragEventData } from '@neodrag/svelte'
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { Decal } from 'grace-train-lib'
-	import { userCar } from '$lib/store'
 	import { wrapNumber, type Transform } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
@@ -10,8 +9,11 @@
 	import BoundingBox from './BoundingBox.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE, updateDecalTransform } from './decals'
 	import Controls from './Controls.svelte'
+	import type { PageData } from './$types'
 
 	const MAX_DECALS = 5
+
+	export let data: PageData
 
 	let selectedDecalIndex: number | null = null
 	let hoveredDecalIndex: number | null = null
@@ -25,7 +27,7 @@
 		canvasScale = userTrainContainer.clientWidth / 464
 	}
 
-	$: userDecals = $userCar.decals
+	$: userDecals = data.car.decals
 	$: dragTransforms = userDecals.map((d) => ({
 		name: d.name,
 		id: d.id,
@@ -36,18 +38,15 @@
 
 	function addDecal() {
 		selectedDecalIndex = userDecals.length
-		userCar.update((uc) => {
-			uc.decals = [
-				...uc.decals,
-				{
-					name: 'star',
-					transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
-					id: Date.now(),
-					fill: '#f2ef0d',
-				},
-			]
-			return uc
-		})
+		data.car.decals = [
+			...data.car.decals,
+			{
+				name: 'star',
+				transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
+				id: Date.now(),
+				fill: '#f2ef0d',
+			},
+		]
 	}
 
 	let dragging: Transform['translate'] | null = null
@@ -62,7 +61,7 @@
 			x: dragging.x + (offsetX - dragging.x) / canvasScale,
 			y: dragging.y + (offsetY - dragging.y) / canvasScale,
 		}
-		updateDecalTransform(index, dragTransforms[index])
+		updateDecalTransform(data.car, index, dragTransforms[index])
 	}
 	const onDragEnd = () => {
 		dragging = null
@@ -148,10 +147,10 @@
 	function onPointerMove(e: PointerEvent) {
 		if (resizing) {
 			resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
-			updateDecalTransform(resizing.index, resizing.transform)
+			updateDecalTransform(data.car, resizing.index, resizing.transform)
 		} else if (rotating) {
 			rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
-			updateDecalTransform(rotating.index, rotating.transform)
+			updateDecalTransform(data.car, rotating.index, rotating.transform)
 		}
 	}
 	function onPointerUp() {
@@ -186,6 +185,7 @@
 		>
 			<div class="relative mx-auto w-[375px]">
 				<UserCar
+					car={data.car}
 					transition={['fill', 'opacity']}
 					focusDecalZone={selectedDecalIndex !== null}
 				/>

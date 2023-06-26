@@ -12,3 +12,6 @@ static/site.webmanifest
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+
+db-users.json
+db-users-dev.json

@@ -24,6 +24,7 @@
 		"autoprefixer": "^10.4.14",
 		"daisyui": "^3.1.5",
 		"grace-train-lib": "^0.0.27",
+		"lowdb": "^6.0.1",
 		"postcss": "^8.4.24",
 		"postcss-load-config": "^4.0.1",
 		"prettier": "^2.8.8",

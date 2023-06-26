@@ -11,3 +11,6 @@ node_modules
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 scratch
+
+db-users.json
+db-users-dev.json
