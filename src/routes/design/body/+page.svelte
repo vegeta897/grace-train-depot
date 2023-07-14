@@ -9,6 +9,13 @@
 
 	$: if (form?.body) data.car.body = form.body
 
+	// TODO: Defer saving for a faster UX
+	// Maybe use a localstorage-synced svelte store to store user car
+	// Create a module to handle all updates to user car
+	// Send changed properties to server
+	// Export saved/unsaved status (make a component?) to display on design pages
+	// Or just add to /design/+layout.svelte
+
 	const bodies: BodyName[] = ['boxy', 'tanky']
 </script>
 

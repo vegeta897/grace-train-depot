@@ -15,4 +15,7 @@ export type Car = {
 		color: string
 		fromCenter: number
 	}
+	hat: {
+		color: string | null
+	}
 }

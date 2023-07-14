@@ -26,11 +26,16 @@ export const UsersDB = new DB<{
 						color: COLORS.POP,
 						fromCenter: 100,
 					},
+					hat: {
+						color: null,
+					},
 				},
 			],
 		},
 	],
 })
+
+await UsersDB.initialize()
 
 export function updateUserCar(twitchID: string, carIndex: number, carData: Partial<Car>) {
 	const user = UsersDB.data.users.find((u) => u.twitch.id === twitchID)

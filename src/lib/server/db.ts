@@ -14,7 +14,6 @@ export class DB<T extends {}> {
 		const file = join(dirname(fileURLToPath(import.meta.url)), '../../..', filename)
 		const adapter = new JSONFile<T>(file)
 		this._db = new Low<T>(adapter, initialData)
-		this._db.read()
 	}
 
 	public async writeData() {
@@ -38,5 +37,9 @@ export class DB<T extends {}> {
 	public async modifyData(data: Partial<T>) {
 		this._db.data = <T>{ ...this._db.data, ...data }
 		await this.writeData()
+	}
+
+	public async initialize() {
+		await this._db.read()
 	}
 }
