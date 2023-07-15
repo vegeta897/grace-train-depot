@@ -2,6 +2,8 @@
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { ContainerSvg } from 'grace-train-lib'
 	import type { PageData } from './$types'
+	import { updateCar } from '$lib/car'
+	import type { Car } from '$lib/types'
 
 	export let data: PageData
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
@@ -15,6 +17,11 @@
 		['#ffff00', 'sun'],
 		['#ff00ff', 'pop'],
 	]
+
+	function setHatColor(color: Car['hat']['color']) {
+		data.car.hat.color = color
+		updateCar(1, { hat: { color } })
+	}
 </script>
 
 <section>
@@ -22,8 +29,8 @@
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each hats as [color, name]}
 			<button
-				class="btn-block btn-lg btn flex h-28 flex-col justify-center gap-2 text-xl lg:h-32 lg:gap-3"
-				on:click={() => (data.car.hat.color = color)}
+				class="btn btn-lg btn-block flex h-28 flex-col justify-center gap-2 text-xl lg:h-32 lg:gap-3"
+				on:click={() => setHatColor(color)}
 			>
 				<ContainerSvg class="h-10 w-10" viewBox="0 0 10 8">
 					{#if color}

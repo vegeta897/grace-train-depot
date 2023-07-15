@@ -1,0 +1,51 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["windows", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  twitchUserId      String   @unique
+  twitchUsername    String   @unique
+  twitchDisplayName String   @unique
+  cars              Car[]
+}
+
+model Car {
+  id              Int      @id @default(autoincrement())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  name            String?
+  body            Body     @default(boxy)
+  wheelColor      String
+  wheelFromCenter Decimal
+  hatColor        String?
+  decals          Decal[]
+}
+
+model Decal {
+  id     Int     @id @default(autoincrement())
+  car    Car     @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId  Int
+  name   String
+  order  Int
+  fill   String
+  x      Decimal
+  y      Decimal
+  scale  Decimal
+  rotate Decimal
+}
+
+/// Unnecessary?
+enum Body {
+  boxy
+  tanky
+}
