@@ -1,12 +1,11 @@
-import prisma from '$lib/server/prisma'
 import type { LayoutServerLoad } from './$types'
 
-export const load = (async () => {
-	return {
-		user: await prisma.user.findUniqueOrThrow({
-			where: {
-				id: 123,
-			},
-		}),
+export const load = (async (event) => {
+	const validated = await event.locals.auth.validate()
+	if (validated) {
+		return {
+			user: validated.user,
+		}
 	}
+	return {}
 }) satisfies LayoutServerLoad
