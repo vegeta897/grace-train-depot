@@ -4,14 +4,7 @@ import { redirect, type RequestHandler } from '@sveltejs/kit'
 
 export const GET = (async ({ url, cookies, locals }) => {
 	const session = await locals.auth.validate()
-	if (session) {
-		return new Response(null, {
-			status: 302,
-			headers: {
-				Location: '/',
-			},
-		})
-	}
+	if (session) throw redirect(302, '/')
 	const storedState = cookies.get('twitch_oauth_state')
 	const state = url.searchParams.get('state')
 	const code = url.searchParams.get('code')
@@ -19,9 +12,12 @@ export const GET = (async ({ url, cookies, locals }) => {
 		throw new Response(null, { status: 401 })
 	}
 	try {
-		const { existingUser, twitchUser, createUser } = await twitchAuth.validateCallback(
-			code
-		)
+		const { existingUser, twitchUser, createUser, twitchTokens } =
+			await twitchAuth.validateCallback(code)
+		// TODO: Add user tokens to twurple auth provider
+		// We can use this to check if user is following/subscribed
+		// api.channels.getFollowedChannels(user, broadcaster)
+		// api.subscriptions.checkUserSubscription(user, broadcaster)
 		const getUser = async () => {
 			if (existingUser) return existingUser
 			const user = await createUser({

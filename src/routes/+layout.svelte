@@ -25,8 +25,8 @@
 		<nav class="flex-none">
 			<details
 				bind:this={menuElement}
-				class="dropdown-end dropdown"
-				use:clickoutside
+				class="dropdown dropdown-end"
+				use:clickoutside={{}}
 				on:clickoutside={closeMenu}
 			>
 				<summary class="btn m-1"
@@ -43,12 +43,12 @@
 						/></svg
 					></summary
 				>
-				<ul class="dropdown-content menu rounded-box w-32 bg-neutral p-2 shadow">
+				<ul class="menu dropdown-content rounded-box w-32 bg-neutral p-2 shadow">
 					<li>
 						<a on:click={closeMenu} href="/" class="justify-end">Home</a>
 					</li>
 					<li>
-						<a on:click={closeMenu} href="/" class="justify-end text-error">Log out</a>
+						<a on:click={closeMenu} href="logout" class="justify-end">Log out</a>
 					</li>
 				</ul>
 			</details>

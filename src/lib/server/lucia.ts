@@ -17,7 +17,12 @@ export const auth = lucia({
 	getUserAttributes: (data) => {
 		return {
 			twitchUsername: data.twitchUsername,
+			twitchDisplayName: data.twitchDisplayName,
 		}
+	},
+	sessionExpiresIn: {
+		activePeriod: 24 * 60 * 60 * 1000,
+		idlePeriod: 30 * 24 * 60 * 60 * 1000,
 	},
 })
 

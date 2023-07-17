@@ -1,6 +1,6 @@
 import type { BodyName } from 'grace-train-lib'
-import type { Actions } from './$types'
 import prisma from '$lib/server/prisma'
+import type { Actions } from '@sveltejs/kit'
 
 export const actions = {
 	default: async (event) => {

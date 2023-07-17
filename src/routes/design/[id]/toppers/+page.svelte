@@ -20,7 +20,7 @@
 
 	function setHatColor(color: Car['hat']['color']) {
 		data.car.hat.color = color
-		updateCar(1, { hat: { color } })
+		updateCar(data.car.id, { hat: { color } })
 	}
 </script>
 

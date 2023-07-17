@@ -12,11 +12,13 @@ model User {
   id                String    @id @unique
   auth_session      Session[]
   auth_key          Key[]
+  createdAt         DateTime  @default(now())
   twitchUserId      String    @unique
   twitchUsername    String    @unique
   twitchDisplayName String    @unique
   cars              Car[]
 
+  @@index([id], type: Hash)
   @@map("auth_user")
 }
 
@@ -45,6 +47,7 @@ model Car {
   id              Int      @id @default(autoincrement())
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String
+  shortId         String   @unique @db.VarChar(6)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   name            String?
