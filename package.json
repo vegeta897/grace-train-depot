@@ -41,10 +41,10 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@lucia-auth/adapter-prisma": "^3.0.0-beta.7",
-		"@lucia-auth/oauth": "^2.0.0-beta.7",
+		"@lucia-auth/adapter-prisma": "^3.0.0-beta.8",
+		"@lucia-auth/oauth": "^2.0.0-beta.8",
 		"@prisma/client": "^5.0.0",
-		"lucia": "^2.0.0-beta.6",
+		"lucia": "^2.0.0-beta.7",
 		"prisma": "^5.0.0"
 	}
 }
