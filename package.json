@@ -25,7 +25,6 @@
 		"dotenv": "^16.3.1",
 		"grace-train-lib": "^0.0.30",
 		"lowdb": "^6.0.1",
-		"nanoid": "^4.0.2",
 		"postcss": "^8.4.24",
 		"postcss-load-config": "^4.0.1",
 		"prettier": "^2.8.8",
