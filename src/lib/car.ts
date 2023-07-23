@@ -1,5 +1,5 @@
 import type { Car, DecalData } from '$lib/types'
-import { Prisma, type Car as CarData } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 const carWithDecals = Prisma.validator<Prisma.CarArgs>()({
 	include: { decals: true },
@@ -23,16 +23,16 @@ export function transformCarFromDB(carData: CarWithDecals): Car {
 		body: carData.body as Car['body'],
 		wheels: {
 			color: carData.wheelColor,
-			fromCenter: carData.wheelFromCenter.toNumber(),
+			fromCenter: carData.wheelFromCenter,
 		},
 		hat: { color: carData.hatColor },
 		decals: carData.decals.map(
 			(decal) =>
 				({
 					transform: {
-						translate: { x: decal.x.toNumber(), y: decal.y.toNumber() },
-						rotate: decal.rotate.toNumber(),
-						scale: decal.scale.toNumber(),
+						translate: { x: decal.x, y: decal.y },
+						rotate: decal.rotate,
+						scale: decal.scale,
 					},
 					id: decal.id,
 					name: decal.name,
