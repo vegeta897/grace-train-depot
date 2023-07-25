@@ -10,6 +10,8 @@
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE, updateDecalTransform } from './decals'
 	import Controls from './Controls.svelte'
 	import type { PageData } from './$types'
+	import { cloneCarData } from '$lib/car'
+	import type { Car, DecalData } from '$lib/types'
 
 	const MAX_DECALS = 5
 
@@ -27,8 +29,17 @@
 		canvasScale = userTrainContainer.clientWidth / 464
 	}
 
-	$: userDecals = data.car.decals
-	$: dragTransforms = userDecals.map((d) => ({
+	let modifiedCar: Car
+	let modifiedCarDecals: DecalData[]
+
+	// TODO: Store modified car in local storage
+
+	onMount(() => {
+		modifiedCar = cloneCarData(data.car)
+	})
+
+	$: modifiedCarDecals = modifiedCar?.decals
+	$: dragTransforms = modifiedCarDecals?.map((d) => ({
 		name: d.name,
 		id: d.id,
 		...d.transform,
@@ -37,9 +48,9 @@
 	$: transforming = !!(dragging || resizing || rotating)
 
 	function addDecal() {
-		selectedDecalIndex = userDecals.length
-		data.car.decals = [
-			...data.car.decals,
+		selectedDecalIndex = modifiedCarDecals.length
+		modifiedCar.decals = [
+			...modifiedCar.decals,
 			{
 				name: 'star',
 				transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
@@ -61,12 +72,14 @@
 			x: dragging.x + (offsetX - dragging.x) / canvasScale,
 			y: dragging.y + (offsetY - dragging.y) / canvasScale,
 		}
-		updateDecalTransform(data.car, index, dragTransforms[index])
+		updateDecalTransform(modifiedCar, index, dragTransforms[index])
+		modifiedCar = modifiedCar
 	}
 	const onDragEnd = () => {
 		dragging = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
+		// TODO: Update to server
 	}
 
 	const corners = [
@@ -147,10 +160,12 @@
 	function onPointerMove(e: PointerEvent) {
 		if (resizing) {
 			resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
-			updateDecalTransform(data.car, resizing.index, resizing.transform)
+			updateDecalTransform(modifiedCar, resizing.index, resizing.transform)
+			modifiedCar = modifiedCar
 		} else if (rotating) {
 			rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
-			updateDecalTransform(data.car, rotating.index, rotating.transform)
+			updateDecalTransform(modifiedCar, rotating.index, rotating.transform)
+			modifiedCar = modifiedCar
 		}
 	}
 	function onPointerUp() {
@@ -159,6 +174,7 @@
 		rotating = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
+		// TODO: Update to server
 	}
 
 	const testDot = { x: -9, y: -9 } // Position a red dot on the page
@@ -183,70 +199,72 @@
 			style="transition: transform 150ms ease-out, left 150ms ease-out"
 			bind:this={canvasElement}
 		>
-			<div class="relative mx-auto w-[375px]">
-				<UserCar
-					car={data.car}
-					transition={['fill', 'opacity']}
-					focusDecalZone={selectedDecalIndex !== null}
-				/>
-			</div>
-			{#each dragTransforms as transform, d (transform.id)}
-				<div
-					class="absolute left-[62.5px] top-0 h-0 w-0"
-					class:z-10={selectedDecalIndex === d}
-					use:draggable={{
-						bounds: 'parent',
-						position: transform.translate,
-						onDrag: (dragEvent) => onDrag(dragEvent, d),
-						onDragStart: () => onDragStart(d),
-						onDragEnd,
-					}}
-				>
-					<button
-						class="relative left-[-50px] top-[-50px] h-[100px] w-[100px] cursor-move rounded-xl"
-						style:transform-origin="50px 50px"
-						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
-						use:clickoutside={{
-							limit: { parent: canvasElement },
-							enabled: !clickOutsideCooldown,
+			{#if modifiedCar}
+				<div class="relative mx-auto w-[375px]">
+					<UserCar
+						car={modifiedCar}
+						transition={['fill', 'opacity']}
+						focusDecalZone={selectedDecalIndex !== null}
+					/>
+				</div>
+				{#each dragTransforms as transform, d (transform.id)}
+					<div
+						class="absolute left-[62.5px] top-0 h-0 w-0"
+						class:z-10={selectedDecalIndex === d}
+						use:draggable={{
+							bounds: 'parent',
+							position: transform.translate,
+							onDrag: (dragEvent) => onDrag(dragEvent, d),
+							onDragStart: () => onDragStart(d),
+							onDragEnd,
 						}}
-						on:mouseenter={() => !dragging && (hoveredDecalIndex = d)}
-						on:mouseleave={() => (hoveredDecalIndex = null)}
-						on:focus={() => (hoveredDecalIndex = d)}
-						on:blur={() => (hoveredDecalIndex = null)}
-						on:clickoutside={() => (selectedDecalIndex = null)}
-						on:click|stopPropagation
-						out:fade|local={{ duration: 150 }}
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="w-full overflow-visible"
-							viewBox="-50 -50 100 100"
-							class:transition-opacity={selectedDecalIndex !== d &&
-								hoveredDecalIndex !== d}
-							class:opacity-0={selectedDecalIndex !== d && hoveredDecalIndex !== d}
-							class:opacity-25={selectedDecalIndex !== d && hoveredDecalIndex === d}
+						<button
+							class="relative left-[-50px] top-[-50px] h-[100px] w-[100px] cursor-move rounded-xl"
+							style:transform-origin="50px 50px"
+							style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
+							use:clickoutside={{
+								limit: { parent: canvasElement },
+								enabled: !clickOutsideCooldown,
+							}}
+							on:mouseenter={() => !dragging && (hoveredDecalIndex = d)}
+							on:mouseleave={() => (hoveredDecalIndex = null)}
+							on:focus={() => (hoveredDecalIndex = d)}
+							on:blur={() => (hoveredDecalIndex = null)}
+							on:clickoutside={() => (selectedDecalIndex = null)}
+							on:click|stopPropagation
+							out:fade|local={{ duration: 150 }}
 						>
-							<BoundingBox
-								scale={transform.scale}
-								selected={selectedDecalIndex === d}
-								{transforming}
-							/>
-							<g
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="w-full overflow-visible"
+								viewBox="-50 -50 100 100"
 								class:transition-opacity={selectedDecalIndex !== d &&
 									hoveredDecalIndex !== d}
-								class:opacity-25={selectedDecalIndex === d}
+								class:opacity-0={selectedDecalIndex !== d && hoveredDecalIndex !== d}
+								class:opacity-25={selectedDecalIndex !== d && hoveredDecalIndex === d}
 							>
-								<Decal
-									name={transform.name}
-									fill={userDecals[d].fill}
-									transition={['fill', 'opacity']}
+								<BoundingBox
+									scale={transform.scale}
+									selected={selectedDecalIndex === d}
+									{transforming}
 								/>
-							</g>
-						</svg>
-					</button>
-				</div>
-			{/each}
+								<g
+									class:transition-opacity={selectedDecalIndex !== d &&
+										hoveredDecalIndex !== d}
+									class:opacity-25={selectedDecalIndex === d}
+								>
+									<Decal
+										name={transform.name}
+										fill={modifiedCarDecals[d].fill}
+										transition={['fill', 'opacity']}
+									/>
+								</g>
+							</svg>
+						</button>
+					</div>
+				{/each}
+			{/if}
 			{#if selectedDecalIndex !== null}
 				{@const transform = dragTransforms[selectedDecalIndex]}
 				{#key transform.id}
@@ -289,53 +307,62 @@
 			{/if}
 		</div>
 	</div>
-	{#if selectedDecalIndex !== null}
-		{@const index = selectedDecalIndex}
-		<Controls
-			{index}
-			{userDecals}
-			{dragTransforms}
-			setSelectedIndex={(i) => (selectedDecalIndex = i)}
-		/>
-	{:else}
-		<div class="my-2 grid grid-cols-4 gap-2">
-			{#each Array(8) as _}
-				<div class="h-12 rounded-lg bg-base-100 opacity-50" />
-			{/each}
-		</div>
-	{/if}
-
-	{#if userDecals.length < MAX_DECALS}
-		<button
-			class="nunito btn-block btn-lg btn mb-4 h-20 text-5xl font-black"
-			on:click={addDecal}
-		>
-			+
-		</button>
-	{/if}
-	<ol class="nunito mb-8 flex flex-col-reverse gap-4 rounded-lg">
-		{#each userDecals as decal, d (decal.id)}
-			<li
-				class:outline={d === selectedDecalIndex}
-				class:outline-4={d === selectedDecalIndex}
-				class:outline-primary={d === selectedDecalIndex}
-				class="w-full rounded-lg"
+	{#if modifiedCar}
+		{#if selectedDecalIndex !== null}
+			{@const index = selectedDecalIndex}
+			<Controls
+				{index}
+				userDecals={modifiedCarDecals}
+				{dragTransforms}
+				setSelectedIndex={(i) => (selectedDecalIndex = i)}
+			/>
+		{:else}
+			<div class="my-2 grid grid-cols-4 gap-2">
+				{#each Array(8) as _}
+					<div class="h-12 rounded-lg bg-base-100 opacity-50" />
+				{/each}
+			</div>
+		{/if}
+		{#if modifiedCarDecals.length < MAX_DECALS}
+			<button
+				class="nunito btn-block btn-lg btn mb-4 h-20 text-5xl font-black"
+				on:click={addDecal}
 			>
-				<button
-					class="btn-block btn-lg btn h-24"
-					on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
-					on:mouseenter={() => (hoveredDecalIndex = d)}
-					on:mouseleave={() => (hoveredDecalIndex = null)}
-					on:focus={() => (hoveredDecalIndex = d)}
-					on:blur={() => (hoveredDecalIndex = null)}
+				+
+			</button>
+		{/if}
+		<ol class="nunito mb-8 flex flex-col-reverse gap-4 rounded-lg">
+			{#each modifiedCarDecals as decal, d (decal.id)}
+				<li
+					class:outline={d === selectedDecalIndex}
+					class:outline-4={d === selectedDecalIndex}
+					class:outline-primary={d === selectedDecalIndex}
+					class="w-full rounded-lg"
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100" class="w-14">
-						<Decal name={decal.name} fill={decal.fill} transition={['fill', 'opacity']} />
-					</svg>
-				</button>
-			</li>
-		{/each}
-	</ol>
+					<button
+						class="btn-block btn-lg btn h-24"
+						on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
+						on:mouseenter={() => (hoveredDecalIndex = d)}
+						on:mouseleave={() => (hoveredDecalIndex = null)}
+						on:focus={() => (hoveredDecalIndex = d)}
+						on:blur={() => (hoveredDecalIndex = null)}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="-50 -50 100 100"
+							class="w-14"
+						>
+							<Decal
+								name={decal.name}
+								fill={decal.fill}
+								transition={['fill', 'opacity']}
+							/>
+						</svg>
+					</button>
+				</li>
+			{/each}
+		</ol>
+	{/if}
 	<div
 		class="absolute left-0 top-0 h-[3px] w-[3px] rounded-sm bg-red-600"
 		style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"

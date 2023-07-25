@@ -41,3 +41,20 @@ export function transformCarFromDB(carData: CarWithDecals): Car {
 		),
 	}
 }
+
+export function cloneCarData(car: Car): Car {
+	return {
+		...car,
+		wheels: {
+			...car.wheels,
+		},
+		hat: { ...car.hat },
+		decals: car.decals.map((d) => ({
+			...d,
+			transform: {
+				...d.transform,
+				translate: { ...d.transform.translate },
+			},
+		})),
+	}
+}
