@@ -43,7 +43,7 @@
 						/></svg
 					></summary
 				>
-				<ul class="menu dropdown-content rounded-box w-32 bg-neutral p-2 shadow">
+				<ul class="menu dropdown-content rounded-box w-32 bg-neutral p-2 shadow z-50">
 					<li>
 						<a on:click={closeMenu} href="/" class="justify-end">Home</a>
 					</li>
