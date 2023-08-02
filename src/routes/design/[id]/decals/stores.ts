@@ -9,12 +9,7 @@ const hoveredSlot = writable<number | null>(null)
 const selectedSlot = writable<number | null>(null)
 const decals = writable<DecalData[]>([])
 const draggables = derived(decals, ($decals) => {
-	return $decals.map((d) => ({
-		id: d.id,
-		scale: d.transform.scale,
-		rotate: d.transform.rotate,
-		translate: { x: d.transform.translate.x, y: d.transform.translate.y },
-	}))
+	return $decals.map((d) => ({ id: d.id, ...d.transform }))
 })
 
 export const getDecalStores = defineContext({

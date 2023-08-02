@@ -1,4 +1,4 @@
-import type { Transform } from '$lib/util'
+import type { Transform } from '$lib/types'
 import type { DecalStores } from './stores'
 
 export function updateDecalTransform(
@@ -7,7 +7,7 @@ export function updateDecalTransform(
 	transform: Transform
 ) {
 	decals.update((d) => {
-		d[slot].transform = { ...transform, translate: { ...transform.translate } }
+		d[slot].transform = { ...transform }
 		return d
 	})
 }

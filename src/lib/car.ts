@@ -30,7 +30,8 @@ export function transformCarFromDB(carData: CarWithDecals): Car {
 		hat: { color: carData.hatColor },
 		decals: carData.decals.map((decal) => ({
 			transform: {
-				translate: { x: decal.x, y: decal.y },
+				x: decal.x,
+				y: decal.y,
 				rotate: decal.rotate,
 				scale: decal.scale,
 			},

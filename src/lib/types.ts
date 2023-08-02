@@ -1,5 +1,11 @@
 import type { DecalName, BodyName } from 'grace-train-lib'
-import type { Transform } from './util'
+
+export type Transform = {
+	x: number
+	y: number
+	scale: number
+	rotate: number
+}
 
 export type DecalData = {
 	name: DecalName

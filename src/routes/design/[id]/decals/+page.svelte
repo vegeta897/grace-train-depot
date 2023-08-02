@@ -25,7 +25,7 @@
 	function addDecal(beforeOrAfter: number) {
 		const newDecal: DecalData = {
 			name: 'star',
-			transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
+			transform: { x: 375 / 2, y: 120, scale: 1, rotate: 0 },
 			id: Date.now(), // Local only, will be overwritten after saving to server
 			fill: '', // Will be overwritten below
 			slot: 0, // Will be overwritten below

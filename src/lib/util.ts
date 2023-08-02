@@ -1,11 +1,5 @@
 import { getContext, hasContext, setContext } from 'svelte'
 
-export type Transform = {
-	translate: { x: number; y: number } // TODO: Just put x and y directly on Transform
-	scale: number
-	rotate: number
-}
-
 export function wrapNumber(val: number, min: number, max: number) {
 	const range = max - min
 	return min + ((((val - min) % range) + range) % range)

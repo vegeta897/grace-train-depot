@@ -34,11 +34,5 @@ export async function deleteDecal(carId: number, decalId: number) {
 }
 
 export function cloneDecal(decal: DecalData): DecalData {
-	return {
-		...decal,
-		transform: {
-			...decal.transform,
-			translate: { ...decal.transform.translate },
-		},
-	}
+	return { ...decal, transform: { ...decal.transform } }
 }

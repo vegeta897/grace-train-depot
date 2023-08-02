@@ -59,11 +59,5 @@ export const DELETE = (async ({ request, locals }) => {
 }) satisfies RequestHandler
 
 function transformDecalToDB(decal: DecalData) {
-	return {
-		name: decal.name,
-		fill: decal.fill,
-		...decal.transform.translate,
-		scale: decal.transform.scale,
-		rotate: decal.transform.rotate,
-	}
+	return { name: decal.name, fill: decal.fill, ...decal.transform }
 }

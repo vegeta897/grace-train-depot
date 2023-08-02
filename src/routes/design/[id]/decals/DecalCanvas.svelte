@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { draggable, type DragEventData } from '@neodrag/svelte'
-	import { wrapNumber, type Transform } from '$lib/util'
+	import { wrapNumber } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { onMount } from 'svelte'
 	import { fade } from 'svelte/transition'
@@ -9,7 +9,7 @@
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import UserCar from '$lib/components/UserCar.svelte'
-	import type { Car } from '$lib/types'
+	import type { Car, Transform } from '$lib/types'
 	import { updateDecalTransform } from './decals'
 
 	export let car: Car
@@ -25,19 +25,17 @@
 
 	$: transforming = !!(dragging || resizing || rotating)
 
-	let dragging: Transform['translate'] | null = null
+	let dragging: Transform | null = null
 
 	const onDragStart = (slot: number) => {
-		dragging = { ...$draggables[slot].translate }
+		dragging = { ...$draggables[slot] }
 		selectedSlot.set(slot)
 	}
 	function onDrag({ offsetX, offsetY }: DragEventData, slot: number) {
 		if (!dragging) return
 		const transform = $draggables[slot]
-		transform.translate = {
-			x: dragging.x + (offsetX - dragging.x) / canvasScale,
-			y: dragging.y + (offsetY - dragging.y) / canvasScale,
-		}
+		transform.x = dragging.x + (offsetX - dragging.x) / canvasScale
+		transform.y = dragging.y + (offsetY - dragging.y) / canvasScale
 		updateDecalTransform(decals, slot, transform)
 	}
 	const onDragEnd = () => {
@@ -75,8 +73,8 @@
 		if ($selectedSlot === null) return
 		const transform = $draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + transform.translate.x * canvasScale
-		const originY = canvasBox.y + transform.translate.y * canvasScale
+		const originX = canvasBox.x + transform.x * canvasScale
+		const originY = canvasBox.y + transform.y * canvasScale
 		const radians = transform.rotate * (Math.PI / 180)
 		const cos = Math.cos(radians)
 		const sin = Math.sin(radians)
@@ -105,8 +103,8 @@
 		if ($selectedSlot === null) return
 		const transform = $draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + transform.translate.x * canvasScale
-		const originY = canvasBox.y + transform.translate.y * canvasScale
+		const originX = canvasBox.x + transform.x * canvasScale
+		const originY = canvasBox.y + transform.y * canvasScale
 		rotating = {
 			slot: $selectedSlot,
 			transform,
@@ -167,7 +165,7 @@
 					class:z-10={$selectedSlot === d}
 					use:draggable={{
 						bounds: 'parent',
-						position: transform.translate,
+						position: transform,
 						onDrag: (dragEvent) => onDrag(dragEvent, d),
 						onDragStart: () => onDragStart(d),
 						onDragEnd,
@@ -220,7 +218,7 @@
 				{@const transform = $draggables[$selectedSlot]}
 				<div
 					class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-[100px] w-[100px]"
-					style:transform="translate({transform.translate.x}px,{transform.translate.y}px)
+					style:transform="translate({transform.x}px,{transform.y}px)
 					rotate({transform.rotate}deg)"
 					transition:fade={{ duration: 50 }}
 				>
