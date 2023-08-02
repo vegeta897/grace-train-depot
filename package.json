@@ -12,8 +12,8 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
-		"@fontsource-variable/nunito": "^5.0.6",
-		"@fontsource/nunito": "^5.0.5",
+		"@fontsource-variable/nunito": "^5.0.7",
+		"@fontsource/nunito": "^5.0.6",
 		"@neodrag/svelte": "^2.0.3",
 		"@playwright/test": "^1.36.2",
 		"@svelte-put/clickoutside": "^3.0.0",
