@@ -10,32 +10,30 @@
 	} from 'grace-train-lib'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import type { Car } from '$lib/types'
+	import type { Car, DecalData } from '$lib/types'
+	import Decals from './Decals.svelte'
 
 	export let car: Car
 	export let bodyOverride: BodyName | null = null
+	export let decalsOverride: DecalData[] | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
+	export let width: number = 0 // Read-only, for parent components to use
 
-	$: name = bodyOverride || car.body
+	$: bodyName = bodyOverride || car.body
+	$: decals = decalsOverride || car.decals
 </script>
 
 <div
 	class="w-full transition-all"
-	class:opacity-50={focusDecalZone}
-	class:saturate-30={focusDecalZone}
+	class:opacity-40={focusDecalZone}
+	class:saturate-70={focusDecalZone}
+	bind:clientWidth={width}
 >
-	<Body {name}>
+	<Body name={bodyName}>
 		<svelte:fragment slot="decals">
 			{#if !focusDecalZone}
-				{#each car.decals as userDecal (userDecal.id)}
-					<Decal
-						name={userDecal.name}
-						transform={userDecal.transform}
-						fill={userDecal.fill}
-						{transition}
-					/>
-				{/each}
+				<Decals {decals} {transition} />
 			{/if}
 		</svelte:fragment>
 		<WheelsChange
@@ -48,20 +46,13 @@
 {#if focusDecalZone}
 	<div class="absolute top-0 w-full" out:fade={{ delay: 75, duration: 75 }}>
 		<ContainerSvg>
-			<path fill={COLORS.BASE} d={DECAL_CLIP_PATHS[name]} />
+			<path fill={COLORS.BASE} d={DECAL_CLIP_PATHS[bodyName]} />
 			<g clip-path="url(#usercar-decal-clip)">
-				{#each car.decals as userDecal (userDecal.id)}
-					<Decal
-						name={userDecal.name}
-						transform={userDecal.transform}
-						fill={userDecal.fill}
-						{transition}
-					/>
-				{/each}
+				<Decals {decals} {transition} />
 			</g>
 			<defs>
 				<clipPath id="usercar-decal-clip">
-					<path d={DECAL_CLIP_PATHS[name]} />
+					<path d={DECAL_CLIP_PATHS[bodyName]} />
 				</clipPath>
 			</defs>
 		</ContainerSvg>

@@ -21,8 +21,8 @@ export const auth = lucia({
 		}
 	},
 	sessionExpiresIn: {
-		activePeriod: 24 * 60 * 60 * 1000,
-		idlePeriod: 30 * 24 * 60 * 60 * 1000,
+		activePeriod: 3 * 60 * 60 * 1000, // Revives if idle period not expired
+		idlePeriod: 30 * 24 * 60 * 60 * 1000, // Extends when active period refreshed
 	},
 })
 

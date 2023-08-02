@@ -1,356 +1,82 @@
 <script lang="ts">
-	import { draggable, type DragEventData } from '@neodrag/svelte'
-	import UserCar from '$lib/components/UserCar.svelte'
 	import { Decal } from 'grace-train-lib'
-	import { wrapNumber, type Transform } from '$lib/util'
-	import { clickoutside } from '@svelte-put/clickoutside'
-	import { fade } from 'svelte/transition'
-	import { onMount } from 'svelte'
-	import BoundingBox from './BoundingBox.svelte'
-	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE, updateDecalTransform } from './decals'
+	import { DECAL_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
 	import type { PageData } from './$types'
-	import { cloneCarData } from '$lib/car'
-	import type { Car, DecalData } from '$lib/types'
-
-	const MAX_DECALS = 5
+	import type { DecalData } from '$lib/types'
+	import { cloneDecal, updateDecal } from '$lib/decal'
+	import DecalCanvas from './DecalCanvas.svelte'
+	import { getDecalStores } from './stores'
 
 	export let data: PageData
 
-	let selectedDecalIndex: number | null = null
-	let hoveredDecalIndex: number | null = null
-	let clickOutsideCooldown = false
-	let canvasElement: HTMLDivElement
-	let userTrainContainer: HTMLDivElement
+	const { hoveredSlot, selectedSlot, decals } = getDecalStores()
 
-	let canvasScale: number = 0.635
-	onMount(updateCanvasScale)
-	function updateCanvasScale() {
-		canvasScale = userTrainContainer.clientWidth / 464
+	resetDecals()
+	hoveredSlot.set(null)
+	selectedSlot.set(null)
+
+	function resetDecals() {
+		decals.set(data.car.decals.map(cloneDecal))
 	}
 
-	let modifiedCar: Car
-	let modifiedCarDecals: DecalData[]
+	let unsaved = false // TODO: Track saved status
 
-	// TODO: Store modified car in local storage
-
-	onMount(() => {
-		modifiedCar = cloneCarData(data.car)
-	})
-
-	$: modifiedCarDecals = modifiedCar?.decals
-	$: dragTransforms = modifiedCarDecals?.map((d) => ({
-		name: d.name,
-		id: d.id,
-		...d.transform,
-		translate: { ...d.transform.translate },
-	}))
-	$: transforming = !!(dragging || resizing || rotating)
-
-	function addDecal() {
-		selectedDecalIndex = modifiedCarDecals.length
-		modifiedCar.decals = [
-			...modifiedCar.decals,
-			{
-				name: 'star',
-				transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
-				id: Date.now(),
-				fill: '#f2ef0d',
-			},
-		]
-	}
-
-	let dragging: Transform['translate'] | null = null
-
-	const onDragStart = (index: number) => {
-		dragging = { ...dragTransforms[index].translate }
-		selectedDecalIndex = index
-	}
-	function onDrag({ offsetX, offsetY }: DragEventData, index: number) {
-		if (!dragging) return
-		dragTransforms[index].translate = {
-			x: dragging.x + (offsetX - dragging.x) / canvasScale,
-			y: dragging.y + (offsetY - dragging.y) / canvasScale,
+	function addDecal(beforeOrAfter: number) {
+		const newDecal: DecalData = {
+			name: 'star',
+			transform: { translate: { x: 375 / 2, y: 120 }, scale: 1, rotate: 0 },
+			id: Date.now(), // Local only, will be overwritten after saving to server
+			fill: '', // Will be overwritten below
+			slot: 0, // Will be overwritten below
 		}
-		updateDecalTransform(modifiedCar, index, dragTransforms[index])
-		modifiedCar = modifiedCar
-	}
-	const onDragEnd = () => {
-		dragging = null
-		clickOutsideCooldown = true
-		setTimeout(() => (clickOutsideCooldown = false), 100)
-		// TODO: Update to server
-	}
-
-	const corners = [
-		[-1, -1],
-		[1, -1],
-		[-1, 1],
-		[1, 1],
-	]
-	const cornerCursors = ['nesw-resize', 'ew-resize', 'nwse-resize', 'ns-resize'] as const
-	const getCornerCursor = (index: number, angle: number) =>
-		cornerCursors[(index + Math.round(((angle % 360) + 360) / 45)) % 4]
-	const getCornerScale = (corner: number) => (resizing!.corner === corner ? 1.5 : 0.5)
-	let resizing: {
-		corner: number
-		index: number
-		transform: Transform
-		calcScale: (x: number, y: number) => number
-	} | null = null
-	let rotating: {
-		index: number
-		transform: Transform
-		snap: boolean
-		calcRotate: (x: number, y: number) => number
-	} | null = null
-	function startResize(corner: number) {
-		if (selectedDecalIndex === null) return
-		const transform = dragTransforms[selectedDecalIndex]
-		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
-		const originY = canvasBox.y + transform.translate.y * canvasScale
-		const radians = transform.rotate * (Math.PI / 180)
-		const cos = Math.cos(radians)
-		const sin = Math.sin(radians)
-		resizing = {
-			corner,
-			index: selectedDecalIndex,
-			transform,
-			calcScale: (x: number, y: number) => {
-				const nx = cos * (x - originX) + sin * (y - originY) + originX
-				const ny = cos * (y - originY) - sin * (x - originX) + originY
-				const xDistance = ((nx - originX) * corners[corner][0]) / canvasScale
-				const yDistance = ((ny - originY) * corners[corner][1]) / canvasScale
-				const avgDistance = (xDistance + yDistance) / 2
-				return Math.max(
-					DECAL_MIN_SCALE,
-					Math.min(DECAL_MAX_SCALE, (avgDistance - 14) / 50)
-				)
-			},
-		}
-	}
-	const snapRotation = (a: number) => {
-		const snapped = Math.round(a / 45) * 45
-		return Math.abs(a - snapped) < 5 && snapped
-	}
-	function startRotate() {
-		if (selectedDecalIndex === null) return
-		const transform = dragTransforms[selectedDecalIndex]
-		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + (transform.translate.x + 62.5) * canvasScale
-		const originY = canvasBox.y + transform.translate.y * canvasScale
-		rotating = {
-			index: selectedDecalIndex,
-			transform,
-			snap: snapRotation(transform.rotate) === false ? false : true,
-			calcRotate: (x: number, y: number) => {
-				let angle = Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
-				angle = wrapNumber(angle, 0, 360)
-				const snapped = snapRotation(angle)
-				rotating!.snap = false
-				if (snapped !== false) {
-					angle = snapped
-					rotating!.snap = true
-				}
-				return angle
-			},
-		}
-	}
-	function onPointerMove(e: PointerEvent) {
-		if (resizing) {
-			resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
-			updateDecalTransform(modifiedCar, resizing.index, resizing.transform)
-			modifiedCar = modifiedCar
-		} else if (rotating) {
-			rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
-			updateDecalTransform(modifiedCar, rotating.index, rotating.transform)
-			modifiedCar = modifiedCar
-		}
-	}
-	function onPointerUp() {
-		if (!resizing && !rotating) return
-		resizing = null
-		rotating = null
-		clickOutsideCooldown = true
-		setTimeout(() => (clickOutsideCooldown = false), 100)
-		// TODO: Update to server
+		decals.update((d) => {
+			if (beforeOrAfter > 0) {
+				d.push(newDecal)
+			} else {
+				d.unshift(newDecal)
+			}
+			d.forEach((d, i) => (d.slot = i)) // Re-number slots
+			newDecal.fill = DECAL_COLORS[d.length - 1]
+			selectedSlot.set(newDecal.slot)
+			return d
+		})
 	}
 
 	const testDot = { x: -9, y: -9 } // Position a red dot on the page
 </script>
 
-<svelte:window
-	on:resize={updateCanvasScale}
-	on:pointermove={onPointerMove}
-	on:pointerup={onPointerUp}
-/>
 <section>
-	<div
-		class="relative mx-auto my-4 min-h-[190px] w-full overflow-hidden"
-		style:height="{300 * canvasScale || 0}px"
-		style="transition: height 150ms ease-out"
-		bind:this={userTrainContainer}
-	>
-		<div
-			class="absolute h-[300px] w-[500px] origin-top"
-			style:left="calc((100% - 500px) / 2)"
-			style:transform="scale({canvasScale})"
-			style="transition: transform 150ms ease-out, left 150ms ease-out"
-			bind:this={canvasElement}
+	<DecalCanvas car={data.car} />
+	<div class="bg-neutral rounded-box px-3 py-1 mb-4">
+		<ol
+			class="flex justify-center gap-2 h-16 my-4 nunito"
+			class:max-sm:gap-1={$decals.length >= 3}
 		>
-			{#if modifiedCar}
-				<div class="relative mx-auto w-[375px]">
-					<UserCar
-						car={modifiedCar}
-						transition={['fill', 'opacity']}
-						focusDecalZone={selectedDecalIndex !== null}
-					/>
-				</div>
-				{#each dragTransforms as transform, d (transform.id)}
-					<div
-						class="absolute left-[62.5px] top-0 h-0 w-0"
-						class:z-10={selectedDecalIndex === d}
-						use:draggable={{
-							bounds: 'parent',
-							position: transform.translate,
-							onDrag: (dragEvent) => onDrag(dragEvent, d),
-							onDragStart: () => onDragStart(d),
-							onDragEnd,
-						}}
-					>
-						<button
-							class="relative left-[-50px] top-[-50px] h-[100px] w-[100px] cursor-move rounded-xl"
-							style:transform-origin="50px 50px"
-							style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
-							use:clickoutside={{
-								limit: { parent: canvasElement },
-								enabled: !clickOutsideCooldown,
-							}}
-							on:mouseenter={() => !dragging && (hoveredDecalIndex = d)}
-							on:mouseleave={() => (hoveredDecalIndex = null)}
-							on:focus={() => (hoveredDecalIndex = d)}
-							on:blur={() => (hoveredDecalIndex = null)}
-							on:clickoutside={() => (selectedDecalIndex = null)}
-							on:click|stopPropagation
-							out:fade|local={{ duration: 150 }}
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="w-full overflow-visible"
-								viewBox="-50 -50 100 100"
-								class:transition-opacity={selectedDecalIndex !== d &&
-									hoveredDecalIndex !== d}
-								class:opacity-0={selectedDecalIndex !== d && hoveredDecalIndex !== d}
-								class:opacity-25={selectedDecalIndex !== d && hoveredDecalIndex === d}
-							>
-								<BoundingBox
-									scale={transform.scale}
-									selected={selectedDecalIndex === d}
-									{transforming}
-								/>
-								<g
-									class:transition-opacity={selectedDecalIndex !== d &&
-										hoveredDecalIndex !== d}
-									class:opacity-25={selectedDecalIndex === d}
-								>
-									<Decal
-										name={transform.name}
-										fill={modifiedCarDecals[d].fill}
-										transition={['fill', 'opacity']}
-									/>
-								</g>
-							</svg>
-						</button>
-					</div>
-				{/each}
-			{/if}
-			{#if selectedDecalIndex !== null}
-				{@const transform = dragTransforms[selectedDecalIndex]}
-				{#key transform.id}
-					<div
-						class="pointer-events-none absolute left-[12.5px] top-[-50px] z-10 h-[100px] w-[100px]"
-						style:transform="translate({transform.translate.x}px,{transform.translate
-							.y}px) rotate({transform.rotate}deg)"
-						transition:fade={{ duration: 50 }}
-					>
-						{#each corners as [xDir, yDir], c}
-							<div
-								style:transform="translate({((transform.scale - 1) * 50 + 64) *
-									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
-							>
-								<button
-									on:pointerdown={() => startResize(c)}
-									style:transform="scale({(resizing && getCornerScale(c)) ||
-										(rotating || dragging ? 0.5 : 1)})"
-									class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
-									class:transition-transform={!resizing}
-									class:transition-opacity={!resizing}
-									class:opacity-30={transforming}
-									class:!opacity-60={resizing?.corner === c}
-									style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
-								/>
-							</div>
-						{/each}
-						<div style:transform="translate(0,{(transform.scale - 1) * 50 + 100}px)">
-							<button
-								on:pointerdown={() => startRotate()}
-								style:transform="scale({rotating ? 1.5 : 1})"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
-								class:transition-all={!resizing}
-								class:opacity-60={rotating}
-								class:opacity-0={resizing || dragging}
-							/>
-						</div>
-					</div>
-				{/key}
-			{/if}
-		</div>
-	</div>
-	{#if modifiedCar}
-		{#if selectedDecalIndex !== null}
-			{@const index = selectedDecalIndex}
-			<Controls
-				{index}
-				userDecals={modifiedCarDecals}
-				{dragTransforms}
-				setSelectedIndex={(i) => (selectedDecalIndex = i)}
-			/>
-		{:else}
-			<div class="my-2 grid grid-cols-4 gap-2">
-				{#each Array(8) as _}
-					<div class="h-12 rounded-lg bg-base-100 opacity-50" />
-				{/each}
-			</div>
-		{/if}
-		{#if modifiedCarDecals.length < MAX_DECALS}
-			<button
-				class="nunito btn-block btn-lg btn mb-4 h-20 text-5xl font-black"
-				on:click={addDecal}
-			>
-				+
-			</button>
-		{/if}
-		<ol class="nunito mb-8 flex flex-col-reverse gap-4 rounded-lg">
-			{#each modifiedCarDecals as decal, d (decal.id)}
-				<li
-					class:outline={d === selectedDecalIndex}
-					class:outline-4={d === selectedDecalIndex}
-					class:outline-primary={d === selectedDecalIndex}
-					class="w-full rounded-lg"
-				>
+			{#if $decals.length < DECAL_MAX_SLOTS - 1 && $decals.length > 0}
+				<li class="w-20">
 					<button
-						class="btn-block btn-lg btn h-24"
-						on:click={() => (selectedDecalIndex = d === selectedDecalIndex ? null : d)}
-						on:mouseenter={() => (hoveredDecalIndex = d)}
-						on:mouseleave={() => (hoveredDecalIndex = null)}
-						on:focus={() => (hoveredDecalIndex = d)}
-						on:blur={() => (hoveredDecalIndex = null)}
+						class="btn btn-block text-4xl h-16 px-0 btn-outline"
+						on:click={() => addDecal(-1)}>+</button
+					>
+				</li>
+			{/if}
+			{#each $decals as decal}
+				<li class="w-28 shrink">
+					<button
+						class="btn btn-block text-4xl h-16 px-0 btn-hover-grow"
+						class:selected-decal={decal.slot === $selectedSlot}
+						on:click={() =>
+							selectedSlot.set($selectedSlot === decal.slot ? null : decal.slot)}
+						on:mouseenter={() => hoveredSlot.set(decal.slot)}
+						on:mouseleave={() => hoveredSlot.set(null)}
+						on:focus={() => hoveredSlot.set(decal.slot)}
+						on:blur={() => hoveredSlot.set(null)}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="-50 -50 100 100"
-							class="w-14"
+							class="w-10 2xs:w-12"
 						>
 							<Decal
 								name={decal.name}
@@ -361,10 +87,34 @@
 					</button>
 				</li>
 			{/each}
+			{#if $decals.length < DECAL_MAX_SLOTS}
+				<li class="w-20">
+					<button
+						class="btn btn-block text-4xl h-16 px-0 btn-outline"
+						on:click={() => addDecal(1)}>+</button
+					>
+				</li>
+			{/if}
 		</ol>
-	{/if}
+		{#if $selectedSlot !== null}
+			<Controls slot={$selectedSlot} />
+		{/if}
+	</div>
+	<div class="flex gap-4 mb-4 w-full">
+		<button disabled={!unsaved} on:click={resetDecals} class="nunito btn btn-lg">
+			Reset
+		</button>
+		<button disabled={!unsaved} class="nunito btn btn-lg">Save</button>
+	</div>
 	<div
 		class="absolute left-0 top-0 h-[3px] w-[3px] rounded-sm bg-red-600"
 		style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"
 	/>
 </section>
+
+<style>
+	.selected-decal {
+		background: #605de9;
+		border-color: #605de9;
+	}
+</style>

@@ -11,6 +11,7 @@ const shortIdLength = 6
 export const GET = (async ({ locals }) => {
 	const session = await locals.auth.validate()
 	if (!session) throw redirect(302, '/')
+	// TODO: Check if user has reached cars limit
 	const shortId = generateRandomString(shortIdLength, shortIdAlphabet)
 	await prisma.car.create({
 		data: {

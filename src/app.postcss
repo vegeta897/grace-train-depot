@@ -2,3 +2,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	.nunito {
+		font-family: 'Nunito', sans-serif;
+		font-weight: 900;
+	}
+	@supports (font-variation-settings: normal) {
+		.nunito {
+			font-family: 'Nunito Variable', sans-serif;
+			font-variation-settings: 'wght' 900;
+		}
+	}
+}
+
+@layer components {
+	.btn-hover-grow > * {
+		transition: transform 100ms ease-out;
+	}
+	.btn-hover-grow:hover > * {
+		transform: scale(1.15);
+	}
+}

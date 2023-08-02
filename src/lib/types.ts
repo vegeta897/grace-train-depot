@@ -6,6 +6,8 @@ export type DecalData = {
 	transform: Transform
 	id: number
 	fill: string
+	fillPreview?: string
+	slot: number
 }
 
 export type Car = {

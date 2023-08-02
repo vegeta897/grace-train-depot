@@ -14,14 +14,12 @@ export const GET = (async ({ url, cookies, locals }) => {
 	try {
 		const { existingUser, twitchUser, createUser, twitchTokens } =
 			await twitchAuth.validateCallback(code)
-		// TODO: Add user tokens to twurple auth provider
-		// We can use this to check if user is following/subscribed
-		// api.channels.getFollowedChannels(user, broadcaster)
-		// api.subscriptions.checkUserSubscription(user, broadcaster)
+		// TODO: Call spice bot endpoint to see if user is following/subscribed
 		const getUser = async () => {
 			if (existingUser) return existingUser
 			const user = await createUser({
 				attributes: {
+					// Maybe add createdAt as an attribute, pass in new Date() since lucia doesn't handle defaults
 					twitchUserId: twitchUser.id,
 					twitchUsername: twitchUser.login,
 					twitchDisplayName: twitchUser.display_name,
@@ -43,5 +41,7 @@ export const GET = (async ({ url, cookies, locals }) => {
 			status: 500,
 		})
 	}
+	// TODO: Implement a redirectTo search param to take the user to the page they were
+	// trying to reach: https://www.youtube.com/watch?v=ieECVME5ZLU
 	throw redirect(302, '/')
 }) satisfies RequestHandler

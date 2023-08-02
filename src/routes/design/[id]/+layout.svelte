@@ -12,8 +12,10 @@
 	$: currentPage = $page.route.id?.split('/')[3]
 </script>
 
-<div class="lg:flex lg:items-start">
-	<div class="nunito rounded-box hidden w-80 flex-col space-y-2 bg-neutral p-6 lg:flex">
+<div class="lg:flex lg:items-start max-w-2xl lg:max-w-full mx-auto">
+	<div
+		class="nunito rounded-box hidden w-80 flex-col shrink-0 space-y-2 bg-neutral p-6 lg:flex"
+	>
 		{#each pages as [icon, name]}
 			{@const current = name === currentPage}
 			<a
@@ -27,21 +29,27 @@
 			</a>
 		{/each}
 	</div>
-	<div class="flex-grow space-y-2">
-		{#each pages as [icon, name]}
-			{@const current = name === currentPage}
-			<a
-				data-sveltekit-noscroll
-				href="/design/{$page.params.id}/{name}"
-				class="nunito btn mx-4 flex justify-start gap-4 text-xl uppercase lg:hidden"
-				class:pointer-events-none={current}
-				class:btn-neutral={current}
-			>
-				<span>{icon}</span>
-				{name}
-			</a>
-		{/each}
-		<div class="p-4 lg:flex-grow lg:px-8 lg:py-0">
+	<div class="grow space-y-2 flex flex-col items-center min-w-0">
+		<div
+			class="lg:hidden tabs tabs-boxed self-stretch xs:self-center mx-2 justify-center"
+		>
+			{#each pages as [icon, name]}
+				{@const current = name === currentPage}
+				<a
+					data-sveltekit-noscroll
+					class:pointer-events-none={current}
+					class:tab-active={current}
+					href="/design/{$page.params.id}/{name}"
+					class="tab text-2xl 2xs:text-3xl h-11 2xs:h-12 grow px-0 xs:px-[var(--tab-padding,1rem)]"
+				>
+					{icon}
+				</a>
+			{/each}
+		</div>
+		{#if currentPage}
+			<h2 class="nunito uppercase text-3xl">{currentPage}</h2>
+		{/if}
+		<div class="p-4 lg:grow lg:px-8 lg:py-0 self-stretch">
 			<slot />
 		</div>
 	</div>

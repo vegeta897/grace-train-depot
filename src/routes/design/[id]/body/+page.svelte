@@ -1,6 +1,6 @@
 <script lang="ts">
 	import UserCar from '$lib/components/UserCar.svelte'
-	import type { BodyName } from 'grace-train-lib'
+	import { BODY_NAMES } from 'grace-train-lib'
 	import type { PageData, ActionData } from './$types'
 	import { enhance } from '$app/forms'
 
@@ -15,13 +15,11 @@
 	// Send changed properties to server
 	// Export saved/unsaved status (make a component?) to display on design pages
 	// Or just add to /design/+layout.svelte
-
-	const bodies: BodyName[] = ['boxy', 'tanky']
 </script>
 
 <section>
 	<div class="nunito mb-8 flex flex-col space-y-2">
-		{#each bodies as name}
+		{#each BODY_NAMES as name}
 			{@const current = data.car.body === name}
 			<form method="POST" use:enhance>
 				<input type="hidden" name="body" value={name} />

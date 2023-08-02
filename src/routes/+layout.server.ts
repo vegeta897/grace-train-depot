@@ -4,6 +4,7 @@ import type { LayoutServerLoad } from './$types'
 
 export const load = (async (event) => {
 	const session = await event.locals.auth.validate()
+	console.log('root layout load')
 	// TODO: Move session or user property to locals in hooks file
 	if (session) {
 		return {
@@ -11,7 +12,7 @@ export const load = (async (event) => {
 			cars: (
 				await prisma.car.findMany({
 					where: { userId: session.user.userId },
-					include: { decals: true },
+					include: { decals: { orderBy: { slot: 'asc' } } },
 				})
 			).map(transformCarFromDB),
 		}

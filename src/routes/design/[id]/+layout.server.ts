@@ -1,11 +1,9 @@
-import { transformCarFromDB } from '$lib/car'
-import prisma from '$lib/server/prisma'
+import { redirect } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
 
-export const load = (async ({ params }) => {
-	const carData = await prisma.car.findUniqueOrThrow({
-		where: { shortId: params.id },
-		include: { decals: true },
-	})
-	return { car: transformCarFromDB(carData) }
+export const load = (async ({ params, parent }) => {
+	const { cars } = await parent()
+	const car = cars?.find((c) => c.shortId === params.id)
+	if (car) return { car }
+	throw redirect(302, '/')
 }) satisfies LayoutServerLoad

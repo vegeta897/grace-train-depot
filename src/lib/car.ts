@@ -1,18 +1,20 @@
+import { invalidateAll } from '$app/navigation'
 import type { Car, DecalData } from '$lib/types'
 import { Prisma } from '@prisma/client'
+import { cloneDecal } from './decal'
 
-const carWithDecals = Prisma.validator<Prisma.CarArgs>()({
+const carWithDecals = Prisma.validator<Prisma.CarDefaultArgs>()({
 	include: { decals: true },
 })
 type CarWithDecals = Prisma.CarGetPayload<typeof carWithDecals>
 
-export async function updateCar(id: number, data: Partial<Car>) {
-	console.log('queuing update')
+export async function updateCar(carId: number, carData: Partial<Car>) {
 	const updateResponse = await fetch('/api/car', {
-		method: 'POST',
-		body: JSON.stringify({ id, data }),
+		method: 'PUT',
+		body: JSON.stringify({ carId, carData }),
 		headers: { 'content-type': 'application/json' },
 	})
+	invalidateAll()
 	console.log('posted,', await updateResponse.json())
 }
 
@@ -26,35 +28,27 @@ export function transformCarFromDB(carData: CarWithDecals): Car {
 			fromCenter: carData.wheelFromCenter,
 		},
 		hat: { color: carData.hatColor },
-		decals: carData.decals.map(
-			(decal) =>
-				({
-					transform: {
-						translate: { x: decal.x, y: decal.y },
-						rotate: decal.rotate,
-						scale: decal.scale,
-					},
-					id: decal.id,
-					name: decal.name,
-					fill: decal.fill,
-				} as DecalData)
-		),
+		decals: carData.decals.map((decal) => ({
+			transform: {
+				translate: { x: decal.x, y: decal.y },
+				rotate: decal.rotate,
+				scale: decal.scale,
+			},
+			slot: decal.slot,
+			id: decal.id,
+			name: decal.name as DecalData['name'],
+			fill: decal.fill,
+		})),
 	}
 }
 
-export function cloneCarData(car: Car): Car {
+export function cloneCar(car: Car): Car {
 	return {
 		...car,
 		wheels: {
 			...car.wheels,
 		},
 		hat: { ...car.hat },
-		decals: car.decals.map((d) => ({
-			...d,
-			transform: {
-				...d.transform,
-				translate: { ...d.transform.translate },
-			},
-		})),
+		decals: car.decals.map(cloneDecal),
 	}
 }
