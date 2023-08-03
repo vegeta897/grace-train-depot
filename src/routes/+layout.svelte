@@ -1,7 +1,8 @@
 <script lang="ts">
-	import '../app.postcss'
 	import '@fontsource/nunito/900.css'
 	import '@fontsource-variable/nunito'
+	import '@fontsource-variable/open-sans'
+	import '../app.postcss'
 	import './styles.css'
 	import { clickoutside } from '@svelte-put/clickoutside'
 
