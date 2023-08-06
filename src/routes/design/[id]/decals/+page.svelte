@@ -76,11 +76,17 @@
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="-50 -50 100 100"
-							class="w-10 2xs:w-12"
+							class="w-10 2xs:w-11 overflow-visible"
 						>
 							<Decal
 								name={decal.name}
 								fill={decal.fill}
+								transform={{
+									x: 0,
+									y: 0,
+									scale: Math.min(1, decal.transform.scale),
+									rotate: decal.transform.rotate,
+								}}
 								transition={['fill', 'opacity']}
 							/>
 						</svg>
@@ -104,7 +110,6 @@
 		<button disabled={!unsaved} on:click={resetDecals} class="nunito btn btn-lg">
 			Reset
 		</button>
-		<button disabled={!unsaved} class="nunito btn btn-lg">Save</button>
 	</div>
 	<div
 		class="absolute left-0 top-0 h-[3px] w-[3px] rounded-sm bg-red-600"

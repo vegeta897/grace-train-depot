@@ -17,8 +17,8 @@
 	<title>Grace Train Depot</title>
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
-<div class="mx-auto w-full max-w-5xl pb-4 lg:p-6">
-	<header class="navbar mb-4 bg-base-200 px-6 lg:rounded-box">
+<div class="mx-auto w-full max-w-5xl pb-4 lg:p-4">
+	<header class="navbar mb-4 bg-base-200 min-h-12 lg:min-h-16 p-0 px-6 lg:rounded-box">
 		<h1 class="nunito flex-1 text-left text-2xl uppercase">
 			<span class="text-3xl sm:hidden">🚂</span>
 			<span class="hidden sm:inline">Grace Train Depot</span>
@@ -30,7 +30,7 @@
 				use:clickoutside={{}}
 				on:clickoutside={closeMenu}
 			>
-				<summary class="btn m-1"
+				<summary class="btn"
 					><svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"

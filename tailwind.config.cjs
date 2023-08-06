@@ -11,6 +11,9 @@ const config = {
 				xs: '480px',
 				'2xs': '375px',
 			},
+			scale: {
+				200: '2',
+			},
 		},
 	},
 

@@ -66,6 +66,22 @@
 
 <div class="nunito my-2 grid grid-cols-4 gap-2">
 	<button
+		on:click={() => setToolMode('scale')}
+		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+		class:text-primary={toolMode !== 'scale'}
+		class:btn-primary={toolMode === 'scale'}
+	>
+		Size
+	</button>
+	<button
+		on:click={() => setToolMode('rotate')}
+		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+		class:text-secondary={toolMode !== 'rotate'}
+		class:btn-secondary={toolMode === 'rotate'}
+	>
+		Spin
+	</button>
+	<button
 		on:click={() => setToolMode('shape')}
 		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
 		class:btn-active={toolMode === 'shape'}
@@ -90,22 +106,6 @@
 			Color
 		</button>
 	{/if}
-	<button
-		on:click={() => setToolMode('scale')}
-		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
-		class:text-primary={toolMode !== 'scale'}
-		class:btn-primary={toolMode === 'scale'}
-	>
-		Size
-	</button>
-	<button
-		on:click={() => setToolMode('rotate')}
-		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
-		class:text-secondary={toolMode !== 'rotate'}
-		class:btn-secondary={toolMode === 'rotate'}
-	>
-		Spin
-	</button>
 	<!-- <button
 		on:click={() => setToolMode('order')}
 		class="btn-md btn touch-manipulation text-lg md:text-xl"
