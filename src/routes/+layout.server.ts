@@ -9,7 +9,7 @@ export const load = (async (event) => {
 	if (session) {
 		return {
 			user: session.user,
-			cars: (
+			savedCars: (
 				await prisma.car.findMany({
 					where: { userId: session.user.userId },
 					include: { decals: { orderBy: { slot: 'asc' } } },

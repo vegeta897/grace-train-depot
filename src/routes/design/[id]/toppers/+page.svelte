@@ -4,9 +4,12 @@
 	import type { PageData } from './$types'
 	import { updateCar } from '$lib/car'
 	import type { Car } from '$lib/types'
+	import { getDesignStores } from '../../stores'
 
 	export let data: PageData
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
+
+	const { displayCar } = getDesignStores()
 
 	const hats = [
 		[null, 'none'],
@@ -19,13 +22,13 @@
 	]
 
 	function setHatColor(color: Car['hat']['color']) {
-		data.car.hat.color = color
-		updateCar(data.car.id, { hat: { color } })
+		// data.car.hat.color = color
+		// updateCar(data.car.id, { hat: { color } })
 	}
 </script>
 
 <section>
-	<div class="mx-auto my-6 w-64"><UserCar car={data.car} /></div>
+	<div class="mx-auto my-6 w-64"><UserCar car={$displayCar} /></div>
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each hats as [color, name]}
 			<button

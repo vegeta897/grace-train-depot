@@ -2,6 +2,7 @@ import { invalidateAll } from '$app/navigation'
 import type { Car, DecalData } from '$lib/types'
 import { Prisma } from '@prisma/client'
 import { cloneDecal } from './decal'
+import { COLORS } from 'grace-train-lib'
 
 const carWithDecals = Prisma.validator<Prisma.CarDefaultArgs>()({
 	include: { decals: true },
@@ -51,5 +52,16 @@ export function cloneCar(car: Car): Car {
 		},
 		hat: { ...car.hat },
 		decals: car.decals.map(cloneDecal),
+	}
+}
+
+export function getNewCar(): Car {
+	return {
+		id: 0,
+		shortId: 'new',
+		body: 'boxy',
+		decals: [],
+		wheels: { color: COLORS.POP, fromCenter: 100 },
+		hat: { color: null },
 	}
 }

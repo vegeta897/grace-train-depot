@@ -5,10 +5,14 @@
 	import '../app.postcss'
 	import './styles.css'
 	import { clickoutside } from '@svelte-put/clickoutside'
+	import { page } from '$app/stores'
 
 	let menuElement: HTMLDetailsElement
 
 	const closeMenu = () => menuElement.removeAttribute('open')
+
+	$: design = $page.route.id?.startsWith('/design')
+	$: carId = design && $page.params.id
 
 	// TODO: Bento grid? https://bentogrids.com/
 </script>
@@ -18,12 +22,19 @@
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
 <div class="mx-auto w-full max-w-5xl pb-4 lg:p-4">
-	<header class="navbar mb-4 bg-base-200 min-h-12 lg:min-h-16 p-0 px-6 lg:rounded-box">
-		<h1 class="nunito flex-1 text-left text-2xl uppercase">
-			<span class="text-3xl sm:hidden">🚂</span>
-			<span class="hidden sm:inline">Grace Train Depot</span>
-		</h1>
-		<nav class="flex-none">
+	<header
+		class="navbar grid grid-cols-3 mb-4 bg-base-200 min-h-12 lg:min-h-16 p-0 px-6 lg:rounded-box"
+	>
+		<!-- <h1 class="nunito text-left text-3xl uppercase">
+			🚂
+			<span class="hidden">Grace Train Depot</span>
+		</h1> -->
+		{#if design}
+			<h2 class="nunito uppercase text-2xl">
+				<a href="/design/{carId}">Design</a>
+			</h2>
+		{/if}
+		<nav class="flex-none justify-self-end col-start-3">
 			<details
 				bind:this={menuElement}
 				class="dropdown dropdown-end"

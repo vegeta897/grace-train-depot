@@ -2,7 +2,6 @@
 	import { draggable, type DragEventData } from '@neodrag/svelte'
 	import { wrapNumber } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
-	import { onMount } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import { Decal } from 'grace-train-lib'
 	import BoundingBox from './BoundingBox.svelte'
@@ -11,10 +10,14 @@
 	import UserCar from '$lib/components/UserCar.svelte'
 	import type { Car, Transform } from '$lib/types'
 	import { updateDecalTransform } from './decals'
+	import { getDesignStores } from '../../stores'
 
 	export let car: Car
 
-	const { hoveredSlot, selectedSlot, decals, draggables } = getDecalStores()
+	const { localCar, displayCar } = getDesignStores()
+	const { hoveredSlot, selectedSlot } = getDecalStores()
+
+	$: draggables = $displayCar.decals.map((d) => ({ id: d.id, ...d.transform }))
 
 	let clickOutsideCooldown = false
 
@@ -28,15 +31,15 @@
 	let dragging: Transform | null = null
 
 	const onDragStart = (slot: number) => {
-		dragging = { ...$draggables[slot] }
+		dragging = { ...draggables[slot] }
 		selectedSlot.set(slot)
 	}
 	function onDrag({ offsetX, offsetY }: DragEventData, slot: number) {
 		if (!dragging) return
-		const transform = $draggables[slot]
+		const transform = draggables[slot]
 		transform.x = dragging.x + (offsetX - dragging.x) / canvasScale
 		transform.y = dragging.y + (offsetY - dragging.y) / canvasScale
-		updateDecalTransform(decals, slot, transform)
+		updateDecalTransform(localCar, slot, transform)
 	}
 	const onDragEnd = () => {
 		dragging = null
@@ -71,7 +74,7 @@
 	} | null = null
 	function startResize(corner: number) {
 		if ($selectedSlot === null) return
-		const transform = $draggables[$selectedSlot]
+		const transform = draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
@@ -101,7 +104,7 @@
 	}
 	function startRotate() {
 		if ($selectedSlot === null) return
-		const transform = $draggables[$selectedSlot]
+		const transform = draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
@@ -128,7 +131,7 @@
 		if (rotating) rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
 		const operation = resizing || rotating
 		if (!operation) return
-		updateDecalTransform(decals, operation.slot, operation.transform)
+		updateDecalTransform(localCar, operation.slot, operation.transform)
 	}
 	async function onPointerUp() {
 		if (!resizing && !rotating) return
@@ -150,7 +153,7 @@
 	<div class="relative w-full mx-auto" bind:this={canvasElement}>
 		<UserCar
 			{car}
-			decalsOverride={$decals}
+			decalsOverride={$displayCar.decals}
 			transition={['fill', 'opacity']}
 			focusDecalZone={$selectedSlot !== null}
 			bind:width={userCarWidth}
@@ -159,7 +162,7 @@
 			class="absolute top-0 left-0 w-[375px] h-[300px] origin-top-left"
 			style:transform="scale({canvasScale})"
 		>
-			{#each $draggables as transform, d (transform.id)}
+			{#each draggables as transform, d (transform.id)}
 				<div
 					class="absolute h-0 w-0"
 					class:z-10={$selectedSlot === d}
@@ -205,8 +208,8 @@
 								class:opacity-25={$selectedSlot === d}
 							>
 								<Decal
-									name={$decals[d].name}
-									fill={$decals[d].fillPreview || $decals[d].fill}
+									name={$displayCar.decals[d].name}
+									fill={$displayCar.decals[d].fillPreview || $displayCar.decals[d].fill}
 									transition={['fill', 'opacity']}
 								/>
 							</g>
@@ -215,11 +218,10 @@
 				</div>
 			{/each}
 			{#if $selectedSlot !== null}
-				{@const transform = $draggables[$selectedSlot]}
+				{@const transform = draggables[$selectedSlot]}
 				<div
 					class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-[100px] w-[100px]"
-					style:transform="translate({transform.x}px,{transform.y}px)
-					rotate({transform.rotate}deg)"
+					style:transform="translate({transform.x}px,{transform.y}px) rotate({transform.rotate}deg)"
 					transition:fade={{ duration: 50 }}
 				>
 					{#each corners as [xDir, yDir], c}

@@ -2,25 +2,22 @@
 	import { Decal } from 'grace-train-lib'
 	import { DECAL_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
-	import type { PageData } from './$types'
 	import type { DecalData } from '$lib/types'
 	import { cloneDecal, updateDecal } from '$lib/decal'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
+	import { getDesignStores } from '../../stores'
 
-	export let data: PageData
+	const { localCar, displayCar } = getDesignStores()
+	const { hoveredSlot, selectedSlot } = getDecalStores()
 
-	const { hoveredSlot, selectedSlot, decals } = getDecalStores()
-
-	resetDecals()
+	// resetDecals()
 	hoveredSlot.set(null)
 	selectedSlot.set(null)
 
-	function resetDecals() {
-		decals.set(data.car.decals.map(cloneDecal))
-	}
-
-	let unsaved = false // TODO: Track saved status
+	// function resetDecals() {
+	// 	decals.set(data.car.decals.map(cloneDecal))
+	// }
 
 	function addDecal(beforeOrAfter: number) {
 		const newDecal: DecalData = {
@@ -30,16 +27,16 @@
 			fill: '', // Will be overwritten below
 			slot: 0, // Will be overwritten below
 		}
-		decals.update((d) => {
+		localCar.update((car) => {
 			if (beforeOrAfter > 0) {
-				d.push(newDecal)
+				car.decals.push(newDecal)
 			} else {
-				d.unshift(newDecal)
+				car.decals.unshift(newDecal)
 			}
-			d.forEach((d, i) => (d.slot = i)) // Re-number slots
-			newDecal.fill = DECAL_COLORS[d.length - 1]
+			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+			newDecal.fill = DECAL_COLORS[car.decals.length - 1]
 			selectedSlot.set(newDecal.slot)
-			return d
+			return car
 		})
 	}
 
@@ -47,13 +44,13 @@
 </script>
 
 <section>
-	<DecalCanvas car={data.car} />
+	<DecalCanvas car={$displayCar} />
 	<div class="bg-neutral rounded-box px-3 py-1 mb-4">
 		<ol
 			class="flex justify-center gap-2 h-16 my-4 nunito"
-			class:max-sm:gap-1={$decals.length >= 3}
+			class:max-sm:gap-1={$displayCar.decals.length >= 3}
 		>
-			{#if $decals.length < DECAL_MAX_SLOTS - 1 && $decals.length > 0}
+			{#if $displayCar.decals.length < DECAL_MAX_SLOTS - 1 && $displayCar.decals.length > 0}
 				<li class="w-20">
 					<button
 						class="btn btn-block text-4xl h-16 px-0 btn-outline"
@@ -61,7 +58,7 @@
 					>
 				</li>
 			{/if}
-			{#each $decals as decal}
+			{#each $displayCar.decals as decal}
 				<li class="w-28 shrink">
 					<button
 						class="btn btn-block text-4xl h-16 px-0 btn-hover-grow"
@@ -93,7 +90,7 @@
 					</button>
 				</li>
 			{/each}
-			{#if $decals.length < DECAL_MAX_SLOTS}
+			{#if $displayCar.decals.length < DECAL_MAX_SLOTS}
 				<li class="w-20">
 					<button
 						class="btn btn-block text-4xl h-16 px-0 btn-outline"
@@ -106,11 +103,11 @@
 			<Controls slot={$selectedSlot} />
 		{/if}
 	</div>
-	<div class="flex gap-4 mb-4 w-full">
+	<!-- <div class="flex gap-4 mb-4 w-full">
 		<button disabled={!unsaved} on:click={resetDecals} class="nunito btn btn-lg">
 			Reset
 		</button>
-	</div>
+	</div> -->
 	<div
 		class="absolute left-0 top-0 h-[3px] w-[3px] rounded-sm bg-red-600"
 		style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"

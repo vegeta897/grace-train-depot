@@ -4,12 +4,14 @@
 	import { wrapNumber } from '$lib/util'
 	import { updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
+	import { getDesignStores } from '../../stores'
 
 	export let slot: number
 
-	const { decals, draggables, selectedSlot } = getDecalStores()
+	const { localCar, displayCar } = getDesignStores()
+	const { selectedSlot } = getDecalStores()
 
-	$: dragTransform = $draggables[slot]
+	$: decal = $displayCar.decals[slot]
 
 	let toolMode: null | 'shape' | 'color' | 'scale' | 'rotate' | 'order' = null
 
@@ -17,49 +19,49 @@
 		(toolMode = toolMode === mode ? null : mode)
 
 	function removeDecal() {
-		decals.update((d) => {
-			const newDecals = d.filter((_, i) => i !== slot)
-			newDecals.forEach((d, i) => (d.slot = i)) // Re-number slots
+		localCar.update((car) => {
+			car.decals = car.decals.filter((_, i) => i !== slot)
+			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
 			selectedSlot.set(null)
-			return newDecals
+			return car
 		})
 	}
 
 	function orderDecal(upOrDown: number) {
-		const decal = $decals[slot]
-		decals.update((d) => {
-			const newDecals = d.filter((_, i) => i !== slot)
-			newDecals.splice(slot + upOrDown, 0, decal)
-			newDecals.forEach((d, i) => (d.slot = i)) // Re-number slots
+		const decal = $displayCar.decals[slot]
+		localCar.update((car) => {
+			car.decals = car.decals.filter((_, i) => i !== slot)
+			car.decals.splice(slot + upOrDown, 0, decal)
+			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
 			selectedSlot.set(decal.slot)
-			return newDecals
+			return car
 		})
 	}
 
 	function setDecalShape(name: DecalName) {
-		decals.update((d) => {
-			d[slot].name = name
-			return d
+		localCar.update((car) => {
+			car.decals[slot].name = name
+			return car
 		})
 		toolMode = null
 	}
 
 	function setDecalColor(color: string) {
-		decals.update((d) => {
-			d[slot].fill = color
-			return d
+		localCar.update((car) => {
+			car.decals[slot].fill = color
+			return car
 		})
 		toolMode = null
 	}
 
 	function previewDecalColor(color?: string) {
-		decals.update((d) => {
+		localCar.update((car) => {
 			if (color) {
-				d[slot].fillPreview = color
+				car.decals[slot].fillPreview = color
 			} else {
-				delete d[slot].fillPreview
+				delete car.decals[slot].fillPreview
 			}
-			return d
+			return car
 		})
 	}
 </script>
@@ -92,7 +94,7 @@
 		<button
 			on:click={() => setToolMode('color')}
 			class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
-			style:color={$decals[slot].fill}
+			style:color={$displayCar.decals[slot].fill}
 		>
 			Color
 		</button>
@@ -100,7 +102,7 @@
 		<button
 			on:click={() => setToolMode('color')}
 			class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
-			style:background={$decals[slot].fill}
+			style:background={$displayCar.decals[slot].fill}
 			style:color="hsl(var(--inc))"
 		>
 			Color
@@ -129,7 +131,7 @@
 		</button>
 		<button
 			on:click={() => orderDecal(1)}
-			disabled={slot === $decals.length - 1}
+			disabled={slot === $displayCar.decals.length - 1}
 			class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
 		>
 			Pull
@@ -147,7 +149,7 @@
 						viewBox="-50 -50 100 100"
 						class="w-8 xs:w-10"
 					>
-						<Decal {name} fill={$decals[slot].fill} />
+						<Decal {name} fill={$displayCar.decals[slot].fill} />
 					</svg>
 				</button>
 			{/each}
@@ -174,10 +176,10 @@
 				min={DECAL_MIN_SCALE}
 				max={DECAL_MAX_SCALE}
 				step="0.05"
-				value={dragTransform.scale}
+				value={decal.transform.scale}
 				on:input={(e) => {
-					dragTransform.scale = +e.currentTarget.value
-					updateDecalTransform(decals, slot, dragTransform)
+					decal.transform.scale = +e.currentTarget.value
+					updateDecalTransform(localCar, slot, decal.transform)
 				}}
 				class="range range-primary"
 			/>
@@ -189,10 +191,10 @@
 				min={-180}
 				max={180}
 				step="1"
-				value={wrapNumber(-dragTransform.rotate, -180, 180)}
+				value={wrapNumber(-decal.transform.rotate, -180, 180)}
 				on:input={(e) => {
-					dragTransform.rotate = wrapNumber(-e.currentTarget.value, 0, 360)
-					updateDecalTransform(decals, slot, dragTransform)
+					decal.transform.rotate = wrapNumber(-e.currentTarget.value, 0, 360)
+					updateDecalTransform(localCar, slot, decal.transform)
 				}}
 				class="range range-secondary"
 			/>

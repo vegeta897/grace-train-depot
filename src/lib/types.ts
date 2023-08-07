@@ -16,6 +16,7 @@ export type DecalData = {
 	slot: number
 }
 
+// TODO: Make all design related props optional or arrays so a clean design has less data
 export type Car = {
 	id: number
 	shortId: string

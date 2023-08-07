@@ -1,13 +1,13 @@
 import type { Transform } from '$lib/types'
-import type { DecalStores } from './stores'
+import type { DesignStores } from '../../stores'
 
 export function updateDecalTransform(
-	decals: DecalStores['decals'],
+	car: DesignStores['localCar'],
 	slot: number,
 	transform: Transform
 ) {
-	decals.update((d) => {
-		d[slot].transform = { ...transform }
-		return d
+	car.update((car) => {
+		car.decals[slot].transform = { ...transform }
+		return car
 	})
 }

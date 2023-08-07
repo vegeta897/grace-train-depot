@@ -2,8 +2,11 @@
 	import { page } from '$app/stores'
 	import { fly } from 'svelte/transition'
 	import type { PageData } from './$types'
+	import { getDesignStores } from '../stores'
 
 	export let data: PageData
+
+	const { displayCar } = getDesignStores()
 
 	const pages = [
 		['🚌', 'body'],
@@ -25,9 +28,9 @@
 <div class="lg:flex lg:items-start max-w-2xl lg:max-w-full mx-auto">
 	<div class="hidden w-80 flex-col shrink-0 lg:flex">
 		<div class="rounded-box bg-neutral space-y-2 p-6 flex flex-col">
-			<div class="flex items-baseline justify-between px-2">
+			<!-- <div class="flex items-baseline justify-between px-2">
 				<h2 class="nunito uppercase text-2xl mb-2">Design</h2>
-			</div>
+			</div> -->
 			{#each pages as [icon, name]}
 				{@const current = name === currentPage}
 				<a
@@ -51,7 +54,7 @@
 				class:badge-success={!saving}
 				class:badge-warning={saving}>{saving ? 'Saving' : 'Saved'}</span
 			> -->
-				{#if data.car.shortId === 'local'}
+				{#if $displayCar.shortId === 'new'}
 					<div>
 						<p class="mb-4">Link your account to save and publish this car</p>
 						<a href="login" class="btn btn-secondary nunito">Twitch Login</a>

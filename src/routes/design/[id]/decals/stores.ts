@@ -1,22 +1,11 @@
-import type { DecalData } from '$lib/types'
 import { defineContext } from '$lib/util'
-import { writable, derived } from 'svelte/store'
+import { writable } from 'svelte/store'
 
-// TODO: Store modified decals in local storage?
-
-// This is a sparse array, explicit null checks may be needed
-const hoveredSlot = writable<number | null>(null)
-const selectedSlot = writable<number | null>(null)
-const decals = writable<DecalData[]>([])
-const draggables = derived(decals, ($decals) => {
-	return $decals.map((d) => ({ id: d.id, ...d.transform }))
-})
+// Maybe merge this into design stores?
 
 export const getDecalStores = defineContext({
-	hoveredSlot,
-	selectedSlot,
-	decals,
-	draggables,
+	hoveredSlot: writable<number | null>(null),
+	selectedSlot: writable<number | null>(null),
 })
 
 export type DecalStores = ReturnType<typeof getDecalStores>

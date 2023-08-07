@@ -18,7 +18,7 @@
 					data-sveltekit-preload-data="tap"
 					class="nunito btn btn-outline btn-block h-32 text-8xl">+</a
 				>
-				{#each data.cars as car}
+				{#each data.savedCars as car}
 					<a
 						href="design/{car.shortId}"
 						data-sveltekit-preload-data="tap"
@@ -64,7 +64,7 @@
 					</div>
 					<div class="max-w-lg flex flex-col items-center">
 						<a href="login" class="nunito btn-secondary btn btn-lg mb-4">Twitch Login</a>
-						<a href="design/local" class="link opacity-70 hover:opacity-100"
+						<a href="design/new" class="link opacity-70 hover:opacity-100"
 							>Just start designing</a
 						>
 					</div>
