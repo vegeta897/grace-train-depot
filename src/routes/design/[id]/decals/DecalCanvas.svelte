@@ -146,10 +146,7 @@
 </script>
 
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
-<div
-	class="relative mx-auto my-4 max-w-[375px] overflow-clip"
-	style:aspect-ratio="375/300"
->
+<div class="relative mx-auto max-w-[375px] overflow-clip" style:aspect-ratio="375/300">
 	<div class="relative w-full mx-auto" bind:this={canvasElement}>
 		<UserCar
 			{car}

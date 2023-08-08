@@ -44,7 +44,7 @@
 </script>
 
 <section>
-	<DecalCanvas car={$displayCar} />
+	<div class="px-4 mb-4"><DecalCanvas car={$displayCar} /></div>
 	<div class="bg-neutral rounded-box px-3 py-1 mb-4">
 		<ol
 			class="flex justify-center gap-2 h-16 my-4 nunito"

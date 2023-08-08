@@ -1,17 +1,13 @@
+import { generateCarShortId } from '$lib/car'
 import prisma from '$lib/server/prisma'
 import { redirect, type RequestHandler } from '@sveltejs/kit'
 import { COLORS } from 'grace-train-lib'
-import { generateRandomString } from 'lucia/utils'
-
-// Length of 6 = 33k IDs before 1% chance of collision (https://zelark.github.io/nano-id-cc/)
-const shortIdAlphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-const shortIdLength = 6
 
 export const GET = (async ({ locals }) => {
 	const session = await locals.auth.validate()
 	if (!session) throw redirect(302, '/')
 	// TODO: Check if user has reached cars limit
-	const shortId = generateRandomString(shortIdLength, shortIdAlphabet)
+	const shortId = generateCarShortId()
 	await prisma.car.create({
 		data: {
 			shortId,

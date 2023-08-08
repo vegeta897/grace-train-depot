@@ -19,11 +19,11 @@
 	}
 </script>
 
-<section>
-	<div class="mx-auto lg:my-6 my-4 w-48 lg:w-64"><UserCar car={$displayCar} /></div>
-	<p class="my-2 text-center text-xl">Let's design a Grace Train car!</p>
+<section class="flex flex-col items-center">
+	<div class="lg:my-6 my-4 w-48 lg:w-64"><UserCar car={$displayCar} /></div>
+	<p class="my-2 text-xl">Let's design a Grace Train car!</p>
 	{#if !data.user}
-		<div class="alert mt-8">
+		<!-- <div class="alert mt-8">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
@@ -40,8 +40,11 @@
 				<a href="login" class="link font-bold">Link your Twitch account</a> to appear in Grace
 				Trains! You may do this at any time.
 			</p>
-		</div>
+		</div> -->
 	{/if}
+	<p class="my-2">Start with the basics:</p>
+	<a class="btn btn-lg btn-primary" href="/design/{$displayCar.shortId}/body"
+		><span class="text-2xl top-[-3px] relative">🚌</span> Pick a Body</a
+	>
 	<pre>{JSON.stringify(data, null, 2)}</pre>
-	<p><a class="link" href="/design/local">self</a></p>
 </section>

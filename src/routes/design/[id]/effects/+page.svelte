@@ -6,5 +6,5 @@
 </script>
 
 <section>
-	<div class="mx-auto my-6 w-64"><UserCar car={$displayCar} /></div>
+	<div class="mx-auto mb-6 w-64"><UserCar car={$displayCar} /></div>
 </section>

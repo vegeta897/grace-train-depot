@@ -16,7 +16,7 @@
 </script>
 
 <section>
-	<div class="mx-auto my-6 w-64"><UserCar car={$displayCar} /></div>
+	<div class="mx-auto mb-6 w-64"><UserCar car={$displayCar} /></div>
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each wheels as [color, name]}
 			<button

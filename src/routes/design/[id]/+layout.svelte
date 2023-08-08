@@ -1,16 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { fly } from 'svelte/transition'
-	import type { PageData } from './$types'
 	import { getDesignStores } from '../stores'
-
-	export let data: PageData
 
 	const { displayCar } = getDesignStores()
 
 	const pages = [
 		['🚌', 'body'],
-		['🎓', 'toppers'],
+		['🎓', 'caps'],
 		['🎡', 'wheels'],
 		['💟', 'decals'],
 		['✨', 'effects'],
@@ -37,14 +34,14 @@
 					href="/design/{$page.params.id}/{name}"
 					class="nunito btn btn-lg btn-block justify-start gap-8 text-xl"
 					class:pointer-events-none={current}
-					class:btn-active={current}
+					class:btn-primary={current}
 				>
 					<div class="w-12 text-center text-4xl">{icon}</div>
 					{name}
 				</a>
 			{/each}
 		</div>
-		{#if currentPage}
+		{#if currentPage && $page.params.id !== 'new'}
 			<div class="rounded-box bg-neutral mt-4 p-6 justify-between items-baseline flex">
 				<!-- <span class="badge badge-lg opacity-80">Saved</span> -->
 				<!-- <span class="badge badge-lg badge-warning">Unsaved</span> -->
@@ -54,22 +51,15 @@
 				class:badge-success={!saving}
 				class:badge-warning={saving}>{saving ? 'Saving' : 'Saved'}</span
 			> -->
-				{#if $displayCar.shortId === 'new'}
-					<div>
-						<p class="mb-4">Link your account to save and publish this car</p>
-						<a href="login" class="btn btn-secondary nunito">Twitch Login</a>
-					</div>
-				{:else}
-					<label class="label cursor-pointer">
-						<span class="label-text text-base">Auto-save</span>
-						<input type="checkbox" checked class="checkbox checkbox-info ml-2" />
-					</label>
-					<button class="btn nunito btn-success">Save</button>
-				{/if}
+				<label class="label cursor-pointer">
+					<span class="label-text text-base">Auto-save</span>
+					<input type="checkbox" checked class="checkbox checkbox-info ml-2" />
+				</label>
+				<button class="btn nunito btn-success">Save</button>
 			</div>
 		{/if}
 	</div>
-	<div class="grow space-y-2 flex flex-col items-center min-w-0">
+	<div class="grow flex flex-col items-center min-w-0">
 		<div
 			class="lg:hidden tabs tabs-boxed self-stretch xs:self-center mx-2 justify-center"
 		>
@@ -106,9 +96,9 @@
 			{/if}
 		</div>
 		{#if currentPage}
-			<h2 class="nunito uppercase text-3xl">{currentPage}</h2>
+			<h2 class="nunito uppercase text-3xl mt-3">{currentPage}</h2>
 		{/if}
-		<div class="p-4 lg:grow lg:px-8 lg:py-0 self-stretch">
+		<div class="p-4 lg:grow lg:px-8 self-stretch">
 			<slot />
 		</div>
 	</div>

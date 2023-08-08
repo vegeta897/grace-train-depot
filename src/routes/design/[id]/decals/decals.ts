@@ -7,7 +7,12 @@ export function updateDecalTransform(
 	transform: Transform
 ) {
 	car.update((car) => {
-		car.decals[slot].transform = { ...transform }
+		car.decals[slot].transform = {
+			x: Math.round(transform.x),
+			y: Math.round(transform.y),
+			scale: transform.scale,
+			rotate: transform.rotate,
+		}
 		return car
 	})
 }

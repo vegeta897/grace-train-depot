@@ -3,8 +3,10 @@ import { OAuthRequestError } from '@lucia-auth/oauth'
 import { redirect, type RequestHandler } from '@sveltejs/kit'
 
 export const GET = (async ({ url, cookies, locals }) => {
+	const redirectTo = cookies.get('twitch_oauth_redirect_to')
+	cookies.delete('twitch_oauth_redirect_to')
 	const session = await locals.auth.validate()
-	if (session) throw redirect(302, '/')
+	if (session) throw redirect(302, redirectTo || '/')
 	const storedState = cookies.get('twitch_oauth_state')
 	const state = url.searchParams.get('state')
 	const code = url.searchParams.get('code')
@@ -41,7 +43,5 @@ export const GET = (async ({ url, cookies, locals }) => {
 			status: 500,
 		})
 	}
-	// TODO: Implement a redirectTo search param to take the user to the page they were
-	// trying to reach: https://www.youtube.com/watch?v=ieECVME5ZLU
-	throw redirect(302, '/')
+	throw redirect(302, redirectTo || '/')
 }) satisfies RequestHandler

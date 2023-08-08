@@ -3,6 +3,7 @@ import type { Car, DecalData } from '$lib/types'
 import { Prisma } from '@prisma/client'
 import { cloneDecal } from './decal'
 import { COLORS } from 'grace-train-lib'
+import { generateRandomString } from 'lucia/utils'
 
 const carWithDecals = Prisma.validator<Prisma.CarDefaultArgs>()({
 	include: { decals: true },
@@ -65,3 +66,10 @@ export function getNewCar(): Car {
 		hat: { color: null },
 	}
 }
+
+// Length of 6 = 33k IDs before 1% chance of collision (https://zelark.github.io/nano-id-cc/)
+const shortIdAlphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+const shortIdLength = 6
+
+export const generateCarShortId = () =>
+	generateRandomString(shortIdLength, shortIdAlphabet)
