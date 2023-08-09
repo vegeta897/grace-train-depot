@@ -26,6 +26,7 @@
 			id: Date.now(), // Local only, will be overwritten after saving to server
 			fill: '', // Will be overwritten below
 			slot: 0, // Will be overwritten below
+			new: true,
 		}
 		localCar.update((car) => {
 			if (beforeOrAfter > 0) {

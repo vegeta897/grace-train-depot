@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
-import type { Car } from '$lib/types'
+import type { Car, DecalData } from '$lib/types'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
 
@@ -20,27 +20,59 @@ export const actions = {
 			throw error(400, 'bad form data')
 		}
 		const newCar = carData.shortId === 'new'
-		await prisma.car.create({
-			data: {
-				shortId: newCar ? generateCarShortId() : carData.shortId,
-				body: carData.body,
-				wheelColor: carData.wheels.color,
-				wheelFromCenter: carData.wheels.fromCenter,
-				hatColor: carData.hat.color,
-				userId: session.user.userId,
-				decals: {
-					create: carData.decals.map((d) => ({
-						x: d.transform.x,
-						y: d.transform.y,
-						scale: d.transform.scale,
-						rotate: d.transform.rotate,
-						slot: d.slot,
-						name: d.name,
-						fill: d.fill,
-					})),
+		if (newCar) {
+			await prisma.car.create({
+				data: {
+					shortId: generateCarShortId(),
+					...transformCarToDB(carData),
+					userId: session.user.userId,
+					decals: { create: carData.decals.map(transformDecalToDB) },
 				},
-			},
-		})
+			})
+		} else {
+			console.log('updating car')
+			await prisma.car.update({
+				where: { id: carData.id, userId: session.user.userId },
+				data: {
+					...transformCarToDB(carData),
+					userId: session.user.userId,
+					decals: {
+						deleteMany: {
+							carId: carData.id,
+							NOT: carData.decals.filter((d) => !d.new).map(({ id }) => ({ id })),
+						},
+						update: carData.decals
+							.filter((d) => !d.new)
+							.map((d) => ({
+								where: { id: d.id },
+								data: transformDecalToDB(d),
+							})),
+						create: carData.decals.filter((d) => d.new).map(transformDecalToDB),
+					},
+				},
+			})
+		}
 		throw redirect(302, '/')
 	},
 } satisfies Actions
+
+function transformCarToDB(car: Car) {
+	return {
+		body: car.body,
+		wheelColor: car.wheels.color,
+		wheelFromCenter: car.wheels.fromCenter,
+		hatColor: car.hat.color,
+	}
+}
+
+function transformDecalToDB(decal: DecalData) {
+	return {
+		x: decal.transform.x,
+		y: decal.transform.y,
+		scale: decal.transform.scale,
+		rotate: decal.transform.rotate,
+		slot: decal.slot,
+		name: decal.name,
+		fill: decal.fill,
+	}
+}

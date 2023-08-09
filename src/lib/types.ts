@@ -14,6 +14,7 @@ export type DecalData = {
 	fill: string
 	fillPreview?: string
 	slot: number
+	new?: boolean
 }
 
 // TODO: Make all design related props optional or arrays so a clean design has less data
