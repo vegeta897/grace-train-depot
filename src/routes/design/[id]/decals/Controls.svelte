@@ -1,14 +1,15 @@
 <script lang="ts">
-	import { DECAL_NAMES, Decal, type DecalName } from 'grace-train-lib'
+	import type { DecalName } from 'grace-train-lib'
 	import { DECAL_COLORS, DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { wrapNumber } from '$lib/util'
 	import { updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../../stores'
+	import ShapePicker from './ShapePicker.svelte'
 
 	export let slot: number
 
-	const { localCars, displayCars, displayCar, designShortId } = getDesignStores()
+	const { localCars, displayCar, designShortId } = getDesignStores()
 	const { selectedSlot } = getDecalStores()
 
 	$: decal = $displayCar.decals[slot]
@@ -141,23 +142,7 @@
 			Pull
 		</button>
 	{:else if toolMode === 'shape'}
-		<div class="col-span-4 grid grid-cols-6 gap-2">
-			<!-- TODO: Export decal name array from grace-train-lib -->
-			{#each DECAL_NAMES as name}
-				<button
-					on:click={() => setDecalShape(name)}
-					class="btn-lg btn touch-manipulation px-0 btn-hover-grow"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="-50 -50 100 100"
-						class="w-8 xs:w-10"
-					>
-						<Decal {name} fill={$displayCar.decals[slot].fill} />
-					</svg>
-				</button>
-			{/each}
-		</div>
+		<ShapePicker fill={$displayCar.decals[slot].fill} onClick={setDecalShape} />
 	{:else if toolMode === 'color'}
 		<div class="col-span-4 grid grid-cols-6 gap-2">
 			{#each DECAL_COLORS as color}
