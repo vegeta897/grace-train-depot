@@ -1,8 +1,9 @@
-import { error, redirect } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
 import type { Car, DecalData } from '$lib/types'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 export const actions = {
 	save: async (event) => {
@@ -10,14 +11,14 @@ export const actions = {
 	},
 	publish: async (event) => {
 		const session = await event.locals.auth.validate()
-		if (!session) throw error(401, 'You are not logged in')
-		const carDataJSON = (await event.request.formData()).get('carData')
-		if (!carDataJSON) throw error(400, 'missing form data')
+		if (!session)
+			throw redirect(302, `/login?redirectTo=/design/${event.params.id}/finish`)
 		let carData: Car
 		try {
-			carData = JSON.parse(carDataJSON.toString())
+			const carDataJSON = (await event.request.formData()).get('carData')
+			carData = JSON.parse(carDataJSON!.toString())
 		} catch (e) {
-			throw error(400, 'bad form data')
+			return fail(400, { invalid: true })
 		}
 		const newCar = carData.shortId === 'new'
 		if (newCar) {
@@ -31,26 +32,34 @@ export const actions = {
 			})
 		} else {
 			console.log('updating car')
-			await prisma.car.update({
-				where: { id: carData.id, userId: session.user.userId },
-				data: {
-					...transformCarToDB(carData),
-					userId: session.user.userId,
-					decals: {
-						deleteMany: {
-							carId: carData.id,
-							NOT: carData.decals.filter((d) => !d.new).map(({ id }) => ({ id })),
+			const newDecals = carData.decals.filter((d) => d.new)
+			const updatedDecals = carData.decals.filter((d) => !d.new)
+			try {
+				const updatedCar = await prisma.car.update({
+					where: { id: carData.id, userId: session.user.userId },
+					data: {
+						...transformCarToDB(carData),
+						decals: {
+							deleteMany: { NOT: updatedDecals.map(({ id }) => ({ id })) },
+							update: carData.decals
+								.filter((d) => !d.new)
+								.map((d) => ({ where: { id: d.id }, data: transformDecalToDB(d) })),
+							createMany: { data: newDecals.map(transformDecalToDB) },
 						},
-						update: carData.decals
-							.filter((d) => !d.new)
-							.map((d) => ({
-								where: { id: d.id },
-								data: transformDecalToDB(d),
-							})),
-						create: carData.decals.filter((d) => d.new).map(transformDecalToDB),
 					},
-				},
-			})
+				})
+				console.log('updated car', updatedCar)
+			} catch (e) {
+				if (e instanceof PrismaClientKnownRequestError) {
+					if (e.code === 'P2025') {
+						// Likely the car ID or decal ID(s) were tampered with
+					}
+					console.log(e.code, e.message)
+				} else {
+					console.log('unknown error', e)
+				}
+				return fail(400, { invalid: true })
+			}
 		}
 		throw redirect(302, '/')
 	},

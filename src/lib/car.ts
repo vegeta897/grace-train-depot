@@ -67,9 +67,9 @@ export function getNewCar(): Car {
 	}
 }
 
-// Length of 6 = 33k IDs before 1% chance of collision (https://zelark.github.io/nano-id-cc/)
-const shortIdAlphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-const shortIdLength = 6
+// Length of 8 = 1M IDs before 1% chance of collision (https://zelark.github.io/nano-id-cc/)
+const shortIdAlphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+const shortIdLength = 8
 
 export const generateCarShortId = () =>
 	generateRandomString(shortIdLength, shortIdAlphabet)

@@ -46,5 +46,9 @@
 	<a class="btn btn-lg btn-primary" href="/design/{$displayCar.shortId}/body"
 		><span class="text-2xl top-[-3px] relative">🚌</span> Pick a Body</a
 	>
-	<pre>{JSON.stringify(data, null, 2)}</pre>
+	<pre class="text-xs bg-base-300 p-2 mt-2 rounded-box">{JSON.stringify(
+			data,
+			null,
+			2
+		)}</pre>
 </section>

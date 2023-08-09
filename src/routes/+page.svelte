@@ -9,7 +9,7 @@
 
 <section class="flex flex-col items-center justify-center p-4 md:p-8 h-[75vh]">
 	{#if data.user}
-		<!-- TODO: Move this to a /me or /depot route -->
+		<!-- TODO: Move this to a /me or /depot route? -->
 		<div class="w-full max-w-lg rounded-2xl bg-neutral p-6 md:p-10">
 			<h2 class="mb-4 text-xl">Hello, {data.user.twitchDisplayName}!</h2>
 			<div class="grid grid-cols-1 gap-y-4">
