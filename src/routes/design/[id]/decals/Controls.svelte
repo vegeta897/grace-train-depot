@@ -8,7 +8,7 @@
 
 	export let slot: number
 
-	const { localCar, displayCar } = getDesignStores()
+	const { localCars, displayCars, displayCar, designShortId } = getDesignStores()
 	const { selectedSlot } = getDecalStores()
 
 	$: decal = $displayCar.decals[slot]
@@ -19,49 +19,53 @@
 		(toolMode = toolMode === mode ? null : mode)
 
 	function removeDecal() {
-		localCar.update((car) => {
-			car.decals = car.decals.filter((_, i) => i !== slot)
-			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+		localCars.update((cars) => {
+			cars[$designShortId].decals = cars[$designShortId].decals.filter(
+				(_, i) => i !== slot
+			)
+			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
 			selectedSlot.set(null)
-			return car
+			return cars
 		})
 	}
 
 	function orderDecal(upOrDown: number) {
 		const decal = $displayCar.decals[slot]
-		localCar.update((car) => {
-			car.decals = car.decals.filter((_, i) => i !== slot)
-			car.decals.splice(slot + upOrDown, 0, decal)
-			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+		localCars.update((cars) => {
+			cars[$designShortId].decals = cars[$designShortId].decals.filter(
+				(_, i) => i !== slot
+			)
+			cars[$designShortId].decals.splice(slot + upOrDown, 0, decal)
+			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
 			selectedSlot.set(decal.slot)
-			return car
+			return cars
 		})
 	}
 
 	function setDecalShape(name: DecalName) {
-		localCar.update((car) => {
-			car.decals[slot].name = name
-			return car
+		localCars.update((cars) => {
+			cars[$designShortId].decals[slot].name = name
+			return cars
 		})
 		toolMode = null
 	}
 
 	function setDecalColor(color: string) {
-		localCar.update((car) => {
-			car.decals[slot].fill = color
-			return car
+		localCars.update((cars) => {
+			cars[$designShortId].decals[slot].fill = color
+			return cars
 		})
 		toolMode = null
 	}
 
 	function previewDecalColor(color?: string) {
-		localCar.update((car) => {
+		localCars.update((cars) => {
 			if (color) {
-				car.decals[slot].fillPreview = color
+				cars[$designShortId].decals[slot].fillPreview = color
 			} else {
-				delete car.decals[slot].fillPreview
+				delete cars[$designShortId].decals[slot].fillPreview
 			}
-			return car
+			return cars
 		})
 	}
 </script>
@@ -179,7 +183,7 @@
 				value={decal.transform.scale}
 				on:input={(e) => {
 					decal.transform.scale = +e.currentTarget.value
-					updateDecalTransform(localCar, slot, decal.transform)
+					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
 				}}
 				class="range range-primary"
 			/>
@@ -194,7 +198,7 @@
 				value={wrapNumber(-decal.transform.rotate, -180, 180)}
 				on:input={(e) => {
 					decal.transform.rotate = wrapNumber(-e.currentTarget.value, 0, 360)
-					updateDecalTransform(localCar, slot, decal.transform)
+					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
 				}}
 				class="range range-secondary"
 			/>

@@ -2,21 +2,10 @@
 	import UserCar from '$lib/components/UserCar.svelte'
 	import type { PageData } from './$types'
 	import { getDesignStores } from '../stores'
-	import { getNewCar } from '$lib/car'
 
 	export let data: PageData
 
-	const { localCar, displayCar } = getDesignStores()
-
-	if (data.newCar && (!$localCar || $localCar.shortId !== 'new')) {
-		console.log('creating new localCar')
-		localCar.set(getNewCar())
-	}
-	if (!data.newCar && data.savedCar) {
-		// TODO: Test SSR
-		console.log('setting localCar to savedCar')
-		localCar.set(data.savedCar)
-	}
+	const { displayCar, designShortId } = getDesignStores()
 </script>
 
 <section class="flex flex-col items-center">
@@ -43,7 +32,7 @@
 		</div> -->
 	{/if}
 	<p class="my-2">Start with the basics:</p>
-	<a class="btn btn-lg btn-primary" href="/design/{$displayCar.shortId}/body"
+	<a class="btn btn-lg btn-primary" href="/design/{$designShortId}/body"
 		><span class="text-2xl top-[-3px] relative">🚌</span> Pick a Body</a
 	>
 	<pre class="text-xs bg-base-300 p-2 mt-2 rounded-box">{JSON.stringify(

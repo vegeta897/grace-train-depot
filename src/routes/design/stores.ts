@@ -2,14 +2,25 @@ import { getNewCar } from '$lib/car'
 import type { Car } from '$lib/types'
 import { defineContext } from '$lib/util'
 import { persisted } from 'svelte-local-storage-store'
-import { derived } from 'svelte/store'
+import { derived, writable } from 'svelte/store'
 
-const localCar = persisted<Car>('choochoo-localCar', getNewCar())
+const localCars = persisted<Record<string, Car>>('choochoo-localCar', {})
+const displayCars = derived(
+	localCars,
+	($localCars) => ($localCars || {}) as Readonly<Record<string, Readonly<Car>>>
+)
+const designShortId = writable<string>('new')
 const displayCar = derived(
-	localCar,
-	($localCar) => ($localCar || getNewCar()) as Readonly<Car>
+	[displayCars, designShortId],
+	([$displayCars, $designShortId]) =>
+		$displayCars[$designShortId] || (getNewCar() as Readonly<Car>)
 )
 
-export const getDesignStores = defineContext({ localCar, displayCar })
+export const getDesignStores = defineContext({
+	localCars: localCars,
+	displayCars: displayCars,
+	designShortId,
+	displayCar,
+})
 
 export type DesignStores = ReturnType<typeof getDesignStores>

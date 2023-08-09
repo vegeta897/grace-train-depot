@@ -2,8 +2,32 @@
 	import { page } from '$app/stores'
 	import { fly } from 'svelte/transition'
 	import { getDesignStores } from '../stores'
+	import type { LayoutData } from './$types'
+	import { getNewCar } from '$lib/car'
 
-	const { displayCar } = getDesignStores()
+	export let data: LayoutData
+
+	const { localCars, displayCars, designShortId } = getDesignStores()
+
+	// TODO: Only overwrite local car from saved car if lastModified is newer
+	// Warn if refresh/navigate is attempted without saving?
+
+	designShortId.set(data.designShortId)
+	if ($designShortId === 'new' && !$displayCars.new) {
+		console.log('adding new car to localCars')
+		localCars.update((lc) => {
+			lc.new = getNewCar()
+			return lc
+		})
+	}
+	if ($designShortId !== 'new' && data.savedCar) {
+		// TODO: Test SSR
+		console.log('adding savedCar to localCars')
+		localCars.update((lc) => {
+			lc[$designShortId] = data.savedCar!
+			return lc
+		})
+	}
 
 	const pages = [
 		['🚌', 'body'],

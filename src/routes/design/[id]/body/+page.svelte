@@ -5,7 +5,7 @@
 	import { getDesignStores } from '../../stores'
 
 	export let data: PageData
-	const { localCar, displayCar } = getDesignStores()
+	const { displayCar } = getDesignStores()
 
 	// TODO: Defer saving for a faster UX
 	// Maybe use a localstorage-synced svelte store to store user car

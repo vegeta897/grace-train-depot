@@ -1,6 +1,8 @@
 import { invalidateAll } from '$app/navigation'
 import type { DecalData } from './types'
 
+// TODO: All this is deprecated
+
 export async function createDecal(carId: number, decalData: DecalData) {
 	const createResponse = await fetch('/api/car/decal', {
 		method: 'POST',

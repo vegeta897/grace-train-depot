@@ -1,4 +1,3 @@
-import { invalidateAll } from '$app/navigation'
 import type { Car, DecalData } from '$lib/types'
 import { Prisma } from '@prisma/client'
 import { cloneDecal } from './decal'
@@ -9,16 +8,6 @@ const carWithDecals = Prisma.validator<Prisma.CarDefaultArgs>()({
 	include: { decals: true },
 })
 type CarWithDecals = Prisma.CarGetPayload<typeof carWithDecals>
-
-export async function updateCar(carId: number, carData: Partial<Car>) {
-	const updateResponse = await fetch('/api/car', {
-		method: 'PUT',
-		body: JSON.stringify({ carId, carData }),
-		headers: { 'content-type': 'application/json' },
-	})
-	invalidateAll()
-	console.log('posted,', await updateResponse.json())
-}
 
 export function transformCarFromDB(carData: CarWithDecals): Car {
 	return {

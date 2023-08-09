@@ -8,7 +8,7 @@
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../../stores'
 
-	const { localCar, displayCar } = getDesignStores()
+	const { localCars, designShortId, displayCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
 
 	// resetDecals()
@@ -28,16 +28,16 @@
 			slot: 0, // Will be overwritten below
 			new: true,
 		}
-		localCar.update((car) => {
+		localCars.update((cars) => {
 			if (beforeOrAfter > 0) {
-				car.decals.push(newDecal)
+				cars[$designShortId].decals.push(newDecal)
 			} else {
-				car.decals.unshift(newDecal)
+				cars[$designShortId].decals.unshift(newDecal)
 			}
-			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
-			newDecal.fill = DECAL_COLORS[car.decals.length - 1]
+			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+			newDecal.fill = DECAL_COLORS[cars[$designShortId].decals.length - 1]
 			selectedSlot.set(newDecal.slot)
-			return car
+			return cars
 		})
 	}
 

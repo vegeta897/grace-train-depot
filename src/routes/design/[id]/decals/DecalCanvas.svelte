@@ -14,7 +14,7 @@
 
 	export let car: Car
 
-	const { localCar, displayCar } = getDesignStores()
+	const { localCars, designShortId, displayCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
 
 	$: draggables = $displayCar.decals.map((d) => ({ id: d.id, ...d.transform }))
@@ -39,7 +39,7 @@
 		const transform = draggables[slot]
 		transform.x = dragging.x + (offsetX - dragging.x) / canvasScale
 		transform.y = dragging.y + (offsetY - dragging.y) / canvasScale
-		updateDecalTransform(localCar, slot, transform)
+		updateDecalTransform(localCars, $designShortId, slot, transform)
 	}
 	const onDragEnd = () => {
 		dragging = null
@@ -131,7 +131,7 @@
 		if (rotating) rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
 		const operation = resizing || rotating
 		if (!operation) return
-		updateDecalTransform(localCar, operation.slot, operation.transform)
+		updateDecalTransform(localCars, $designShortId, operation.slot, operation.transform)
 	}
 	async function onPointerUp() {
 		if (!resizing && !rotating) return

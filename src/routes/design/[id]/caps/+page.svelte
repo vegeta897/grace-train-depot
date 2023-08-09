@@ -1,7 +1,7 @@
 <script lang="ts">
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { ContainerSvg } from 'grace-train-lib'
-	import type { PageData } from './$types'
+	import type { PageData } from '../toppers/$types'
 	import { updateCar } from '$lib/car'
 	import type { Car } from '$lib/types'
 	import { getDesignStores } from '../../stores'

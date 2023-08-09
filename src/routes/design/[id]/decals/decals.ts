@@ -2,17 +2,18 @@ import type { Transform } from '$lib/types'
 import type { DesignStores } from '../../stores'
 
 export function updateDecalTransform(
-	car: DesignStores['localCar'],
+	cars: DesignStores['localCars'],
+	shortId: string,
 	slot: number,
 	transform: Transform
 ) {
-	car.update((car) => {
-		car.decals[slot].transform = {
+	cars.update((c) => {
+		c[shortId].decals[slot].transform = {
 			x: Math.round(transform.x),
 			y: Math.round(transform.y),
-			scale: transform.scale,
-			rotate: transform.rotate,
+			scale: Math.round(transform.scale * 100) / 100,
+			rotate: Math.round(transform.rotate * 10) / 10,
 		}
-		return car
+		return c
 	})
 }
