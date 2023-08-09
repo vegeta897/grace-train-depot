@@ -29,8 +29,14 @@
 			>
 			There was a problem saving your design.<br />Please refresh the page and try again.
 		</div>
-	{:else if data.designShortId === 'new'}
-		<p class="text-lg font-bold mt-6">What a cool car!</p>
+	{:else}
+		<p class="text-lg font-bold mt-6">
+			{#if $page.params.id === 'new'}
+				What a cool car!
+			{:else}
+				Looking good!
+			{/if}
+		</p>
 	{/if}
 	{#if data.user}
 		<form

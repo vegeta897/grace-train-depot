@@ -12,7 +12,7 @@
 	// TODO: Only overwrite local car from saved car if lastModified is newer
 	// Warn if refresh/navigate is attempted without saving?
 
-	designShortId.set(data.designShortId)
+	designShortId.set($page.params.id)
 	if ($designShortId === 'new' && !$displayCars.new) {
 		console.log('adding new car to localCars')
 		localCars.update((lc) => {
