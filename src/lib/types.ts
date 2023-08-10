@@ -21,6 +21,7 @@ export type DecalData = {
 export type Car = {
 	id: number
 	shortId: string
+	name?: string
 	body: BodyName
 	decals: DecalData[]
 	wheels: {

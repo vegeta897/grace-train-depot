@@ -23,10 +23,15 @@
 					<a
 						href="/design/{car.shortId}"
 						data-sveltekit-preload-data="tap"
-						class="nunito btn btn-block h-32 text-8xl btn-hover-grow"
+						class="nunito btn btn-block h-[8.5rem] text-xl btn-hover-grow"
 					>
-						<div class="w-28">
-							<UserCar {car} />
+						<div class="flex flex-col items-center normal-case gap-1">
+							<div class="w-24">
+								<UserCar {car} />
+							</div>
+							{#if car.name}
+								{car.name}
+							{/if}
 						</div>
 					</a>
 				{/each}

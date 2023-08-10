@@ -13,6 +13,7 @@ export function transformCarFromDB(carData: CarWithDecals): Car {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
+		name: carData.name || undefined,
 		body: carData.body as Car['body'],
 		wheels: {
 			color: carData.wheelColor,

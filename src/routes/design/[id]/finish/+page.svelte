@@ -43,9 +43,22 @@
 			action="?/publish"
 			method="POST"
 			use:enhance
-			class="bg-base-200 p-6 rounded-box flex flex-col mt-4 gap-2"
+			class="bg-base-200 p-6 rounded-box flex flex-col mt-4 gap-3"
 		>
 			<input type="hidden" name="carData" value={JSON.stringify($displayCar)} />
+			<div class="form-control w-full max-w-xs">
+				<label for="carName" class="label">
+					<span class="label-text">Name this design</span>
+					<span class="label-text-alt opacity-70">optional</span>
+				</label>
+				<input
+					type="text"
+					name="carName"
+					class="input w-full max-w-xs"
+					value={$displayCar.name || ''}
+					placeholder="Type here"
+				/>
+			</div>
 			<button class="btn btn-primary btn-lg">Publish Car</button>
 			<button
 				formaction="?/save"

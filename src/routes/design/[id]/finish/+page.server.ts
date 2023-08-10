@@ -17,8 +17,10 @@ export const actions = {
 			throw redirect(302, `/login?redirectTo=/design/${event.params.id}/finish`)
 		let carData: Car
 		try {
-			const carDataJSON = (await event.request.formData()).get('carData')
+			const formData = await event.request.formData()
+			const carDataJSON = formData.get('carData')
 			carData = JSON.parse(carDataJSON!.toString())
+			carData.name = formData.get('carName')?.toString()
 		} catch (e) {
 			return fail(400, { invalid: true })
 		}
@@ -69,6 +71,7 @@ export const actions = {
 
 function transformCarToDB(car: Car) {
 	return {
+		name: car.name || null,
 		body: car.body,
 		wheelColor: car.wheels.color,
 		wheelFromCenter: car.wheels.fromCenter,

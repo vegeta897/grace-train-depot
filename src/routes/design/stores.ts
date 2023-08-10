@@ -24,3 +24,6 @@ export const getDesignStores = defineContext({
 })
 
 export type DesignStores = ReturnType<typeof getDesignStores>
+
+// TODO: Export function to update currently designed car
+// hasContext?
