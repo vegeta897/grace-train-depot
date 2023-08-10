@@ -14,7 +14,7 @@
 
 	$: decal = $displayCar.decals[slot]
 
-	let toolMode: null | 'shape' | 'color' | 'scale' | 'rotate' | 'order' = null
+	let toolMode: null | 'shape' | 'color' | 'scale' | 'rotate' = null
 
 	const setToolMode = (mode: typeof toolMode) =>
 		(toolMode = toolMode === mode ? null : mode)
@@ -71,7 +71,7 @@
 	}
 </script>
 
-<div class="nunito my-2 grid grid-cols-4 gap-2">
+<div class="nunito grid grid-cols-4 gap-2">
 	<button
 		on:click={() => setToolMode('scale')}
 		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"

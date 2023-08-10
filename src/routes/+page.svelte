@@ -7,6 +7,7 @@
 	export let data: PageData
 </script>
 
+<!-- TODO: Apply this vertical centering only to the hero unit -->
 <section class="flex flex-col items-center justify-center p-4 md:p-8 h-[75vh]">
 	{#if data.user}
 		<!-- TODO: Move this to a /me or /depot route? -->
@@ -22,9 +23,9 @@
 					<a
 						href="/design/{car.shortId}"
 						data-sveltekit-preload-data="tap"
-						class="nunito btn btn-block h-32 text-8xl"
+						class="nunito btn btn-block h-32 text-8xl btn-hover-grow"
 					>
-						<div class="w-32">
+						<div class="w-28">
 							<UserCar {car} />
 						</div>
 					</a>

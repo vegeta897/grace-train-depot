@@ -55,9 +55,9 @@
 
 <section>
 	<div class="px-4 mb-4"><DecalCanvas car={$displayCar} /></div>
-	<div class="bg-neutral rounded-box px-3 py-3 mb-4">
+	<div class="bg-neutral rounded-box px-3 py-4 flex flex-col gap-4">
 		<ol
-			class="flex justify-center gap-2 h-16 mt-1 mb-4 nunito"
+			class="flex justify-center gap-2 h-16 nunito"
 			class:max-sm:gap-1={$displayCar.decals.length >= 3}
 		>
 			{#if $displayCar.decals.length < DECAL_MAX_SLOTS - 1 && $displayCar.decals.length > 0}
