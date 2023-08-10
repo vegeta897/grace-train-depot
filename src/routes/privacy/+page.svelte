@@ -12,8 +12,8 @@
 	<h3 class="text-xl font-bold">User Sessions</h3>
 	<p>
 		This site uses cookies to track user sessions, so you don't have to log in every time
-		you visit. The cookies are just a long string of randomly generated characters. These
-		strings are only meaningful to our server, which links them to Twitch users.
+		you visit. A session cookie just a long string of randomly generated characters. These
+		strings are only meaningful to our server, which associates them with Twitch users.
 	</p>
 	<h3 class="text-xl font-bold">Your Content</h3>
 	<p>

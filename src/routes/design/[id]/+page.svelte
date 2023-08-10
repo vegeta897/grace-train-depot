@@ -26,7 +26,7 @@
 				></path></svg
 			>
 			<p class="text-sm lg:text-base">
-				<a href="login" class="link font-bold">Link your Twitch account</a> to appear in Grace
+				<a href="/login" class="link font-bold">Link your Twitch account</a> to appear in Grace
 				Trains! You may do this at any time.
 			</p>
 		</div> -->

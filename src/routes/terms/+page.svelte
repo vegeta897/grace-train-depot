@@ -1,9 +1,10 @@
+<!-- Maybe combine this with /privacy -->
 <section class="flex flex-col gap-4 lg:px-8 px-4">
 	<h2 class="text-2xl font-bold">Terms of Use</h2>
 	<h3 class="text-xl font-bold">Privacy Acknowledgment</h3>
 	<p>
 		By using this site, you agree to the use of your Twitch identity and data as outlined
-		in the <a class="link" href="privacy">Privacy</a> statement.
+		in the <a class="link" href="/privacy">Privacy</a> statement.
 	</p>
 	<h3 class="text-xl font-bold">Content & User Moderation</h3>
 	<p>

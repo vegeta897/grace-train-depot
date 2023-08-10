@@ -14,13 +14,13 @@
 			<h2 class="mb-4 text-xl">Hello, {data.user.twitchDisplayName}!</h2>
 			<div class="grid grid-cols-1 gap-y-4">
 				<a
-					href="design/new"
+					href="/design/new"
 					data-sveltekit-preload-data="tap"
 					class="nunito btn btn-outline btn-block h-32 text-8xl">+</a
 				>
 				{#each data.savedCars as car}
 					<a
-						href="design/{car.shortId}"
+						href="/design/{car.shortId}"
 						data-sveltekit-preload-data="tap"
 						class="nunito btn btn-block h-32 text-8xl"
 					>
@@ -63,8 +63,8 @@
 						<p class="py-2">Design your own cars and watch them on stream!</p>
 					</div>
 					<div class="max-w-lg flex flex-col items-center">
-						<a href="login" class="nunito btn-secondary btn btn-lg mb-4">Twitch Login</a>
-						<a href="design/new" class="link opacity-70 hover:opacity-100"
+						<a href="/login" class="nunito btn-secondary btn btn-lg mb-4">Twitch Login</a>
+						<a href="/design/new" class="link opacity-70 hover:opacity-100"
 							>Just start designing</a
 						>
 					</div>

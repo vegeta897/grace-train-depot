@@ -16,6 +16,7 @@
 				viewBox="-50 -50 100 100"
 				class="w-8 xs:w-10"
 			>
+				<!-- TODO: Define default colors for decals -->
 				<Decal {name} {fill} />
 			</svg>
 		</button>
