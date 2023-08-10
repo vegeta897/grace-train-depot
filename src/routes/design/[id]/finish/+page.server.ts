@@ -5,6 +5,8 @@ import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
+// TODO: Validation on things like colors, decal count, etc
+
 export const actions = {
 	save: async (event) => {
 		console.log('finish save event!')
