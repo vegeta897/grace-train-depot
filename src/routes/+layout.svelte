@@ -6,6 +6,9 @@
 	import './styles.css'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { page } from '$app/stores'
+	import type { LayoutData } from './$types'
+
+	export let data: LayoutData
 
 	let menuElement: HTMLDetailsElement
 
@@ -65,9 +68,16 @@
 					<li>
 						<a on:click={closeMenu} href="/privacy" class="justify-end">Privacy</a>
 					</li>
-					<li>
-						<a on:click={closeMenu} href="/logout" class="justify-end">Log out</a>
-					</li>
+					{#if data.user}
+						<li>
+							<a
+								data-sveltekit-reload
+								on:click={closeMenu}
+								href="/logout"
+								class="justify-end">Log out</a
+							>
+						</li>
+					{/if}
 				</ul>
 			</details>
 		</nav>

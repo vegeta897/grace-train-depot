@@ -8,16 +8,16 @@
 </script>
 
 <!-- TODO: Apply this vertical centering only to the hero unit -->
-<section class="flex flex-col items-center justify-center p-4 md:p-8 h-[75vh]">
-	{#if data.user}
+{#if data.user}
+	<section class="flex flex-col items-center justify-center p-4 md:p-8">
 		<!-- TODO: Move this to a /me or /depot route? -->
-		<div class="w-full max-w-lg rounded-2xl bg-neutral p-6 md:p-10">
+		<div class="w-full max-w-lg sm:max-w-full rounded-2xl bg-neutral p-6 md:p-10">
 			<h2 class="mb-4 text-xl">Hello, {data.user.twitchDisplayName}!</h2>
-			<div class="grid grid-cols-1 gap-y-4">
+			<div class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
 				<a
 					href="/design/new"
 					data-sveltekit-preload-data="tap"
-					class="nunito btn btn-outline btn-block h-32 text-8xl">+</a
+					class="nunito btn btn-outline btn-block h-[8.5rem] text-8xl">+</a
 				>
 				{#each data.savedCars as car}
 					<a
@@ -37,7 +37,9 @@
 				{/each}
 			</div>
 		</div>
-	{:else}
+	</section>
+{:else}
+	<section class="flex flex-col items-center justify-center p-4 md:p-8 h-[75vh]">
 		<div class="hero bg-base-200 max-w-3xl rounded-2xl sm:py-8 pb-4">
 			<div class="hero-content px-6 flex-col min-w-0 max-w-full">
 				<div
@@ -69,7 +71,11 @@
 						<p class="py-2">Design your own cars and watch them on stream!</p>
 					</div>
 					<div class="max-w-lg flex flex-col items-center">
-						<a href="/login" class="nunito btn-secondary btn btn-lg mb-4">Twitch Login</a>
+						<a
+							href="/login"
+							data-sveltekit-reload
+							class="nunito btn-secondary btn btn-lg mb-4">Twitch Login</a
+						>
 						<a href="/design/new" class="link opacity-70 hover:opacity-100"
 							>Just start designing</a
 						>
@@ -77,8 +83,8 @@
 				</div>
 			</div>
 		</div>
-	{/if}
-</section>
+	</section>
+{/if}
 
 <style>
 	.train-scroll {
