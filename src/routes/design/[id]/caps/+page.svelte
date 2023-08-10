@@ -1,11 +1,9 @@
 <script lang="ts">
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { ContainerSvg } from 'grace-train-lib'
-	import type { PageData } from './$types'
 	import type { Car } from '$lib/types'
 	import { getDesignStores } from '../../stores'
 
-	export let data: PageData
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
 
 	const { displayCar } = getDesignStores()
