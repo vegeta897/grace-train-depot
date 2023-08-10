@@ -1,25 +1,27 @@
 <script lang="ts">
 	import UserCar from '$lib/components/UserCar.svelte'
-	import { BODY_NAMES } from 'grace-train-lib'
-	import type { PageData } from './$types'
+	import { BODY_NAMES, type BodyName } from 'grace-train-lib'
 	import { getDesignStores } from '../../stores'
 
-	export let data: PageData
-	const { displayCar } = getDesignStores()
+	const { displayCar, localCars, designShortId } = getDesignStores()
 
-	// TODO: Defer saving for a faster UX
-	// Maybe use a localstorage-synced svelte store to store user car
-	// Create a module to handle all updates to user car
-	// Send changed properties to server
-	// Export saved/unsaved status (make a component?) to display on design pages
-	// Or just add to /design/+layout.svelte
+	function setBody(name: BodyName) {
+		localCars.update((cars) => {
+			cars[$designShortId].body = name
+			return cars
+		})
+	}
 </script>
 
 <section>
 	<div class="nunito mb-8 flex flex-col space-y-2">
 		{#each BODY_NAMES as name}
 			{@const current = $displayCar.body === name}
-			<button class="btn-lg btn h-32 justify-start gap-8 text-xl" disabled={current}>
+			<button
+				class="btn-lg btn h-32 justify-start gap-8 text-xl"
+				on:click={() => setBody(name)}
+				disabled={current}
+			>
 				<div class="w-32"><UserCar car={$displayCar} bodyOverride={name} /></div>
 				{name}
 			</button>
