@@ -1,20 +1,36 @@
 <script lang="ts">
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { getDesignStores } from '../../stores'
-	import type { ActionData, PageData } from './$types'
+	import type { ActionData, PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
-	import { enhance } from '$app/forms'
+	import { applyAction, enhance } from '$app/forms'
 
 	export let data: PageData
 	export let form: ActionData
 
 	const { displayCar } = getDesignStores()
+
+	let saveError: 'try-again' | null = null
+
+	const onSave: SubmitFunction = () => {
+		console.log('onSave begin')
+		saveError = null
+		return async ({ result }) => {
+			console.log('callback begin', result.status, result.type)
+			if (result.type === 'error') {
+				console.log(result.error)
+				saveError = 'try-again'
+			} else {
+				await applyAction(result)
+			}
+		}
+	}
 </script>
 
 <section class="flex flex-col items-center">
 	<div class="w-64"><UserCar car={$displayCar} /></div>
-	{#if form?.invalid}
-		<div class="alert mt-4 alert-error">
+	{#if form?.invalid || saveError === 'try-again'}
+		<div class="alert mt-4 alert-error w-auto">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="stroke-current shrink-0 h-6 w-6"
@@ -42,7 +58,7 @@
 		<form
 			action="?/publish"
 			method="POST"
-			use:enhance
+			use:enhance={onSave}
 			class="bg-base-200 p-6 rounded-box flex flex-col mt-4 gap-3"
 		>
 			<input type="hidden" name="carData" value={JSON.stringify($displayCar)} />
