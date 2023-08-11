@@ -59,7 +59,7 @@
 			action="?/publish"
 			method="POST"
 			use:enhance={onSave}
-			class="bg-base-200 p-6 rounded-box flex flex-col mt-4 gap-3"
+			class="bg-neutral p-6 rounded-box flex flex-col mt-4 gap-3"
 		>
 			<input type="hidden" name="carData" value={JSON.stringify($displayCar)} />
 			<div class="form-control w-full max-w-xs">
@@ -75,11 +75,13 @@
 					placeholder="Type here"
 				/>
 			</div>
-			<button class="btn btn-primary btn-lg">Publish Car</button>
+			<button class="btn btn-primary btn-lg"
+				>{#if $displayCar.published}Save{:else}Publish{/if} Car</button
+			>
 			<button
 				formaction="?/save"
 				class="btn btn-sm text-base-content btn-link normal-case"
-				>Save without publishing</button
+				>Save {#if $displayCar.published}and move to drafts{:else}without publishing{/if}</button
 			>
 		</form>
 	{:else}

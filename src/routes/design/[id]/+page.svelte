@@ -2,15 +2,17 @@
 	import UserCar from '$lib/components/UserCar.svelte'
 	import type { PageData } from './$types'
 	import { getDesignStores } from '../stores'
+	import { enhance } from '$app/forms'
 
 	export let data: PageData
 
 	const { displayCar, designShortId } = getDesignStores()
+
+	let deleteMode = false
 </script>
 
-<section class="flex flex-col items-center">
-	<div class="lg:my-6 my-4 w-48 lg:w-64"><UserCar car={$displayCar} /></div>
-	<p class="my-2 text-xl">Let's design a Grace Train car!</p>
+<section class="flex flex-col items-center gap-4">
+	<div class="w-48 lg:w-64"><UserCar car={$displayCar} /></div>
 	{#if !data.user}
 		<!-- <div class="alert mt-8">
 			<svg
@@ -31,10 +33,59 @@
 			</p>
 		</div> -->
 	{/if}
-	<p class="my-2">Start with the basics:</p>
-	<a class="btn btn-lg btn-primary" href="/design/{$designShortId}/body"
-		><span class="text-2xl top-[-3px] relative">🚌</span> Pick a Body</a
-	>
+	<h3 class="font-bold nunito text-3xl flex gap-2 items-center">
+		{#if $displayCar.name}<span>{$displayCar.name}</span>{/if}
+		<span
+			class="badge uppercase"
+			class:badge-primary={$displayCar.published}
+			class:badge-warning={!$displayCar.published}
+		>
+			{#if $displayCar.published}Live{:else}Draft{/if}
+		</span>
+	</h3>
+	<div class="bg-neutral p-6 rounded-box flex flex-col items-center gap-4">
+		{#if $designShortId === 'new'}
+			<p class="text-xl">Let's design a Grace Train car!</p>
+			<p>Start with the basics:</p>
+			<a class="btn btn-lg" href="/design/{$designShortId}/body"
+				><span class="text-2xl top-[-3px] relative">🚌</span> Pick a Body</a
+			>
+		{:else}
+			<!-- TODO: Suggest a page based on existing design -->
+			<p class="text-xl">How about a new set of wheels?</p>
+			<a class="btn btn-lg" href="/design/{$designShortId}/wheels"
+				><span class="text-2xl relative">🎡</span> Wheels</a
+			>
+			<div class="divider my-0"></div>
+			{#if deleteMode}
+				<div class="alert alert-error">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="stroke-current shrink-0 h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+						/></svg
+					>
+					<span>Are you sure you want to delete this car? This cannot be undone!</span>
+				</div>
+				<div class="flex gap-4">
+					<button class="btn" on:click={() => (deleteMode = false)}>Cancel</button>
+					<form action="?/delete" method="POST" use:enhance>
+						<button class="btn hover:btn-error">🗑️ Delete it!</button>
+					</form>
+				</div>
+			{:else}
+				<button class="btn btn-error" on:click={() => (deleteMode = true)}
+					>Delete Car</button
+				>
+			{/if}
+		{/if}
+	</div>
 	<pre class="text-xs bg-base-300 p-2 mt-2 rounded-box">{JSON.stringify(
 			data,
 			null,

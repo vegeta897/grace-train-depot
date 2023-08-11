@@ -14,7 +14,6 @@
 
 	designShortId.set($page.params.id)
 	if ($designShortId === 'new' && !$displayCars.new) {
-		console.log('adding new car to localCars')
 		localCars.update((lc) => {
 			lc.new = getNewCar()
 			return lc
@@ -22,7 +21,6 @@
 	}
 	if ($designShortId !== 'new' && data.savedCar) {
 		// TODO: Test SSR
-		console.log('adding savedCar to localCars')
 		localCars.update((lc) => {
 			lc[$designShortId] = data.savedCar!
 			return lc
@@ -46,7 +44,7 @@
 	$: currentPage = $page.route.id?.split('/')[3]
 </script>
 
-<div class="lg:flex lg:items-start max-w-2xl lg:max-w-full mx-auto">
+<div class="lg:flex lg:items-start mt-4 max-w-2xl lg:max-w-full mx-auto">
 	<div class="hidden w-80 flex-col shrink-0 lg:flex">
 		<div class="rounded-box bg-neutral space-y-2 p-6 flex flex-col">
 			<!-- <div class="flex items-baseline justify-between px-2">
@@ -65,23 +63,6 @@
 				</a>
 			{/each}
 		</div>
-		{#if currentPage && $page.params.id !== 'new'}
-			<div class="rounded-box bg-neutral mt-4 p-6 justify-between items-baseline flex">
-				<!-- <span class="badge badge-lg opacity-80">Saved</span> -->
-				<!-- <span class="badge badge-lg badge-warning">Unsaved</span> -->
-				<!-- <span
-				class="badge badge-lg transition-all"
-				style:transition-duration="0.5s"
-				class:badge-success={!saving}
-				class:badge-warning={saving}>{saving ? 'Saving' : 'Saved'}</span
-			> -->
-				<label class="label cursor-pointer">
-					<span class="label-text text-base">Auto-save</span>
-					<input type="checkbox" checked class="checkbox checkbox-info ml-2" />
-				</label>
-				<button class="btn nunito btn-success">Save</button>
-			</div>
-		{/if}
 	</div>
 	<div class="grow flex flex-col items-center min-w-0">
 		<div

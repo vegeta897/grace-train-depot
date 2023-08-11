@@ -26,7 +26,7 @@
 </svelte:head>
 <div class="mx-auto w-full max-w-5xl pb-4 lg:p-4">
 	<header
-		class="navbar grid grid-cols-3 mb-4 bg-base-200 min-h-12 lg:min-h-16 p-0 px-6 lg:rounded-box"
+		class="navbar grid grid-cols-3 bg-base-200 min-h-12 lg:min-h-16 p-0 px-6 lg:rounded-box"
 	>
 		<!-- <h1 class="nunito text-left text-3xl uppercase">
 			🚂

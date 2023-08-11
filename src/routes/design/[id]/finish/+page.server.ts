@@ -11,13 +11,12 @@ export const actions = {
 	save: async (event) => {
 		console.log('finish save event!')
 	},
-	publish: async (event) => {
-		const session = await event.locals.auth.validate()
-		if (!session)
-			throw redirect(302, `/login?redirectTo=/design/${event.params.id}/finish`)
+	publish: async ({ locals, params, request }) => {
+		const session = await locals.auth.validate()
+		if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}/finish`)
 		let carData: Car
 		try {
-			const formData = await event.request.formData()
+			const formData = await request.formData()
 			const carDataJSON = formData.get('carData')
 			carData = JSON.parse(carDataJSON!.toString())
 			carData.name = formData.get('carName')?.toString()
@@ -29,6 +28,7 @@ export const actions = {
 			await prisma.car.create({
 				data: {
 					shortId: generateCarShortId(),
+					published: true,
 					...transformCarToDB(carData),
 					userId: session.user.userId,
 					decals: { create: carData.decals.map(transformDecalToDB) },
@@ -42,6 +42,7 @@ export const actions = {
 				const updatedCar = await prisma.car.update({
 					where: { id: carData.id, userId: session.user.userId },
 					data: {
+						published: true,
 						...transformCarToDB(carData),
 						decals: {
 							deleteMany: { NOT: updatedDecals.map(({ id }) => ({ id })) },

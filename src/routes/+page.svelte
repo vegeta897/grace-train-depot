@@ -3,37 +3,68 @@
 	import { Body } from 'grace-train-lib'
 	import type { PageData } from './$types'
 	import { DECAL_COLORS } from '$lib/common/constants'
+	import { page } from '$app/stores'
 
 	export let data: PageData
+
+	const carDeleted = $page.url.searchParams.get('carDeleted')
 </script>
 
-<!-- TODO: Apply this vertical centering only to the hero unit -->
 {#if data.user}
-	<section class="flex flex-col items-center justify-center p-4 md:p-8">
-		<!-- TODO: Move this to a /me or /depot route? -->
+	<!-- TODO: Move this to a /me or /depot route? -->
+	<section class="p-4 md:p-8 flex flex-col gap-4 items-center">
+		{#if carDeleted}
+			<div class="alert alert-info w-auto">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="stroke-current shrink-0 h-6 w-6"
+					fill="none"
+					viewBox="0 0 24 24"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+					/></svg
+				>
+				Car deleted
+			</div>
+		{/if}
 		<div class="w-full max-w-lg sm:max-w-full rounded-2xl bg-neutral p-6 md:p-10">
 			<h2 class="mb-4 text-xl">Hello, {data.user.twitchDisplayName}!</h2>
 			<div class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-				<a
-					href="/design/new"
-					data-sveltekit-preload-data="tap"
-					class="nunito btn btn-outline btn-block h-[8.5rem] text-8xl">+</a
-				>
-				{#each data.savedCars as car}
+				<div class="tooltip tooltip-bottom tooltip-success" data-tip="Make a new car">
 					<a
-						href="/design/{car.shortId}"
+						href="/design/new"
 						data-sveltekit-preload-data="tap"
-						class="nunito btn btn-block h-[8.5rem] text-xl btn-hover-grow"
+						class="nunito btn btn-outline btn-block h-[8.75rem] text-8xl">+</a
 					>
-						<div class="flex flex-col items-center normal-case gap-1">
-							<div class="w-24">
-								<UserCar {car} />
+				</div>
+				<!-- TODO: Maybe separate live cars vs drafts -->
+				{#each data.savedCars as car}
+					<div class="indicator w-full">
+						<span
+							class="nunito indicator-item badge indicator-center indicator-bottom uppercase"
+							class:badge-primary={car.published}
+							class:badge-warning={!car.published}
+						>
+							{#if car.published}Live{:else}Draft{/if}
+						</span>
+						<a
+							href="/design/{car.shortId}"
+							data-sveltekit-preload-data="tap"
+							class="nunito btn btn-block h-[8.75rem] text-xl btn-hover-grow"
+						>
+							<div class="flex flex-col items-center normal-case gap-1">
+								<div class="w-24">
+									<UserCar {car} />
+								</div>
+								{#if car.name}
+									{car.name}
+								{/if}
 							</div>
-							{#if car.name}
-								{car.name}
-							{/if}
-						</div>
-					</a>
+						</a>
+					</div>
 				{/each}
 			</div>
 		</div>
