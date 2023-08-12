@@ -30,10 +30,10 @@
 <section class="flex flex-col items-center">
 	<div class="w-64"><UserCar car={$displayCar} /></div>
 	{#if form?.invalid || saveError === 'try-again'}
-		<div class="alert mt-4 alert-error w-auto">
+		<div class="alert alert-error mt-4 w-auto">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="stroke-current shrink-0 h-6 w-6"
+				class="h-6 w-6 shrink-0 stroke-current"
 				fill="none"
 				viewBox="0 0 24 24"
 				><path
@@ -46,7 +46,7 @@
 			There was a problem saving your design.<br />Please refresh the page and try again.
 		</div>
 	{:else}
-		<p class="text-lg font-bold mt-6">
+		<p class="mt-6 text-lg font-bold">
 			{#if $page.params.id === 'new'}
 				What a cool car!
 			{:else}
@@ -59,7 +59,7 @@
 			action="?/publish"
 			method="POST"
 			use:enhance={onSave}
-			class="bg-neutral p-6 rounded-box flex flex-col mt-4 gap-3"
+			class="rounded-box mt-4 flex flex-col gap-3 bg-neutral p-6"
 		>
 			<input type="hidden" name="carData" value={JSON.stringify($displayCar)} />
 			<div class="form-control w-full max-w-xs">
@@ -80,7 +80,7 @@
 			>
 			<button
 				formaction="?/save"
-				class="btn btn-sm text-base-content btn-link normal-case"
+				class="btn btn-link btn-sm normal-case text-base-content"
 				>Save {#if $displayCar.published}and move to drafts{:else}without publishing{/if}</button
 			>
 		</form>
@@ -88,7 +88,7 @@
 		<div class="alert mt-4">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="stroke-current shrink-0 h-6 w-6"
+				class="h-6 w-6 shrink-0 stroke-current"
 				fill="none"
 				viewBox="0 0 24 24"
 				><path
@@ -105,7 +105,7 @@
 			<p>
 				<a
 					href="/login?redirectTo={$page.url.pathname + $page.url.search}"
-					class="nunito btn-secondary btn btn-lg">Twitch Login</a
+					class="nunito btn btn-secondary btn-lg">Twitch Login</a
 				>
 			</p>
 		</div>

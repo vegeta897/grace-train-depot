@@ -18,7 +18,7 @@
 		{#each BODY_NAMES as name}
 			{@const current = $displayCar.body === name}
 			<button
-				class="btn-lg btn h-32 justify-start gap-8 text-xl"
+				class="btn btn-lg h-32 justify-start gap-8 text-xl"
 				on:click={() => setBody(name)}
 				disabled={current}
 			>

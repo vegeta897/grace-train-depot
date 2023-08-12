@@ -33,7 +33,7 @@
 			</p>
 		</div> -->
 	{/if}
-	<h3 class="font-bold nunito text-3xl flex gap-2 items-center">
+	<h3 class="nunito flex items-center gap-2 text-3xl font-bold">
 		{#if $displayCar.name}<span>{$displayCar.name}</span>{/if}
 		<span
 			class="badge uppercase"
@@ -43,25 +43,25 @@
 			{#if $displayCar.published}Live{:else}Draft{/if}
 		</span>
 	</h3>
-	<div class="bg-neutral p-6 rounded-box flex flex-col items-center gap-4">
+	<div class="rounded-box flex flex-col items-center gap-4 bg-neutral p-6">
 		{#if $designShortId === 'new'}
 			<p class="text-xl">Let's design a Grace Train car!</p>
 			<p>Start with the basics:</p>
 			<a class="btn btn-lg" href="/design/{$designShortId}/body"
-				><span class="text-2xl top-[-3px] relative">🚌</span> Pick a Body</a
+				><span class="relative top-[-3px] text-2xl">🚌</span> Pick a Body</a
 			>
 		{:else}
 			<!-- TODO: Suggest a page based on existing design -->
 			<p class="text-xl">How about a new set of wheels?</p>
 			<a class="btn btn-lg" href="/design/{$designShortId}/wheels"
-				><span class="text-2xl relative">🎡</span> Wheels</a
+				><span class="relative text-2xl">🎡</span> Wheels</a
 			>
 			<div class="divider my-0"></div>
 			{#if deleteMode}
 				<div class="alert alert-error">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="stroke-current shrink-0 h-6 w-6"
+						class="h-6 w-6 shrink-0 stroke-current"
 						fill="none"
 						viewBox="0 0 24 24"
 						><path
@@ -86,7 +86,7 @@
 			{/if}
 		{/if}
 	</div>
-	<pre class="text-xs bg-base-300 p-2 mt-2 rounded-box">{JSON.stringify(
+	<pre class="rounded-box mt-2 bg-base-300 p-2 text-xs">{JSON.stringify(
 			data,
 			null,
 			2

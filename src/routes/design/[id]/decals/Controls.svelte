@@ -74,7 +74,7 @@
 <div class="nunito grid grid-cols-4 gap-2">
 	<button
 		on:click={() => setToolMode('scale')}
-		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+		class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		class:text-primary={toolMode !== 'scale'}
 		class:btn-primary={toolMode === 'scale'}
 	>
@@ -82,7 +82,7 @@
 	</button>
 	<button
 		on:click={() => setToolMode('rotate')}
-		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+		class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		class:text-secondary={toolMode !== 'rotate'}
 		class:btn-secondary={toolMode === 'rotate'}
 	>
@@ -90,7 +90,7 @@
 	</button>
 	<button
 		on:click={() => setToolMode('shape')}
-		class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+		class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		class:btn-active={toolMode === 'shape'}
 	>
 		Shape
@@ -98,7 +98,7 @@
 	{#if toolMode !== 'color'}
 		<button
 			on:click={() => setToolMode('color')}
-			class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+			class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 			style:color={$displayCar.decals[slot].fill}
 		>
 			Color
@@ -106,7 +106,7 @@
 	{:else}
 		<button
 			on:click={() => setToolMode('color')}
-			class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+			class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 			style:background={$displayCar.decals[slot].fill}
 			style:color="hsl(var(--inc))"
 		>
@@ -123,21 +123,21 @@
 	{#if toolMode === null}
 		<button
 			on:click={() => removeDecal()}
-			class="btn-md btn touch-manipulation text-2xl md:text-3xl hover:btn-error"
+			class="btn btn-md touch-manipulation text-2xl hover:btn-error md:text-3xl"
 			>🗑️</button
 		>
 
 		<button
 			on:click={() => orderDecal(-1)}
 			disabled={slot === 0}
-			class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+			class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		>
 			Push
 		</button>
 		<button
 			on:click={() => orderDecal(1)}
 			disabled={slot === $displayCar.decals.length - 1}
-			class="btn-md btn touch-manipulation 2xs:text-lg md:text-xl"
+			class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		>
 			Pull
 		</button>
@@ -150,7 +150,7 @@
 					on:click={() => setDecalColor(color)}
 					on:mouseenter={() => previewDecalColor(color)}
 					on:mouseleave={() => previewDecalColor()}
-					class="btn-lg btn touch-manipulation px-0 btn-hover-grow"
+					class="btn-hover-grow btn btn-lg touch-manipulation px-0"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-8 w-8">
 						<rect width="32" height="32" fill={color} rx="8" />

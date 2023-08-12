@@ -9,7 +9,7 @@
 	{#each DECAL_NAMES as name}
 		<button
 			on:click={() => onClick(name)}
-			class="btn-lg btn touch-manipulation px-0 btn-hover-grow"
+			class="btn-hover-grow btn btn-lg touch-manipulation px-0"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

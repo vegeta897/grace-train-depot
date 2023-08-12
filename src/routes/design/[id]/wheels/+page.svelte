@@ -34,7 +34,7 @@
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each wheelColors as [color, name]}
 			<button
-				class="btn-block btn-lg btn flex h-28 flex-col justify-center gap-2 text-xl lg:h-32 lg:gap-3"
+				class="btn btn-lg btn-block flex h-28 flex-col justify-center gap-2 text-xl lg:h-32 lg:gap-3"
 				on:click={() => setWheelColor(color)}
 			>
 				<ContainerSvg class="h-10 w-10" viewBox="150 225 75 75">

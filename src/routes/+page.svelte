@@ -12,12 +12,12 @@
 
 {#if data.user}
 	<!-- TODO: Move this to a /me or /depot route? -->
-	<section class="p-4 md:p-8 flex flex-col gap-4 items-center">
+	<section class="flex flex-col items-center gap-4 p-4 md:p-8">
 		{#if carDeleted}
 			<div class="alert alert-info w-auto">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="stroke-current shrink-0 h-6 w-6"
+					class="h-6 w-6 shrink-0 stroke-current"
 					fill="none"
 					viewBox="0 0 24 24"
 					><path
@@ -30,10 +30,10 @@
 				Car deleted
 			</div>
 		{/if}
-		<div class="w-full max-w-lg sm:max-w-full rounded-2xl bg-neutral p-6 md:p-10">
+		<div class="w-full max-w-lg rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10">
 			<h2 class="mb-4 text-xl">Hello, {data.user.twitchDisplayName}!</h2>
-			<div class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-				<div class="tooltip tooltip-bottom tooltip-success" data-tip="Make a new car">
+			<div class="grid grid-cols-1 gap-4 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+				<div class="tooltip tooltip-success tooltip-bottom" data-tip="Make a new car">
 					<a
 						href="/design/new"
 						data-sveltekit-preload-data="tap"
@@ -44,7 +44,7 @@
 				{#each data.savedCars as car}
 					<div class="indicator w-full">
 						<span
-							class="nunito indicator-item badge indicator-center indicator-bottom uppercase"
+							class="nunito indicator-center indicator-bottom badge indicator-item uppercase"
 							class:badge-primary={car.published}
 							class:badge-warning={!car.published}
 						>
@@ -53,9 +53,9 @@
 						<a
 							href="/design/{car.shortId}"
 							data-sveltekit-preload-data="tap"
-							class="nunito btn btn-block h-[8.75rem] text-xl btn-hover-grow"
+							class="nunito btn-hover-grow btn btn-block h-[8.75rem] text-xl"
 						>
-							<div class="flex flex-col items-center normal-case gap-1">
+							<div class="flex flex-col items-center gap-1 normal-case">
 								<div class="w-24">
 									<UserCar {car} />
 								</div>
@@ -70,19 +70,19 @@
 		</div>
 	</section>
 {:else}
-	<section class="flex flex-col items-center justify-center p-4 md:p-8 h-[75vh]">
-		<div class="hero bg-base-200 max-w-3xl rounded-2xl sm:py-8 pb-4">
-			<div class="hero-content px-6 flex-col min-w-0 max-w-full">
+	<section class="flex h-[75vh] flex-col items-center justify-center p-4 md:p-8">
+		<div class="hero max-w-3xl rounded-2xl bg-base-200 pb-4 sm:py-8">
+			<div class="hero-content min-w-0 max-w-full flex-col px-6">
 				<div
-					class="py-8 sm:py-16 flex overflow-clip max-w-full relative min-w-0"
+					class="relative flex min-w-0 max-w-full overflow-clip py-8 sm:py-16"
 					style="--fade-sides: linear-gradient(90deg, rgba(0,0,0,0) 0, rgba(0,0,0,1) 20% 80%, rgba(0,0,0,0) 100%)"
 					style:-webkit-mask="var(--fade-sides)"
 					style:mask="var(--fade-sides)"
 				>
-					<div class="sm:scale-200 scale-125 origin-left">
-						<div style:left="-4rem" class="relative train-scroll whitespace-nowrap">
+					<div class="origin-left scale-125 sm:scale-200">
+						<div style:left="-4rem" class="train-scroll relative whitespace-nowrap">
 							{#each Array(12) as _, i}
-								<div class="w-16 mx-[4px] inline-block">
+								<div class="mx-[4px] inline-block w-16">
 									<Body color={DECAL_COLORS[i % DECAL_COLORS.length]} name="boxy" />
 								</div>
 							{/each}
@@ -90,22 +90,22 @@
 					</div>
 				</div>
 				<div
-					class="flex flex-col sm:flex-row gap-4 sm:gap-16 items-stretch sm:items-center"
+					class="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:gap-16"
 				>
-					<div class="max-w-lg flex flex-col items-start">
+					<div class="flex max-w-lg flex-col items-start">
 						<h1
-							class="xs:text-5xl text-4xl whitespace-nowrap nunito uppercase pb-1 xs:pb-2"
+							class="nunito whitespace-nowrap pb-1 text-4xl uppercase xs:pb-2 xs:text-5xl"
 						>
 							Choo Choo!
 						</h1>
 						<p class="py-2">All aboard the Grace Train!</p>
 						<p class="py-2">Design your own cars and watch them on stream!</p>
 					</div>
-					<div class="max-w-lg flex flex-col items-center">
+					<div class="flex max-w-lg flex-col items-center">
 						<a
 							href="/login"
 							data-sveltekit-reload
-							class="nunito btn-secondary btn btn-lg mb-4">Twitch Login</a
+							class="nunito btn btn-secondary btn-lg mb-4">Twitch Login</a
 						>
 						<a href="/design/new" class="link opacity-70 hover:opacity-100"
 							>Just start designing</a

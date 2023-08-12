@@ -54,16 +54,16 @@
 </script>
 
 <section>
-	<div class="px-4 mb-4"><DecalCanvas car={$displayCar} /></div>
-	<div class="bg-neutral rounded-box px-3 py-4 flex flex-col gap-4">
+	<div class="mb-4 px-4"><DecalCanvas car={$displayCar} /></div>
+	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4">
 		<ol
-			class="flex justify-center gap-2 h-16 nunito"
+			class="nunito flex h-16 justify-center gap-2"
 			class:max-sm:gap-1={$displayCar.decals.length >= 3}
 		>
 			{#if $displayCar.decals.length < DECAL_MAX_SLOTS - 1 && $displayCar.decals.length > 0}
 				<li class="w-20">
 					<button
-						class="btn btn-block text-4xl h-16 px-0 btn-outline"
+						class="btn btn-outline btn-block h-16 px-0 text-4xl"
 						class:btn-active={addingDecal === -1}
 						on:click={() => clickEmptySlot(-1)}>+</button
 					>
@@ -72,7 +72,7 @@
 			{#each $displayCar.decals as decal}
 				<li class="w-28 shrink">
 					<button
-						class="btn btn-block text-4xl h-16 px-0 btn-hover-grow"
+						class="btn-hover-grow btn btn-block h-16 px-0 text-4xl"
 						class:selected-decal={decal.slot === $selectedSlot}
 						on:click={() => clickDecalSlot(decal.slot)}
 						on:mouseenter={() => hoveredSlot.set(decal.slot)}
@@ -83,7 +83,7 @@
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="-50 -50 100 100"
-							class="w-10 2xs:w-11 overflow-visible"
+							class="w-10 overflow-visible 2xs:w-11"
 						>
 							<Decal
 								name={decal.name}
@@ -103,7 +103,7 @@
 			{#if $displayCar.decals.length < DECAL_MAX_SLOTS}
 				<li class="w-20">
 					<button
-						class="btn btn-block text-4xl h-16 px-0 btn-outline"
+						class="btn btn-outline btn-block h-16 px-0 text-4xl"
 						class:btn-active={addingDecal === 1}
 						on:click={() => clickEmptySlot(1)}>+</button
 					>

@@ -147,7 +147,7 @@
 
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
 <div class="relative mx-auto max-w-[375px] overflow-clip" style:aspect-ratio="375/300">
-	<div class="relative w-full mx-auto" bind:this={canvasElement}>
+	<div class="relative mx-auto w-full" bind:this={canvasElement}>
 		<UserCar
 			{car}
 			decalsOverride={$displayCar.decals}
@@ -156,7 +156,7 @@
 			bind:width={userCarWidth}
 		/>
 		<div
-			class="absolute top-0 left-0 w-[375px] h-[300px] origin-top-left"
+			class="absolute left-0 top-0 h-[300px] w-[375px] origin-top-left"
 			style:transform="scale({canvasScale})"
 		>
 			{#each draggables as transform, d (transform.id)}

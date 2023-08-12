@@ -1,4 +1,4 @@
-<section class="flex flex-col gap-4 lg:px-8 px-4">
+<section class="flex flex-col gap-4 px-4 lg:px-8">
 	<h2 class="text-2xl font-bold">Privacy</h2>
 	<h3 class="text-xl font-bold">Twitch Authentication</h3>
 	<p>

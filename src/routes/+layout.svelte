@@ -26,18 +26,18 @@
 </svelte:head>
 <div class="mx-auto w-full max-w-5xl pb-4 lg:p-4">
 	<header
-		class="navbar grid grid-cols-3 bg-base-200 min-h-12 lg:min-h-16 p-0 px-6 lg:rounded-box"
+		class="navbar min-h-12 grid grid-cols-3 bg-base-200 p-0 px-6 lg:rounded-box lg:min-h-16"
 	>
 		<!-- <h1 class="nunito text-left text-3xl uppercase">
 			🚂
 			<span class="hidden">Grace Train Depot</span>
 		</h1> -->
 		{#if design}
-			<h2 class="nunito uppercase text-2xl">
+			<h2 class="nunito text-2xl uppercase">
 				<a href="/design/{carId}">Design</a>
 			</h2>
 		{/if}
-		<nav class="flex-none justify-self-end col-start-3">
+		<nav class="col-start-3 flex-none justify-self-end">
 			<details
 				bind:this={menuElement}
 				class="dropdown dropdown-end"
@@ -58,7 +58,7 @@
 						/></svg
 					></summary
 				>
-				<ul class="menu dropdown-content rounded-box w-32 bg-neutral p-2 shadow z-50">
+				<ul class="menu dropdown-content rounded-box z-50 w-32 bg-neutral p-2 shadow">
 					<li>
 						<a on:click={closeMenu} href="/" class="justify-end">Home</a>
 					</li>

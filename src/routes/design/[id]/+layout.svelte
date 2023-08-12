@@ -44,9 +44,9 @@
 	$: currentPage = $page.route.id?.split('/')[3]
 </script>
 
-<div class="lg:flex lg:items-start mt-4 max-w-2xl lg:max-w-full mx-auto">
-	<div class="hidden w-80 flex-col shrink-0 lg:flex">
-		<div class="rounded-box bg-neutral space-y-2 p-6 flex flex-col">
+<div class="mx-auto mt-4 max-w-2xl lg:flex lg:max-w-full lg:items-start">
+	<div class="hidden w-80 shrink-0 flex-col lg:flex">
+		<div class="rounded-box flex flex-col space-y-2 bg-neutral p-6">
 			<!-- <div class="flex items-baseline justify-between px-2">
 				<h2 class="nunito uppercase text-2xl mb-2">Design</h2>
 			</div> -->
@@ -64,9 +64,9 @@
 			{/each}
 		</div>
 	</div>
-	<div class="grow flex flex-col items-center min-w-0">
+	<div class="flex min-w-0 grow flex-col items-center">
 		<div
-			class="lg:hidden tabs tabs-boxed self-stretch xs:self-center mx-2 justify-center"
+			class="tabs-boxed tabs mx-2 justify-center self-stretch xs:self-center lg:hidden"
 		>
 			{#each pages as [icon, name]}
 				{@const current = name === currentPage}
@@ -75,7 +75,7 @@
 					class:pointer-events-none={current}
 					class:tab-active={current}
 					href="/design/{$page.params.id}/{name}"
-					class="tab text-2xl 2xs:text-3xl h-11 2xs:h-12 grow px-0 xs:px-[var(--tab-padding,1rem)]"
+					class="tab h-11 grow px-0 text-2xl 2xs:h-12 2xs:text-3xl xs:px-[var(--tab-padding,1rem)]"
 				>
 					{icon}
 				</a>
@@ -85,7 +85,7 @@
 					<div class="alert alert-success grid-flow-col">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="stroke-current shrink-0 h-6 w-6"
+							class="h-6 w-6 shrink-0 stroke-current"
 							fill="none"
 							viewBox="0 0 24 24"
 							><path
@@ -101,9 +101,9 @@
 			{/if}
 		</div>
 		{#if currentPage}
-			<h2 class="nunito uppercase text-3xl mt-3">{currentPage}</h2>
+			<h2 class="nunito mt-3 text-3xl uppercase">{currentPage}</h2>
 		{/if}
-		<div class="p-4 lg:grow lg:px-8 self-stretch">
+		<div class="self-stretch p-4 lg:grow lg:px-8">
 			<slot />
 		</div>
 	</div>
