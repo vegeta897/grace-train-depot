@@ -8,7 +8,7 @@
 	export let data: PageData
 	export let form: ActionData
 
-	const { displayCar } = getDesignStores()
+	const { displayCar, localCars, designShortId } = getDesignStores()
 
 	let saveError: 'try-again' | null = null
 
@@ -21,6 +21,12 @@
 				console.log(result.error)
 				saveError = 'try-again'
 			} else {
+				if (result.type !== 'failure') {
+					localCars.update((cars) => {
+						delete cars[$designShortId]
+						return cars
+					})
+				}
 				await applyAction(result)
 			}
 		}

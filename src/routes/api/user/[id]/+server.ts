@@ -13,6 +13,6 @@ export const GET = (async ({ request, params }) => {
 	})
 	if (!userWithCars) throw error(404, 'User not found')
 	// TODO: Return only essential properties
-	// Maybe return a type defined in grace-train-lib so spice bot knows what to expect
+	// Use a type defined in grace-train-lib so spice bot knows what to expect
 	return json(userWithCars)
 }) satisfies RequestHandler

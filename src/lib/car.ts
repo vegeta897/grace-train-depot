@@ -1,6 +1,5 @@
 import type { Car, DecalData } from '$lib/types'
 import { Prisma } from '@prisma/client'
-import { cloneDecal } from './decal'
 import { COLORS } from 'grace-train-lib'
 import { generateRandomString } from 'lucia/utils'
 
@@ -45,6 +44,10 @@ export function cloneCar(car: Car): Car {
 		hat: { ...car.hat },
 		decals: car.decals.map(cloneDecal),
 	}
+}
+
+export function cloneDecal(decal: DecalData): DecalData {
+	return { ...decal, transform: { ...decal.transform } }
 }
 
 export function getNewCar(): Car {

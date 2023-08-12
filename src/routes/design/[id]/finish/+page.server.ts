@@ -18,7 +18,7 @@ export const actions = {
 			const formData = await request.formData()
 			const carDataJSON = formData.get('carData')
 			formCarData = JSON.parse(carDataJSON!.toString())
-			formCarData.name = formData.get('carName')?.toString()
+			formCarData.name = formData.get('carName')?.toString() || undefined
 		} catch (e) {
 			return fail(400, { invalid: true })
 		}

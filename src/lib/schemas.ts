@@ -11,7 +11,7 @@ import {
 export const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i) // TODO: Use enum of official color list
 
 export const carSchema = z.object({
-	id: z.number().int().gt(0),
+	id: z.number().int().gte(0),
 	shortId: z.string().min(1),
 	name: z.string().min(1).optional(),
 	published: z.boolean().optional(),

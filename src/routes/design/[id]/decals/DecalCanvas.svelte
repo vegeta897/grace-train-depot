@@ -126,7 +126,6 @@
 		}
 	}
 	function onPointerMove(e: PointerEvent) {
-		// TODO: Are these 2 lines necessary?
 		if (resizing) resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
 		if (rotating) rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
 		const operation = resizing || rotating
