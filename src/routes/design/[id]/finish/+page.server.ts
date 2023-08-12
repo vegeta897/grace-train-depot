@@ -4,8 +4,7 @@ import type { Car, DecalData } from '$lib/types'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-
-// TODO: Validation on things like colors, decal count, etc
+import { carSchema } from '$lib/schemas'
 
 export const actions = {
 	save: async (event) => {
@@ -14,15 +13,22 @@ export const actions = {
 	publish: async ({ locals, params, request }) => {
 		const session = await locals.auth.validate()
 		if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}/finish`)
-		let carData: Car
+		let formCarData: any
 		try {
 			const formData = await request.formData()
 			const carDataJSON = formData.get('carData')
-			carData = JSON.parse(carDataJSON!.toString())
-			carData.name = formData.get('carName')?.toString()
+			formCarData = JSON.parse(carDataJSON!.toString())
+			formCarData.name = formData.get('carName')?.toString()
 		} catch (e) {
 			return fail(400, { invalid: true })
 		}
+		const parseResult = carSchema.safeParse(formCarData)
+		if (!parseResult.success) {
+			// TODO: Attempt to correct errors, and log the schema violation
+			console.log(parseResult.error)
+			return fail(400, { invalid: true })
+		}
+		const carData: Car = parseResult.data
 		const newCar = carData.shortId === 'new'
 		if (newCar) {
 			await prisma.car.create({
@@ -31,7 +37,7 @@ export const actions = {
 					published: true,
 					...transformCarToDB(carData),
 					userId: session.user.userId,
-					decals: { create: carData.decals.map(transformDecalToDB) },
+					decals: { create: formCarData.decals.map(transformDecalToDB) },
 				},
 			})
 		} else {

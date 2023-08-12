@@ -2,6 +2,7 @@
 	import UserCar from '$lib/components/UserCar.svelte'
 	import { ContainerSvg, Wheels } from 'grace-train-lib'
 	import { getDesignStores } from '../../stores'
+	import { WHEEL_DISTANCE_MAX, WHEEL_DISTANCE_MIN } from '$lib/common/constants'
 
 	const { displayCar, localCars, designShortId } = getDesignStores()
 
@@ -47,8 +48,8 @@
 	<h3 class="nunito mb-4 text-2xl uppercase">Spread</h3>
 	<input
 		type="range"
-		min="80"
-		max="115"
+		min={WHEEL_DISTANCE_MIN}
+		max={WHEEL_DISTANCE_MAX}
 		on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
 		value={$displayCar.wheels.fromCenter}
 		class="range range-primary"
