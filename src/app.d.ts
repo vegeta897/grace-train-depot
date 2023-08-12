@@ -2,7 +2,7 @@
 declare global {
 	namespace Lucia {
 		type Auth = import('$lib/server/lucia').Auth
-		type DatabaseUserAttributes = Omit<import("@prisma/client").User, "id"|"createdAt">;
+		type DatabaseUserAttributes = Omit<import('@prisma/client').User, 'id' | 'createdAt'>
 		type DatabaseSessionAttributes = {}
 	}
 }
