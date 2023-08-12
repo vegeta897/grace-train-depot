@@ -14,10 +14,10 @@
 
 	export let car: Car
 
-	const { localCars, designShortId, displayCar } = getDesignStores()
+	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
 
-	$: draggables = $displayCar.decals.map((d) => ({ id: d.id, ...d.transform }))
+	$: draggables = $designCar.decals.map((d) => ({ id: d.id, ...d.transform }))
 
 	let clickOutsideCooldown = false
 
@@ -149,7 +149,7 @@
 	<div class="relative mx-auto w-full" bind:this={canvasElement}>
 		<UserCar
 			{car}
-			decalsOverride={$displayCar.decals}
+			decalsOverride={$designCar.decals}
 			transition={['fill', 'opacity']}
 			focusDecalZone={$selectedSlot !== null}
 			bind:width={userCarWidth}
@@ -204,8 +204,8 @@
 								class:opacity-25={$selectedSlot === d}
 							>
 								<Decal
-									name={$displayCar.decals[d].name}
-									fill={$displayCar.decals[d].fillPreview || $displayCar.decals[d].fill}
+									name={$designCar.decals[d].name}
+									fill={$designCar.decals[d].fillPreview || $designCar.decals[d].fill}
 									transition={['fill', 'opacity']}
 								/>
 							</g>

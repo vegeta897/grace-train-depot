@@ -8,7 +8,7 @@
 	export let data: PageData
 	export let form: ActionData
 
-	const { displayCar, localCars, designShortId } = getDesignStores()
+	const { designCar, localCars, designShortId } = getDesignStores()
 
 	let saveError: 'try-again' | null = null
 
@@ -34,7 +34,7 @@
 </script>
 
 <section class="flex flex-col items-center">
-	<div class="w-64"><UserCar car={$displayCar} /></div>
+	<div class="w-64"><UserCar car={$designCar} /></div>
 	{#if form?.invalid || saveError === 'try-again'}
 		<div class="alert alert-error mt-4 w-auto">
 			<svg
@@ -67,7 +67,7 @@
 			use:enhance={onSave}
 			class="rounded-box mt-4 flex flex-col gap-3 bg-neutral p-6"
 		>
-			<input type="hidden" name="carData" value={JSON.stringify($displayCar)} />
+			<input type="hidden" name="carData" value={JSON.stringify($designCar)} />
 			<div class="form-control w-full max-w-xs">
 				<label for="carName" class="label">
 					<span class="label-text">Name this design</span>
@@ -77,17 +77,17 @@
 					type="text"
 					name="carName"
 					class="input w-full max-w-xs"
-					value={$displayCar.name || ''}
+					value={$designCar.name || ''}
 					placeholder="Type here"
 				/>
 			</div>
 			<button class="btn btn-primary btn-lg"
-				>{#if $displayCar.published}Save{:else}Publish{/if} Car</button
+				>{#if $designCar.published}Save{:else}Publish{/if} Car</button
 			>
 			<button
 				formaction="?/save"
 				class="btn btn-link btn-sm normal-case text-base-content"
-				>Save {#if $displayCar.published}and move to drafts{:else}without publishing{/if}</button
+				>Save {#if $designCar.published}and move to drafts{:else}without publishing{/if}</button
 			>
 		</form>
 	{:else}

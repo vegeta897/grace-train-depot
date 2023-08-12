@@ -6,13 +6,13 @@
 
 	export let data: PageData
 
-	const { displayCar, designShortId } = getDesignStores()
+	const { designCar, designShortId } = getDesignStores()
 
 	let deleteMode = false
 </script>
 
 <section class="flex flex-col items-center gap-4">
-	<div class="w-48 lg:w-64"><UserCar car={$displayCar} /></div>
+	<div class="w-48 lg:w-64"><UserCar car={$designCar} /></div>
 	{#if !data.user}
 		<!-- <div class="alert mt-8">
 			<svg
@@ -34,13 +34,13 @@
 		</div> -->
 	{/if}
 	<h3 class="nunito flex items-center gap-2 text-3xl font-bold">
-		{#if $displayCar.name}<span>{$displayCar.name}</span>{/if}
+		{#if $designCar.name}<span>{$designCar.name}</span>{/if}
 		<span
 			class="badge uppercase"
-			class:badge-primary={$displayCar.published}
-			class:badge-warning={!$displayCar.published}
+			class:badge-primary={$designCar.published}
+			class:badge-warning={!$designCar.published}
 		>
-			{#if $displayCar.published}Live{:else}Draft{/if}
+			{#if $designCar.published}Live{:else}Draft{/if}
 		</span>
 	</h3>
 	<div class="rounded-box flex flex-col items-center gap-4 bg-neutral p-6">

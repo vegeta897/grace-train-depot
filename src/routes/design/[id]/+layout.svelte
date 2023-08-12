@@ -7,13 +7,13 @@
 
 	export let data: LayoutData
 
-	const { localCars, displayCars, designShortId } = getDesignStores()
+	const { localCars, designShortId } = getDesignStores()
 
 	// TODO: Only overwrite local car from saved car if lastModified is newer
 	// Warn if refresh/navigate is attempted without saving?
 
 	designShortId.set($page.params.id)
-	if ($designShortId === 'new' && !$displayCars.new) {
+	if ($designShortId === 'new' && !$localCars.new) {
 		localCars.update((lc) => {
 			lc.new = getNewCar()
 			return lc

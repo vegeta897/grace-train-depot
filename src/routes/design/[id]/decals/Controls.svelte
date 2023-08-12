@@ -9,10 +9,10 @@
 
 	export let slot: number
 
-	const { localCars, displayCar, designShortId } = getDesignStores()
+	const { localCars, designCar, designShortId } = getDesignStores()
 	const { selectedSlot } = getDecalStores()
 
-	$: decal = $displayCar.decals[slot]
+	$: decal = $designCar.decals[slot]
 
 	let toolMode: null | 'shape' | 'color' | 'scale' | 'rotate' = null
 
@@ -31,7 +31,7 @@
 	}
 
 	function orderDecal(upOrDown: number) {
-		const decal = $displayCar.decals[slot]
+		const decal = $designCar.decals[slot]
 		localCars.update((cars) => {
 			cars[$designShortId].decals = cars[$designShortId].decals.filter(
 				(_, i) => i !== slot
@@ -99,7 +99,7 @@
 		<button
 			on:click={() => setToolMode('color')}
 			class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
-			style:color={$displayCar.decals[slot].fill}
+			style:color={$designCar.decals[slot].fill}
 		>
 			Color
 		</button>
@@ -107,7 +107,7 @@
 		<button
 			on:click={() => setToolMode('color')}
 			class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
-			style:background={$displayCar.decals[slot].fill}
+			style:background={$designCar.decals[slot].fill}
 			style:color="hsl(var(--inc))"
 		>
 			Color
@@ -136,13 +136,13 @@
 		</button>
 		<button
 			on:click={() => orderDecal(1)}
-			disabled={slot === $displayCar.decals.length - 1}
+			disabled={slot === $designCar.decals.length - 1}
 			class="btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		>
 			Pull
 		</button>
 	{:else if toolMode === 'shape'}
-		<ShapePicker fill={$displayCar.decals[slot].fill} onClick={setDecalShape} />
+		<ShapePicker fill={$designCar.decals[slot].fill} onClick={setDecalShape} />
 	{:else if toolMode === 'color'}
 		<div class="col-span-4 grid grid-cols-6 gap-2">
 			{#each DECAL_COLORS as color}

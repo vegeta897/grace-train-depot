@@ -46,7 +46,7 @@ export const actions = {
 			const updatedDecals = carData.decals.filter((d) => !d.new)
 			try {
 				const updatedCar = await prisma.car.update({
-					where: { id: carData.id, userId: session.user.userId },
+					where: { shortId: carData.shortId, userId: session.user.userId },
 					data: {
 						published: true,
 						...transformCarToDB(carData),

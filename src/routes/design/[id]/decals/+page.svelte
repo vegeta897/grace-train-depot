@@ -8,7 +8,7 @@
 	import { getDesignStores } from '../../stores'
 	import ShapePicker from './ShapePicker.svelte'
 
-	const { localCars, designShortId, displayCar } = getDesignStores()
+	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
 
 	hoveredSlot.set(null)
@@ -54,13 +54,13 @@
 </script>
 
 <section>
-	<div class="mb-4 px-4"><DecalCanvas car={$displayCar} /></div>
+	<div class="mb-4 px-4"><DecalCanvas car={$designCar} /></div>
 	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4">
 		<ol
 			class="nunito flex h-16 justify-center gap-2"
-			class:max-sm:gap-1={$displayCar.decals.length >= 3}
+			class:max-sm:gap-1={$designCar.decals.length >= 3}
 		>
-			{#if $displayCar.decals.length < DECAL_MAX_SLOTS - 1 && $displayCar.decals.length > 0}
+			{#if $designCar.decals.length < DECAL_MAX_SLOTS - 1 && $designCar.decals.length > 0}
 				<li class="w-20">
 					<button
 						class="btn btn-outline btn-block h-16 px-0 text-4xl"
@@ -69,7 +69,7 @@
 					>
 				</li>
 			{/if}
-			{#each $displayCar.decals as decal}
+			{#each $designCar.decals as decal}
 				<li class="w-28 shrink">
 					<button
 						class="btn-hover-grow btn btn-block h-16 px-0 text-4xl"
@@ -100,7 +100,7 @@
 					</button>
 				</li>
 			{/each}
-			{#if $displayCar.decals.length < DECAL_MAX_SLOTS}
+			{#if $designCar.decals.length < DECAL_MAX_SLOTS}
 				<li class="w-20">
 					<button
 						class="btn btn-outline btn-block h-16 px-0 text-4xl"

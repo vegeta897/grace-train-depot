@@ -6,7 +6,7 @@
 
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
 
-	const { displayCar } = getDesignStores()
+	const { designCar } = getDesignStores()
 
 	const hats = [
 		[null, 'none'],
@@ -25,7 +25,7 @@
 </script>
 
 <section>
-	<div class="mx-auto mb-6 w-64"><UserCar car={$displayCar} /></div>
+	<div class="mx-auto mb-6 w-64"><UserCar car={$designCar} /></div>
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each hats as [color, name]}
 			<button

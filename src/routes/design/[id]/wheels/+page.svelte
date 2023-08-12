@@ -4,7 +4,7 @@
 	import { getDesignStores } from '../../stores'
 	import { WHEEL_DISTANCE_MAX, WHEEL_DISTANCE_MIN } from '$lib/common/constants'
 
-	const { displayCar, localCars, designShortId } = getDesignStores()
+	const { designCar, localCars, designShortId } = getDesignStores()
 
 	const wheelColors = [
 		['#ff0000', 'rose'],
@@ -31,7 +31,7 @@
 </script>
 
 <section>
-	<div class="mx-auto mb-6 w-64"><UserCar car={$displayCar} /></div>
+	<div class="mx-auto mb-6 w-64"><UserCar car={$designCar} /></div>
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each wheelColors as [color, name]}
 			<button
@@ -51,7 +51,7 @@
 		min={WHEEL_DISTANCE_MIN}
 		max={WHEEL_DISTANCE_MAX}
 		on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
-		value={$displayCar.wheels.fromCenter}
+		value={$designCar.wheels.fromCenter}
 		class="range range-primary"
 	/>
 </section>

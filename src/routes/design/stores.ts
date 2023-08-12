@@ -5,22 +5,17 @@ import { persisted } from 'svelte-local-storage-store'
 import { derived, writable } from 'svelte/store'
 
 const localCars = persisted<Record<string, Car>>('choochoo-localCar', {})
-const displayCars = derived(
-	localCars,
-	($localCars) => ($localCars || {}) as Readonly<Record<string, Readonly<Car>>>
-)
 const designShortId = writable<string>('new')
-const displayCar = derived(
-	[displayCars, designShortId],
-	([$displayCars, $designShortId]) =>
-		$displayCars[$designShortId] || (getNewCar() as Readonly<Car>)
+const designCar = derived(
+	[localCars, designShortId],
+	([$localCars, $designShortId]) =>
+		($localCars[$designShortId] || getNewCar()) as Readonly<Car>
 )
 
 export const getDesignStores = defineContext({
 	localCars: localCars,
-	displayCars: displayCars,
 	designShortId,
-	displayCar,
+	designCar,
 })
 
 export type DesignStores = ReturnType<typeof getDesignStores>
