@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import { fly } from 'svelte/transition'
+	import { fade, fly } from 'svelte/transition'
 	import { getDesignStores } from '../stores'
 	import type { LayoutData } from './$types'
-	import { getNewCar } from '$lib/car'
+	import { cloneCar, getCarChangesByPage, getNewCar } from '$lib/car'
+	import { PAGES } from '$lib/common/constants'
 
 	export let data: LayoutData
 
-	const { localCars, designShortId } = getDesignStores()
+	const { localCars, designShortId, designCar } = getDesignStores()
 
 	// TODO: Only overwrite local car from saved car if lastModified is newer
 	// Warn if refresh/navigate is attempted without saving?
@@ -22,19 +23,10 @@
 	if ($designShortId !== 'new' && data.savedCar) {
 		// TODO: Test SSR
 		localCars.update((lc) => {
-			lc[$designShortId] = data.savedCar!
+			lc[$designShortId] = cloneCar(data.savedCar!)
 			return lc
 		})
 	}
-
-	const pages = [
-		['🚌', 'body'],
-		['🎓', 'caps'],
-		['🎡', 'wheels'],
-		['💟', 'decals'],
-		['✨', 'effects'],
-		['🚥', 'finish'],
-	]
 
 	// TODO: For first car, add new pages as they are visited
 
@@ -42,6 +34,7 @@
 	setTimeout(() => (saving = false))
 
 	$: currentPage = $page.route.id?.split('/')[3]
+	$: designChanges = getCarChangesByPage(data.savedCar || $designCar, $designCar)
 </script>
 
 <div class="mx-auto mt-4 max-w-2xl lg:flex lg:max-w-full lg:items-start">
@@ -50,25 +43,41 @@
 			<!-- <div class="flex items-baseline justify-between px-2">
 				<h2 class="nunito uppercase text-2xl mb-2">Design</h2>
 			</div> -->
-			{#each pages as [icon, name]}
+			{#each PAGES as [icon, name]}
 				{@const current = name === currentPage}
-				<a
-					href="/design/{$page.params.id}/{name}"
-					class="nunito btn btn-lg btn-block justify-start gap-8 text-xl"
-					class:pointer-events-none={current}
-					class:btn-primary={current}
-				>
-					<div class="w-12 text-center text-4xl">{icon}</div>
-					{name}
-				</a>
+				<div class="indicator w-full">
+					{#if designChanges[name]}
+						<span
+							in:fade={{ duration: 150 }}
+							class="badge indicator-item badge-warning indicator-start indicator-middle"
+						/>
+					{/if}
+					<a
+						href="/design/{$page.params.id}/{name}"
+						class="nunito btn btn-lg btn-block justify-start gap-8 text-xl"
+						class:pointer-events-none={current}
+						class:btn-primary={current}
+					>
+						<div class="w-12 text-center text-4xl">{icon}</div>
+						{name}
+					</a>
+				</div>
 			{/each}
+			{#if Object.values(designChanges).some((v) => v)}
+				<div class="indicator w-full" in:fade={{ duration: 150 }}>
+					<span
+						class="badge indicator-item badge-warning indicator-start indicator-middle"
+					/>
+					<div class="px-5 py-2">Unsaved changes</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 	<div class="flex min-w-0 grow flex-col items-center">
 		<div
 			class="tabs-boxed tabs mx-2 justify-center self-stretch xs:self-center lg:hidden"
 		>
-			{#each pages as [icon, name]}
+			{#each PAGES as [icon, name]}
 				{@const current = name === currentPage}
 				<a
 					data-sveltekit-noscroll
@@ -106,5 +115,6 @@
 		<div class="self-stretch p-4 lg:grow lg:px-8">
 			<slot />
 		</div>
+		{JSON.stringify(designChanges, null, 2)}
 	</div>
 </div>

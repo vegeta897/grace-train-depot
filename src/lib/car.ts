@@ -67,3 +67,32 @@ const shortIdLength = 8
 
 export const generateCarShortId = () =>
 	generateRandomString(shortIdLength, shortIdAlphabet)
+
+export function getCarChangesByPage(original: Car, maybeChanged: Car) {
+	if (original === maybeChanged) return {}
+	// TODO: Ensure props match page names
+	return {
+		body: maybeChanged.body !== original.body,
+		caps: maybeChanged.hat.color !== original.hat.color,
+		wheels:
+			maybeChanged.wheels.color !== original.wheels.color ||
+			maybeChanged.wheels.fromCenter !== original.wheels.fromCenter,
+		decals:
+			maybeChanged.decals.length !== original.decals.length ||
+			maybeChanged.decals.some((md, i) => decalIsDifferent(original.decals[i], md)),
+		effects: false,
+		finish: false,
+	}
+}
+
+function decalIsDifferent(original: DecalData, maybeChanged: DecalData) {
+	return (
+		maybeChanged.fill !== original.fill ||
+		maybeChanged.name !== original.name ||
+		maybeChanged.transform.x !== original.transform.x ||
+		maybeChanged.transform.y !== original.transform.y ||
+		maybeChanged.transform.scale !== original.transform.scale ||
+		maybeChanged.transform.rotate !== original.transform.rotate ||
+		maybeChanged.slot !== original.slot
+	)
+}

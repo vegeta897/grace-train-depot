@@ -13,7 +13,7 @@ const designCar = derived(
 )
 
 export const getDesignStores = defineContext({
-	localCars: localCars,
+	localCars,
 	designShortId,
 	designCar,
 })
