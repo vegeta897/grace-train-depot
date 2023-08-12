@@ -12,6 +12,8 @@ const designCar = derived(
 		($localCars[$designShortId] || getNewCar()) as Readonly<Car>
 )
 
+// TODO: Maybe add a store for original server cars, and derived store for changes
+
 export const getDesignStores = defineContext({
 	localCars,
 	designShortId,

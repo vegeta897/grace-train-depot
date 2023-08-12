@@ -16,13 +16,14 @@
 
 	let addingDecal: -1 | 1 | null = null
 
+	$: if ($selectedSlot !== null) addingDecal = null
+
 	function clickEmptySlot(beforeOrAfter: -1 | 1) {
 		addingDecal = addingDecal === beforeOrAfter ? null : beforeOrAfter
 		selectedSlot.set(null)
 	}
 
 	function clickDecalSlot(slot: number) {
-		addingDecal = null
 		selectedSlot.set($selectedSlot === slot ? null : slot)
 	}
 
