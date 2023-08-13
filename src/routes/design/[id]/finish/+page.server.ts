@@ -1,10 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
-import type { Car, DecalData } from '$lib/types'
+import type { CarData, DecalData } from '$lib/types'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { carSchema } from '$lib/schemas'
+import Car from '$lib/components/Car.svelte'
+import sharp from 'sharp'
 
 export const actions = {
 	save: async (event) => {
@@ -28,12 +30,12 @@ export const actions = {
 			console.log(parseResult.error)
 			return fail(400, { invalid: true })
 		}
-		const carData: Car = parseResult.data
-		const newCar = carData.shortId === 'new'
-		if (newCar) {
+		const carData: CarData = parseResult.data
+		if (carData.shortId === 'new') {
+			carData.shortId = generateCarShortId()
 			await prisma.car.create({
 				data: {
-					shortId: generateCarShortId(),
+					shortId: carData.shortId,
 					published: true,
 					...transformCarToDB(carData),
 					userId: session.user.userId,
@@ -41,7 +43,6 @@ export const actions = {
 				},
 			})
 		} else {
-			console.log('updating car')
 			const newDecals = carData.decals.filter((d) => d.new)
 			const updatedDecals = carData.decals.filter((d) => !d.new)
 			try {
@@ -72,11 +73,19 @@ export const actions = {
 				return fail(400, { invalid: true })
 			}
 		}
-		throw redirect(302, '/')
+		const { html } = (Car as any).render({ car: carData })
+		const svgString = html.substring(
+			html.lastIndexOf('<svg'),
+			html.lastIndexOf('</svg>') + 6
+		)
+		sharp(Buffer.from(svgString))
+			.png({ compressionLevel: 9 })
+			.toFile(`./data/assets/car_${carData.shortId}.png`)
+		throw redirect(302, `/c/${carData.shortId}`)
 	},
 } satisfies Actions
 
-function transformCarToDB(car: Car) {
+function transformCarToDB(car: CarData) {
 	return {
 		name: car.name || null,
 		body: car.body,

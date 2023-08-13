@@ -10,10 +10,10 @@
 	} from 'grace-train-lib'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import type { Car, DecalData } from '$lib/types'
+	import type { CarData, DecalData } from '$lib/types'
 	import Decals from './Decals.svelte'
 
-	export let car: Car
+	export let car: CarData
 	export let bodyOverride: BodyName | null = null
 	export let decalsOverride: DecalData[] | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'

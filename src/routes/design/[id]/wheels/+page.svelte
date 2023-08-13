@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UserCar from '$lib/components/UserCar.svelte'
+	import Car from '$lib/components/Car.svelte'
 	import { ContainerSvg, Wheels } from 'grace-train-lib'
 	import { getDesignStores } from '../../stores'
 	import { WHEEL_DISTANCE_MAX, WHEEL_DISTANCE_MIN } from '$lib/common/constants'
@@ -31,7 +31,7 @@
 </script>
 
 <section>
-	<div class="mx-auto mb-6 w-64"><UserCar car={$designCar} /></div>
+	<div class="mx-auto mb-6 w-64"><Car car={$designCar} /></div>
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each wheelColors as [color, name]}
 			<button

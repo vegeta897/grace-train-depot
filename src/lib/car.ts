@@ -1,4 +1,4 @@
-import type { Car, DecalData } from '$lib/types'
+import type { CarData, DecalData } from '$lib/types'
 import { Prisma } from '@prisma/client'
 import { COLORS } from 'grace-train-lib'
 import { generateRandomString } from 'lucia/utils'
@@ -8,13 +8,13 @@ const carWithDecals = Prisma.validator<Prisma.CarDefaultArgs>()({
 })
 type CarWithDecals = Prisma.CarGetPayload<typeof carWithDecals>
 
-export function transformCarFromDB(carData: CarWithDecals): Car {
+export function transformCarFromDB(carData: CarWithDecals): CarData {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
 		name: carData.name || undefined,
 		published: carData.published,
-		body: carData.body as Car['body'],
+		body: carData.body as CarData['body'],
 		wheels: {
 			color: carData.wheelColor,
 			fromCenter: carData.wheelFromCenter,
@@ -35,7 +35,7 @@ export function transformCarFromDB(carData: CarWithDecals): Car {
 	}
 }
 
-export function cloneCar(car: Car): Car {
+export function cloneCar(car: CarData): CarData {
 	return {
 		...car,
 		wheels: {
@@ -50,7 +50,7 @@ export function cloneDecal(decal: DecalData): DecalData {
 	return { ...decal, transform: { ...decal.transform } }
 }
 
-export function getNewCar(): Car {
+export function getNewCar(): CarData {
 	return {
 		id: 0,
 		shortId: 'new',
@@ -68,7 +68,7 @@ const shortIdLength = 8
 export const generateCarShortId = () =>
 	generateRandomString(shortIdLength, shortIdAlphabet)
 
-export function getCarChangesByPage(original: Car, maybeChanged: Car) {
+export function getCarChangesByPage(original: CarData, maybeChanged: CarData) {
 	if (original === maybeChanged) return {}
 	// TODO: Ensure props match page names
 	return {

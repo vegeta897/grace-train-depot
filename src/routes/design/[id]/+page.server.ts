@@ -1,5 +1,6 @@
 import prisma from '$lib/server/prisma'
 import { redirect, type Actions } from '@sveltejs/kit'
+import fs from 'node:fs'
 
 export const actions = {
 	delete: async ({ locals, params }) => {
@@ -9,6 +10,8 @@ export const actions = {
 		await prisma.car.delete({
 			where: { userId: session.user.userId, shortId: params.id },
 		})
+		// Delete car image
+		fs.rm(`./data/assets/car_${params.id}.png`, () => {})
 		throw redirect(302, '/?carDeleted=true')
 	},
 } satisfies Actions

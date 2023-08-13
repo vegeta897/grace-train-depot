@@ -1,7 +1,7 @@
 <script lang="ts">
-	import UserCar from '$lib/components/UserCar.svelte'
+	import Car from '$lib/components/Car.svelte'
 	import { ContainerSvg } from 'grace-train-lib'
-	import type { Car } from '$lib/types'
+	import type { CarData } from '$lib/types'
 	import { getDesignStores } from '../../stores'
 
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
@@ -18,14 +18,14 @@
 		['#ff00ff', 'pop'],
 	]
 
-	function setHatColor(color: Car['hat']['color']) {
+	function setHatColor(color: CarData['hat']['color']) {
 		// data.car.hat.color = color
 		// updateCar(data.car.id, { hat: { color } })
 	}
 </script>
 
 <section>
-	<div class="mx-auto mb-6 w-64"><UserCar car={$designCar} /></div>
+	<div class="mx-auto mb-6 w-64"><Car car={$designCar} /></div>
 	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
 		{#each hats as [color, name]}
 			<button

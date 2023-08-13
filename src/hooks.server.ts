@@ -12,5 +12,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const luciaSession = await auth.getSession(sessionRecord.id)
 		event.locals.auth.setSession(luciaSession)
 	}
-	return await resolve(event)
+	const response = await resolve(event)
+	return response
 }

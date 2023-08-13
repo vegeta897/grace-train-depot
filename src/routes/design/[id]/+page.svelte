@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UserCar from '$lib/components/UserCar.svelte'
+	import Car from '$lib/components/Car.svelte'
 	import type { PageData } from './$types'
 	import { getDesignStores } from '../stores'
 	import { enhance } from '$app/forms'
@@ -12,7 +12,7 @@
 </script>
 
 <section class="flex flex-col items-center gap-4">
-	<div class="w-48 lg:w-64"><UserCar car={$designCar} /></div>
+	<div class="w-48 lg:w-64"><Car car={$designCar} /></div>
 	{#if !data.user}
 		<!-- <div class="alert mt-8">
 			<svg

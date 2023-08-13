@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UserCar from '$lib/components/UserCar.svelte'
+	import Car from '$lib/components/Car.svelte'
 	import { Body } from 'grace-train-lib'
 	import type { PageData } from './$types'
 	import { DECAL_COLORS } from '$lib/common/constants'
@@ -56,9 +56,7 @@
 							class="nunito btn-hover-grow btn btn-block h-[8.75rem] text-xl"
 						>
 							<div class="flex flex-col items-center gap-1 normal-case">
-								<div class="w-24">
-									<UserCar {car} />
-								</div>
+								<div class="w-24"><Car {car} /></div>
 								{#if car.name}
 									{car.name}
 								{/if}

@@ -7,12 +7,12 @@
 	import BoundingBox from './BoundingBox.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
-	import UserCar from '$lib/components/UserCar.svelte'
-	import type { Car, Transform } from '$lib/types'
+	import Car from '$lib/components/Car.svelte'
+	import type { CarData, Transform } from '$lib/types'
 	import { updateDecalTransform } from './decals'
 	import { getDesignStores } from '../../stores'
 
-	export let car: Car
+	export let car: CarData
 
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
@@ -147,7 +147,7 @@
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
 <div class="relative mx-auto max-w-[375px] overflow-clip" style:aspect-ratio="375/300">
 	<div class="relative mx-auto w-full" bind:this={canvasElement}>
-		<UserCar
+		<Car
 			{car}
 			decalsOverride={$designCar.decals}
 			transition={['fill', 'opacity']}

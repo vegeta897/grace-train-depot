@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UserCar from '$lib/components/UserCar.svelte'
+	import Car from '$lib/components/Car.svelte'
 	import { BODY_NAMES, type BodyName } from 'grace-train-lib'
 	import { getDesignStores } from '../../stores'
 
@@ -22,7 +22,7 @@
 				on:click={() => setBody(name)}
 				disabled={current}
 			>
-				<div class="w-32"><UserCar car={$designCar} bodyOverride={name} /></div>
+				<div class="w-32"><Car car={$designCar} bodyOverride={name} /></div>
 				{name}
 			</button>
 		{/each}

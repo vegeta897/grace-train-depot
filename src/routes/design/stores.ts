@@ -1,15 +1,15 @@
 import { getNewCar } from '$lib/car'
-import type { Car } from '$lib/types'
+import type { CarData } from '$lib/types'
 import { defineContext } from '$lib/util'
 import { persisted } from 'svelte-local-storage-store'
 import { derived, writable } from 'svelte/store'
 
-const localCars = persisted<Record<string, Car>>('choochoo-localCar', {})
+const localCars = persisted<Record<string, CarData>>('choochoo-localCar', {})
 const designShortId = writable<string>('new')
 const designCar = derived(
 	[localCars, designShortId],
 	([$localCars, $designShortId]) =>
-		($localCars[$designShortId] || getNewCar()) as Readonly<Car>
+		($localCars[$designShortId] || getNewCar()) as Readonly<CarData>
 )
 
 // TODO: Maybe add a store for original server cars, and derived store for changes

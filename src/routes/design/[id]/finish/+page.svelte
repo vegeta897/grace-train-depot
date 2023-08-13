@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UserCar from '$lib/components/UserCar.svelte'
+	import Car from '$lib/components/Car.svelte'
 	import { getDesignStores } from '../../stores'
 	import type { ActionData, PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
@@ -34,7 +34,7 @@
 </script>
 
 <section class="flex flex-col items-center">
-	<div class="w-64"><UserCar car={$designCar} /></div>
+	<div class="w-64"><Car car={$designCar} /></div>
 	{#if form?.invalid || saveError === 'try-again'}
 		<div class="alert alert-error mt-4 w-auto">
 			<svg
