@@ -12,7 +12,7 @@
 	let copied = false
 
 	function copyLink() {
-		navigator.clipboard.writeText(imageUrl)
+		navigator.clipboard.writeText(PUBLIC_HOST + $page.url.pathname)
 		copied = true
 		setTimeout(() => (copied = false), 5000)
 	}

@@ -73,14 +73,17 @@ export const actions = {
 				return fail(400, { invalid: true })
 			}
 		}
-		const { html } = (Car as any).render({ car: carData })
-		const svgString = html.substring(
-			html.lastIndexOf('<svg'),
-			html.lastIndexOf('</svg>') + 6
-		)
-		sharp(Buffer.from(svgString))
-			.png({ compressionLevel: 9 })
-			.toFile(`./data/assets/car_${carData.shortId}.png`)
+		try {
+			// TODO: Move this to another file
+			// Sharp toFile returns a promise that will not be caught here if it throws
+			const { html } = (Car as any).render({ car: carData })
+			const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
+			sharp(Buffer.from(svgString))
+				.png({ compressionLevel: 9 })
+				.toFile(`./public/assets/car_${carData.shortId}.png`)
+		} catch (e) {
+			console.log('Error generating car image', e)
+		}
 		throw redirect(302, `/c/${carData.shortId}`)
 	},
 } satisfies Actions
