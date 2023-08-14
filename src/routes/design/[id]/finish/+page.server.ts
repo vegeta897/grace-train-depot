@@ -86,6 +86,7 @@ export const actions = {
 				.toFile(`./public/assets/car_${carData.shortId}_${updatedCar.revision}.png`)
 			if (updatedCar.revision > 1) {
 				// Delete previous revision image
+				// TODO: Maybe timestamp the revisions and delete them after x time instead
 				fs.rm(
 					`./public/assets/car_${carData.shortId}_${updatedCar.revision - 1}.png`,
 					() => {}
