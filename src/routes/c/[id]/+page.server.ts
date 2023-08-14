@@ -20,7 +20,7 @@ export const actions = {
 		if (!session) throw redirect(302, `/login?redirectTo=/c/${params.id}`)
 		const formData = await request.formData()
 		const name = formData.get('carName')?.toString()
-		if (!name) return fail(400, { invalid: true })
+		if (name === undefined) return fail(400, { invalid: true })
 		await prisma.car.update({
 			where: { shortId: params.id, userId: session.user.userId },
 			data: { name },
