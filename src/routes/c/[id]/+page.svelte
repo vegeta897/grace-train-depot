@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData, SubmitFunction, ActionData } from './$types'
+	import type { PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
 	import Car from '$lib/components/Car.svelte'
 	import { COLORS } from 'grace-train-lib'
@@ -11,25 +11,28 @@
 	import { invalidateAll } from '$app/navigation'
 
 	export let data: PageData
-	export let form: ActionData
 
 	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}_${data.car.revision}.png`
 
-	let rename = false
+	let renaming = false
 	let renamed = false
 	let copied = false
 	let nameInput: HTMLInputElement
 
 	const enableRename = async () => {
-		rename = true
+		renaming = true
 		await tick()
 		nameInput?.select()
 	}
 
-	const onRename: SubmitFunction = () => {
+	const onRename: SubmitFunction = ({ formData, cancel }) => {
+		if (formData.get('carName') === (data.car.name || '')) {
+			renaming = false
+			return cancel()
+		}
 		return async ({ result }) => {
 			await applyAction(result)
-			rename = false
+			renaming = false
 			renamed = true
 			setTimeout(() => (renamed = false), 3000)
 			invalidateAll()
@@ -55,14 +58,16 @@
 	<meta property="og:image:height" content="300" />
 	<meta name="theme-color" content="${COLORS.POP}" />
 </svelte:head>
-<section class="flex flex-col items-center gap-4 px-4 py-8 lg:flex-row lg:px-8">
-	<div class="flex grow flex-col items-center gap-4 px-4 lg:px-12">
+<section
+	class="flex flex-col items-center gap-4 px-4 py-8 lg:flex-row lg:items-start lg:px-8"
+>
+	<div class="flex grow flex-col items-center gap-4 p-4 lg:p-8">
 		<div class="max-w-[20rem]"><Car car={data.car} /></div>
 	</div>
 	<div
 		class="rounded-box flex w-full max-w-lg flex-col items-center gap-4 bg-neutral p-4 lg:p-8"
 	>
-		{#if !rename}
+		{#if !renaming}
 			<button
 				class="nunito btn btn-ghost btn-lg text-4xl normal-case"
 				class:[&:not(:hover)]:opacity-70={!data.car.name}
@@ -81,17 +86,21 @@
 				action="?/rename"
 				method="POST"
 				use:enhance={onRename}
-				class="flex flex-col gap-3"
+				class="flex flex-col gap-4"
 			>
 				<input
 					type="text"
 					name="carName"
-					class="input w-full max-w-xs text-2xl"
+					class="input h-16 w-full max-w-xs text-2xl"
 					value={data.car.name || ''}
 					placeholder="Type a name"
 					bind:this={nameInput}
 				/>
-				<button class="btn btn-primary btn-lg">Save</button>
+				<button class="btn btn-primary btn-lg text-2xl font-bold">Save</button>
+				<!-- Avoid submitting form by adding type="button" -->
+				<button type="button" class="btn" on:click={() => (renaming = false)}>
+					Cancel
+				</button>
 			</form>
 		{/if}
 	</div>
