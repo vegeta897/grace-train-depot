@@ -21,10 +21,12 @@ body {
 }
 
 @layer components {
-	.btn-hover-grow > * {
-		transition: transform 100ms ease-out;
-	}
-	.btn-hover-grow:hover > * {
-		transform: scale(1.12);
+	@media (hover: hover) {
+		.btn-hover-grow > * {
+			transition: transform 100ms ease-out;
+		}
+		.btn-hover-grow:hover > * {
+			transform: scale(1.12);
+		}
 	}
 }
