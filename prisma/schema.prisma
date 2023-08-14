@@ -50,6 +50,7 @@ model Car {
   shortId         String   @unique @db.VarChar(8)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  revision        Int      @default(1)
   name            String?
   published       Boolean  @default(false)
   body            Body     @default(boxy)

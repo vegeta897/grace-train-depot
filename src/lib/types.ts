@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client'
 import type { DecalName, BodyName } from 'grace-train-lib'
 
 export type Transform = {
@@ -23,6 +24,7 @@ export type CarData = {
 	shortId: string
 	name?: string
 	published?: boolean
+	revision?: number
 	body: BodyName
 	decals: DecalData[]
 	wheels: {
@@ -33,3 +35,5 @@ export type CarData = {
 		color: string | null
 	}
 }
+
+export type DBCar = Prisma.CarGetPayload<{}>

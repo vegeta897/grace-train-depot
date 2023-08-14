@@ -7,11 +7,11 @@ export const actions = {
 		console.log('delete', params.id)
 		const session = await locals.auth.validate()
 		if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}`)
-		await prisma.car.delete({
+		const deletedCar = await prisma.car.delete({
 			where: { userId: session.user.userId, shortId: params.id },
 		})
 		// Delete car image
-		fs.rm(`./data/assets/car_${params.id}.png`, () => {})
+		fs.rm(`./public/assets/car_${params.id}_${deletedCar.revision}.png`, () => {})
 		throw redirect(302, '/?carDeleted=true')
 	},
 } satisfies Actions

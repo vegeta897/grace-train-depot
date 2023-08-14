@@ -1,12 +1,13 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
-import type { CarData, DecalData } from '$lib/types'
+import type { CarData, DBCar, DecalData } from '$lib/types'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { carSchema } from '$lib/schemas'
 import Car from '$lib/components/Car.svelte'
 import sharp from 'sharp'
+import fs from 'node:fs'
 
 export const actions = {
 	save: async (event) => {
@@ -31,9 +32,10 @@ export const actions = {
 			return fail(400, { invalid: true })
 		}
 		const carData: CarData = parseResult.data
+		let updatedCar: DBCar
 		if (carData.shortId === 'new') {
 			carData.shortId = generateCarShortId()
-			await prisma.car.create({
+			updatedCar = await prisma.car.create({
 				data: {
 					shortId: carData.shortId,
 					published: true,
@@ -46,11 +48,12 @@ export const actions = {
 			const newDecals = carData.decals.filter((d) => d.new)
 			const updatedDecals = carData.decals.filter((d) => !d.new)
 			try {
-				const updatedCar = await prisma.car.update({
+				updatedCar = await prisma.car.update({
 					where: { shortId: carData.shortId, userId: session.user.userId },
 					data: {
 						published: true,
 						...transformCarToDB(carData),
+						revision: { increment: 1 },
 						decals: {
 							deleteMany: { NOT: updatedDecals.map(({ id }) => ({ id })) },
 							update: carData.decals
@@ -80,7 +83,14 @@ export const actions = {
 			const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
 			sharp(Buffer.from(svgString))
 				.png({ compressionLevel: 9 })
-				.toFile(`./public/assets/car_${carData.shortId}.png`)
+				.toFile(`./public/assets/car_${carData.shortId}_${updatedCar.revision}.png`)
+			if (updatedCar.revision > 1) {
+				// Delete previous revision image
+				fs.rm(
+					`./public/assets/car_${carData.shortId}_${updatedCar.revision - 1}.png`,
+					() => {}
+				)
+			}
 		} catch (e) {
 			console.log('Error generating car image', e)
 		}

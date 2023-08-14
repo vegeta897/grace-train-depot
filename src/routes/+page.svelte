@@ -51,7 +51,7 @@
 							{#if car.published}Live{:else}Draft{/if}
 						</span>
 						<a
-							href="/design/{car.shortId}"
+							href="/c/{car.shortId}"
 							data-sveltekit-preload-data="tap"
 							class="nunito btn-hover-grow btn btn-block h-[8.75rem] text-xl"
 						>

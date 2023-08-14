@@ -1,12 +1,11 @@
 import type { CarData, DecalData } from '$lib/types'
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { COLORS } from 'grace-train-lib'
 import { generateRandomString } from 'lucia/utils'
 
-const carWithDecals = Prisma.validator<Prisma.CarDefaultArgs>()({
-	include: { decals: true },
-})
-type CarWithDecals = Prisma.CarGetPayload<typeof carWithDecals>
+type CarWithDecals = Prisma.CarGetPayload<{
+	include: { decals: true }
+}>
 
 export function transformCarFromDB(carData: CarWithDecals): CarData {
 	return {
@@ -14,6 +13,7 @@ export function transformCarFromDB(carData: CarWithDecals): CarData {
 		shortId: carData.shortId,
 		name: carData.name || undefined,
 		published: carData.published,
+		revision: carData.revision,
 		body: carData.body as CarData['body'],
 		wheels: {
 			color: carData.wheelColor,
