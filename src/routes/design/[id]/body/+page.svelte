@@ -14,7 +14,7 @@
 </script>
 
 <section>
-	<div class="nunito mb-8 flex flex-col space-y-2">
+	<div class="nunito flex flex-col gap-2">
 		{#each BODY_NAMES as name}
 			{@const current = $designCar.body === name}
 			<button

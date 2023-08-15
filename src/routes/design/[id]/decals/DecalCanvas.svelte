@@ -11,6 +11,7 @@
 	import type { CarData, Transform } from '$lib/types'
 	import { updateDecalTransform } from './decals'
 	import { getDesignStores } from '../../stores'
+	import { browser } from '$app/environment'
 
 	export let car: CarData
 
@@ -21,10 +22,12 @@
 
 	let clickOutsideCooldown = false
 
+	let containerElement: HTMLDivElement
 	let canvasElement: HTMLDivElement
 
-	let userCarWidth: number
-	$: canvasScale = userCarWidth / 375
+	let containerWidth: number
+	let macroView = false
+	$: canvasScale = containerWidth / 525 / (macroView ? 2 : 1)
 
 	$: transforming = !!(dragging || resizing || rotating)
 
@@ -34,6 +37,7 @@
 		dragging = { ...draggables[slot] }
 		selectedSlot.set(slot)
 	}
+
 	function onDrag({ offsetX, offsetY }: DragEventData, slot: number) {
 		if (!dragging) return
 		const transform = draggables[slot]
@@ -41,13 +45,11 @@
 		transform.y = dragging.y + (offsetY - dragging.y) / canvasScale
 		updateDecalTransform(localCars, $designShortId, slot, transform)
 	}
+
 	const onDragEnd = () => {
 		dragging = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
-		if ($selectedSlot === null) return
-		// const decal = decals[$selectedSlot]
-		// if (decal) updateDecal(data.car.id, decal.id, decal)
 	}
 
 	const corners = [
@@ -72,12 +74,13 @@
 		snap: boolean
 		calcRotate: (x: number, y: number) => number
 	} | null = null
+
 	function startResize(corner: number) {
 		if ($selectedSlot === null) return
 		const transform = draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + transform.x * canvasScale
-		const originY = canvasBox.y + transform.y * canvasScale
+		const originX = canvasBox.x + (100 + transform.x) * canvasScale
+		const originY = canvasBox.y + (100 + transform.y) * canvasScale
 		const radians = transform.rotate * (Math.PI / 180)
 		const cos = Math.cos(radians)
 		const sin = Math.sin(radians)
@@ -98,16 +101,18 @@
 			},
 		}
 	}
+
 	const snapRotation = (a: number) => {
 		const snapped = Math.round(a / 45) * 45
 		return Math.abs(a - snapped) < 5 && snapped
 	}
+
 	function startRotate() {
 		if ($selectedSlot === null) return
 		const transform = draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + transform.x * canvasScale
-		const originY = canvasBox.y + transform.y * canvasScale
+		const originX = canvasBox.x + (100 + transform.x) * canvasScale
+		const originY = canvasBox.y + (100 + transform.y) * canvasScale
 		rotating = {
 			slot: $selectedSlot,
 			transform,
@@ -125,6 +130,7 @@
 			},
 		}
 	}
+
 	function onPointerMove(e: PointerEvent) {
 		if (resizing) resizing.transform.scale = resizing.calcScale(e.clientX, e.clientY)
 		if (rotating) rotating.transform.rotate = rotating.calcRotate(e.clientX, e.clientY)
@@ -132,35 +138,41 @@
 		if (!operation) return
 		updateDecalTransform(localCars, $designShortId, operation.slot, operation.transform)
 	}
+
 	async function onPointerUp() {
 		if (!resizing && !rotating) return
-		// const decalSlot = (resizing?.slot || rotating?.slot)!
 		resizing = null
 		rotating = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
-		// const decal = decals[decalSlot]
-		// if (decal) await updateDecal(data.car.id, decal.id, decal)
 	}
 </script>
 
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
-<div class="relative mx-auto max-w-[375px] overflow-clip" style:aspect-ratio="375/300">
-	<div class="relative mx-auto w-full" bind:this={canvasElement}>
-		<Car
-			{car}
-			decalsOverride={$designCar.decals}
-			transition={['fill', 'opacity']}
-			focusDecalZone={$selectedSlot !== null}
-			bind:width={userCarWidth}
-		/>
+<div class="relative">
+	<div
+		class="relative mx-auto grid max-w-[575px] overflow-clip lg:p-8"
+		style:aspect-ratio="375 / 225"
+		bind:clientWidth={containerWidth}
+		bind:this={containerElement}
+	>
 		<div
-			class="absolute left-0 top-0 h-[300px] w-[375px] origin-top-left"
+			style:left="calc(50% - calc(575px / 2))"
+			style:top="calc(40% - calc(450px / 2))"
+			class="absolute h-[450px] w-[575px] p-[100px] pb-[50px] transition-transform"
+			class:hidden={!browser}
 			style:transform="scale({canvasScale})"
+			bind:this={canvasElement}
 		>
+			<Car
+				{car}
+				decalsOverride={$designCar.decals}
+				transition={['fill', 'opacity']}
+				focusDecalZone={$selectedSlot !== null}
+			/>
 			{#each draggables as transform, d (transform.id)}
 				<div
-					class="absolute h-0 w-0"
+					class="absolute left-[100px] top-[100px] h-0 w-0"
 					class:z-10={$selectedSlot === d}
 					use:draggable={{
 						bounds: 'parent',
@@ -175,7 +187,7 @@
 						style:transform-origin="50px 50px"
 						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
 						use:clickoutside={{
-							limit: { parent: canvasElement },
+							limit: { parent: containerElement },
 							enabled: !clickOutsideCooldown,
 						}}
 						on:mouseenter={() => !dragging && hoveredSlot.set(d)}
@@ -197,6 +209,7 @@
 							<BoundingBox
 								scale={transform.scale}
 								selected={$selectedSlot === d}
+								strokeWidthScale={macroView ? 2 : 1}
 								{transforming}
 							/>
 							<g
@@ -215,41 +228,71 @@
 			{/each}
 			{#if $selectedSlot !== null}
 				{@const transform = draggables[$selectedSlot]}
-				<div
-					class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-[100px] w-[100px]"
-					style:transform="translate({transform.x}px,{transform.y}px) rotate({transform.rotate}deg)"
-					transition:fade={{ duration: 50 }}
-				>
-					{#each corners as [xDir, yDir], c}
+				{#key $selectedSlot}
+					<div
+						class="pointer-events-none absolute z-10 h-0 w-0"
+						style:top="{50}px"
+						style:left="{50}px"
+						style:transform-origin="50px 50px"
+						style:transform="translate({transform.x}px,{transform.y}px) rotate({transform.rotate}deg)"
+						transition:fade={{ duration: 50 }}
+					>
+						{#each corners as [xDir, yDir], c}
+							<div
+								style:transform="translate({((transform.scale - 1) * 50 + 64) *
+									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
+							>
+								<button
+									on:pointerdown={() => startResize(c)}
+									style:transform="scale({((resizing && getCornerScale(c)) ||
+										(rotating || dragging ? 0.5 : 1)) * (macroView ? 2 : 1)})"
+									class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
+									class:transition-transform={!resizing}
+									class:transition-opacity={!resizing}
+									class:opacity-30={transforming}
+									class:!opacity-60={resizing?.corner === c}
+									style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
+								/>
+							</div>
+						{/each}
 						<div
-							style:transform="translate({((transform.scale - 1) * 50 + 64) *
-								xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
+							class="transition-transform"
+							style:transform="translate(0, {(transform.scale - 1) * 50 +
+								100 * (macroView ? 1.25 : 1)}px)"
 						>
 							<button
-								on:pointerdown={() => startResize(c)}
-								style:transform="scale({(resizing && getCornerScale(c)) ||
-									(rotating || dragging ? 0.5 : 1)})"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
-								class:transition-transform={!resizing}
-								class:transition-opacity={!resizing}
-								class:opacity-30={transforming}
-								class:!opacity-60={resizing?.corner === c}
-								style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
+								on:pointerdown={() => startRotate()}
+								style:transform="scale({(rotating ? 1.5 : 1) * (macroView ? 2 : 1)})"
+								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
+								class:transition-all={!resizing}
+								class:opacity-60={rotating}
+								class:opacity-0={resizing || dragging}
 							/>
 						</div>
-					{/each}
-					<div style:transform="translate(0,{(transform.scale - 1) * 50 + 100}px)">
-						<button
-							on:pointerdown={() => startRotate()}
-							style:transform="scale({rotating ? 1.5 : 1})"
-							class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
-							class:transition-all={!resizing}
-							class:opacity-60={rotating}
-							class:opacity-0={resizing || dragging}
-						/>
 					</div>
-				</div>
+				{/key}
 			{/if}
 		</div>
 	</div>
+	<button
+		on:click={() => (macroView = !macroView)}
+		class="btn absolute right-0 top-0 h-14 w-14 p-0 text-3xl"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			class="inline-block h-7 w-7 stroke-current"
+		>
+			<path
+				class="origin-center transition-transform"
+				style:transform="scale({macroView ? 1 : -1})"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="6"
+				vector-effect="non-scaling-stroke"
+				d="M21,3 L3,21 M21,3 h-10 M21,3 v10"
+			/>
+		</svg>
+	</button>
 </div>

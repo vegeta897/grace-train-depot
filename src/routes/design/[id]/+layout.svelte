@@ -39,7 +39,7 @@
 
 <div class="mx-auto mt-4 max-w-2xl lg:flex lg:max-w-full lg:items-start">
 	<div class="hidden w-80 shrink-0 flex-col lg:flex">
-		<div class="rounded-box flex flex-col space-y-2 bg-neutral p-6">
+		<div class="rounded-box flex flex-col gap-2 bg-neutral p-6">
 			<!-- <div class="flex items-baseline justify-between px-2">
 				<h2 class="nunito uppercase text-2xl mb-2">Design</h2>
 			</div> -->

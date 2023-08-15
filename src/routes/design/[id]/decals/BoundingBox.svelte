@@ -2,6 +2,7 @@
 	export let scale: number
 	export let selected: boolean
 	export let transforming: boolean
+	export let strokeWidthScale = 1
 
 	$: size = 100 + 28 / scale
 	$: rect = { x: -size / 2, y: -size / 2, width: size, height: size }
@@ -9,10 +10,14 @@
 	$: gapSize = size / 4 / 2
 	$: stroke = {
 		stroke: '#fff',
-		'stroke-width': 5 / scale,
+		'stroke-width': (5 / scale) * strokeWidthScale,
 		'stroke-dasharray': `${dashSize} ${gapSize}`,
 	}
 	$: pathData = drawPath(size, !selected)
+	$: transition =
+		selected && !transforming
+			? 'stroke-width 150ms cubic-bezier(0.4,0,0.2,1), opacity 150ms cubic-bezier(0.4,0,0.2,1)'
+			: 'none'
 
 	const sides = [
 		[1, 0, 1, 1, 0, 1],
@@ -41,7 +46,7 @@
 
 <rect {...rect} fill="#fff0" stroke="none" />
 <path
-	class:transition-opacity={selected && !transforming}
+	style:transition
 	class:opacity-30={selected && transforming}
 	d={pathData}
 	{...stroke}

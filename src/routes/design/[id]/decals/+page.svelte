@@ -55,7 +55,7 @@
 </script>
 
 <section>
-	<div class="mb-4 px-4"><DecalCanvas car={$designCar} /></div>
+	<DecalCanvas car={$designCar} />
 	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4">
 		<ol
 			class="nunito flex h-16 justify-center gap-2"

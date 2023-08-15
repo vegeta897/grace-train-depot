@@ -28,8 +28,8 @@ export const carSchema = z.object({
 			z.object({
 				name: z.enum(DECAL_NAMES),
 				transform: z.object({
-					x: z.number().gte(0).lte(375),
-					y: z.number().gte(0).lte(300),
+					x: z.number().gte(-100).lte(475),
+					y: z.number().gte(-100).lte(350),
 					scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
 					rotate: z.number().gte(0).lt(360),
 				}),
