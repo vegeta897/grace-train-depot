@@ -17,7 +17,7 @@ const decalSchema = z.object({
 		x: z.number().gte(-100).lte(475),
 		y: z.number().gte(-100).lte(350),
 		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
-		rotate: z.number().gte(0).lt(360),
+		rotate: z.number().gte(-180).lt(180),
 	}),
 	fill: hexColorSchema,
 	fillPreview: hexColorSchema.optional(),

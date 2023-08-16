@@ -120,7 +120,7 @@
 			snap: snapRotation(transform.rotate) === false ? false : true,
 			calcRotate: (x: number, y: number) => {
 				let angle = Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
-				angle = wrapNumber(angle, 0, 360)
+				angle = wrapNumber(angle, -180, 180)
 				const snapped = snapRotation(angle)
 				rotating!.snap = false
 				if (snapped !== false) {
