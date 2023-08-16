@@ -14,7 +14,7 @@ const decalSchema = z.object({
 	name: z.enum(DECAL_NAMES),
 	transform: z.object({
 		x: z.number().gte(-100).lte(475),
-		y: z.number().gte(-100).lte(350),
+		y: z.number().gte(-100).lte(330),
 		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
 		rotate: z.number().gte(-180).lt(180),
 	}),

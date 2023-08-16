@@ -153,14 +153,14 @@
 <div class="relative">
 	<div
 		class="relative mx-auto grid max-w-[575px] overflow-clip lg:p-8"
-		style:aspect-ratio="375 / 225"
+		style:aspect-ratio="8 / 5"
 		bind:clientWidth={containerWidth}
 		bind:this={containerElement}
 	>
 		<div
 			style:left="calc(50% - calc(575px / 2))"
-			style:top="calc(40% - calc(450px / 2))"
-			class="absolute h-[450px] w-[575px] p-[100px] pb-[50px] transition-transform"
+			style:top="calc(40% - calc(440px / 2))"
+			class="absolute h-[430px] w-[575px] px-[80px] pb-[50px] pt-[20px] transition-transform"
 			class:hidden={!browser}
 			style:transform="scale({canvasScale})"
 			bind:this={canvasElement}
@@ -168,6 +168,7 @@
 			<Car
 				{car}
 				decalsOverride={$designCar.decals}
+				toppersOverride={[]}
 				transition={['fill', 'opacity']}
 				focusDecalZone={$selectedSlot !== null}
 			/>
