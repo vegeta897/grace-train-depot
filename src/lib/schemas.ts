@@ -32,14 +32,12 @@ const topperSchema = z.object({
 	name: z.enum(TOPPER_NAMES),
 	colors: z.array(hexColorSchema),
 	position: z.number().int().gte(0),
-	adjust: z
-		.object({
-			x: z.number().gte(-50).lte(50),
-			y: z.number().gte(-50).lte(50),
-			scale: z.number().gte(0.5).lte(1.5),
-			rotate: z.number().gte(-20).lte(20),
-		})
-		.optional(),
+	adjust: z.object({
+		x: z.number().gte(-20).lte(20),
+		y: z.number().gte(-20).lte(20),
+		scale: z.number().gte(0.5).lte(1.5),
+		rotate: z.number().gte(-25).lte(25),
+	}),
 	new: z.boolean().optional(),
 })
 

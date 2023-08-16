@@ -134,9 +134,9 @@ function transformTopperToDB(topper: TopperData) {
 		name: topper.name,
 		colors: topper.colors,
 		position: topper.position,
-		adjustX: topper.adjust?.x || undefined,
-		adjustY: topper.adjust?.y || undefined,
-		adjustScale: topper.adjust?.scale || undefined,
-		adjustRotate: topper.adjust?.rotate || undefined,
+		adjustX: topper.adjust.x,
+		adjustY: topper.adjust.y,
+		adjustScale: topper.adjust.scale,
+		adjustRotate: topper.adjust.rotate,
 	}
 }

@@ -52,6 +52,7 @@
 				{@const current = name === currentPage}
 				<div class="indicator w-full">
 					{#if designChanges[name]}
+						<!-- TODO: This is bad because it looks like the user needs to visit this page to save changes -->
 						<span
 							in:fade={{ duration: 150 }}
 							class="badge indicator-item badge-warning indicator-start indicator-middle"
@@ -120,6 +121,5 @@
 		<div class="self-stretch p-4 lg:grow lg:px-8">
 			<slot />
 		</div>
-		{JSON.stringify(designChanges, null, 2)}
 	</div>
 </div>

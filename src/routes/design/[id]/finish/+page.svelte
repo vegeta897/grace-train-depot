@@ -13,10 +13,8 @@
 	let saveError: 'try-again' | null = null
 
 	const onSave: SubmitFunction = () => {
-		console.log('onSave begin')
 		saveError = null
 		return async ({ result }) => {
-			console.log('callback begin', result.status, result.type)
 			if (result.type === 'error') {
 				console.log(result.error)
 				saveError = 'try-again'

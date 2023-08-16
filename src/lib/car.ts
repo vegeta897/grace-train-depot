@@ -126,9 +126,9 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 		maybeChanged.name !== original.name ||
 		maybeChanged.position !== original.position ||
 		maybeChanged.colors.join(',') !== original.colors.join(',') ||
-		maybeChanged.adjust?.x !== original.adjust?.x ||
-		maybeChanged.adjust?.y !== original.adjust?.y ||
-		maybeChanged.adjust?.scale !== original.adjust?.scale ||
-		maybeChanged.adjust?.rotate !== original.adjust?.rotate
+		maybeChanged.adjust.x !== original.adjust.x ||
+		maybeChanged.adjust.y !== original.adjust.y ||
+		maybeChanged.adjust.scale !== original.adjust.scale ||
+		maybeChanged.adjust.rotate !== original.adjust.rotate
 	)
 }
