@@ -22,10 +22,15 @@
 	}
 	if ($designShortId !== 'new' && data.savedCar) {
 		// TODO: Test SSR
-		localCars.update((lc) => {
-			lc[$designShortId] = cloneCar(data.savedCar!)
-			return lc
-		})
+		if (
+			!$localCars[$designShortId] ||
+			(data.savedCar.revision || 0) > ($localCars[$designShortId].revision || 0)
+		) {
+			localCars.update((lc) => {
+				lc[$designShortId] = cloneCar(data.savedCar!)
+				return lc
+			})
+		}
 	}
 
 	// TODO: For first car, add new pages as they are visited
