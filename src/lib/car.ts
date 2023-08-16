@@ -1,4 +1,10 @@
-import type { CarData, DecalData, TopperData } from '$lib/schemas'
+import type {
+	CarData,
+	DecalData,
+	CarDataWithIds,
+	TopperData,
+	DecalDataWithId,
+} from '$lib/schemas'
 import type { Prisma } from '@prisma/client'
 import { COLORS } from 'grace-train-lib'
 import { generateRandomString } from 'lucia/utils'
@@ -7,7 +13,7 @@ type FullCarData = Prisma.CarGetPayload<{
 	include: { decals: true; toppers: true }
 }>
 
-export function transformCarFromDB(carData: FullCarData): CarData {
+export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
@@ -21,7 +27,6 @@ export function transformCarFromDB(carData: FullCarData): CarData {
 		},
 		toppers: carData.toppers.map((topper) => ({
 			name: topper.name as CarData['toppers'][number]['name'],
-			id: topper.id,
 			colors: topper.colors,
 			position: topper.position,
 			adjust: {
@@ -31,9 +36,9 @@ export function transformCarFromDB(carData: FullCarData): CarData {
 				rotate: topper.adjustRotate,
 			},
 		})),
-		decals: carData.decals.map((decal) => ({
+		decals: carData.decals.map((decal, d) => ({
 			name: decal.name as DecalData['name'],
-			id: decal.id,
+			id: d, // Used as a unique and persistent way to index {each} directives
 			transform: {
 				x: decal.x,
 				y: decal.y,
@@ -46,7 +51,7 @@ export function transformCarFromDB(carData: FullCarData): CarData {
 	}
 }
 
-export function cloneCar(car: CarData): CarData {
+export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 	return {
 		...car,
 		wheels: {
@@ -57,7 +62,7 @@ export function cloneCar(car: CarData): CarData {
 	}
 }
 
-export function cloneDecal(decal: DecalData): DecalData {
+export function cloneDecal(decal: DecalDataWithId): DecalDataWithId {
 	return { ...decal, transform: { ...decal.transform } }
 }
 
@@ -67,7 +72,7 @@ export function cloneTopper(topper: TopperData): TopperData {
 	return clone
 }
 
-export function getNewCar(): CarData {
+export function getNewCar(): CarDataWithIds {
 	return {
 		id: 0,
 		shortId: 'new',

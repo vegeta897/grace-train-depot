@@ -11,12 +11,12 @@
 	} from 'grace-train-lib'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import type { CarData, DecalData } from '$lib/schemas'
+	import type { CarDataWithIds, DecalDataWithId } from '$lib/schemas'
 	import Decals from './Decals.svelte'
 
-	export let car: CarData
+	export let car: CarDataWithIds
 	export let bodyOverride: BodyName | null = null
-	export let decalsOverride: DecalData[] | null = null
+	export let decalsOverride: DecalDataWithId[] | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
 
@@ -42,6 +42,7 @@
 						name={topper.name}
 						position={positions[topper.position]}
 						colors={topper.colors}
+						adjust={topper.adjust}
 					/>
 				{/each}
 			</svelte:fragment>

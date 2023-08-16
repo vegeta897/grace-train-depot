@@ -12,7 +12,6 @@ export const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i) // TODO: Use e
 
 const decalSchema = z.object({
 	name: z.enum(DECAL_NAMES),
-	id: z.number().int().gte(0),
 	transform: z.object({
 		x: z.number().gte(-100).lte(475),
 		y: z.number().gte(-100).lte(350),
@@ -31,7 +30,6 @@ const decalSchema = z.object({
 
 const topperSchema = z.object({
 	name: z.enum(TOPPER_NAMES),
-	id: z.number().int().gte(0),
 	colors: z.array(hexColorSchema),
 	position: z.number().int().gte(0),
 	adjust: z
@@ -61,5 +59,7 @@ export const carSchema = z.object({
 })
 
 export type CarData = z.infer<typeof carSchema>
+export type CarDataWithIds = Omit<CarData, 'decals'> & { decals: DecalDataWithId[] }
 export type DecalData = z.infer<typeof decalSchema>
+export type DecalDataWithId = DecalData & { id: number }
 export type TopperData = z.infer<typeof topperSchema>

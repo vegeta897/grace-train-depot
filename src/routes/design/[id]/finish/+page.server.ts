@@ -47,10 +47,10 @@ export const actions = {
 				},
 			})
 		} else {
-			const newDecals = carData.decals.filter((d) => d.new)
-			const updatedDecals = carData.decals.filter((d) => !d.new)
-			const newToppers = carData.toppers.filter((t) => t.new)
-			const updatedToppers = carData.toppers.filter((t) => !t.new)
+			// TODO: Consider removing decal/topper tables
+			// Use arrays of serialized decal/topper instead
+			// Then we don't have to screw with IDs, and it might be faster
+			// Cons: Harder to find unused decals/toppers
 			try {
 				updatedCar = await prisma.car.update({
 					where: { shortId: carData.shortId, userId: session.user.userId },
@@ -59,18 +59,15 @@ export const actions = {
 						...transformCarToDB(carData),
 						revision: { increment: 1 },
 						decals: {
-							deleteMany: { NOT: updatedDecals.map(({ id }) => ({ id })) },
-							update: carData.decals
-								.filter((d) => !d.new)
-								.map((d) => ({ where: { id: d.id }, data: transformDecalToDB(d) })),
-							createMany: { data: newDecals.map(transformDecalToDB) },
+							deleteMany: {},
+							create: carData.decals.map((d, s) => ({
+								slot: s,
+								...transformDecalToDB(d),
+							})),
 						},
 						toppers: {
-							deleteMany: { NOT: updatedToppers.map(({ id }) => ({ id })) },
-							update: carData.toppers
-								.filter((t) => !t.new)
-								.map((t) => ({ where: { id: t.id }, data: transformTopperToDB(t) })),
-							createMany: { data: newToppers.map(transformTopperToDB) },
+							deleteMany: {},
+							create: carData.toppers.map((t) => ({ ...transformTopperToDB(t) })),
 						},
 					},
 				})
@@ -91,6 +88,8 @@ export const actions = {
 			// TODO: Move this to another file
 			// Sharp toFile returns a promise that will not be caught here if it throws
 			const { html } = (Car as any).render({ car: carData })
+			// Important: Careful what css properties are used in the car SVG
+			// CSS variables are NOT supported
 			const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
 			sharp(Buffer.from(svgString))
 				.png({ compressionLevel: 9 })
@@ -125,7 +124,6 @@ function transformDecalToDB(decal: DecalData) {
 		y: decal.transform.y,
 		scale: decal.transform.scale,
 		rotate: decal.transform.rotate,
-		slot: decal.slot,
 		name: decal.name,
 		fill: decal.fill,
 	}

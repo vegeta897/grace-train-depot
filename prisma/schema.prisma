@@ -61,7 +61,6 @@ model Car {
 }
 
 model Decal {
-  id     Int    @id @default(autoincrement())
   car    Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
   carId  Int
   name   String
@@ -72,11 +71,10 @@ model Decal {
   scale  Float
   rotate Float
 
-  @@index([carId, slot])
+  @@id([carId, slot])
 }
 
 model Topper {
-  id           Int      @id @default(autoincrement())
   car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
   carId        Int
   name         String
@@ -87,7 +85,7 @@ model Topper {
   adjustScale  Float    @default(1)
   adjustRotate Float    @default(0)
 
-  @@index([carId, position])
+  @@id([carId, position])
 }
 
 /// Unnecessary?

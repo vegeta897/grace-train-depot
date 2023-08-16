@@ -9,12 +9,12 @@
 	import { getDecalStores } from './stores'
 	import Car from '$lib/components/Car.svelte'
 	import type { Transform } from '$lib/types'
-	import type { CarData } from '$lib/schemas'
+	import type { CarDataWithIds } from '$lib/schemas'
 	import { updateDecalTransform } from './decals'
 	import { getDesignStores } from '../../stores'
 	import { browser } from '$app/environment'
 
-	export let car: CarData
+	export let car: CarDataWithIds
 
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()

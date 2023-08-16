@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { DecalData } from '$lib/schemas'
+	import type { DecalDataWithId } from '$lib/schemas'
 	import { Decal } from 'grace-train-lib'
 	import type { ComponentProps } from 'svelte'
 
-	export let decals: DecalData[]
+	export let decals: DecalDataWithId[]
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 </script>
 

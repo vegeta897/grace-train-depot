@@ -2,7 +2,7 @@
 	import { Decal, type DecalName } from 'grace-train-lib'
 	import { DECAL_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
-	import type { DecalData } from '$lib/schemas'
+	import type { DecalDataWithId } from '$lib/schemas'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../../stores'
@@ -32,10 +32,10 @@
 
 	function addDecal(shape: DecalName) {
 		if (addingDecal === null) return
-		const newDecal: DecalData = {
+		const newDecal: DecalDataWithId = {
 			name: shape,
+			id: Date.now(),
 			transform: { x: 375 / 2, y: 120, scale: 1, rotate: 0 },
-			id: Date.now(), // Local only, will be overwritten after saving to server
 			fill: '', // Will be overwritten below
 			slot: 0, // Will be overwritten below
 			new: true,
