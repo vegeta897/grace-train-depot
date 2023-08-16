@@ -8,7 +8,7 @@ export const load = (async ({ params }) => {
 		car: transformCarFromDB(
 			await prisma.car.findUniqueOrThrow({
 				where: { shortId: params.id },
-				include: { decals: { orderBy: { slot: 'asc' } } },
+				include: { decals: { orderBy: { slot: 'asc' } }, toppers: true },
 			})
 		),
 	}

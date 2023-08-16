@@ -1,13 +1,13 @@
-import type { CarData, DecalData } from '$lib/types'
+import type { CarData, DecalData, TopperData } from '$lib/schemas'
 import type { Prisma } from '@prisma/client'
 import { COLORS } from 'grace-train-lib'
 import { generateRandomString } from 'lucia/utils'
 
-type CarWithDecals = Prisma.CarGetPayload<{
-	include: { decals: true }
+type FullCarData = Prisma.CarGetPayload<{
+	include: { decals: true; toppers: true }
 }>
 
-export function transformCarFromDB(carData: CarWithDecals): CarData {
+export function transformCarFromDB(carData: FullCarData): CarData {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
@@ -19,8 +19,21 @@ export function transformCarFromDB(carData: CarWithDecals): CarData {
 			color: carData.wheelColor,
 			fromCenter: carData.wheelFromCenter,
 		},
-		hat: { color: carData.hatColor },
+		toppers: carData.toppers.map((topper) => ({
+			name: topper.name as CarData['toppers'][number]['name'],
+			id: topper.id,
+			colors: topper.colors,
+			position: topper.position,
+			adjust: {
+				x: topper.adjustX,
+				y: topper.adjustY,
+				scale: topper.adjustScale,
+				rotate: topper.adjustRotate,
+			},
+		})),
 		decals: carData.decals.map((decal) => ({
+			name: decal.name as DecalData['name'],
+			id: decal.id,
 			transform: {
 				x: decal.x,
 				y: decal.y,
@@ -28,8 +41,6 @@ export function transformCarFromDB(carData: CarWithDecals): CarData {
 				scale: decal.scale,
 			},
 			slot: decal.slot,
-			id: decal.id,
-			name: decal.name as DecalData['name'],
 			fill: decal.fill,
 		})),
 	}
@@ -41,13 +52,19 @@ export function cloneCar(car: CarData): CarData {
 		wheels: {
 			...car.wheels,
 		},
-		hat: { ...car.hat },
+		toppers: car.toppers.map(cloneTopper),
 		decals: car.decals.map(cloneDecal),
 	}
 }
 
 export function cloneDecal(decal: DecalData): DecalData {
 	return { ...decal, transform: { ...decal.transform } }
+}
+
+export function cloneTopper(topper: TopperData): TopperData {
+	const clone = { ...topper }
+	if (topper.adjust) topper.adjust = { ...topper.adjust }
+	return clone
 }
 
 export function getNewCar(): CarData {
@@ -57,7 +74,7 @@ export function getNewCar(): CarData {
 		body: 'boxy',
 		decals: [],
 		wheels: { color: COLORS.POP, fromCenter: 100 },
-		hat: { color: null },
+		toppers: [],
 	}
 }
 
@@ -73,7 +90,9 @@ export function getCarChangesByPage(original: CarData, maybeChanged: CarData) {
 	// TODO: Ensure props match page names
 	return {
 		body: maybeChanged.body !== original.body,
-		caps: maybeChanged.hat.color !== original.hat.color,
+		toppers:
+			maybeChanged.toppers.length !== original.toppers.length ||
+			maybeChanged.toppers.some((md, i) => topperIsDifferent(original.toppers[i], md)),
 		wheels:
 			maybeChanged.wheels.color !== original.wheels.color ||
 			maybeChanged.wheels.fromCenter !== original.wheels.fromCenter,
@@ -89,10 +108,22 @@ function decalIsDifferent(original: DecalData, maybeChanged: DecalData) {
 	return (
 		maybeChanged.fill !== original.fill ||
 		maybeChanged.name !== original.name ||
+		maybeChanged.slot !== original.slot ||
 		maybeChanged.transform.x !== original.transform.x ||
 		maybeChanged.transform.y !== original.transform.y ||
 		maybeChanged.transform.scale !== original.transform.scale ||
-		maybeChanged.transform.rotate !== original.transform.rotate ||
-		maybeChanged.slot !== original.slot
+		maybeChanged.transform.rotate !== original.transform.rotate
+	)
+}
+
+function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
+	return (
+		maybeChanged.name !== original.name ||
+		maybeChanged.position !== original.position ||
+		maybeChanged.colors.join(',') !== original.colors.join(',') ||
+		maybeChanged.adjust?.x !== original.adjust?.x ||
+		maybeChanged.adjust?.y !== original.adjust?.y ||
+		maybeChanged.adjust?.scale !== original.adjust?.scale ||
+		maybeChanged.adjust?.rotate !== original.adjust?.rotate
 	)
 }

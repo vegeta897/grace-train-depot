@@ -2,7 +2,7 @@
 	import { Decal, type DecalName } from 'grace-train-lib'
 	import { DECAL_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
-	import type { DecalData } from '$lib/types'
+	import type { DecalData } from '$lib/schemas'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../../stores'
@@ -10,6 +10,9 @@
 
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
+
+	// TODO: Prototype a "sliders" mode where x/y/scale/rotate can be set with sliders on one page
+	// Could even adjust decal order/slot with a slider! Embrace the sliders!
 
 	hoveredSlot.set(null)
 	selectedSlot.set(null)

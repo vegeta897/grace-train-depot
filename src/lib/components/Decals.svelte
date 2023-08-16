@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DecalData } from '$lib/types'
+	import type { DecalData } from '$lib/schemas'
 	import { Decal } from 'grace-train-lib'
 	import type { ComponentProps } from 'svelte'
 

@@ -1,5 +1,5 @@
 import { getNewCar } from '$lib/car'
-import type { CarData } from '$lib/types'
+import type { CarData } from '$lib/schemas'
 import { defineContext } from '$lib/util'
 import { persisted } from 'svelte-local-storage-store'
 import { derived, writable } from 'svelte/store'

@@ -13,7 +13,7 @@ export const load = (async (event) => {
 			savedCars: (
 				await prisma.car.findMany({
 					where: { userId: session.user.userId },
-					include: { decals: { orderBy: { slot: 'asc' } } },
+					include: { decals: { orderBy: { slot: 'asc' } }, toppers: true },
 					orderBy: { createdAt: 'desc' },
 				})
 			).map(transformCarFromDB),

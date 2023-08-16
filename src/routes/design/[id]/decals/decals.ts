@@ -8,7 +8,6 @@ export function updateDecalTransform(
 	transform: Transform
 ) {
 	cars.update((c) => {
-		console.log(transform.x, transform.y)
 		c[shortId].decals[slot].transform = {
 			x: Math.round(transform.x),
 			y: Math.round(transform.y),

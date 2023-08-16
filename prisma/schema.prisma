@@ -56,8 +56,8 @@ model Car {
   body            Body     @default(boxy)
   wheelColor      String
   wheelFromCenter Float
-  hatColor        String?
   decals          Decal[]
+  toppers         Topper[]
 }
 
 model Decal {
@@ -73,6 +73,21 @@ model Decal {
   rotate Float
 
   @@index([carId, slot])
+}
+
+model Topper {
+  id           Int      @id @default(autoincrement())
+  car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId        Int
+  name         String
+  position     Int
+  colors       String[]
+  adjustX      Float    @default(0)
+  adjustY      Float    @default(0)
+  adjustScale  Float    @default(1)
+  adjustRotate Float    @default(0)
+
+  @@index([carId, position])
 }
 
 /// Unnecessary?

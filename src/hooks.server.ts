@@ -17,6 +17,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 }
 
 export const handleError: HandleServerError = async ({ error, event }) => {
+	console.log(error)
 	const is404 = event.route.id === null
 	if (is404 && event.url.pathname.startsWith('/assets/car_')) {
 		// Redirect deleted car image requests to "unknown" image

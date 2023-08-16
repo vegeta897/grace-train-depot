@@ -1,4 +1,4 @@
-import { BODY_NAMES, DECAL_NAMES } from 'grace-train-lib'
+import { BODY_NAMES, DECAL_NAMES, TOPPER_NAMES } from 'grace-train-lib'
 import { z } from 'zod'
 import {
 	DECAL_MAX_SCALE,
@@ -10,38 +10,56 @@ import {
 
 export const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i) // TODO: Use enum of official color list
 
+const decalSchema = z.object({
+	name: z.enum(DECAL_NAMES),
+	id: z.number().int().gte(0),
+	transform: z.object({
+		x: z.number().gte(-100).lte(475),
+		y: z.number().gte(-100).lte(350),
+		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
+		rotate: z.number().gte(0).lt(360),
+	}),
+	fill: hexColorSchema,
+	fillPreview: hexColorSchema.optional(),
+	slot: z
+		.number()
+		.int()
+		.gte(0)
+		.lte(DECAL_MAX_SLOTS - 1),
+	new: z.boolean().optional(),
+})
+
+const topperSchema = z.object({
+	name: z.enum(TOPPER_NAMES),
+	id: z.number().int().gte(0),
+	colors: z.array(hexColorSchema),
+	position: z.number().int().gte(0),
+	adjust: z
+		.object({
+			x: z.number().gte(-50).lte(50),
+			y: z.number().gte(-50).lte(50),
+			scale: z.number().gte(0.5).lte(1.5),
+			rotate: z.number().gte(-20).lte(20),
+		})
+		.optional(),
+	new: z.boolean().optional(),
+})
+
 export const carSchema = z.object({
 	id: z.number().int().gte(0),
 	shortId: z.string().min(1),
 	name: z.string().min(1).optional(),
 	published: z.boolean().optional(),
+	revision: z.number().int().gte(1).optional(),
 	body: z.enum(BODY_NAMES),
 	wheels: z.object({
 		color: hexColorSchema,
 		fromCenter: z.number().int().gte(WHEEL_DISTANCE_MIN).lte(WHEEL_DISTANCE_MAX),
 	}),
-	hat: z.object({
-		color: hexColorSchema.nullable(),
-	}),
-	decals: z
-		.array(
-			z.object({
-				name: z.enum(DECAL_NAMES),
-				transform: z.object({
-					x: z.number().gte(-100).lte(475),
-					y: z.number().gte(-100).lte(350),
-					scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
-					rotate: z.number().gte(0).lt(360),
-				}),
-				id: z.number().int().gte(0),
-				fill: hexColorSchema,
-				slot: z
-					.number()
-					.int()
-					.gte(0)
-					.lte(DECAL_MAX_SLOTS - 1),
-				new: z.boolean().optional(),
-			})
-		)
-		.max(DECAL_MAX_SLOTS),
+	decals: z.array(decalSchema).max(DECAL_MAX_SLOTS),
+	toppers: z.array(topperSchema).max(3),
 })
+
+export type CarData = z.infer<typeof carSchema>
+export type DecalData = z.infer<typeof decalSchema>
+export type TopperData = z.infer<typeof topperSchema>

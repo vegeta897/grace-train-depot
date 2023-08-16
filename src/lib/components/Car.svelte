@@ -7,10 +7,11 @@
 		COLORS,
 		DECAL_CLIP_PATHS,
 		WheelsChange,
+		Topper,
 	} from 'grace-train-lib'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import type { CarData, DecalData } from '$lib/types'
+	import type { CarData, DecalData } from '$lib/schemas'
 	import Decals from './Decals.svelte'
 
 	export let car: CarData
@@ -34,6 +35,15 @@
 				{#if !focusDecalZone}
 					<Decals {decals} {transition} />
 				{/if}
+			</svelte:fragment>
+			<svelte:fragment slot="toppers" let:positions>
+				{#each car.toppers as topper}
+					<Topper
+						name={topper.name}
+						position={positions[topper.position]}
+						colors={topper.colors}
+					/>
+				{/each}
 			</svelte:fragment>
 			<WheelsChange
 				rimColor={car.wheels.color}

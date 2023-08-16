@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
-import type { CarData, DBCar, DecalData } from '$lib/types'
+import type { DBCar } from '$lib/types'
+import type { CarData, DecalData, TopperData } from '$lib/schemas'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
@@ -42,11 +43,14 @@ export const actions = {
 					...transformCarToDB(carData),
 					userId: session.user.userId,
 					decals: { create: formCarData.decals.map(transformDecalToDB) },
+					toppers: { create: formCarData.toppers.map(transformTopperToDB) },
 				},
 			})
 		} else {
 			const newDecals = carData.decals.filter((d) => d.new)
 			const updatedDecals = carData.decals.filter((d) => !d.new)
+			const newToppers = carData.toppers.filter((t) => t.new)
+			const updatedToppers = carData.toppers.filter((t) => !t.new)
 			try {
 				updatedCar = await prisma.car.update({
 					where: { shortId: carData.shortId, userId: session.user.userId },
@@ -60,6 +64,13 @@ export const actions = {
 								.filter((d) => !d.new)
 								.map((d) => ({ where: { id: d.id }, data: transformDecalToDB(d) })),
 							createMany: { data: newDecals.map(transformDecalToDB) },
+						},
+						toppers: {
+							deleteMany: { NOT: updatedToppers.map(({ id }) => ({ id })) },
+							update: carData.toppers
+								.filter((t) => !t.new)
+								.map((t) => ({ where: { id: t.id }, data: transformTopperToDB(t) })),
+							createMany: { data: newToppers.map(transformTopperToDB) },
 						},
 					},
 				})
@@ -105,7 +116,6 @@ function transformCarToDB(car: CarData) {
 		body: car.body,
 		wheelColor: car.wheels.color,
 		wheelFromCenter: car.wheels.fromCenter,
-		hatColor: car.hat.color,
 	}
 }
 
@@ -118,5 +128,17 @@ function transformDecalToDB(decal: DecalData) {
 		slot: decal.slot,
 		name: decal.name,
 		fill: decal.fill,
+	}
+}
+
+function transformTopperToDB(topper: TopperData) {
+	return {
+		name: topper.name,
+		colors: topper.colors,
+		position: topper.position,
+		adjustX: topper.adjust?.x || undefined,
+		adjustY: topper.adjust?.y || undefined,
+		adjustScale: topper.adjust?.scale || undefined,
+		adjustRotate: topper.adjust?.rotate || undefined,
 	}
 }
