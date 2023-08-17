@@ -38,7 +38,6 @@
 			transform: { x: 375 / 2, y: 120, scale: 1, rotate: 0 },
 			fill: '', // Will be overwritten below
 			slot: 0, // Will be overwritten below
-			new: true,
 		}
 		localCars.update((cars) => {
 			if (addingDecal! > 0) {
