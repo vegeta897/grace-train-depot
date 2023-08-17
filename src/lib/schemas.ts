@@ -4,7 +4,9 @@ import {
 	DECAL_MAX_SCALE,
 	DECAL_MAX_SLOTS,
 	DECAL_MIN_SCALE,
+	TOPPER_MAX_SCALE,
 	TOPPER_MAX_SLOTS,
+	TOPPER_MIN_SCALE,
 	WHEEL_DISTANCE_MAX,
 	WHEEL_DISTANCE_MIN,
 } from './common/constants'
@@ -33,7 +35,7 @@ const topperSchema = z.object({
 	colors: z.array(hexColorSchema),
 	position: z.number().gte(0).lte(1),
 	offset: z.number().gte(-20).lte(20),
-	scale: z.number().gte(0.5).lte(1.5),
+	scale: z.number().gte(TOPPER_MIN_SCALE).lte(TOPPER_MAX_SCALE),
 	rotate: z.number().gte(-25).lte(25),
 	slot: z
 		.number()

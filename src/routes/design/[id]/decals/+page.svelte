@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Decal, type DecalName } from 'grace-train-lib'
+	import { ContainerSvg, Decal, type DecalName } from 'grace-train-lib'
 	import { DECAL_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
 	import type { DecalDataWithId } from '$lib/schemas'
@@ -60,13 +60,13 @@
 	<DecalCanvas car={$designCar} />
 	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4">
 		<ol
-			class="nunito flex h-16 justify-center gap-2"
+			class="flex h-16 justify-center gap-2"
 			class:max-sm:gap-1={$designCar.decals.length >= 3}
 		>
 			{#if $designCar.decals.length < DECAL_MAX_SLOTS - 1 && $designCar.decals.length > 0}
 				<li class="w-20">
 					<button
-						class="btn btn-outline btn-block h-16 px-0 text-4xl"
+						class="nunito btn btn-outline btn-block h-16 px-0 text-4xl"
 						class:btn-active={addingDecal === -1}
 						on:click={() => clickEmptySlot(-1)}>+</button
 					>
@@ -75,7 +75,7 @@
 			{#each $designCar.decals as decal}
 				<li class="w-28 shrink">
 					<button
-						class="btn-hover-grow btn btn-block h-16 px-0 text-4xl"
+						class="btn-hover-grow btn btn-block h-16 px-0"
 						class:selected-decal={decal.slot === $selectedSlot}
 						on:click={() => clickDecalSlot(decal.slot)}
 						on:mouseenter={() => hoveredSlot.set(decal.slot)}
@@ -83,8 +83,7 @@
 						on:focus={() => hoveredSlot.set(decal.slot)}
 						on:blur={() => hoveredSlot.set(null)}
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
+						<ContainerSvg
 							viewBox="-50 -50 100 100"
 							class="w-10 overflow-visible 2xs:w-11"
 						>
@@ -99,14 +98,14 @@
 								}}
 								transition={['fill', 'opacity']}
 							/>
-						</svg>
+						</ContainerSvg>
 					</button>
 				</li>
 			{/each}
 			{#if $designCar.decals.length < DECAL_MAX_SLOTS}
 				<li class="w-20">
 					<button
-						class="btn btn-outline btn-block h-16 px-0 text-4xl"
+						class="nunito btn btn-outline btn-block h-16 px-0 text-4xl"
 						class:btn-active={addingDecal === 1}
 						on:click={() => clickEmptySlot(1)}>+</button
 					>
@@ -128,7 +127,7 @@
 
 <style>
 	.selected-decal {
-		background: #605de9;
+		background-color: #605de9;
 		border-color: #605de9;
 	}
 </style>

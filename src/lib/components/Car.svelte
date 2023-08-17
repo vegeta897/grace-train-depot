@@ -20,6 +20,7 @@
 	export let toppersOverride: TopperDataWithId[] | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
+	export let focusTopperSlot: number | null = null
 
 	$: bodyName = bodyOverride || car.body
 	$: decals = decalsOverride || car.decals
@@ -40,7 +41,12 @@
 			</svelte:fragment>
 			<svelte:fragment slot="toppers" let:topLine>
 				{#each toppers as topper (topper.id)}
-					<Topper {topLine} {...topper} />
+					<g
+						class="transition-opacity"
+						class:opacity-40={focusTopperSlot !== null && topper.slot !== focusTopperSlot}
+					>
+						<Topper {topLine} {...topper} />
+					</g>
 				{/each}
 			</svelte:fragment>
 			<WheelsChange

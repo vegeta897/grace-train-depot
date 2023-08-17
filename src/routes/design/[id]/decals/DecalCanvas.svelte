@@ -167,7 +167,7 @@
 		>
 			<Car
 				{car}
-				toppersOverride={$selectedSlot === null ? null : []}
+				focusTopperSlot={$selectedSlot === null ? null : -1}
 				transition={['fill', 'opacity']}
 				focusDecalZone={$selectedSlot !== null}
 			/>

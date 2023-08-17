@@ -18,5 +18,7 @@ export const DECAL_COLORS = [
 	'#f154ff',
 ] as const
 export const TOPPER_MAX_SLOTS = 3
+export const TOPPER_MIN_SCALE = 0.5
+export const TOPPER_MAX_SCALE = 1.2
 export const WHEEL_DISTANCE_MIN = 80
 export const WHEEL_DISTANCE_MAX = 115
