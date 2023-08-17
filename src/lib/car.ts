@@ -25,16 +25,15 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 			color: carData.wheelColor,
 			fromCenter: carData.wheelFromCenter,
 		},
-		toppers: carData.toppers.map((topper) => ({
-			name: topper.name as CarData['toppers'][number]['name'],
+		toppers: carData.toppers.map((topper, t) => ({
+			name: topper.name as TopperData['name'],
+			id: t, // Used as a unique and persistent way to index {each} directives
 			colors: topper.colors,
 			position: topper.position,
-			adjust: {
-				x: topper.adjustX,
-				y: topper.adjustY,
-				scale: topper.adjustScale,
-				rotate: topper.adjustRotate,
-			},
+			slot: topper.slot,
+			offset: topper.offset,
+			scale: topper.scale,
+			rotate: topper.rotate,
 		})),
 		decals: carData.decals.map((decal, d) => ({
 			name: decal.name as DecalData['name'],
@@ -57,19 +56,13 @@ export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 		wheels: {
 			...car.wheels,
 		},
-		toppers: car.toppers.map(cloneTopper),
+		toppers: car.toppers.map((t) => ({ ...t })),
 		decals: car.decals.map(cloneDecal),
 	}
 }
 
 export function cloneDecal(decal: DecalDataWithId): DecalDataWithId {
 	return { ...decal, transform: { ...decal.transform } }
-}
-
-export function cloneTopper(topper: TopperData): TopperData {
-	const clone = { ...topper }
-	if (topper.adjust) topper.adjust = { ...topper.adjust }
-	return clone
 }
 
 export function getNewCar(): CarDataWithIds {
@@ -125,10 +118,10 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 	return (
 		maybeChanged.name !== original.name ||
 		maybeChanged.position !== original.position ||
-		maybeChanged.colors.join(',') !== original.colors.join(',') ||
-		maybeChanged.adjust.x !== original.adjust.x ||
-		maybeChanged.adjust.y !== original.adjust.y ||
-		maybeChanged.adjust.scale !== original.adjust.scale ||
-		maybeChanged.adjust.rotate !== original.adjust.rotate
+		maybeChanged.slot !== original.slot ||
+		maybeChanged.offset !== original.offset ||
+		maybeChanged.scale !== original.scale ||
+		maybeChanged.rotate !== original.rotate ||
+		maybeChanged.colors.join(',') !== original.colors.join(',')
 	)
 }

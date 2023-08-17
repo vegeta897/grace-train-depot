@@ -4,6 +4,7 @@ import {
 	DECAL_MAX_SCALE,
 	DECAL_MAX_SLOTS,
 	DECAL_MIN_SCALE,
+	TOPPER_MAX_SLOTS,
 	WHEEL_DISTANCE_MAX,
 	WHEEL_DISTANCE_MIN,
 } from './common/constants'
@@ -25,20 +26,20 @@ const decalSchema = z.object({
 		.int()
 		.gte(0)
 		.lte(DECAL_MAX_SLOTS - 1),
-	new: z.boolean().optional(),
 })
 
 const topperSchema = z.object({
 	name: z.enum(TOPPER_NAMES),
 	colors: z.array(hexColorSchema),
-	position: z.number().int().gte(0),
-	adjust: z.object({
-		x: z.number().gte(-20).lte(20),
-		y: z.number().gte(-20).lte(20),
-		scale: z.number().gte(0.5).lte(1.5),
-		rotate: z.number().gte(-25).lte(25),
-	}),
-	new: z.boolean().optional(),
+	position: z.number().gte(0).lte(1),
+	offset: z.number().gte(-20).lte(20),
+	scale: z.number().gte(0.5).lte(1.5),
+	rotate: z.number().gte(-25).lte(25),
+	slot: z
+		.number()
+		.int()
+		.gte(0)
+		.lte(TOPPER_MAX_SLOTS - 1),
 })
 
 export const carSchema = z.object({
@@ -53,11 +54,15 @@ export const carSchema = z.object({
 		fromCenter: z.number().int().gte(WHEEL_DISTANCE_MIN).lte(WHEEL_DISTANCE_MAX),
 	}),
 	decals: z.array(decalSchema).max(DECAL_MAX_SLOTS),
-	toppers: z.array(topperSchema).max(3),
+	toppers: z.array(topperSchema).max(TOPPER_MAX_SLOTS),
 })
 
 export type CarData = z.infer<typeof carSchema>
-export type CarDataWithIds = Omit<CarData, 'decals'> & { decals: DecalDataWithId[] }
+export type CarDataWithIds = Omit<CarData, 'decals' | 'toppers'> & {
+	decals: DecalDataWithId[]
+	toppers: TopperDataWithId[]
+}
 export type DecalData = z.infer<typeof decalSchema>
 export type DecalDataWithId = DecalData & { id: number }
 export type TopperData = z.infer<typeof topperSchema>
+export type TopperDataWithId = TopperData & { id: number }

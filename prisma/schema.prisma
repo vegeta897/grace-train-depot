@@ -75,17 +75,17 @@ model Decal {
 }
 
 model Topper {
-  car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
-  carId        Int
-  name         String
-  position     Int
-  colors       String[]
-  adjustX      Float    @default(0)
-  adjustY      Float    @default(0)
-  adjustScale  Float    @default(1)
-  adjustRotate Float    @default(0)
+  car      Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId    Int
+  name     String
+  slot     Int
+  colors   String[]
+  position Float
+  offset   Float    @default(0)
+  scale    Float    @default(1)
+  rotate   Float    @default(0)
 
-  @@id([carId, position])
+  @@id([carId, slot])
 }
 
 /// Unnecessary?

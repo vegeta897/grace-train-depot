@@ -51,6 +51,7 @@ export const actions = {
 			// Use arrays of serialized decal/topper instead
 			// Then we don't have to screw with IDs, and it might be faster
 			// Cons: Harder to find unused decals/toppers
+			// Update: Now using a composite ID based on carId and slot
 			try {
 				updatedCar = await prisma.car.update({
 					where: { shortId: carData.shortId, userId: session.user.userId },
@@ -60,14 +61,11 @@ export const actions = {
 						revision: { increment: 1 },
 						decals: {
 							deleteMany: {},
-							create: carData.decals.map((d, s) => ({
-								slot: s,
-								...transformDecalToDB(d),
-							})),
+							create: carData.decals.map(transformDecalToDB),
 						},
 						toppers: {
 							deleteMany: {},
-							create: carData.toppers.map((t) => ({ ...transformTopperToDB(t) })),
+							create: carData.toppers.map(transformTopperToDB),
 						},
 					},
 				})
@@ -118,8 +116,9 @@ function transformCarToDB(car: CarData) {
 	}
 }
 
-function transformDecalToDB(decal: DecalData) {
+function transformDecalToDB(decal: DecalData, slot: number) {
 	return {
+		slot,
 		x: decal.transform.x,
 		y: decal.transform.y,
 		scale: decal.transform.scale,
@@ -129,14 +128,14 @@ function transformDecalToDB(decal: DecalData) {
 	}
 }
 
-function transformTopperToDB(topper: TopperData) {
+function transformTopperToDB(topper: TopperData, slot: number) {
 	return {
+		slot,
 		name: topper.name,
 		colors: topper.colors,
 		position: topper.position,
-		adjustX: topper.adjust.x,
-		adjustY: topper.adjust.y,
-		adjustScale: topper.adjust.scale,
-		adjustRotate: topper.adjust.rotate,
+		offset: topper.offset,
+		scale: topper.scale,
+		rotate: topper.rotate,
 	}
 }
