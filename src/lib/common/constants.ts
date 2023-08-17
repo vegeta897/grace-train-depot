@@ -1,8 +1,8 @@
 export const PAGES = [
 	['🚌', 'body'],
-	['🎓', 'toppers'],
 	['🎡', 'wheels'],
 	['💟', 'decals'],
+	['🎓', 'toppers'],
 	['✨', 'effects'],
 	['🚥', 'finish'],
 ] as const
