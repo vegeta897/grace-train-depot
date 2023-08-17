@@ -167,8 +167,7 @@
 		>
 			<Car
 				{car}
-				decalsOverride={$designCar.decals}
-				toppersOverride={[]}
+				toppersOverride={$selectedSlot === null ? null : []}
 				transition={['fill', 'opacity']}
 				focusDecalZone={$selectedSlot !== null}
 			/>

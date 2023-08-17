@@ -16,7 +16,7 @@
 
 	export let car: CarDataWithIds
 	export let bodyOverride: BodyName | null = null
-	export let decalsOverride: DecalDataWithId[] | null = null
+	export let decalsOverride: DecalDataWithId[] | null = null // Unnecessary?
 	export let toppersOverride: TopperDataWithId[] | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
