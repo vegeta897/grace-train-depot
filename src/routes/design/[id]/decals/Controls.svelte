@@ -161,7 +161,15 @@
 				</button>
 			{/each}
 		</div> -->
-		<div class="col-span-4 flex h-16 flex-col justify-center gap-2 px-2">
+		<div class="col-span-4 flex h-16 flex-col justify-center gap-3 px-2">
+			<div class="relative flex h-4 overflow-clip rounded-full">
+				<div class="mx-[0.75rem] h-full grow" style:background={colorsGradient} />
+				<div class="absolute left-0 h-full w-4" style:background-color={colors[0]} />
+				<div
+					class="absolute right-0 h-full w-4"
+					style:background-color={colors[colors.length - 1]}
+				/>
+			</div>
 			<input
 				type="range"
 				min={0}
@@ -173,14 +181,6 @@
 				}}
 				class="range"
 			/>
-			<div class="relative flex overflow-clip rounded-full">
-				<div class="mx-[0.75rem] h-3 grow" style:background={colorsGradient} />
-				<div class="absolute left-0 h-3 w-4" style:background-color={colors[0]} />
-				<div
-					class="absolute right-0 h-3 w-4"
-					style:background-color={colors[colors.length - 1]}
-				/>
-			</div>
 		</div>
 	{:else if toolMode === 'scale'}
 		<div class="col-span-4 flex h-16 flex-col justify-center px-2">

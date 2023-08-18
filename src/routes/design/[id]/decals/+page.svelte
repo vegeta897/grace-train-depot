@@ -40,13 +40,14 @@
 			slot: 0, // Will be overwritten below
 		}
 		localCars.update((cars) => {
+			const decals = cars[$designShortId].decals
 			if (addingDecal! > 0) {
-				cars[$designShortId].decals.push(newDecal)
+				decals.push(newDecal)
 			} else {
-				cars[$designShortId].decals.unshift(newDecal)
+				decals.unshift(newDecal)
 			}
-			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
-			newDecal.fill = DECAL_COLORS[cars[$designShortId].decals.length - 1]
+			decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+			newDecal.fill = DECAL_COLORS[(decals.length + 2) % decals.length]
 			selectedSlot.set(newDecal.slot)
 			return cars
 		})
