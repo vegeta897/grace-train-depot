@@ -50,12 +50,23 @@
 		toolMode = null
 	}
 
+	const colors: string[] = [...DECAL_COLORS]
+	const colorMargin = 1 / (colors.length * 3)
+	const colorsGradient = `linear-gradient(to right, ${colors
+		.map((c, i) => {
+			const p = i / (colors.length - 1)
+			const start = Math.max(0, p - colorMargin)
+			const end = Math.min(1, p + colorMargin)
+			return `${c} ${Math.round(start * 100)}% ${Math.round(end * 100)}%`
+		})
+		.join(', ')})`
+
 	function setDecalColor(color: string) {
 		localCars.update((cars) => {
 			cars[$designShortId].decals[slot].fill = color
 			return cars
 		})
-		toolMode = null
+		// toolMode = null
 	}
 
 	function previewDecalColor(color?: string) {
@@ -136,7 +147,7 @@
 	{:else if toolMode === 'shape'}
 		<ShapePicker fill={$designCar.decals[slot].fill} onClick={setDecalShape} />
 	{:else if toolMode === 'color'}
-		<div class="col-span-4 grid grid-cols-6 gap-2">
+		<!-- <div class="col-span-4 grid grid-cols-6 gap-2">
 			{#each DECAL_COLORS as color}
 				<button
 					on:click={() => setDecalColor(color)}
@@ -149,6 +160,27 @@
 					</svg>
 				</button>
 			{/each}
+		</div> -->
+		<div class="col-span-4 flex h-16 flex-col justify-center gap-2 px-2">
+			<input
+				type="range"
+				min={0}
+				max={colors.length - 1}
+				step="1"
+				value={colors.indexOf(decal.fill)}
+				on:input={(e) => {
+					setDecalColor(colors[+e.currentTarget.value])
+				}}
+				class="range"
+			/>
+			<div class="relative flex overflow-clip rounded-full">
+				<div class="mx-[0.75rem] h-3 grow" style:background={colorsGradient} />
+				<div class="absolute left-0 h-3 w-4" style:background-color={colors[0]} />
+				<div
+					class="absolute right-0 h-3 w-4"
+					style:background-color={colors[colors.length - 1]}
+				/>
+			</div>
 		</div>
 	{:else if toolMode === 'scale'}
 		<div class="col-span-4 flex h-16 flex-col justify-center px-2">
