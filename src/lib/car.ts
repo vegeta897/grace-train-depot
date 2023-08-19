@@ -83,9 +83,11 @@ const shortIdLength = 8
 export const generateCarShortId = () =>
 	generateRandomString(shortIdLength, shortIdAlphabet)
 
+// TODO: This might be overkill and lead to user confusion
+// Just add a "modified" boolean in the design stores that gets changed to true whenever you change anything
+// Maybe run this function once before saving to allow the server to silently skip updating the db
 export function getCarChangesByPage(original: CarData, maybeChanged: CarData) {
 	if (original === maybeChanged) return {}
-	// TODO: Ensure props match page names
 	return {
 		body: maybeChanged.body !== original.body,
 		toppers:
@@ -98,7 +100,6 @@ export function getCarChangesByPage(original: CarData, maybeChanged: CarData) {
 			maybeChanged.decals.length !== original.decals.length ||
 			maybeChanged.decals.some((md, i) => decalIsDifferent(original.decals[i], md)),
 		effects: false,
-		finish: false,
 	}
 }
 

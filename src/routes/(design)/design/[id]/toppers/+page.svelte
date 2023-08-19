@@ -4,6 +4,8 @@
 	import { getDesignStores } from '../../stores'
 	import type { TopperDataWithId } from '$lib/schemas'
 	import {
+		TOPPER_MAX_OFFSET,
+		TOPPER_MAX_ROTATE,
 		TOPPER_MAX_SCALE,
 		TOPPER_MAX_SLOTS,
 		TOPPER_MIN_SCALE,
@@ -163,8 +165,8 @@
 					<input
 						name="topperOffset"
 						type="range"
-						min={-20}
-						max={20}
+						min={-TOPPER_MAX_OFFSET}
+						max={TOPPER_MAX_OFFSET}
 						step="1"
 						value={topper.offset}
 						on:input={(e) => setTopperProp(topper.slot, 'offset', +e.currentTarget.value)}
@@ -178,8 +180,8 @@
 					<input
 						name="topperRotate"
 						type="range"
-						min={-25}
-						max={25}
+						min={-TOPPER_MAX_ROTATE}
+						max={TOPPER_MAX_ROTATE}
 						step="1"
 						value={topper.rotate}
 						on:input={(e) => setTopperProp(topper.slot, 'rotate', +e.currentTarget.value)}

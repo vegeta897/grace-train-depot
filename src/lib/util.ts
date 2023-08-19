@@ -14,3 +14,9 @@ export function defineContext<T>(data: T): () => T {
 		return data
 	}
 }
+
+export function objectContainsTrue(object: Record<string, any>) {
+	for (const key in object) {
+		if (object[key]) return true
+	}
+}

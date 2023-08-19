@@ -4,7 +4,7 @@ export const PAGES = [
 	['💟', 'decals'],
 	['🎓', 'toppers'],
 	['✨', 'effects'],
-	['🚥', 'finish'],
+	// ['🚥', 'finish'],
 ] as const
 export const DECAL_MAX_SLOTS = 5
 export const DECAL_MIN_SCALE = 0.5
@@ -20,5 +20,7 @@ export const DECAL_COLORS = [
 export const TOPPER_MAX_SLOTS = 3
 export const TOPPER_MIN_SCALE = 0.5
 export const TOPPER_MAX_SCALE = 1.2
+export const TOPPER_MAX_ROTATE = 45
+export const TOPPER_MAX_OFFSET = 20
 export const WHEEL_DISTANCE_MIN = 80
 export const WHEEL_DISTANCE_MAX = 115
