@@ -58,7 +58,13 @@
 </script>
 
 <section>
-	<DecalCanvas car={$designCar} />
+	<div
+		class="sticky top-0 z-10 bg-base-100"
+		style:backdrop-filter="blur(6px)"
+		style:--tw-bg-opacity="0.8"
+	>
+		<DecalCanvas car={$designCar} />
+	</div>
 	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4">
 		<ol
 			class="flex h-16 justify-center gap-2"

@@ -279,7 +279,7 @@
 		on:click={() => (macroView = !macroView)}
 		style:backdrop-filter="blur(4px)"
 		style:--tw-bg-opacity="0.7"
-		class="btn btn-circle absolute right-0 top-0 h-14 w-14 border-none p-0 text-3xl"
+		class="btn btn-circle absolute right-0 top-2 h-14 w-14 border-none p-0 text-3xl"
 	>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
