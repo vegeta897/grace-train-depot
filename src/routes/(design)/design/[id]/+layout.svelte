@@ -51,12 +51,18 @@
 	}
 </script>
 
-<header class="navbar flex justify-between bg-base-200 p-3 px-4 lg:rounded-box">
-	<a href={backLink} on:click={exitDesigner} class="btn btn-neutral px-6">Back</a>
+<header
+	class="navbar min-h-12 flex justify-between bg-base-200 p-2 lg:rounded-box lg:min-h-16 lg:p-3 lg:px-4"
+>
+	<a
+		href={backLink}
+		on:click={exitDesigner}
+		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] px-6">Back</a
+	>
 	{#if currentPage !== 'finish'}
 		<a
 			href="/design/{$page.params.id}/finish"
-			class="nunito btn btn-success btn-outline text-lg"
+			class="nunito btn btn-success btn-outline btn-sm h-[2.5rem] min-h-[2.5rem] text-lg"
 		>
 			Finish
 		</a>
