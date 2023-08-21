@@ -79,8 +79,8 @@
 				>
 					<div class="origin-left scale-125 sm:scale-200">
 						<div style:left="-4rem" class="train-scroll relative whitespace-nowrap">
-							{#each Array(12) as _, i}
-								<div class="mx-[4px] inline-block w-16">
+							{#each Array(15) as _, i}
+								<div class="mx-[1px] inline-block w-16">
 									<Body color={POP_COLORS[i % POP_COLORS.length]} name="boxy" />
 								</div>
 							{/each}
@@ -117,12 +117,12 @@
 
 <style>
 	.train-scroll {
-		animation: scroll 12s linear infinite;
+		animation: scroll 16s linear infinite;
 		will-change: transform;
 	}
 	@keyframes scroll {
 		100% {
-			transform: translateX(calc(calc(64px + 8px) * -6));
+			transform: translateX(calc(calc(64px + 2px) * -8));
 		}
 	}
 </style>
