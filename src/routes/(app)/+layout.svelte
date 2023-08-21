@@ -20,7 +20,7 @@
 >
 	<!-- <h1 class="nunito text-left text-3xl uppercase">
 			🚂
-			<span class="hidden">Grace Train Depot</span>
+			<span class="hidden">Choo Choo!</span>
 		</h1> -->
 	{#if design}
 		<h2 class="nunito text-2xl uppercase">

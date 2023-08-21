@@ -16,5 +16,9 @@
 	},
 	"prettier.prettierPath": "./node_modules/prettier",
 	"typescript.tsdk": "node_modules\\typescript\\lib",
-	"editor.defaultColorDecorators": true
+	"editor.defaultColorDecorators": true,
+	"markdownlint.config": {
+		"default": true,
+		"MD026": { "punctuation": ".,;:。，；：！" }
+	}
 }

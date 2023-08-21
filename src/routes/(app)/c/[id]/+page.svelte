@@ -47,8 +47,8 @@
 </script>
 
 <svelte:head>
-	<meta property="og:title" content="Grace Train Depot" />
-	<meta property="twitter:title" content="Grace Train Depot" />
+	<meta property="og:title" content="Choo Choo!" />
+	<meta property="twitter:title" content="Choo Choo!" />
 	<meta property="twitter:card" content="summary" />
 	<meta property="twitter:image" content={imageUrl} />
 	<meta name="twitter:creator" content="@vegeta897" />
