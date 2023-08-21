@@ -9,13 +9,15 @@ export const PAGES = [
 export const DECAL_MAX_SLOTS = 5
 export const DECAL_MIN_SCALE = 0.5
 export const DECAL_MAX_SCALE = 4
-export const DECAL_COLORS = [
+export const POP_COLORS = [
+	'#ff53d9',
 	'#ff538f',
-	'#fe9920',
-	'#f2ef0d',
-	'#14eb51',
-	'#2ae3ff',
-	'#f154ff',
+	'#ff6d53',
+	'#ffaf22',
+	'#ffe431',
+	'#bef80a',
+	'#4dfd6d',
+	'#53ffc3',
 ] as const
 export const TOPPER_MAX_SLOTS = 3
 export const TOPPER_MIN_SCALE = 0.5

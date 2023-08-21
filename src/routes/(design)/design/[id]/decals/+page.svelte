@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ContainerSvg, Decal, type DecalName } from 'grace-train-lib'
-	import { DECAL_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
+	import { POP_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
 	import type { DecalDataWithId } from '$lib/schemas'
 	import DecalCanvas from './DecalCanvas.svelte'
@@ -47,7 +47,7 @@
 				decals.unshift(newDecal)
 			}
 			decals.forEach((d, i) => (d.slot = i)) // Re-number slots
-			newDecal.fill = DECAL_COLORS[(decals.length + 2) % decals.length]
+			newDecal.fill = POP_COLORS[(decals.length + 2) % decals.length]
 			selectedSlot.set(newDecal.slot)
 			return cars
 		})
@@ -60,6 +60,7 @@
 <section>
 	<div
 		class="sticky top-0 z-10 bg-base-100"
+		style:-webkit-backdrop-filter="blur(6px)"
 		style:backdrop-filter="blur(6px)"
 		style:--tw-bg-opacity="0.8"
 	>

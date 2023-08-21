@@ -2,18 +2,14 @@
 	import Car from '$lib/components/Car.svelte'
 	import { ContainerSvg, Wheels } from 'grace-train-lib'
 	import { getDesignStores } from '../../stores'
-	import { WHEEL_DISTANCE_MAX, WHEEL_DISTANCE_MIN } from '$lib/common/constants'
+	import {
+		POP_COLORS,
+		WHEEL_DISTANCE_MAX,
+		WHEEL_DISTANCE_MIN,
+	} from '$lib/common/constants'
+	import ColorSlider from '../../ColorSlider.svelte'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
-
-	const wheelColors = [
-		['#ff0000', 'rose'],
-		['#00ff00', 'lime'],
-		['#0000ff', 'deep'],
-		['#00ffff', 'sky'],
-		['#ffff00', 'sun'],
-		['#ff00ff', 'pop'],
-	]
 
 	function setWheelColor(color: string) {
 		localCars.update((cars) => {
@@ -32,26 +28,23 @@
 
 <section>
 	<div class="mx-auto mb-6 w-64"><Car car={$designCar} /></div>
-	<div class="nunito mb-8 grid grid-cols-3 gap-3 lg:grid-cols-4">
-		{#each wheelColors as [color, name]}
-			<button
-				class="btn btn-lg btn-block flex h-28 flex-col justify-center gap-2 text-xl lg:h-32 lg:gap-3"
-				on:click={() => setWheelColor(color)}
-			>
-				<ContainerSvg class="h-10 w-10" viewBox="150 225 75 75">
-					<Wheels rimColor={color} fromCenter={0} />
-				</ContainerSvg>
-				{name}
-			</button>
-		{/each}
+	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
+		<h3 class="nunito text-2xl uppercase">Color</h3>
+		<div class="mb-6 flex flex-col justify-center gap-3">
+			<ColorSlider
+				colors={POP_COLORS}
+				color={$designCar.wheels.color}
+				onInput={(e) => setWheelColor(POP_COLORS[+e.currentTarget.value])}
+			/>
+		</div>
+		<h3 class="nunito text-2xl uppercase">Spread</h3>
+		<input
+			type="range"
+			min={WHEEL_DISTANCE_MIN}
+			max={WHEEL_DISTANCE_MAX}
+			on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
+			value={$designCar.wheels.fromCenter}
+			class="range range-primary"
+		/>
 	</div>
-	<h3 class="nunito mb-4 text-2xl uppercase">Spread</h3>
-	<input
-		type="range"
-		min={WHEEL_DISTANCE_MIN}
-		max={WHEEL_DISTANCE_MAX}
-		on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
-		value={$designCar.wheels.fromCenter}
-		class="range range-primary"
-	/>
 </section>

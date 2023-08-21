@@ -6,6 +6,7 @@
 	import { PAGES } from '$lib/common/constants'
 	import { goto } from '$app/navigation'
 	import { objectContainsTrue } from '$lib/util'
+	import NavTabs from './NavTabs.svelte'
 
 	export let data: LayoutData
 
@@ -35,7 +36,7 @@
 
 	// TODO: For first car, add new pages as they are visited
 
-	$: currentPage = $page.route.id?.split('/')[4]
+	$: currentPage = $page.route.id?.split('/')[4] || ''
 	$: designChanges = getCarChangesByPage(data.savedCar || $designCar, $designCar)
 	$: backLink = $page.params.id === 'new' ? '/' : `/c/${$page.params.id}`
 
@@ -59,6 +60,9 @@
 		on:click={exitDesigner}
 		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] px-6">Back</a
 	>
+	<div class="hidden sm:flex lg:hidden">
+		<NavTabs {currentPage} carShortId={$page.params.id} />
+	</div>
 	{#if currentPage !== 'finish'}
 		<a
 			href="/design/{$page.params.id}/finish"
@@ -68,8 +72,8 @@
 		</a>
 	{/if}
 </header>
-<div class="mx-auto mt-4 max-w-2xl lg:flex lg:max-w-full lg:items-start">
-	<div class="hidden w-80 shrink-0 flex-col gap-4 lg:flex">
+<div class="mx-auto mt-2 max-w-2xl lg:mt-4 lg:flex lg:max-w-full lg:items-start">
+	<div class="sticky top-2 hidden w-80 shrink-0 flex-col gap-4 lg:flex">
 		<div class="rounded-box flex flex-col gap-2 bg-neutral p-6">
 			<!-- <div class="flex items-baseline justify-between px-2">
 				<h2 class="nunito uppercase text-2xl mb-2">Design</h2>
@@ -89,21 +93,8 @@
 		</div>
 	</div>
 	<div class="flex min-w-0 grow flex-col items-center">
-		<div
-			class="tabs-boxed tabs mx-2 justify-center self-stretch xs:self-center lg:hidden"
-		>
-			{#each PAGES as [icon, name]}
-				{@const current = name === currentPage}
-				<a
-					data-sveltekit-noscroll
-					class:pointer-events-none={current}
-					class:tab-active={current}
-					href="/design/{$page.params.id}/{name}"
-					class="tab h-11 grow px-0 text-2xl 2xs:h-12 2xs:text-3xl xs:px-[var(--tab-padding,1rem)]"
-				>
-					{icon}
-				</a>
-			{/each}
+		<div class="mx-2 justify-center self-stretch xs:self-center sm:hidden">
+			<NavTabs {currentPage} carShortId={$page.params.id} />
 		</div>
 		{#if currentPage}
 			<h2 class="nunito mt-3 text-3xl uppercase">{currentPage}</h2>

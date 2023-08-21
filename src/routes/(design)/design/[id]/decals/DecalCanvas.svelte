@@ -152,7 +152,7 @@
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
 <div class="relative">
 	<div
-		class="relative mx-auto grid max-w-[575px] overflow-clip lg:p-8"
+		class="relative mx-auto grid max-h-[40vh] max-w-[575px] overflow-clip lg:p-8"
 		style:aspect-ratio="8 / 5"
 		bind:clientWidth={containerWidth}
 		bind:this={containerElement}
@@ -277,6 +277,7 @@
 	</div>
 	<button
 		on:click={() => (macroView = !macroView)}
+		style:-webkit-backdrop-filter="blur(4px)"
 		style:backdrop-filter="blur(4px)"
 		style:--tw-bg-opacity="0.7"
 		class="btn btn-circle absolute right-0 top-2 h-14 w-14 border-none p-0 text-3xl"

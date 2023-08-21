@@ -23,10 +23,10 @@ const config = {
 			{
 				synthwave: {
 					...require('daisyui/src/theming/themes')['[data-theme=synthwave]'],
-					neutral: '#25185d',
-					'base-100': '#1d124a',
-					'base-200': '#140d35',
-					'base-300': '#0e0925',
+					neutral: '#270f69',
+					'base-100': '#21124a',
+					'base-200': '#1c0f3e',
+					'base-300': '#160c31',
 				},
 			},
 		],

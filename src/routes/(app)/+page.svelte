@@ -2,7 +2,7 @@
 	import Car from '$lib/components/Car.svelte'
 	import { Body } from 'grace-train-lib'
 	import type { PageData } from './$types'
-	import { DECAL_COLORS } from '$lib/common/constants'
+	import { POP_COLORS } from '$lib/common/constants'
 	import { page } from '$app/stores'
 
 	export let data: PageData
@@ -81,7 +81,7 @@
 						<div style:left="-4rem" class="train-scroll relative whitespace-nowrap">
 							{#each Array(12) as _, i}
 								<div class="mx-[4px] inline-block w-16">
-									<Body color={DECAL_COLORS[i % DECAL_COLORS.length]} name="boxy" />
+									<Body color={POP_COLORS[i % POP_COLORS.length]} name="boxy" />
 								</div>
 							{/each}
 						</div>

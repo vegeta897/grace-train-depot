@@ -4,6 +4,8 @@
 	import '@fontsource-variable/open-sans'
 	import '../app.postcss'
 	import './styles.css'
+
+	// TODO: Site name idea: "Choo Choo!"
 </script>
 
 <svelte:head>
