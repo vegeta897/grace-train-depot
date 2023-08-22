@@ -10,6 +10,8 @@
 	<title>Choo Choo!</title>
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
-<div class="mx-auto w-full max-w-5xl pb-4 lg:p-4">
+<div
+	class="mx-auto w-full max-w-5xl pb-4 selection:bg-primary selection:text-primary-content lg:p-4"
+>
 	<slot />
 </div>
