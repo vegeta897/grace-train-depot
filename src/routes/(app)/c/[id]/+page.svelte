@@ -58,56 +58,63 @@
 	<meta property="og:image:height" content="300" />
 	<meta name="theme-color" content="${COLORS.POP}" />
 </svelte:head>
-<section
-	class="flex flex-col items-center gap-4 px-4 py-8 lg:flex-row lg:items-start lg:px-8"
->
-	<div class="flex grow flex-col items-center gap-4 p-4 lg:p-8">
+<section class="flex flex-col items-center gap-4 px-4 py-8 lg:flex-row lg:px-8">
+	<div
+		class="flex grow flex-col items-center gap-4 p-4 lg:p-8"
+		style:min-width="min(400px, 100%)"
+	>
 		<div class="max-w-[20rem]"><Car car={data.car} /></div>
 	</div>
-	<div
-		class="rounded-box flex w-full max-w-lg flex-col items-center gap-4 bg-neutral p-4 lg:p-8"
-	>
-		{#if !renaming}
-			<button
-				class="nunito btn btn-ghost btn-lg text-4xl normal-case"
-				class:[&:not(:hover)]:opacity-70={!data.car.name}
-				on:click={enableRename}>{data.car.name || '(no name)'}</button
-			>
-			<a
-				href="/design/{data.car.shortId}"
-				class="nunito btn btn-primary rounded-box btn-lg btn-block h-20 text-4xl"
-				>Design</a
-			>
-			<div class="flex gap-4">
-				<button class="btn btn-secondary" on:click={copyLink}>Copy Link</button>
-			</div>
-		{:else}
-			<form
-				action="?/rename"
-				method="POST"
-				use:enhance={onRename}
-				class="flex flex-col gap-4"
-			>
-				<input
-					type="text"
-					name="carName"
-					class="input h-16 w-full max-w-xs text-2xl"
-					value={data.car.name || ''}
-					placeholder="Type a name"
-					bind:this={nameInput}
-				/>
-				<button class="btn btn-primary btn-lg text-2xl font-bold">Save</button>
-				<!-- Avoid submitting form by adding type="button" -->
-				<button type="button" class="btn" on:click={() => (renaming = false)}>
-					Cancel
-				</button>
-			</form>
-		{/if}
-	</div>
+	{#if data.car.belongsToUser}
+		<div
+			class="rounded-box flex w-full max-w-lg flex-col items-center gap-4 bg-neutral p-4 lg:p-8"
+		>
+			{#if !renaming}
+				<button
+					class="nunito btn btn-ghost btn-lg text-4xl normal-case"
+					class:[&:not(:hover)]:opacity-70={!data.car.name}
+					on:click={enableRename}>{data.car.name || '(no name)'}</button
+				>
+				<a
+					href="/design/{data.car.shortId}"
+					class="nunito btn btn-primary rounded-box btn-lg btn-block h-20 text-4xl"
+					>Design</a
+				>
+				<div class="flex gap-4">
+					<button class="btn btn-secondary" on:click={copyLink}>Copy Link</button>
+				</div>
+			{:else}
+				<form
+					action="?/rename"
+					method="POST"
+					use:enhance={onRename}
+					class="flex flex-col gap-4"
+				>
+					<input
+						type="text"
+						name="carName"
+						class="input h-16 w-full max-w-xs text-2xl"
+						value={data.car.name || ''}
+						placeholder="Type a name"
+						bind:this={nameInput}
+					/>
+					<button class="btn btn-primary btn-lg text-2xl font-bold">Save</button>
+					<!-- Avoid submitting form by adding type="button" -->
+					<button type="button" class="btn" on:click={() => (renaming = false)}>
+						Cancel
+					</button>
+				</form>
+			{/if}
+		</div>
+	{:else if data.car.name}
+		<h2 class="nunito text-4xl">{data.car.name}</h2>
+	{/if}
 </section>
-<div class="flex justify-center">
-	<a href="/" class="btn btn-lg">Back</a>
-</div>
+{#if data.user}
+	<div class="flex justify-center">
+		<a href="/" class="btn btn-lg">Back</a>
+	</div>
+{/if}
 <div class="toast toast-center toast-top">
 	{#if copied}
 		<div

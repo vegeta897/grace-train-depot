@@ -41,29 +41,31 @@
 					>
 				</div>
 				<!-- TODO: Maybe separate live cars vs drafts -->
-				{#each data.savedCars as car}
-					<div class="indicator w-full">
-						<span
-							class="nunito indicator-center indicator-bottom badge indicator-item uppercase"
-							class:badge-primary={car.published}
-							class:badge-warning={!car.published}
-						>
-							{#if car.published}Live{:else}Draft{/if}
-						</span>
-						<a
-							href="/c/{car.shortId}"
-							data-sveltekit-preload-data="tap"
-							class="nunito btn-hover-grow btn btn-block h-[8.75rem] text-xl"
-						>
-							<div class="flex flex-col items-center gap-1 normal-case">
-								<div class="w-24"><Car {car} /></div>
-								{#if car.name}
-									{car.name}
-								{/if}
-							</div>
-						</a>
-					</div>
-				{/each}
+				{#if data.savedCars}
+					{#each data.savedCars as car}
+						<div class="indicator w-full">
+							<span
+								class="nunito indicator-center indicator-bottom badge indicator-item uppercase"
+								class:badge-primary={car.published}
+								class:badge-warning={!car.published}
+							>
+								{#if car.published}Live{:else}Draft{/if}
+							</span>
+							<a
+								href="/c/{car.shortId}"
+								data-sveltekit-preload-data="tap"
+								class="nunito btn-hover-grow btn btn-block h-[8.75rem] text-xl"
+							>
+								<div class="flex flex-col items-center gap-1 normal-case">
+									<div class="w-24"><Car {car} /></div>
+									{#if car.name}
+										{car.name}
+									{/if}
+								</div>
+							</a>
+						</div>
+					{/each}
+				{/if}
 			</div>
 		</div>
 	</section>

@@ -1,5 +1,3 @@
-import { transformCarFromDB } from '$lib/car'
-import prisma from '$lib/server/prisma'
 import type { LayoutServerLoad } from './$types'
 
 export const load = (async (event) => {
@@ -10,14 +8,6 @@ export const load = (async (event) => {
 	if (session) {
 		return {
 			user: session.user,
-			savedCars: (
-				await prisma.car.findMany({
-					where: { userId: session.user.userId },
-					include: { decals: { orderBy: { slot: 'asc' } }, toppers: true },
-					orderBy: { createdAt: 'desc' },
-				})
-			).map(transformCarFromDB),
 		}
 	}
-	return {}
 }) satisfies LayoutServerLoad

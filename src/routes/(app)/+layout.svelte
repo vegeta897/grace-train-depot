@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { clickoutside } from '@svelte-put/clickoutside'
-	import { page } from '$app/stores'
 	import type { LayoutData } from './$types'
 
 	export let data: LayoutData
@@ -9,28 +8,23 @@
 
 	const closeMenu = () => menuElement.removeAttribute('open')
 
-	$: design = $page.route.id?.startsWith('/design')
-	$: carId = design && $page.params.id
-
 	// TODO: Bento grid? https://bentogrids.com/
 </script>
 
 <header
-	class="navbar min-h-12 grid grid-cols-3 bg-base-200 p-0 px-6 lg:rounded-box lg:min-h-16"
+	class="navbar min-h-12 flex justify-between bg-base-200 p-0 px-6 lg:rounded-box lg:min-h-16"
 >
 	<!-- <h1 class="nunito text-left text-3xl uppercase">
 			🚂
 			<span class="hidden">Choo Choo!</span>
 		</h1> -->
-	{#if design}
-		<h2 class="nunito text-2xl uppercase">
-			<a href="/design/{carId}">Design</a>
-		</h2>
-	{/if}
-	<nav class="col-start-3 flex-none justify-self-end">
+	<h2 class="nunito text-2xl uppercase">
+		<a href="/">Choo Choo!</a>
+	</h2>
+	<nav class="flex-none">
 		<details
 			bind:this={menuElement}
-			class="dropdown dropdown-end"
+			class="dropdown-end dropdown"
 			use:clickoutside={{}}
 			on:clickoutside={closeMenu}
 		>

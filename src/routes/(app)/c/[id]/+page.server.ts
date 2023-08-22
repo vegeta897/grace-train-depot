@@ -3,14 +3,18 @@ import prisma from '$lib/server/prisma'
 import { fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
-export const load = (async ({ params }) => {
+export const load = (async ({ params, parent }) => {
+	console.log('/c/ layout server load')
+	const parentData = await parent()
+	const carData = await prisma.car.findUniqueOrThrow({
+		where: { shortId: params.id },
+		include: { decals: { orderBy: { slot: 'asc' } }, toppers: true },
+	})
 	return {
-		car: transformCarFromDB(
-			await prisma.car.findUniqueOrThrow({
-				where: { shortId: params.id },
-				include: { decals: { orderBy: { slot: 'asc' } }, toppers: true },
-			})
-		),
+		car: {
+			...transformCarFromDB(carData),
+			belongsToUser: carData.userId === parentData.user?.userId,
+		},
 	}
 }) satisfies PageServerLoad
 
