@@ -67,7 +67,7 @@
 	{#if focusDecalZone}
 		<div class="absolute left-0 top-0 w-full" out:fade={{ delay: 75, duration: 75 }}>
 			<ContainerSvg>
-				<path fill={COLORS.BASE} d={DECAL_CLIP_PATHS[bodyName]} />
+				<path fill={car.bodyColor || COLORS.BASE} d={DECAL_CLIP_PATHS[bodyName]} />
 				<g clip-path="url(#usercar-decal-clip)">
 					<Decals {decals} {transition} />
 				</g>
