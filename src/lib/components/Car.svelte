@@ -59,6 +59,7 @@
 			</svelte:fragment>
 			<Wheels
 				rimColor={car.wheels.color}
+				capColor={car.bodyColor || COLORS.BASE}
 				fromCenter={car.wheels.fromCenter}
 				slot="wheels"
 			/>
