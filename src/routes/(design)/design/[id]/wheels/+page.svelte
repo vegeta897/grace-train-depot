@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Car from '$lib/components/Car.svelte'
-	import { ContainerSvg, Wheels } from 'grace-train-lib'
 	import { getDesignStores } from '../../stores'
 	import {
 		POP_COLORS,
@@ -33,7 +32,7 @@
 		<div class="mb-6 flex flex-col justify-center gap-3">
 			<ColorSlider
 				colors={POP_COLORS}
-				color={$designCar.wheels.color}
+				color={$designCar.wheels.color || POP_COLORS[1]}
 				onInput={(e) => setWheelColor(POP_COLORS[+e.currentTarget.value])}
 			/>
 		</div>

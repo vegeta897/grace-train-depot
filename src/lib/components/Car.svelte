@@ -6,8 +6,8 @@
 		ContainerSvg,
 		COLORS,
 		DECAL_CLIP_PATHS,
-		WheelsChange,
 		Topper,
+		Wheels,
 	} from 'grace-train-lib'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
@@ -33,7 +33,7 @@
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>
-		<Body name={bodyName}>
+		<Body name={bodyName} baseColor={car.bodyColor}>
 			<svelte:fragment slot="decals">
 				{#if !focusDecalZone}
 					<Decals {decals} {transition} />
@@ -45,11 +45,19 @@
 						class="transition-opacity"
 						class:opacity-40={focusTopperSlot !== null && topper.slot !== focusTopperSlot}
 					>
-						<Topper {topLine} {...topper} />
+						<Topper
+							{topLine}
+							name={topper.name}
+							colors={topper.colors}
+							position={topper.position}
+							offset={topper.offset}
+							scale={topper.scale}
+							rotate={topper.rotate}
+						/>
 					</g>
 				{/each}
 			</svelte:fragment>
-			<WheelsChange
+			<Wheels
 				rimColor={car.wheels.color}
 				fromCenter={car.wheels.fromCenter}
 				slot="wheels"

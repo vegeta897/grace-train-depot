@@ -71,7 +71,7 @@
 		>
 			{#if !renaming}
 				<button
-					class="nunito btn btn-ghost btn-lg text-4xl normal-case"
+					class="nunito btn btn-ghost btn-lg text-3xl normal-case leading-none lg:text-4xl"
 					class:[&:not(:hover)]:opacity-70={!data.car.name}
 					on:click={enableRename}>{data.car.name || '(no name)'}</button
 				>

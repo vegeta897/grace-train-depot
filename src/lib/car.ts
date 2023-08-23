@@ -21,8 +21,9 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 		published: carData.published,
 		revision: carData.revision,
 		body: carData.body as CarData['body'],
+		bodyColor: carData.bodyColor || undefined,
 		wheels: {
-			color: carData.wheelColor,
+			color: carData.wheelColor || undefined,
 			fromCenter: carData.wheelFromCenter,
 		},
 		toppers: carData.toppers.map((topper, t) => ({
@@ -71,7 +72,7 @@ export function getNewCar(): CarDataWithIds {
 		shortId: 'new',
 		body: 'boxy',
 		decals: [],
-		wheels: { color: COLORS.POP, fromCenter: 100 },
+		wheels: { fromCenter: 100 },
 		toppers: [],
 	}
 }

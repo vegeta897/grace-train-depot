@@ -2,6 +2,8 @@
 	import Car from '$lib/components/Car.svelte'
 	import { BODY_NAMES, type BodyName } from 'grace-train-lib'
 	import { getDesignStores } from '../../stores'
+	import ColorSlider from '../../ColorSlider.svelte'
+	import { BASE_COLORS } from '$lib/common/constants'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -11,20 +13,33 @@
 			return cars
 		})
 	}
+
+	function setBodyColor(color: string) {
+		localCars.update((cars) => {
+			cars[$designShortId].bodyColor = color
+			return cars
+		})
+	}
 </script>
 
 <section>
-	<div class="nunito flex flex-col gap-2">
+	<div class="nunito grid grid-cols-2 gap-4">
 		{#each BODY_NAMES as name}
 			{@const current = $designCar.body === name}
 			<button
-				class="btn btn-lg h-32 justify-start gap-8 text-xl"
+				class="btn btn-block h-40"
 				on:click={() => setBody(name)}
 				disabled={current}
 			>
 				<div class="w-32"><Car car={$designCar} bodyOverride={name} /></div>
-				{name}
 			</button>
 		{/each}
+	</div>
+	<div class="mt-6 flex flex-col justify-center gap-3">
+		<ColorSlider
+			colors={BASE_COLORS}
+			color={$designCar.bodyColor || BASE_COLORS[3]}
+			onInput={(e) => setBodyColor(BASE_COLORS[+e.currentTarget.value])}
+		/>
 	</div>
 </section>

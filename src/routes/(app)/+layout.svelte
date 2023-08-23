@@ -7,8 +7,6 @@
 	let menuElement: HTMLDetailsElement
 
 	const closeMenu = () => menuElement.removeAttribute('open')
-
-	// TODO: Bento grid? https://bentogrids.com/
 </script>
 
 <header
@@ -18,13 +16,13 @@
 			🚂
 			<span class="hidden">Choo Choo!</span>
 		</h1> -->
-	<h2 class="nunito text-2xl uppercase">
+	<h2 class="nunito text-xl uppercase lg:text-2xl">
 		<a href="/">Choo Choo!</a>
 	</h2>
 	<nav class="flex-none">
 		<details
 			bind:this={menuElement}
-			class="dropdown-end dropdown"
+			class="dropdown dropdown-end"
 			use:clickoutside={{}}
 			on:clickoutside={closeMenu}
 		>

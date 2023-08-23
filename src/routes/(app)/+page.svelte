@@ -56,10 +56,13 @@
 								data-sveltekit-preload-data="tap"
 								class="nunito btn-hover-grow btn btn-block h-[8.75rem] text-xl"
 							>
-								<div class="flex flex-col items-center gap-1 normal-case">
+								<div class="flex max-w-full flex-col items-center gap-1 px-2 normal-case">
 									<div class="w-24"><Car {car} /></div>
 									{#if car.name}
-										{car.name}
+										<span
+											class="max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
+											>{car.name}</span
+										>
 									{/if}
 								</div>
 							</a>
@@ -83,7 +86,7 @@
 						<div style:left="-4rem" class="train-scroll relative whitespace-nowrap">
 							{#each Array(15) as _, i}
 								<div class="mx-[1px] inline-block w-16">
-									<Body color={POP_COLORS[i % POP_COLORS.length]} name="boxy" />
+									<Body stripeColor={POP_COLORS[i % POP_COLORS.length]} name="boxy" />
 								</div>
 							{/each}
 						</div>

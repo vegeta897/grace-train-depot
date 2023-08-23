@@ -53,8 +53,9 @@ export const carSchema = z.object({
 	published: z.boolean().optional(),
 	revision: z.number().int().gte(1).optional().readonly(),
 	body: z.enum(BODY_NAMES),
+	bodyColor: hexColorSchema.optional(),
 	wheels: z.object({
-		color: hexColorSchema,
+		color: hexColorSchema.optional(),
 		fromCenter: z.number().int().gte(WHEEL_DISTANCE_MIN).lte(WHEEL_DISTANCE_MAX),
 	}),
 	decals: z.array(decalSchema).max(DECAL_MAX_SLOTS),
