@@ -112,7 +112,7 @@
 			{#if $designCar.toppers.length < TOPPER_MAX_SLOTS}
 				<li class="w-20">
 					<button
-						class="nunito btn btn-outline btn-block h-16 px-0 text-4xl"
+						class="font-black btn btn-outline btn-block h-16 px-0 text-4xl"
 						class:btn-active={addingTopper}
 						on:click={clickEmptySlot}>+</button
 					>
@@ -120,7 +120,7 @@
 			{/if}
 		</ol>
 		{#if addingTopper}
-			<div class="nunito mb-4 grid grid-cols-3 gap-3 lg:grid-cols-4">
+			<div class="font-black mb-4 grid grid-cols-3 gap-3 lg:grid-cols-4">
 				{#each TOPPER_NAMES as name}
 					<button
 						class="btn btn-block flex h-24 flex-col justify-center gap-2 text-xl normal-case lg:h-28 lg:gap-4"
@@ -204,7 +204,7 @@
 					/>
 				</div>
 			</div>
-			<div class="nunito grid gap-4 sm:grid-cols-3">
+			<div class="font-black grid gap-4 sm:grid-cols-3">
 				<button class="btn btn-block text-xl">Style</button>
 				<button class="btn btn-block text-xl">Color</button>
 				<button

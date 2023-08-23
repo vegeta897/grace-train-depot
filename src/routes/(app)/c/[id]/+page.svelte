@@ -71,13 +71,13 @@
 		>
 			{#if !renaming}
 				<button
-					class="nunito btn btn-ghost btn-lg text-3xl normal-case leading-none lg:text-4xl"
+					class="btn btn-ghost btn-lg text-3xl font-black normal-case leading-none lg:text-4xl"
 					class:[&:not(:hover)]:opacity-70={!data.car.name}
 					on:click={enableRename}>{data.car.name || '(no name)'}</button
 				>
 				<a
 					href="/design/{data.car.shortId}"
-					class="nunito btn btn-primary rounded-box btn-lg btn-block h-20 text-4xl"
+					class="btn btn-primary rounded-box btn-lg btn-block h-20 text-4xl font-black"
 					>Design</a
 				>
 				<div class="flex gap-4">
@@ -107,7 +107,7 @@
 			{/if}
 		</div>
 	{:else if data.car.name}
-		<h2 class="nunito text-4xl">{data.car.name}</h2>
+		<h2 class="text-4xl font-black">{data.car.name}</h2>
 	{/if}
 </section>
 {#if data.user}

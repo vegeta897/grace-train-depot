@@ -74,7 +74,7 @@
 <div class="grid grid-cols-4 gap-2 gap-y-3">
 	<button
 		on:click={() => setToolMode('scale')}
-		class="nunito btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
+		class="font-black btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		class:text-primary={toolMode !== 'scale'}
 		class:btn-primary={toolMode === 'scale'}
 	>
@@ -82,7 +82,7 @@
 	</button>
 	<button
 		on:click={() => setToolMode('rotate')}
-		class="nunito btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
+		class="font-black btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		class:text-secondary={toolMode !== 'rotate'}
 		class:btn-secondary={toolMode === 'rotate'}
 	>
@@ -90,7 +90,7 @@
 	</button>
 	<button
 		on:click={() => setToolMode('shape')}
-		class="nunito btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
+		class="font-black btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		class:btn-active={toolMode === 'shape'}
 	>
 		Shape
@@ -98,7 +98,7 @@
 	{#if toolMode !== 'color'}
 		<button
 			on:click={() => setToolMode('color')}
-			class="nunito btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
+			class="font-black btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 			style:color={$designCar.decals[slot].fill}
 		>
 			Color
@@ -106,7 +106,7 @@
 	{:else}
 		<button
 			on:click={() => setToolMode('color')}
-			class="nunito btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
+			class="font-black btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 			style:background={$designCar.decals[slot].fill}
 			style:color="hsl(var(--inc))"
 		>
@@ -123,14 +123,14 @@
 		<button
 			on:click={() => orderDecal(-1)}
 			disabled={slot === 0}
-			class="nunito btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
+			class="font-black btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		>
 			Push
 		</button>
 		<button
 			on:click={() => orderDecal(1)}
 			disabled={slot === $designCar.decals.length - 1}
-			class="nunito btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
+			class="font-black btn btn-md touch-manipulation 2xs:text-lg md:text-xl"
 		>
 			Pull
 		</button>

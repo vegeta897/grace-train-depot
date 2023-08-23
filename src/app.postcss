@@ -4,9 +4,15 @@
 @tailwind utilities;
 
 body {
-	font-family: 'Open Sans Variable', sans-serif;
+	font-family: 'Nunito', sans-serif;
 }
 
+@supports (font-variation-settings: normal) {
+	body {
+		font-family: 'Nunito Variable', sans-serif;
+	}
+}
+/* 
 @layer base {
 	.nunito {
 		font-family: 'Nunito', sans-serif;
@@ -18,7 +24,7 @@ body {
 			font-variation-settings: 'wght' 900;
 		}
 	}
-}
+} */
 
 @layer components {
 	@media (hover: hover) {

@@ -1,13 +1,12 @@
-<section class="flex flex-col gap-4 px-4 lg:px-8">
+<section class="flex flex-col gap-4 p-4 lg:p-8">
 	<h2 class="text-2xl font-bold">Privacy</h2>
 	<h3 class="text-xl font-bold">Twitch Authentication</h3>
 	<p>
-		<em>Choo Choo!</em> requires you to log in with your Twitch account. This is a safe
-		process known as <em>OAuth</em> that lets you verify your identity without revealing any
-		personal info (not even your email) or granting unnecessary access to your account. The
-		only information you give to our site is your Twitch username and a numeric Twitch ID,
-		which is not private information. Our site is incapable of performing any actions on behalf
-		of your Twitch account.
+		This site requires you to log in with your Twitch account. This is a safe process
+		known as <em>OAuth</em> that lets you verify your identity without revealing any personal
+		info (not even your email) or granting unnecessary access to your account. The only information
+		you give to our site is your Twitch username and a numeric Twitch ID, which is not private
+		information. Our site is incapable of performing any actions on behalf of your Twitch account.
 	</p>
 	<h3 class="text-xl font-bold">User Sessions</h3>
 	<p>

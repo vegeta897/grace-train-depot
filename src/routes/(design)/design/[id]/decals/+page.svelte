@@ -74,7 +74,7 @@
 			{#if $designCar.decals.length < DECAL_MAX_SLOTS - 1 && $designCar.decals.length > 0}
 				<li class="w-20">
 					<button
-						class="nunito btn btn-outline btn-block h-16 px-0 text-4xl"
+						class="btn btn-outline btn-block h-16 px-0 text-4xl font-black"
 						class:btn-active={addingDecal === -1}
 						on:click={() => clickEmptySlot(-1)}>+</button
 					>
@@ -113,7 +113,7 @@
 			{#if $designCar.decals.length < DECAL_MAX_SLOTS}
 				<li class="w-20">
 					<button
-						class="nunito btn btn-outline btn-block h-16 px-0 text-4xl"
+						class="btn btn-outline btn-block h-16 px-0 text-4xl font-black"
 						class:btn-active={addingDecal === 1}
 						on:click={() => clickEmptySlot(1)}>+</button
 					>

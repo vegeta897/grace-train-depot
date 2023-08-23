@@ -37,7 +37,7 @@
 					<a
 						href="/design/new"
 						data-sveltekit-preload-data="tap"
-						class="nunito btn btn-outline btn-block h-[8.75rem] text-8xl">+</a
+						class="btn btn-outline btn-block h-[8.75rem] text-8xl font-black">+</a
 					>
 				</div>
 				<!-- TODO: Maybe separate live cars vs drafts -->
@@ -45,7 +45,7 @@
 					{#each data.savedCars as car}
 						<div class="indicator w-full">
 							<span
-								class="nunito indicator-center indicator-bottom badge indicator-item uppercase"
+								class="indicator-center indicator-bottom badge indicator-item font-black uppercase"
 								class:badge-primary={car.published}
 								class:badge-warning={!car.published}
 							>
@@ -54,7 +54,7 @@
 							<a
 								href="/c/{car.shortId}"
 								data-sveltekit-preload-data="tap"
-								class="nunito btn-hover-grow btn btn-block h-[8.75rem] text-xl"
+								class="btn-hover-grow btn btn-block h-[8.75rem] text-xl font-black"
 							>
 								<div class="flex max-w-full flex-col items-center gap-1 px-2 normal-case">
 									<div class="w-24"><Car {car} /></div>
@@ -93,22 +93,22 @@
 					</div>
 				</div>
 				<div
-					class="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:gap-16"
+					class="flex flex-col items-stretch gap-2 px-4 sm:flex-row sm:items-center sm:gap-12 lg:gap-16"
 				>
 					<div class="flex max-w-lg flex-col items-start">
 						<h1
-							class="nunito whitespace-nowrap pb-1 text-4xl uppercase xs:pb-2 xs:text-5xl"
+							class="whitespace-nowrap pb-1 text-4xl font-black uppercase xs:pb-2 xs:text-5xl"
 						>
 							Choo Choo!
 						</h1>
-						<p class="py-2">All aboard the Grace Train!</p>
-						<p class="py-2">Design your own cars and watch them on stream!</p>
+						<p class="py-2 text-xl">All aboard the Grace Train!</p>
+						<p class="py-2 text-lg">Design your own cars and see them on stream!</p>
 					</div>
 					<div class="flex max-w-lg flex-col items-center">
 						<a
 							href="/login"
 							data-sveltekit-reload
-							class="nunito btn btn-secondary btn-lg mb-4">Twitch Login</a
+							class="btn btn-secondary btn-lg mb-4 font-black">Twitch Login</a
 						>
 						<a href="/design/new" class="link opacity-70 hover:opacity-100"
 							>Just start designing</a

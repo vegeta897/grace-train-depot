@@ -1,7 +1,8 @@
 <script lang="ts">
+	import '@fontsource/nunito/400.css'
+	import '@fontsource/nunito/700.css'
 	import '@fontsource/nunito/900.css'
 	import '@fontsource-variable/nunito'
-	import '@fontsource-variable/open-sans'
 	import '../app.postcss'
 	import './styles.css'
 </script>

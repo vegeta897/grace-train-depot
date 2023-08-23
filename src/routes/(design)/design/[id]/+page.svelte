@@ -33,7 +33,7 @@
 			</p>
 		</div> -->
 	{/if}
-	<h3 class="nunito flex items-center gap-2 text-3xl font-bold">
+	<h3 class="flex items-center gap-2 text-3xl font-black font-bold">
 		{#if $designCar.name}<span>{$designCar.name}</span>{/if}
 		<span
 			class="badge uppercase"

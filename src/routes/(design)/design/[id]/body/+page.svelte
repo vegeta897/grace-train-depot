@@ -30,7 +30,7 @@
 </script>
 
 <section>
-	<div class="nunito grid grid-cols-2 gap-4">
+	<div class="grid grid-cols-2 gap-4 font-black">
 		{#each BODY_NAMES as name}
 			{@const current = $designCar.body === name}
 			<button
@@ -43,13 +43,14 @@
 		{/each}
 	</div>
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
-		<h3 class="nunito text-2xl uppercase">Base Color</h3>
+		<h3 class="text-2xl font-black uppercase">Base Color</h3>
+		TODO: Allow granular color selection using mix function in color2k
 		<ColorSlider
 			colors={BASE_COLORS}
 			color={$designCar.bodyColor || BASE_COLORS[3]}
 			onInput={(e) => setBodyColor(BASE_COLORS[+e.currentTarget.value])}
 		/>
-		<h3 class="nunito mt-2 text-2xl uppercase">Pop Color</h3>
+		<h3 class="mt-2 text-2xl font-black uppercase">Pop Color</h3>
 		<ColorSlider
 			colors={POP_COLORS}
 			color={$designCar.bodyPopColor || POP_COLORS[1]}

@@ -66,7 +66,7 @@
 	{#if currentPage !== 'finish'}
 		<a
 			href="/design/{$page.params.id}/finish"
-			class="nunito btn btn-success btn-outline btn-sm h-[2.5rem] min-h-[2.5rem] text-lg"
+			class="btn btn-success btn-outline btn-sm h-[2.5rem] min-h-[2.5rem] text-lg font-black"
 		>
 			Finish
 		</a>
@@ -76,13 +76,13 @@
 	<div class="sticky top-2 hidden w-80 shrink-0 flex-col gap-4 lg:flex">
 		<div class="rounded-box flex flex-col gap-2 bg-neutral p-6">
 			<!-- <div class="flex items-baseline justify-between px-2">
-				<h2 class="nunito uppercase text-2xl mb-2">Design</h2>
+				<h2 class="font-black uppercase text-2xl mb-2">Design</h2>
 			</div> -->
 			{#each PAGES as [icon, name]}
 				{@const current = name === currentPage}
 				<a
 					href="/design/{$page.params.id}/{name}"
-					class="nunito btn btn-lg btn-block justify-start gap-8 text-xl"
+					class="btn btn-lg btn-block justify-start gap-8 text-xl font-black"
 					class:pointer-events-none={current}
 					class:btn-primary={current}
 				>
@@ -97,7 +97,7 @@
 			<NavTabs {currentPage} carShortId={$page.params.id} />
 		</div>
 		{#if currentPage}
-			<h2 class="nunito mt-3 text-3xl uppercase">{currentPage}</h2>
+			<h2 class="mt-3 text-3xl font-black uppercase">{currentPage}</h2>
 		{/if}
 		<div class="self-stretch p-4 lg:grow lg:px-8">
 			<slot />

@@ -1,5 +1,5 @@
 <!-- Maybe combine this with /privacy -->
-<section class="flex flex-col gap-4 px-4 lg:px-8">
+<section class="flex flex-col gap-4 p-4 lg:p-8">
 	<h2 class="text-2xl font-bold">Terms of Use</h2>
 	<h3 class="text-xl font-bold">Privacy Acknowledgment</h3>
 	<p>

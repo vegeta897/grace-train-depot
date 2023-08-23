@@ -106,7 +106,7 @@
 			<p>
 				<a
 					href="/login?redirectTo={$page.url.pathname + $page.url.search}"
-					class="nunito btn btn-secondary btn-lg">Twitch Login</a
+					class="btn btn-secondary btn-lg font-black">Twitch Login</a
 				>
 			</p>
 		</div>

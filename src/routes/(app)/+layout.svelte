@@ -12,11 +12,11 @@
 <header
 	class="navbar min-h-12 flex justify-between bg-base-200 p-0 px-6 lg:rounded-box lg:min-h-16"
 >
-	<!-- <h1 class="nunito text-left text-3xl uppercase">
+	<!-- <h1 class="font-black text-left text-3xl uppercase">
 			🚂
 			<span class="hidden">Choo Choo!</span>
 		</h1> -->
-	<h2 class="nunito text-xl uppercase lg:text-2xl">
+	<h2 class="text-xl font-black uppercase lg:text-2xl">
 		<a href="/">Choo Choo!</a>
 	</h2>
 	<nav class="flex-none">
