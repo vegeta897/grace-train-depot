@@ -33,7 +33,7 @@
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>
-		<Body name={bodyName} baseColor={car.bodyColor}>
+		<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
 			<svelte:fragment slot="decals">
 				{#if !focusDecalZone}
 					<Decals {decals} {transition} />

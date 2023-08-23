@@ -55,6 +55,7 @@ model Car {
   published       Boolean  @default(false)
   body            Body     @default(boxy)
   bodyColor       String?
+  bodyPopColor    String?
   wheelColor      String?
   wheelFromCenter Float
   decals          Decal[]

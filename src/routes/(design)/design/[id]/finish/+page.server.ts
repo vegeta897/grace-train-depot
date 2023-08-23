@@ -112,6 +112,7 @@ function transformCarToDB(car: CarData) {
 		name: car.name || null,
 		body: car.body,
 		bodyColor: car.bodyColor,
+		bodyPopColor: car.bodyPopColor,
 		wheelColor: car.wheels.color,
 		wheelFromCenter: car.wheels.fromCenter,
 	}

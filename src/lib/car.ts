@@ -22,6 +22,7 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 		revision: carData.revision,
 		body: carData.body as CarData['body'],
 		bodyColor: carData.bodyColor || undefined,
+		bodyPopColor: carData.bodyPopColor || undefined,
 		wheels: {
 			color: carData.wheelColor || undefined,
 			fromCenter: carData.wheelFromCenter,

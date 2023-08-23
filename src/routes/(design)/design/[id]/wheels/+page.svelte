@@ -29,14 +29,12 @@
 	<div class="mx-auto mb-6 w-64"><Car car={$designCar} /></div>
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
 		<h3 class="nunito text-2xl uppercase">Color</h3>
-		<div class="mb-6 flex flex-col justify-center gap-3">
-			<ColorSlider
-				colors={POP_COLORS}
-				color={$designCar.wheels.color || POP_COLORS[1]}
-				onInput={(e) => setWheelColor(POP_COLORS[+e.currentTarget.value])}
-			/>
-		</div>
-		<h3 class="nunito text-2xl uppercase">Spread</h3>
+		<ColorSlider
+			colors={POP_COLORS}
+			color={$designCar.wheels.color || POP_COLORS[1]}
+			onInput={(e) => setWheelColor(POP_COLORS[+e.currentTarget.value])}
+		/>
+		<h3 class="nunito mt-2 text-2xl uppercase">Spread</h3>
 		<input
 			type="range"
 			min={WHEEL_DISTANCE_MIN}
