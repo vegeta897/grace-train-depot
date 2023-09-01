@@ -4,7 +4,7 @@
 	import type { LayoutData } from './$types'
 	import { cloneCar, getCarChangesByPage, getNewCar } from '$lib/car'
 	import { PAGES } from '$lib/common/constants'
-	import { goto } from '$app/navigation'
+	import { goto, onNavigate } from '$app/navigation'
 	import { objectContainsTrue } from '$lib/util'
 	import NavTabs from './NavTabs.svelte'
 
@@ -36,9 +36,58 @@
 
 	// TODO: For first car, add new pages as they are visited
 
-	$: currentPage = $page.route.id?.split('/')[4] || ''
+	const routePageName = (routeID?: string | null) => routeID?.split('/')[4] || ''
+
+	$: currentPage = routePageName($page.route.id)
 	$: designChanges = getCarChangesByPage(data.savedCar || $designCar, $designCar)
 	$: backLink = $page.params.id === 'new' ? '/' : `/c/${$page.params.id}`
+
+	const viewTransitionAnimationOptions: KeyframeAnimationOptions = {
+		duration: 300,
+		easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+		fill: 'both',
+	}
+
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+		if (window.matchMedia('(min-width: 1024px)').matches) return
+		return new Promise((resolve) => {
+			const transition = document.startViewTransition(async () => {
+				resolve()
+				await navigation.complete
+			})
+			const [fromPageIndex, toPageIndex] = [
+				navigation.from?.route.id,
+				navigation.to?.route.id,
+			].map((fromOrToPage) =>
+				PAGES.findIndex((page) => page[1] === routePageName(fromOrToPage))
+			)
+			const animateLeft = toPageIndex > fromPageIndex
+			transition.ready.then(() => {
+				document.documentElement.animate(
+					{
+						transform: ['', `translateX(${animateLeft ? '-' : ''}100%)`],
+						opacity: [1, 0],
+					},
+					{
+						...viewTransitionAnimationOptions,
+						pseudoElement: '::view-transition-old(design-page-content)',
+					}
+				)
+				document.documentElement.animate(
+					{
+						transform: [`translateX(${animateLeft ? '' : '-'}100%)`, ''],
+						opacity: [0, 1],
+					},
+					{
+						...viewTransitionAnimationOptions,
+						pseudoElement: '::view-transition-new(design-page-content)',
+					}
+				)
+			})
+		})
+	})
 
 	function exitDesigner(e: Event) {
 		if (currentPage === 'finish') {
@@ -99,8 +148,24 @@
 		{#if currentPage}
 			<h2 class="mt-3 text-3xl font-black uppercase">{currentPage}</h2>
 		{/if}
-		<div class="self-stretch p-4 lg:grow lg:px-8">
+		<div
+			class="self-stretch p-4 lg:grow lg:px-8"
+			style:view-transition-name="design-page-content"
+		>
 			<slot />
 		</div>
 	</div>
 </div>
+
+<style>
+	/* Override default view transition because we're handling it in JS */
+	:root::view-transition-image-pair(design-page-content) {
+		isolation: auto;
+	}
+	:root::view-transition-old(design-page-content),
+	:root::view-transition-new(design-page-content) {
+		animation: none;
+		mix-blend-mode: normal;
+		display: block;
+	}
+</style>
