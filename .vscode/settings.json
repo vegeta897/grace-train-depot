@@ -14,7 +14,7 @@
 	"[prisma]": {
 		"editor.defaultFormatter": "Prisma.prisma"
 	},
-	"prettier.prettierPath": "./node_modules/prettier",
+	"prettier.prettierPath": "./node_modules/prettier/index.cjs",
 	"typescript.tsdk": "node_modules\\typescript\\lib",
 	"editor.defaultColorDecorators": true,
 	"markdownlint.config": {
