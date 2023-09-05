@@ -14,8 +14,9 @@ export const GET = (async ({ url, cookies, locals }) => {
 		throw new Response(null, { status: 401 })
 	}
 	try {
-		const { existingUser, twitchUser, createUser, twitchTokens } =
+		const { getExistingUser, twitchUser, createUser, twitchTokens } =
 			await twitchAuth.validateCallback(code)
+		const existingUser = await getExistingUser()
 		// TODO: Call spice bot endpoint to see if user is following/subscribed
 		const getUser = async () => {
 			if (existingUser) return existingUser
