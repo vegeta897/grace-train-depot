@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Car from '$lib/components/Car.svelte'
-	import { BODY_NAMES, type BodyName } from 'grace-train-lib'
+	import { BODY_NAMES, type BodyName } from 'grace-train-lib/components'
 	import { getDesignStores } from '../../stores'
 	import ColorSlider from '../../ColorSlider.svelte'
-	import { BASE_COLORS, POP_COLORS } from '$lib/common/constants'
+	import { COLORS } from 'grace-train-lib'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -46,15 +46,15 @@
 		<h3 class="text-2xl font-black uppercase">Base Color</h3>
 		TODO: Allow granular color selection using mix function in color2k
 		<ColorSlider
-			colors={BASE_COLORS}
-			color={$designCar.bodyColor || BASE_COLORS[3]}
-			onInput={(e) => setBodyColor(BASE_COLORS[+e.currentTarget.value])}
+			colors={COLORS.BASE}
+			color={$designCar.bodyColor || COLORS.BASE[3]}
+			onInput={(e) => setBodyColor(COLORS.BASE[+e.currentTarget.value])}
 		/>
 		<h3 class="mt-2 text-2xl font-black uppercase">Pop Color</h3>
 		<ColorSlider
-			colors={POP_COLORS}
-			color={$designCar.bodyPopColor || POP_COLORS[1]}
-			onInput={(e) => setBodyPopColor(POP_COLORS[+e.currentTarget.value])}
+			colors={COLORS.POP}
+			color={$designCar.bodyPopColor || COLORS.POP[1]}
+			onInput={(e) => setBodyPopColor(COLORS.POP[+e.currentTarget.value])}
 		/>
 	</div>
 </section>

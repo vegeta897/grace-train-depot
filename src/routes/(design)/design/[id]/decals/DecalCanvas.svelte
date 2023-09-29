@@ -3,13 +3,13 @@
 	import { wrapNumber } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
-	import { Decal } from 'grace-train-lib'
+	import { Decal } from 'grace-train-lib/components'
 	import BoundingBox from './BoundingBox.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import Car from '$lib/components/Car.svelte'
 	import type { Transform } from '$lib/types'
-	import type { CarDataWithIds } from '$lib/schemas'
+	import type { CarDataWithIds } from '$lib/server/schemas'
 	import { updateDecalTransform } from './decals'
 	import { getDesignStores } from '../../stores'
 	import { browser } from '$app/environment'
@@ -290,7 +290,7 @@
 		>
 			<path
 				class="origin-center transition-transform"
-				style:transform="scale({macroView ? 1 : -1})"
+				style:transform="scale({macroView ? -1 : 1})"
 				stroke-linecap="round"
 				stroke-linejoin="round"
 				stroke-width="6"

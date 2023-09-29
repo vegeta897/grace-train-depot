@@ -1,18 +1,24 @@
 <script lang="ts">
-	import { ContainerSvg, Decal, type DecalName } from 'grace-train-lib'
-	import { POP_COLORS, DECAL_MAX_SLOTS } from '$lib/common/constants'
+	import { ContainerSvg, Decal, type DecalName } from 'grace-train-lib/components'
+	import { DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
-	import type { DecalDataWithId } from '$lib/schemas'
+	import type { DecalDataWithId } from '$lib/server/schemas'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../../stores'
 	import ShapePicker from './ShapePicker.svelte'
+	import { COLORS } from 'grace-train-lib'
 
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
 
 	// TODO: Prototype a "sliders" mode where x/y/scale/rotate can be set with sliders on one page
 	// Could even adjust decal order/slot with a slider! Embrace the sliders!
+
+	// TODO: Add sliders and checkboxes to tweak decal shape/proportions
+	// Like star pointiness, number of points, fill vs outline, etc
+	// More fun to design/program, more fun to play with
+	// TODO: Use JSON data type to store these custom props since they differ between decals
 
 	hoveredSlot.set(null)
 	selectedSlot.set(null)
@@ -47,7 +53,7 @@
 				decals.unshift(newDecal)
 			}
 			decals.forEach((d, i) => (d.slot = i)) // Re-number slots
-			newDecal.fill = POP_COLORS[(decals.length + 2) % decals.length]
+			newDecal.fill = COLORS.POP[(decals.length + 2) % decals.length]
 			selectedSlot.set(newDecal.slot)
 			return cars
 		})

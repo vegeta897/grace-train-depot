@@ -1,17 +1,21 @@
 <script lang="ts">
+	import { COLORS } from 'grace-train-lib'
 	import {
 		Body,
 		Decal,
 		type BodyName,
 		ContainerSvg,
-		COLORS,
-		DECAL_CLIP_PATHS,
 		Topper,
 		Wheels,
-	} from 'grace-train-lib'
+		body,
+	} from 'grace-train-lib/components'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import type { CarDataWithIds, DecalDataWithId, TopperDataWithId } from '$lib/schemas'
+	import type {
+		CarDataWithIds,
+		DecalDataWithId,
+		TopperDataWithId,
+	} from '$lib/server/schemas'
 	import Decals from './Decals.svelte'
 
 	export let car: CarDataWithIds
@@ -33,48 +37,51 @@
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>
-		<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
-			<svelte:fragment slot="decals">
-				{#if !focusDecalZone}
-					<Decals {decals} {transition} />
-				{/if}
-			</svelte:fragment>
-			<svelte:fragment slot="toppers" let:topLine>
-				{#each toppers as topper (topper.id)}
-					<g
-						class="transition-opacity"
-						class:opacity-40={focusTopperSlot !== null && topper.slot !== focusTopperSlot}
-					>
-						<Topper
-							{topLine}
-							name={topper.name}
-							colors={topper.colors}
-							position={topper.position}
-							offset={topper.offset}
-							scale={topper.scale}
-							rotate={topper.rotate}
-						/>
-					</g>
-				{/each}
-			</svelte:fragment>
-			<Wheels
-				rimColor={car.wheels.color}
-				capColor={car.bodyColor || COLORS.BASE}
-				fromCenter={car.wheels.fromCenter}
-				slot="wheels"
-			/>
-		</Body>
+		<ContainerSvg>
+			<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
+				<svelte:fragment slot="decals">
+					{#if !focusDecalZone}
+						<Decals {decals} {transition} />
+					{/if}
+				</svelte:fragment>
+				<svelte:fragment slot="toppers" let:topLine>
+					{#each toppers as topper (topper.id)}
+						<g
+							class="transition-opacity"
+							class:opacity-40={focusTopperSlot !== null &&
+								topper.slot !== focusTopperSlot}
+						>
+							<Topper
+								{topLine}
+								name={topper.name}
+								colors={topper.colors}
+								position={topper.position}
+								offset={topper.offset}
+								scale={topper.scale}
+								rotate={topper.rotate}
+							/>
+						</g>
+					{/each}
+				</svelte:fragment>
+				<Wheels
+					rimColor={car.wheels.color}
+					capColor={car.bodyColor || COLORS.BASE[3]}
+					fromCenter={car.wheels.fromCenter}
+					slot="wheels"
+				/>
+			</Body>
+		</ContainerSvg>
 	</div>
 	{#if focusDecalZone}
 		<div class="absolute left-0 top-0 w-full" out:fade={{ delay: 75, duration: 75 }}>
 			<ContainerSvg>
-				<path fill={car.bodyColor || COLORS.BASE} d={DECAL_CLIP_PATHS[bodyName]} />
+				<path fill={car.bodyColor || COLORS.BASE[3]} d={body[bodyName].decalClipPath} />
 				<g clip-path="url(#usercar-decal-clip)">
 					<Decals {decals} {transition} />
 				</g>
 				<defs>
 					<clipPath id="usercar-decal-clip">
-						<path d={DECAL_CLIP_PATHS[bodyName]} />
+						<path d={body[bodyName].decalClipPath} />
 					</clipPath>
 				</defs>
 			</ContainerSvg>

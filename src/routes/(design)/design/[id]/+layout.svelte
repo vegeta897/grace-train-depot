@@ -90,6 +90,8 @@
 	})
 
 	function exitDesigner(e: Event) {
+		// TODO: Use daisyui modal component
+		// TODO: Show side-by-side comparison of original car and unsaved car
 		if (currentPage === 'finish') {
 			if (confirm('Exit without finishing your car?')) goto(backLink)
 			else return e.preventDefault()
@@ -127,6 +129,7 @@
 			<!-- <div class="flex items-baseline justify-between px-2">
 				<h2 class="font-black uppercase text-2xl mb-2">Design</h2>
 			</div> -->
+			<!-- TODO: Consider a non-button treatment for this -->
 			{#each PAGES as [icon, name]}
 				{@const current = name === currentPage}
 				<a

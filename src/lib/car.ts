@@ -4,9 +4,8 @@ import type {
 	CarDataWithIds,
 	TopperData,
 	DecalDataWithId,
-} from '$lib/schemas'
+} from '$lib/server/schemas'
 import type { Prisma } from '@prisma/client'
-import { COLORS } from 'grace-train-lib'
 import { generateRandomString } from 'lucia/utils'
 
 type FullCarData = Prisma.CarGetPayload<{

@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import { transformCarFromDB } from '$lib/car'
 import type { User } from 'lucia'
-import type { CarDataWithIds } from '$lib/schemas'
+import type { CarDataWithIds } from '$lib/server/schemas'
 
 export const load = (async ({ params, locals }) => {
 	console.log('/design/ layout server load')

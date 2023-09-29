@@ -1,4 +1,4 @@
-import { BODY_NAMES, DECAL_NAMES, TOPPER_NAMES } from 'grace-train-lib'
+import { BODY_NAMES, DECAL_NAMES, TOPPER_NAMES } from 'grace-train-lib/components'
 import { z } from 'zod'
 import {
 	DECAL_MAX_SCALE,
@@ -11,7 +11,7 @@ import {
 	TOPPER_MIN_SCALE,
 	WHEEL_DISTANCE_MAX,
 	WHEEL_DISTANCE_MIN,
-} from './common/constants'
+} from '../common/constants'
 
 export const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i) // TODO: Use enum of official color list
 

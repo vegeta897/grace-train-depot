@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DECAL_NAMES, Decal, type DecalName } from 'grace-train-lib'
+	import { DECAL_NAMES, Decal, type DecalName } from 'grace-train-lib/components'
 
 	export let fill = '#ffffff'
 	export let onClick: (name: DecalName) => void

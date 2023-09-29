@@ -1,12 +1,9 @@
 <script lang="ts">
 	import Car from '$lib/components/Car.svelte'
 	import { getDesignStores } from '../../stores'
-	import {
-		POP_COLORS,
-		WHEEL_DISTANCE_MAX,
-		WHEEL_DISTANCE_MIN,
-	} from '$lib/common/constants'
+	import { WHEEL_DISTANCE_MAX, WHEEL_DISTANCE_MIN } from '$lib/common/constants'
 	import ColorSlider from '../../ColorSlider.svelte'
+	import { COLORS } from 'grace-train-lib'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -30,9 +27,9 @@
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
 		<h3 class="text-2xl font-black uppercase">Color</h3>
 		<ColorSlider
-			colors={POP_COLORS}
-			color={$designCar.wheels.color || POP_COLORS[1]}
-			onInput={(e) => setWheelColor(POP_COLORS[+e.currentTarget.value])}
+			colors={COLORS.POP}
+			color={$designCar.wheels.color || COLORS.POP[1]}
+			onInput={(e) => setWheelColor(COLORS.POP[+e.currentTarget.value])}
 		/>
 		<h3 class="mt-2 text-2xl font-black uppercase">Spread</h3>
 		<input

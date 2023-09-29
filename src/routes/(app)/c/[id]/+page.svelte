@@ -56,7 +56,7 @@
 	<meta property="og:image:type" content="image/png" />
 	<meta property="og:image:width" content="375" />
 	<meta property="og:image:height" content="300" />
-	<meta name="theme-color" content="${COLORS.POP}" />
+	<meta name="theme-color" content="${COLORS.POP[1]}" />
 </svelte:head>
 <section class="flex flex-col items-center gap-4 px-4 py-8 lg:flex-row lg:px-8">
 	<div
@@ -90,6 +90,7 @@
 					use:enhance={onRename}
 					class="flex flex-col gap-4"
 				>
+					<!-- TODO: Use contenteditable="plaintext-only" ? -->
 					<input
 						type="text"
 						name="carName"

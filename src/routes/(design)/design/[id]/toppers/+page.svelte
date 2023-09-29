@@ -1,8 +1,13 @@
 <script lang="ts">
 	import Car from '$lib/components/Car.svelte'
-	import { ContainerSvg, TOPPER_NAMES, Topper, type TopperName } from 'grace-train-lib'
+	import {
+		ContainerSvg,
+		TOPPER_NAMES,
+		Topper,
+		type TopperName,
+	} from 'grace-train-lib/components'
 	import { getDesignStores } from '../../stores'
-	import type { TopperDataWithId } from '$lib/schemas'
+	import type { TopperDataWithId } from '$lib/server/schemas'
 	import {
 		TOPPER_MAX_OFFSET,
 		TOPPER_MAX_ROTATE,
@@ -112,7 +117,7 @@
 			{#if $designCar.toppers.length < TOPPER_MAX_SLOTS}
 				<li class="w-20">
 					<button
-						class="font-black btn btn-outline btn-block h-16 px-0 text-4xl"
+						class="btn btn-outline btn-block h-16 px-0 text-4xl font-black"
 						class:btn-active={addingTopper}
 						on:click={clickEmptySlot}>+</button
 					>
@@ -120,7 +125,7 @@
 			{/if}
 		</ol>
 		{#if addingTopper}
-			<div class="font-black mb-4 grid grid-cols-3 gap-3 lg:grid-cols-4">
+			<div class="mb-4 grid grid-cols-3 gap-3 font-black lg:grid-cols-4">
 				{#each TOPPER_NAMES as name}
 					<button
 						class="btn btn-block flex h-24 flex-col justify-center gap-2 text-xl normal-case lg:h-28 lg:gap-4"
@@ -204,7 +209,7 @@
 					/>
 				</div>
 			</div>
-			<div class="font-black grid gap-4 sm:grid-cols-3">
+			<div class="grid gap-4 font-black sm:grid-cols-3">
 				<button class="btn btn-block text-xl">Style</button>
 				<button class="btn btn-block text-xl">Color</button>
 				<button
