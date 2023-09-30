@@ -4,7 +4,7 @@
 	export let transforming: boolean
 	export let strokeWidthScale = 1
 
-	$: size = 100 + 28 / scale
+	$: size = 100 + 10 / scale
 	$: rect = { x: -size / 2, y: -size / 2, width: size, height: size }
 	$: dashSize = size / 4 / 2
 	$: gapSize = size / 4 / 2

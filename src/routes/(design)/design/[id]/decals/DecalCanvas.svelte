@@ -170,6 +170,7 @@
 				focusTopperSlot={$selectedSlot === null ? null : -1}
 				transition={['fill', 'opacity']}
 				focusDecalZone={$selectedSlot !== null}
+				animateDecalAppear
 			/>
 			{#each draggables as transform, d (transform.id)}
 				<div
@@ -197,15 +198,13 @@
 						on:blur={() => hoveredSlot.set(null)}
 						on:clickoutside={() => selectedSlot.set(null)}
 						on:click|stopPropagation
-						out:fade|local={{ duration: 150 }}
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							class="w-full overflow-visible"
 							viewBox="-50 -50 100 100"
-							class:transition-opacity={$selectedSlot !== d && $hoveredSlot !== d}
 							class:opacity-0={$selectedSlot !== d && $hoveredSlot !== d}
-							class:opacity-25={$selectedSlot !== d && $hoveredSlot === d}
+							class:opacity-50={$selectedSlot !== d && $hoveredSlot === d}
 						>
 							<BoundingBox
 								scale={transform.scale}
@@ -213,14 +212,11 @@
 								strokeWidthScale={macroView ? 2 : 1}
 								{transforming}
 							/>
-							<g
-								class:transition-opacity={$selectedSlot !== d && $hoveredSlot !== d}
-								class:opacity-25={$selectedSlot === d}
-							>
+							<g class:opacity-25={$selectedSlot === d}>
 								<Decal
 									name={$designCar.decals[d].name}
 									fill={$designCar.decals[d].fillPreview || $designCar.decals[d].fill}
-									transition={['fill', 'opacity']}
+									transition={['fill']}
 								/>
 							</g>
 						</svg>
@@ -240,8 +236,8 @@
 					>
 						{#each corners as [xDir, yDir], c}
 							<div
-								style:transform="translate({((transform.scale - 1) * 50 + 64) *
-									xDir}px,{((transform.scale - 1) * 50 + 64) * yDir}px)"
+								style:transform="translate({((transform.scale - 1) * 50 + 55) *
+									xDir}px,{((transform.scale - 1) * 50 + 55) * yDir}px)"
 							>
 								<button
 									on:pointerdown={() => startResize(c)}
@@ -259,7 +255,7 @@
 						<div
 							class="transition-transform"
 							style:transform="translate(0, {(transform.scale - 1) * 50 +
-								100 * (macroView ? 1.25 : 1)}px)"
+								90 * (macroView ? 1.25 : 1)}px)"
 						>
 							<button
 								on:pointerdown={() => startRotate()}

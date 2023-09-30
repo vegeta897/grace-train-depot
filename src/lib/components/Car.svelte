@@ -25,6 +25,7 @@
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
 	export let focusTopperSlot: number | null = null
+	export let animateDecalAppear = false
 
 	$: bodyName = bodyOverride || car.body
 	$: decals = decalsOverride || car.decals
@@ -41,7 +42,7 @@
 			<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
 				<svelte:fragment slot="decals">
 					{#if !focusDecalZone}
-						<Decals {decals} {transition} />
+						<Decals {decals} {transition} animateAppear={animateDecalAppear} />
 					{/if}
 				</svelte:fragment>
 				<svelte:fragment slot="toppers" let:topLine>

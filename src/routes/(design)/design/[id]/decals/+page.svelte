@@ -19,6 +19,9 @@
 	// Like star pointiness, number of points, fill vs outline, etc
 	// More fun to design/program, more fun to play with
 	// TODO: Use JSON data type to store these custom props since they differ between decals
+	// Maybe just a simple string of concatenated values? Careful with API updatees though
+
+	// TODO: Allow choosing body color to act as an "eraser" decal
 
 	hoveredSlot.set(null)
 	selectedSlot.set(null)
@@ -86,7 +89,7 @@
 					>
 				</li>
 			{/if}
-			{#each $designCar.decals as decal}
+			{#each $designCar.decals as decal, d}
 				<li class="w-28 shrink">
 					<button
 						class="btn-hover-grow btn btn-block h-16 px-0"
@@ -111,6 +114,8 @@
 									rotate: decal.transform.rotate,
 								}}
 								transition={['fill', 'opacity']}
+								animateAppear
+								delayAppear={d * 70}
 							/>
 						</ContainerSvg>
 					</button>
