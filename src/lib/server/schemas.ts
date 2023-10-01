@@ -30,11 +30,22 @@ const decalSchema = z.object({
 		.int()
 		.gte(0)
 		.lte(DECAL_MAX_SLOTS - 1),
+	params: z
+		.array(
+			z.tuple([
+				z.string().min(1),
+				z.union([
+					z.object({ type: z.literal('scalar'), value: z.number().gte(0).lte(1) }),
+					z.object({ type: z.literal('toggle'), value: z.boolean() }),
+				]),
+			])
+		)
+		.max(16),
 })
 
 const topperSchema = z.object({
 	name: z.enum(TOPPER_NAMES),
-	colors: z.array(hexColorSchema),
+	colors: z.array(hexColorSchema).max(8),
 	position: z.number().gte(0).lte(1),
 	offset: z.number().gte(-TOPPER_MAX_OFFSET).lte(TOPPER_MAX_OFFSET),
 	scale: z.number().gte(TOPPER_MIN_SCALE).lte(TOPPER_MAX_SCALE),

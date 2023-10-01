@@ -13,6 +13,7 @@
 		name={decal.name}
 		transform={decal.transform}
 		fill={decal.fillPreview || decal.fill}
+		params={decal.params}
 		{transition}
 		{animateAppear}
 		delayAppear={d * 70}

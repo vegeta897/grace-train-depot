@@ -127,6 +127,7 @@ function transformDecalToDB(decal: DecalData, slot: number) {
 		rotate: decal.transform.rotate,
 		name: decal.name,
 		fill: decal.fill,
+		params: decal.params,
 	}
 }
 

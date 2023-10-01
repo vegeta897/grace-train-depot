@@ -6,6 +6,8 @@ import type {
 	DecalDataWithId,
 } from '$lib/server/schemas'
 import type { Prisma } from '@prisma/client'
+import type { DecalParam } from 'grace-train-lib/components'
+import { decal as decalDefs } from 'grace-train-lib/components'
 import { generateRandomString } from 'lucia/utils'
 
 type FullCarData = Prisma.CarGetPayload<{
@@ -36,18 +38,25 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 			scale: topper.scale,
 			rotate: topper.rotate,
 		})),
-		decals: carData.decals.map((decal, d) => ({
-			name: decal.name as DecalData['name'],
-			id: d, // Used as a unique and persistent way to index {each} directives
-			transform: {
-				x: decal.x,
-				y: decal.y,
-				rotate: decal.rotate,
-				scale: decal.scale,
-			},
-			slot: decal.slot,
-			fill: decal.fill,
-		})),
+		decals: carData.decals.map((decal, d) => {
+			const name = decal.name as DecalData['name']
+			let params = decal.params as DecalParam[]
+			// Clone default params if empty
+			if (params.length === 0) params = JSON.parse(JSON.stringify(decalDefs[name].params))
+			return {
+				name,
+				id: d, // Used as a unique and persistent way to index {each} directives
+				transform: {
+					x: decal.x,
+					y: decal.y,
+					rotate: decal.rotate,
+					scale: decal.scale,
+				},
+				slot: decal.slot,
+				fill: decal.fill,
+				params,
+			}
+		}),
 	}
 }
 
@@ -63,7 +72,11 @@ export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 }
 
 export function cloneDecal(decal: DecalDataWithId): DecalDataWithId {
-	return { ...decal, transform: { ...decal.transform } }
+	return {
+		...decal,
+		transform: { ...decal.transform },
+		params: JSON.parse(JSON.stringify(decal.params)),
+	}
 }
 
 export function getNewCar(): CarDataWithIds {

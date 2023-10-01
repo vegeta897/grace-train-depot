@@ -21,14 +21,15 @@
 			return lc
 		})
 	}
-	if ($designShortId !== 'new' && data.savedCar) {
+	const savedCar = data.savedCar
+	if ($designShortId !== 'new' && savedCar) {
 		// TODO: Test SSR
 		if (
 			!$localCars[$designShortId] ||
-			(data.savedCar.revision || 0) > ($localCars[$designShortId].revision || 0)
+			(savedCar.revision || 0) > ($localCars[$designShortId].revision || 0)
 		) {
 			localCars.update((lc) => {
-				lc[$designShortId] = cloneCar(data.savedCar!)
+				lc[$designShortId] = cloneCar(savedCar)
 				return lc
 			})
 		}

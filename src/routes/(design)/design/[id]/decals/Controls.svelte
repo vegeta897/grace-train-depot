@@ -15,7 +15,7 @@
 
 	$: decal = $designCar.decals[slot]
 
-	let toolMode: null | 'shape' | 'color' | 'scale' | 'rotate' = null
+	let toolMode: null | 'shape' = null
 
 	const setToolMode = (mode: typeof toolMode) =>
 		(toolMode = toolMode === mode ? null : mode)
@@ -60,6 +60,13 @@
 		// toolMode = null
 	}
 
+	function setDecalParam(pIndex: number, value: number | boolean) {
+		localCars.update((cars) => {
+			cars[$designShortId].decals[slot].params[pIndex][1].value = value
+			return cars
+		})
+	}
+
 	function previewDecalColor(color?: string) {
 		localCars.update((cars) => {
 			if (color) {
@@ -73,48 +80,81 @@
 </script>
 
 <div class="grid grid-cols-4 gap-2 gap-y-3">
-	<button
-		on:click={() => setToolMode('scale')}
-		class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
-		class:text-primary={toolMode !== 'scale'}
-		class:btn-primary={toolMode === 'scale'}
-	>
-		Size
-	</button>
-	<button
-		on:click={() => setToolMode('rotate')}
-		class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
-		class:text-secondary={toolMode !== 'rotate'}
-		class:btn-secondary={toolMode === 'rotate'}
-	>
-		Spin
-	</button>
-	<button
-		on:click={() => setToolMode('shape')}
-		class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
-		class:btn-active={toolMode === 'shape'}
-	>
-		Shape
-	</button>
-	{#if toolMode !== 'color'}
-		<button
-			on:click={() => setToolMode('color')}
-			class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
-			style:color={$designCar.decals[slot].fill}
-		>
-			Color
-		</button>
-	{:else}
-		<button
-			on:click={() => setToolMode('color')}
-			class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
-			style:background={$designCar.decals[slot].fill}
-			style:color="hsl(var(--inc))"
-		>
-			Color
-		</button>
-	{/if}
 	{#if toolMode === null}
+		<div class="col-span-4 flex flex-col justify-center gap-3 px-2">
+			Color
+			<ColorSlider
+				colors={COLORS.POP}
+				color={decal.fill}
+				onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
+			/>
+		</div>
+		<div class="col-span-4 flex flex-col justify-center px-2">
+			Mix <!-- (gradient to neighbor color) -->
+			<input type="range" min={-2} max={2} step="1" value={0} class="range" />
+			<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
+			<input type="range" min={-180} max={180} step="1" value={0} class="range" /> -->
+		</div>
+		<div class="col-span-2 flex flex-col justify-center px-2">
+			Size
+			<input
+				type="range"
+				min={DECAL_MIN_SCALE}
+				max={DECAL_MAX_SCALE}
+				step="0.05"
+				value={decal.transform.scale}
+				on:input={(e) => {
+					decal.transform.scale = +e.currentTarget.value
+					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
+				}}
+				class="range range-primary"
+			/>
+		</div>
+		<div class="col-span-2 flex flex-col justify-center px-2">
+			Spin
+			<input
+				type="range"
+				min={-180}
+				max={180}
+				step="1"
+				value={decal.transform.rotate}
+				on:input={(e) => {
+					decal.transform.rotate = +e.currentTarget.value
+					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
+				}}
+				class="range range-secondary"
+			/>
+		</div>
+		{#each decal.params as [paramName, param], p}
+			<div class="col-span-2 flex flex-col justify-center px-2">
+				{paramName}
+				{#if param.type === 'scalar'}
+					<input
+						type="range"
+						min={0}
+						max={1}
+						step="0.01"
+						value={param.value}
+						on:input={(e) => setDecalParam(p, +e.currentTarget.value)}
+						class="range"
+					/>
+				{:else if param.type === 'toggle'}
+					<input
+						checked={param.value}
+						type="checkbox"
+						on:change={(e) => setDecalParam(p, e.currentTarget.checked)}
+						class="checkbox"
+					/>
+				{/if}
+			</div>
+		{/each}
+		<button
+			on:click={() => setToolMode('shape')}
+			class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class:btn-active={toolMode === 'shape'}
+		>
+			Shape
+		</button>
 		<button
 			on:click={() => removeDecal()}
 			class="btn btn-md touch-manipulation text-2xl hover:btn-error md:text-3xl"
@@ -137,47 +177,5 @@
 		</button>
 	{:else if toolMode === 'shape'}
 		<ShapePicker fill={$designCar.decals[slot].fill} onClick={setDecalShape} />
-	{:else if toolMode === 'color'}
-		<div class="col-span-4 flex flex-col justify-center gap-3 px-2">
-			<ColorSlider
-				colors={COLORS.POP}
-				color={decal.fill}
-				onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
-			/>
-			Mix (gradient to neighbor color)
-			<input type="range" min={-2} max={2} step="1" value={0} class="range" />
-			Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
-			<input type="range" min={-180} max={180} step="1" value={0} class="range" />
-		</div>
-	{:else if toolMode === 'scale'}
-		<div class="col-span-4 flex h-16 flex-col justify-center px-2">
-			<input
-				type="range"
-				min={DECAL_MIN_SCALE}
-				max={DECAL_MAX_SCALE}
-				step="0.05"
-				value={decal.transform.scale}
-				on:input={(e) => {
-					decal.transform.scale = +e.currentTarget.value
-					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
-				}}
-				class="range range-primary"
-			/>
-		</div>
-	{:else if toolMode === 'rotate'}
-		<div class="col-span-4 flex h-16 flex-col justify-center px-2">
-			<input
-				type="range"
-				min={-180}
-				max={180}
-				step="1"
-				value={decal.transform.rotate}
-				on:input={(e) => {
-					decal.transform.rotate = +e.currentTarget.value
-					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
-				}}
-				class="range range-secondary"
-			/>
-		</div>
 	{/if}
 </div>

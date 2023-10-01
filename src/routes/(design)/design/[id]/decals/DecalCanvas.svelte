@@ -97,7 +97,7 @@
 				const avgDistance = (xDistance + yDistance) / 2
 				return Math.max(
 					DECAL_MIN_SCALE,
-					Math.min(DECAL_MAX_SCALE, (avgDistance - 14) / 50)
+					Math.min(DECAL_MAX_SCALE, (avgDistance - 5) / 50)
 				)
 			},
 		}
@@ -173,6 +173,7 @@
 				animateDecalAppear
 			/>
 			{#each draggables as transform, d (transform.id)}
+				{@const decal = $designCar.decals[d]}
 				<div
 					class="absolute left-[100px] top-[100px] h-0 w-0"
 					class:z-10={$selectedSlot === d}
@@ -214,8 +215,9 @@
 							/>
 							<g class:opacity-25={$selectedSlot === d}>
 								<Decal
-									name={$designCar.decals[d].name}
-									fill={$designCar.decals[d].fillPreview || $designCar.decals[d].fill}
+									name={decal.name}
+									fill={decal.fillPreview || decal.fill}
+									params={decal.params}
 									transition={['fill']}
 								/>
 							</g>
