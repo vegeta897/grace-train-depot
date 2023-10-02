@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { DecalName } from 'grace-train-lib/components'
+	import { decalDefs } from 'grace-train-lib/components'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
@@ -14,6 +15,7 @@
 	const { selectedSlot } = getDecalStores()
 
 	$: decal = $designCar.decals[slot]
+	$: paramConfig = decalDefs[decal.name].paramConfig
 
 	let toolMode: null | 'shape' = null
 
@@ -60,9 +62,9 @@
 		// toolMode = null
 	}
 
-	function setDecalParam(pIndex: number, value: number | boolean) {
+	function setDecalParam(name: string, value: number | boolean) {
 		localCars.update((cars) => {
-			cars[$designShortId].decals[slot].params[pIndex][1].value = value
+			cars[$designShortId].decals[slot].params[name] = value
 			return cars
 		})
 	}
@@ -125,24 +127,24 @@
 				class="range range-secondary"
 			/>
 		</div>
-		{#each decal.params as [paramName, param], p}
+		{#each paramConfig as param}
 			<div class="col-span-2 flex flex-col justify-center px-2">
-				{paramName}
+				{param.name}
 				{#if param.type === 'scalar'}
 					<input
 						type="range"
 						min={0}
 						max={1}
 						step="0.01"
-						value={param.value}
-						on:input={(e) => setDecalParam(p, +e.currentTarget.value)}
+						value={decal.params[param.name]}
+						on:input={(e) => setDecalParam(param.name, +e.currentTarget.value)}
 						class="range"
 					/>
 				{:else if param.type === 'toggle'}
 					<input
-						checked={param.value}
+						checked={decal.params[param.name]}
 						type="checkbox"
-						on:change={(e) => setDecalParam(p, e.currentTarget.checked)}
+						on:change={(e) => setDecalParam(param.name, e.currentTarget.checked)}
 						class="checkbox"
 					/>
 				{/if}

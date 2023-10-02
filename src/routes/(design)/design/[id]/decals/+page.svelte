@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { ContainerSvg, Decal, decal, type DecalName } from 'grace-train-lib/components'
+	import {
+		ContainerSvg,
+		Decal,
+		decalDefs,
+		type DecalName,
+	} from 'grace-train-lib/components'
 	import { DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
 	import type { DecalDataWithId } from '$lib/server/schemas'
@@ -47,7 +52,7 @@
 			transform: { x: 375 / 2, y: 120, scale: 1, rotate: 0 },
 			fill: '', // Will be overwritten below
 			slot: 0, // Will be overwritten below
-			params: JSON.parse(JSON.stringify(decal[shape].params)),
+			params: decalDefs[shape].getDefaultParamsObject(),
 		}
 		localCars.update((cars) => {
 			const decals = cars[$designShortId].decals

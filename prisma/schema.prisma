@@ -72,7 +72,7 @@ model Decal {
   y      Float
   scale  Float
   rotate Float
-  params Json   @default("[]")
+  params Json   @default("{}")
 
   @@id([carId, slot])
 }

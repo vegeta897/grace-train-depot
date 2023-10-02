@@ -1,4 +1,9 @@
-import { BODY_NAMES, DECAL_NAMES, TOPPER_NAMES } from 'grace-train-lib/components'
+import {
+	BODY_NAMES,
+	DECAL_NAMES,
+	TOPPER_NAMES,
+	type ParamsObject,
+} from 'grace-train-lib/components'
 import { z } from 'zod'
 import {
 	DECAL_MAX_SCALE,
@@ -30,17 +35,7 @@ const decalSchema = z.object({
 		.int()
 		.gte(0)
 		.lte(DECAL_MAX_SLOTS - 1),
-	params: z
-		.array(
-			z.tuple([
-				z.string().min(1),
-				z.union([
-					z.object({ type: z.literal('scalar'), value: z.number().gte(0).lte(1) }),
-					z.object({ type: z.literal('toggle'), value: z.boolean() }),
-				]),
-			])
-		)
-		.max(16),
+	params: z.record(z.string().max(32), z.union([z.number().gte(0).lte(1), z.boolean()])),
 })
 
 const topperSchema = z.object({
@@ -79,7 +74,9 @@ export type CarDataWithIds = Omit<CarData, 'decals' | 'toppers'> & {
 	decals: DecalDataWithId[]
 	toppers: TopperDataWithId[]
 }
-export type DecalData = z.infer<typeof decalSchema>
+export type DecalData = Omit<z.infer<typeof decalSchema>, 'params'> & {
+	params: ParamsObject
+}
 export type DecalDataWithId = DecalData & { id: number }
 export type TopperData = z.infer<typeof topperSchema>
 export type TopperDataWithId = TopperData & { id: number }
