@@ -35,7 +35,11 @@ const decalSchema = z.object({
 		.int()
 		.gte(0)
 		.lte(DECAL_MAX_SLOTS - 1),
-	params: z.record(z.string().max(32), z.union([z.number().gte(0).lte(1), z.boolean()])),
+	params: z
+		.record(z.string().max(32), z.union([z.number().gte(0).lte(1), z.boolean()]))
+		.refine((params) => Object.keys(params).length < 16, {
+			message: 'Params object must have fewer than 16 keys',
+		}),
 })
 
 const topperSchema = z.object({
