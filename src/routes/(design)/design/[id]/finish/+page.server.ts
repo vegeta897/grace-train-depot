@@ -113,18 +113,18 @@ function transformCarToDB(car: CarData) {
 		body: car.body,
 		bodyColor: car.bodyColor,
 		bodyPopColor: car.bodyPopColor,
-		wheelColor: car.wheels.color,
-		wheelFromCenter: car.wheels.fromCenter,
+		wheelColor: car.wheelColor,
+		wheelFromCenter: car.wheelFromCenter,
 	}
 }
 
 function transformDecalToDB(decal: DecalData, slot: number) {
 	return {
 		slot,
-		x: decal.transform.x,
-		y: decal.transform.y,
-		scale: decal.transform.scale,
-		rotate: decal.transform.rotate,
+		x: decal.x,
+		y: decal.y,
+		scale: decal.scale,
+		rotate: decal.rotate,
 		name: decal.name,
 		fill: decal.fill,
 		params: decal.params,
