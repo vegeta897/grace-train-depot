@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Car from '$lib/components/Car.svelte'
+	import DesignCar from '$lib/components/DesignCar.svelte'
 	import {
 		ContainerSvg,
 		TOPPER_NAMES,
@@ -85,7 +85,10 @@
 
 <section>
 	<div class="mx-auto mb-6 w-64">
-		<Car car={$designCar} focusTopperSlot={hoveredSlot !== null ? hoveredSlot : null} />
+		<DesignCar
+			car={$designCar}
+			focusTopperSlot={hoveredSlot !== null ? hoveredSlot : null}
+		/>
 	</div>
 	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4">
 		<ol class="flex h-16 justify-center gap-2">

@@ -49,8 +49,11 @@
 		const newDecal: DecalDataWithId = {
 			name: shape,
 			id: Date.now(),
-			transform: { x: 375 / 2, y: 120, scale: 1, rotate: 0 },
-			fill: '', // Will be overwritten below
+			x: 375 / 2,
+			y: 120,
+			scale: 1,
+			rotate: 0,
+			fill: COLORS.POP[0], // Will be overwritten below
 			slot: 0, // Will be overwritten below
 			params: decalDefs[shape].getDefaultParamsObject(),
 		}
@@ -114,12 +117,8 @@
 								name={decal.name}
 								fill={decal.fill}
 								params={decal.params}
-								transform={{
-									x: 0,
-									y: 0,
-									scale: 0.7 + Math.log10(decal.transform.scale) * 0.8,
-									rotate: decal.transform.rotate,
-								}}
+								scale={0.7 + Math.log10(decal.scale) * 0.8}
+								rotate={decal.rotate}
 								transition={['fill', 'opacity']}
 								animateAppear
 								delayAppear={d * 70}

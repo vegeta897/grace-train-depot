@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Car from '$lib/components/Car.svelte'
+	import DesignCar from '$lib/components/DesignCar.svelte'
 	import type { PageData } from './$types'
 	import { getDesignStores } from '../stores'
 	import { enhance } from '$app/forms'
@@ -12,7 +12,7 @@
 </script>
 
 <section class="flex flex-col items-center gap-4">
-	<div class="w-48 lg:w-64"><Car car={$designCar} /></div>
+	<div class="w-48 lg:w-64"><DesignCar car={$designCar} /></div>
 	{#if !data.user}
 		<!-- <div class="alert mt-8">
 			<svg
@@ -33,7 +33,7 @@
 			</p>
 		</div> -->
 	{/if}
-	<h3 class="flex items-center gap-2 text-3xl font-black font-bold">
+	<h3 class="flex items-center gap-2 text-3xl font-black">
 		{#if $designCar.name}<span>{$designCar.name}</span>{/if}
 		<span
 			class="badge uppercase"

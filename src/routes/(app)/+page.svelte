@@ -1,6 +1,5 @@
 <script lang="ts">
-	import Car from '$lib/components/Car.svelte'
-	import { Body, ContainerSvg } from 'grace-train-lib/components'
+	import { Car } from 'grace-train-lib/components'
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 	import { COLORS } from 'grace-train-lib'
@@ -84,11 +83,9 @@
 				>
 					<div class="origin-left scale-125 sm:scale-200">
 						<div style:left="-4rem" class="train-scroll relative whitespace-nowrap">
-							{#each Array(15) as _, i}
-								<div class="mx-[1px] inline-block w-16">
-									<ContainerSvg>
-										<Body stripeColor={COLORS.POP[i % COLORS.POP.length]} name="boxy" />
-									</ContainerSvg>
+							{#each Array(14) as _, i}
+								<div class="mx-[3px] inline-block w-16">
+									<Car car={COLORS.POP[i % COLORS.POP.length]} />
 								</div>
 							{/each}
 						</div>
@@ -129,7 +126,7 @@
 	}
 	@keyframes scroll {
 		100% {
-			transform: translateX(calc(calc(64px + 2px) * -8));
+			transform: translateX(calc(calc(64px + 6px) * -8));
 		}
 	}
 </style>

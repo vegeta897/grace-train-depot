@@ -8,12 +8,11 @@ export function updateDecalTransform(
 	transform: Transform
 ) {
 	cars.update((c) => {
-		c[shortId].decals[slot].transform = {
-			x: Math.round(transform.x),
-			y: Math.round(transform.y),
-			scale: Math.round(transform.scale * 100) / 100,
-			rotate: transform.rotate,
-		}
+		const decal = c[shortId].decals[slot]
+		decal.x = Math.round(transform.x)
+		decal.y = Math.round(transform.y)
+		decal.scale = Math.round(transform.scale * 100) / 100
+		decal.rotate = transform.rotate
 		return c
 	})
 }

@@ -18,20 +18,21 @@ import {
 	WHEEL_DISTANCE_MAX,
 	WHEEL_DISTANCE_MIN,
 } from '../common/constants'
+import { COLORS } from 'grace-train-lib'
 
-export const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i) // TODO: Use enum of official color list
+const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i)
+const popColorSchema = z.enum(COLORS.POP)
+const baseColorSchema = z.enum(COLORS.BASE)
 
 const decalSchema = z
 	.object({
 		name: z.enum(DECAL_NAMES),
-		transform: z.object({
-			x: z.number().gte(-100).lte(475),
-			y: z.number().gte(-100).lte(330),
-			scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
-			rotate: z.number().gte(-180).lt(180),
-		}),
-		fill: hexColorSchema,
-		fillPreview: hexColorSchema.optional(),
+		x: z.number().gte(-100).lte(475),
+		y: z.number().gte(-100).lte(330),
+		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
+		rotate: z.number().gte(-180).lt(180),
+		fill: popColorSchema,
+		fillPreview: popColorSchema.optional(),
 		slot: z
 			.number()
 			.int()
@@ -72,12 +73,10 @@ export const carSchema = z.object({
 	published: z.boolean().optional(),
 	revision: z.number().int().gte(1).optional().readonly(),
 	body: z.enum(BODY_NAMES),
-	bodyColor: hexColorSchema.optional(),
-	bodyPopColor: hexColorSchema.optional(),
-	wheels: z.object({
-		color: hexColorSchema.optional(),
-		fromCenter: z.number().int().gte(WHEEL_DISTANCE_MIN).lte(WHEEL_DISTANCE_MAX),
-	}),
+	bodyColor: baseColorSchema.optional(),
+	bodyPopColor: popColorSchema.optional(),
+	wheelColor: popColorSchema.optional(),
+	wheelFromCenter: z.number().int().gte(WHEEL_DISTANCE_MIN).lte(WHEEL_DISTANCE_MAX),
 	decals: z.array(decalSchema).max(DECAL_MAX_SLOTS),
 	toppers: z.array(topperSchema).max(TOPPER_MAX_SLOTS),
 })

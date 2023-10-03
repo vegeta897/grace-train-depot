@@ -7,7 +7,7 @@
 	import BoundingBox from './BoundingBox.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
-	import Car from '$lib/components/Car.svelte'
+	import DesignCar from '$lib/components/DesignCar.svelte'
 	import type { Transform } from '$lib/types'
 	import type { CarDataWithIds } from '$lib/server/schemas'
 	import { updateDecalTransform } from './decals'
@@ -19,7 +19,13 @@
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot } = getDecalStores()
 
-	$: draggables = $designCar.decals.map((d) => ({ id: d.id, ...d.transform }))
+	$: draggables = $designCar.decals.map((d) => ({
+		id: d.id,
+		x: d.x,
+		y: d.y,
+		scale: d.scale,
+		rotate: d.rotate,
+	}))
 
 	let clickOutsideCooldown = false
 
@@ -165,7 +171,7 @@
 			style:transform="scale({canvasScale})"
 			bind:this={canvasElement}
 		>
-			<Car
+			<DesignCar
 				{car}
 				focusTopperSlot={$selectedSlot === null ? null : -1}
 				transition={['fill', 'opacity']}

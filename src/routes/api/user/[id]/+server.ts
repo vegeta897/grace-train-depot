@@ -26,12 +26,15 @@ function transformCarToWS(car: CarData): GraceTrainCar {
 		body: car.body,
 		bodyColor: car.bodyColor,
 		bodyPopColor: car.bodyPopColor,
-		wheelColor: car.wheels.color,
-		wheelFromCenter: car.wheels.fromCenter,
+		wheelColor: car.wheelColor,
+		wheelFromCenter: car.wheelFromCenter,
 		decals: car.decals.map((d) => ({
 			name: d.name,
 			fill: d.fill,
-			...d.transform,
+			x: d.x,
+			y: d.y,
+			scale: d.scale,
+			rotate: d.rotate,
 			params: d.params,
 		})),
 		toppers: car.toppers.map((t) => ({

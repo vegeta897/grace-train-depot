@@ -65,9 +65,9 @@
 					{/each}
 				</svelte:fragment>
 				<Wheels
-					rimColor={car.wheels.color}
+					rimColor={car.wheelColor}
 					capColor={car.bodyColor || COLORS.BASE[3]}
-					fromCenter={car.wheels.fromCenter}
+					fromCenter={car.wheelFromCenter}
 					slot="wheels"
 				/>
 			</Body>

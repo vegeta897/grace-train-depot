@@ -11,7 +11,10 @@
 {#each decals as decal, d (decal.id)}
 	<Decal
 		name={decal.name}
-		transform={decal.transform}
+		x={decal.x}
+		y={decal.y}
+		scale={decal.scale}
+		rotate={decal.rotate}
 		fill={decal.fillPreview || decal.fill}
 		params={decal.params}
 		{transition}

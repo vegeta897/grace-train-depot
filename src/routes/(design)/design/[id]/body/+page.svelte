@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Car from '$lib/components/Car.svelte'
+	import DesignCar from '$lib/components/DesignCar.svelte'
 	import { BODY_NAMES, type BodyName } from 'grace-train-lib/components'
 	import { getDesignStores } from '../../stores'
 	import ColorSlider from '../../ColorSlider.svelte'
@@ -38,7 +38,7 @@
 				on:click={() => setBody(name)}
 				disabled={current}
 			>
-				<div class="w-32"><Car car={$designCar} bodyOverride={name} /></div>
+				<div class="w-32"><DesignCar car={$designCar} bodyOverride={name} /></div>
 			</button>
 		{/each}
 	</div>

@@ -108,10 +108,10 @@
 				min={DECAL_MIN_SCALE}
 				max={DECAL_MAX_SCALE}
 				step="0.05"
-				value={decal.transform.scale}
+				value={decal.scale}
 				on:input={(e) => {
-					decal.transform.scale = +e.currentTarget.value
-					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
+					decal.scale = +e.currentTarget.value
+					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
 				class="range range-primary"
 			/>
@@ -123,10 +123,10 @@
 				min={-180}
 				max={180}
 				step="1"
-				value={decal.transform.rotate}
+				value={decal.rotate}
 				on:input={(e) => {
-					decal.transform.rotate = +e.currentTarget.value
-					updateDecalTransform(localCars, $designShortId, slot, decal.transform)
+					decal.rotate = +e.currentTarget.value
+					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
 				class="range range-secondary"
 			/>

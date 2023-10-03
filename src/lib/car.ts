@@ -22,12 +22,10 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 		published: carData.published,
 		revision: carData.revision,
 		body: carData.body as CarData['body'],
-		bodyColor: carData.bodyColor || undefined,
-		bodyPopColor: carData.bodyPopColor || undefined,
-		wheels: {
-			color: carData.wheelColor || undefined,
-			fromCenter: carData.wheelFromCenter,
-		},
+		bodyColor: (carData.bodyColor || undefined) as CarData['bodyColor'],
+		bodyPopColor: (carData.bodyPopColor || undefined) as CarData['bodyPopColor'],
+		wheelColor: (carData.wheelColor || undefined) as CarData['wheelColor'],
+		wheelFromCenter: carData.wheelFromCenter,
 		toppers: carData.toppers.map((topper, t) => ({
 			name: topper.name as TopperData['name'],
 			id: t, // Used as a unique and persistent way to index {each} directives
@@ -47,14 +45,12 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 			return {
 				name,
 				id: d, // Used as a unique and persistent way to index {each} directives
-				transform: {
-					x: decal.x,
-					y: decal.y,
-					rotate: decal.rotate,
-					scale: decal.scale,
-				},
+				x: decal.x,
+				y: decal.y,
+				rotate: decal.rotate,
+				scale: decal.scale,
 				slot: decal.slot,
-				fill: decal.fill,
+				fill: decal.fill as DecalData['fill'],
 				params,
 			}
 		}),
@@ -64,20 +60,13 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 	return {
 		...car,
-		wheels: {
-			...car.wheels,
-		},
 		toppers: car.toppers.map((t) => ({ ...t })),
 		decals: car.decals.map(cloneDecal),
 	}
 }
 
 export function cloneDecal(decal: DecalDataWithId): DecalDataWithId {
-	return {
-		...decal,
-		transform: { ...decal.transform },
-		params: { ...decal.params },
-	}
+	return { ...decal, params: { ...decal.params } }
 }
 
 export function getNewCar(): CarDataWithIds {
@@ -86,7 +75,7 @@ export function getNewCar(): CarDataWithIds {
 		shortId: 'new',
 		body: 'boxy',
 		decals: [],
-		wheels: { fromCenter: 100 },
+		wheelFromCenter: 100,
 		toppers: [],
 	}
 }
@@ -109,8 +98,8 @@ export function getCarChangesByPage(original: CarData, maybeChanged: CarData) {
 			maybeChanged.toppers.length !== original.toppers.length ||
 			maybeChanged.toppers.some((md, i) => topperIsDifferent(original.toppers[i], md)),
 		wheels:
-			maybeChanged.wheels.color !== original.wheels.color ||
-			maybeChanged.wheels.fromCenter !== original.wheels.fromCenter,
+			maybeChanged.wheelColor !== original.wheelColor ||
+			maybeChanged.wheelFromCenter !== original.wheelFromCenter,
 		decals:
 			maybeChanged.decals.length !== original.decals.length ||
 			maybeChanged.decals.some((md, i) => decalIsDifferent(original.decals[i], md)),
@@ -123,10 +112,10 @@ function decalIsDifferent(original: DecalData, maybeChanged: DecalData) {
 		maybeChanged.fill !== original.fill ||
 		maybeChanged.name !== original.name ||
 		maybeChanged.slot !== original.slot ||
-		maybeChanged.transform.x !== original.transform.x ||
-		maybeChanged.transform.y !== original.transform.y ||
-		maybeChanged.transform.scale !== original.transform.scale ||
-		maybeChanged.transform.rotate !== original.transform.rotate
+		maybeChanged.x !== original.x ||
+		maybeChanged.y !== original.y ||
+		maybeChanged.scale !== original.scale ||
+		maybeChanged.rotate !== original.rotate
 	)
 }
 

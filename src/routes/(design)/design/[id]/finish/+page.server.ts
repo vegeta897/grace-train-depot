@@ -6,7 +6,7 @@ import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { carSchema } from '$lib/server/schemas'
-import Car from '$lib/components/Car.svelte'
+import DesignCar from '$lib/components/DesignCar.svelte'
 import sharp from 'sharp'
 import fs from 'node:fs'
 
@@ -85,7 +85,7 @@ export const actions = {
 		try {
 			// TODO: Move this to another file
 			// Sharp toFile returns a promise that will not be caught here if it throws
-			const { html } = (Car as any).render({ car: carData })
+			const { html } = (DesignCar as any).render({ car: carData })
 			// Important: Careful what css properties are used in the car SVG
 			// CSS variables are NOT supported
 			const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
