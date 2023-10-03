@@ -3,6 +3,7 @@ import {
 	DECAL_NAMES,
 	TOPPER_NAMES,
 	type ParamsObject,
+	decalDefs,
 } from 'grace-train-lib/components'
 import { z } from 'zod'
 import {
@@ -20,27 +21,35 @@ import {
 
 export const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i) // TODO: Use enum of official color list
 
-const decalSchema = z.object({
-	name: z.enum(DECAL_NAMES),
-	transform: z.object({
-		x: z.number().gte(-100).lte(475),
-		y: z.number().gte(-100).lte(330),
-		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
-		rotate: z.number().gte(-180).lt(180),
-	}),
-	fill: hexColorSchema,
-	fillPreview: hexColorSchema.optional(),
-	slot: z
-		.number()
-		.int()
-		.gte(0)
-		.lte(DECAL_MAX_SLOTS - 1),
-	params: z
-		.record(z.string().max(32), z.union([z.number().gte(0).lte(1), z.boolean()]))
-		.refine((params) => Object.keys(params).length < 16, {
-			message: 'Params object must have fewer than 16 keys',
+const decalSchema = z
+	.object({
+		name: z.enum(DECAL_NAMES),
+		transform: z.object({
+			x: z.number().gte(-100).lte(475),
+			y: z.number().gte(-100).lte(330),
+			scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
+			rotate: z.number().gte(-180).lt(180),
 		}),
-})
+		fill: hexColorSchema,
+		fillPreview: hexColorSchema.optional(),
+		slot: z
+			.number()
+			.int()
+			.gte(0)
+			.lte(DECAL_MAX_SLOTS - 1),
+		params: z.record(z.string(), z.union([z.number().gte(0).lte(1), z.boolean()])),
+	})
+	.refine((decal) => {
+		const defaultParams = decalDefs[decal.name].getDefaultParamsObject()
+		// Check that number of params match
+		if (Object.keys(defaultParams).length !== Object.keys(decal.params).length)
+			return false
+		// Check type of each param
+		for (const [key, value] of Object.entries(decal.params)) {
+			if (typeof value !== typeof defaultParams[key]) return false
+		}
+		return true
+	}, 'Invalid decal param count or types')
 
 const topperSchema = z.object({
 	name: z.enum(TOPPER_NAMES),
