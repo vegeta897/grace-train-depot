@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { DECAL_NAMES, Decal, type DecalName } from 'grace-train-lib/components'
+	import {
+		DECAL_NAMES,
+		Decal,
+		decalDefs,
+		type DecalName,
+	} from 'grace-train-lib/components'
 
 	export let fill = '#ffffff'
 	export let onClick: (name: DecalName) => void
@@ -7,6 +12,7 @@
 
 <div class="col-span-4 grid grid-cols-6 gap-2">
 	{#each DECAL_NAMES as name}
+		{@const params = decalDefs[name].getDefaultParamsObject()}
 		<button
 			on:click={() => onClick(name)}
 			class="btn-hover-grow btn btn-lg touch-manipulation px-0"
@@ -17,7 +23,7 @@
 				class="w-8 xs:w-10"
 			>
 				<!-- TODO: Define default colors for decals -->
-				<Decal {name} {fill} />
+				<Decal {name} {fill} {params} />
 			</svg>
 		</button>
 	{/each}
