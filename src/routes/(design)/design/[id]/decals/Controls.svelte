@@ -48,7 +48,11 @@
 
 	function setDecalShape(name: DecalName) {
 		localCars.update((cars) => {
-			cars[$designShortId].decals[slot].name = name
+			if (name !== cars[$designShortId].decals[slot].name) {
+				cars[$designShortId].decals[slot].name = name
+				cars[$designShortId].decals[slot].params =
+					decalDefs[name].getDefaultParamsObject()
+			}
 			return cars
 		})
 		toolMode = null
