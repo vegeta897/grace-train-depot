@@ -7,17 +7,23 @@ import type { GraceTrainCar } from 'grace-train-lib/trains'
 import { transformCarFromDB } from '$lib/car'
 
 export const GET = (async ({ request, params }) => {
-	console.log('/api/car GET received!', params.id)
+	console.log('/api/users GET received!', params.ids)
 	const authHeader = request.headers.get('Authorization')
 	if (authHeader !== DEPOT_SECRET) throw error(401)
-	const userWithCars = await prisma.user.findUnique({
-		where: { twitchUserId: params.id },
+	const userIDs: string[] = params.ids.split(',')
+	const usersWithCars = await prisma.user.findMany({
+		where: { twitchUserId: { in: userIDs } },
 		include: { cars: { include: { decals: true, toppers: true } } },
 	})
-	if (!userWithCars) throw error(404, 'User not found')
+	const unknownUserIds = userIDs.filter(
+		(id) => !usersWithCars.some((u) => u.twitchUserId === id)
+	)
 	return json({
-		userId: userWithCars.id,
-		cars: userWithCars.cars.map((c) => transformCarToWS(transformCarFromDB(c))),
+		users: usersWithCars.map((u) => ({
+			userId: u.id,
+			cars: u.cars.map((c) => transformCarToWS(transformCarFromDB(c))),
+		})),
+		unknownUserIds: unknownUserIds.length > 0 ? unknownUserIds : undefined,
 	})
 }) satisfies RequestHandler
 
