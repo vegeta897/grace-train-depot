@@ -8,6 +8,7 @@
 	import ShapePicker from './ShapePicker.svelte'
 	import ColorSlider from '../../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
+	import type { DecalData } from '$lib/server/schemas'
 
 	export let slot: number
 
@@ -58,7 +59,7 @@
 		toolMode = null
 	}
 
-	function setDecalColor(color: string) {
+	function setDecalColor(color: DecalData['fill']) {
 		localCars.update((cars) => {
 			cars[$designShortId].decals[slot].fill = color
 			return cars
@@ -73,7 +74,7 @@
 		})
 	}
 
-	function previewDecalColor(color?: string) {
+	function previewDecalColor(color?: DecalData['fill']) {
 		localCars.update((cars) => {
 			if (color) {
 				cars[$designShortId].decals[slot].fillPreview = color

@@ -4,6 +4,7 @@
 	import { getDesignStores } from '../../stores'
 	import ColorSlider from '../../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
+	import type { CarData } from '$lib/server/schemas'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -14,14 +15,14 @@
 		})
 	}
 
-	function setBodyColor(color: string) {
+	function setBodyColor(color: CarData['bodyColor']) {
 		localCars.update((cars) => {
 			cars[$designShortId].bodyColor = color
 			return cars
 		})
 	}
 
-	function setBodyPopColor(color: string) {
+	function setBodyPopColor(color: CarData['bodyPopColor']) {
 		localCars.update((cars) => {
 			cars[$designShortId].bodyPopColor = color
 			return cars

@@ -4,10 +4,11 @@
 	import { WHEEL_DISTANCE_MAX, WHEEL_DISTANCE_MIN } from '$lib/common/constants'
 	import ColorSlider from '../../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
+	import type { CarData } from '$lib/server/schemas'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
-	function setWheelColor(color: string) {
+	function setWheelColor(color: CarData['wheelColor']) {
 		localCars.update((cars) => {
 			cars[$designShortId].wheelColor = color
 			return cars
