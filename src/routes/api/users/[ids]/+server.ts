@@ -6,6 +6,11 @@ import type { CarData } from '$lib/server/schemas'
 import type { GraceTrainCar } from 'grace-train-lib/trains'
 import { transformCarFromDB } from '$lib/car'
 
+// TODO: Create /train/start /train/add and /train/end endpoints
+// Depot will track current train based on its ID and pick cars accordingly
+// This makes it easier to work with users, cars, lines, etc
+// Also makes it easy to track stats like how many trains a car has been in, etc
+
 export const GET = (async ({ request, params }) => {
 	console.log('/api/users GET received!', params.ids)
 	const authHeader = request.headers.get('Authorization')

@@ -28,6 +28,9 @@
 
 	// TODO: Allow choosing body color to act as an "eraser" decal
 
+	// TODO: Add randomize button (here and on other pages)
+	// Changes shape, color, size, rotation, position, and params. Transition it if possible!
+
 	hoveredSlot.set(null)
 	selectedSlot.set(null)
 
