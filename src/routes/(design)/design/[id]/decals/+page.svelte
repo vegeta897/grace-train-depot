@@ -20,12 +20,6 @@
 	// TODO: Prototype a "sliders" mode where x/y/scale/rotate can be set with sliders on one page
 	// Could even adjust decal order/slot with a slider! Embrace the sliders!
 
-	// TODO: Add sliders and checkboxes to tweak decal shape/proportions
-	// Like star pointiness, number of points, fill vs outline, etc
-	// More fun to design/program, more fun to play with
-	// TODO: Use JSON data type to store these custom props since they differ between decals
-	// Maybe just a simple string of concatenated values? Careful with API updatees though
-
 	// TODO: Allow choosing body color to act as an "eraser" decal
 
 	// TODO: Add randomize button (here and on other pages)
