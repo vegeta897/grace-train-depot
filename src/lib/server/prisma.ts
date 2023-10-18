@@ -8,3 +8,5 @@ const prisma = globalForPrisma.prisma || new PrismaClient()
 export default prisma
 
 if (dev) globalForPrisma.prisma = prisma
+
+export const orderBySlot = { orderBy: { slot: 'asc' } } as const

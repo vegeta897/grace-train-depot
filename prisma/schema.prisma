@@ -9,14 +9,15 @@ datasource db {
 }
 
 model User {
-  id                String    @id @unique
+  id                String          @id @unique
   auth_session      Session[]
   auth_key          Key[]
-  createdAt         DateTime  @default(now())
-  twitchUserId      String    @unique
-  twitchUsername    String    @unique
-  twitchDisplayName String    @unique
+  createdAt         DateTime        @default(now())
+  twitchUserId      String          @unique
+  twitchUsername    String          @unique
+  twitchDisplayName String          @unique
   cars              Car[]
+  graceTrainCars    GraceTrainCar[]
 
   @@index([id], type: Hash)
   @@map("auth_user")
@@ -44,22 +45,23 @@ model Key {
 }
 
 model Car {
-  id              Int      @id @default(autoincrement())
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              Int             @id @default(autoincrement())
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String
-  shortId         String   @unique @db.VarChar(8)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  revision        Int      @default(1)
+  shortId         String          @unique @db.VarChar(8)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  revision        Int             @default(1)
   name            String?
-  published       Boolean  @default(false)
-  body            Body     @default(boxy)
+  published       Boolean         @default(false)
+  body            Body            @default(boxy)
   bodyColor       String?
   bodyPopColor    String?
   wheelColor      String?
   wheelFromCenter Float
   decals          Decal[]
   toppers         Topper[]
+  graceTrainCars  GraceTrainCar[]
 }
 
 model Decal {
@@ -95,4 +97,26 @@ model Topper {
 enum Body {
   boxy
   tanky
+}
+
+model GraceTrain {
+  id    BigInt          @id @unique
+  cars  GraceTrainCar[]
+  ended Boolean         @default(false)
+  score Float
+}
+
+model GraceTrainCar {
+  train        GraceTrain @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  trainId      BigInt
+  index        Int
+  car          Car?       @relation(fields: [carId], references: [id])
+  carId        Int?
+  user         User?      @relation(fields: [userId], references: [id])
+  userId       String?
+  twitchUserId String
+  addedAt      DateTime   @default(now())
+  carData      Json
+
+  @@id([trainId, index])
 }

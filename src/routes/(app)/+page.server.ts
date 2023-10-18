@@ -1,5 +1,5 @@
 import { transformCarFromDB } from '$lib/car'
-import prisma from '$lib/server/prisma'
+import prisma, { orderBySlot } from '$lib/server/prisma'
 import type { PageServerLoad } from './$types'
 
 export const load = (async ({ parent }) => {
@@ -9,7 +9,7 @@ export const load = (async ({ parent }) => {
 			savedCars: (
 				await prisma.car.findMany({
 					where: { userId: parentData.user.userId },
-					include: { decals: { orderBy: { slot: 'asc' } }, toppers: true },
+					include: { decals: orderBySlot, toppers: orderBySlot },
 					orderBy: { createdAt: 'desc' },
 				})
 			).map(transformCarFromDB),
