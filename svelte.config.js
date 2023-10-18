@@ -12,11 +12,7 @@ const config = {
 			postcss: true,
 		}),
 	],
-
-	kit: {
-		adapter: adapter(),
-		csrf: { checkOrigin: false },
-	},
+	kit: { adapter: adapter() },
 }
 
 export default config

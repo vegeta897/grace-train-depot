@@ -2,16 +2,9 @@ import { dev } from '$app/environment'
 import { SKIP_AUTH } from '$env/static/private'
 import { auth } from '$lib/server/lucia'
 import prisma from '$lib/server/prisma'
-import { redirect, type Handle, type HandleServerError, error } from '@sveltejs/kit'
+import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const forbidden =
-		event.request.method === 'POST' &&
-		event.request.headers.get('origin') !== event.url.origin &&
-		!event.url.pathname.startsWith('/api/train/')
-	if (forbidden) {
-		throw error(403, 'Cross-site POST requests are forbidden')
-	}
 	event.locals.auth = auth.handleRequest(event)
 	if (dev && SKIP_AUTH === 'true') {
 		console.log('skipping auth')
