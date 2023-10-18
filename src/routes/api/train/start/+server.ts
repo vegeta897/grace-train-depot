@@ -4,16 +4,13 @@ import type { RequestHandler } from './$types'
 import prisma, { orderBySlot } from '$lib/server/prisma'
 import { transformCarFromDBToGraceTrainCar } from '$lib/car'
 import type { Prisma } from '@prisma/client'
+import type { DepotTrainStartRequest } from 'grace-train-lib/trains'
 
 export const POST = (async ({ request }) => {
 	console.log('/api/train/start POST received!')
 	const authHeader = request.headers.get('Authorization')
 	if (authHeader !== DEPOT_SECRET) throw error(401)
-	const { trainId, graces, score } = (await request.json()) as {
-		trainId: number
-		graces: { userId: string; color: string }[]
-		score: number
-	}
+	const { trainId, graces, score } = (await request.json()) as DepotTrainStartRequest
 	const users = await prisma.user.findMany({
 		where: { twitchUserId: { in: graces.map((g) => g.userId) } },
 		include: {
@@ -21,8 +18,7 @@ export const POST = (async ({ request }) => {
 		},
 	})
 	const graceTrainCars = graces.map((grace, i) => {
-		const graceTrainCarCreate: Prisma.GraceTrainCarCreateInput = {
-			train: { connect: { id: trainId } },
+		const graceTrainCarCreate: Prisma.GraceTrainCarCreateWithoutTrainInput = {
 			index: i,
 			twitchUserId: grace.userId,
 			carData: grace.color,

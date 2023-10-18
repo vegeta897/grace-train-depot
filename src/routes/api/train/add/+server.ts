@@ -4,17 +4,13 @@ import type { RequestHandler } from './$types'
 import prisma, { orderBySlot } from '$lib/server/prisma'
 import { transformCarFromDBToGraceTrainCar } from '$lib/car'
 import type { Prisma } from '@prisma/client'
+import type { DepotTrainAddRequest } from 'grace-train-lib/trains'
 
 export const POST = (async ({ request }) => {
 	console.log('/api/train/add POST received!')
 	const authHeader = request.headers.get('Authorization')
 	if (authHeader !== DEPOT_SECRET) throw error(401)
-	const { trainId, grace, index, score } = (await request.json()) as {
-		trainId: number
-		grace: { userId: string; color: string }
-		index: number // In case requests arrive out of order
-		score: number
-	}
+	const { trainId, grace, index, score } = (await request.json()) as DepotTrainAddRequest
 	const train = await prisma.graceTrain.update({
 		data: { score },
 		where: { id: trainId },
@@ -37,8 +33,10 @@ export const POST = (async ({ request }) => {
 		// TODO: Car picking logic
 		graceTrainCarCreate.carData = transformCarFromDBToGraceTrainCar(user.cars[0])
 	}
-	prisma.graceTrainCar.create({
-		data: graceTrainCarCreate,
-	})
+	prisma.graceTrainCar
+		.create({
+			data: graceTrainCarCreate,
+		})
+		.then() // Prisma queries need to be awaited to work properly
 	return json(graceTrainCarCreate.carData)
 }) satisfies RequestHandler
