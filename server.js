@@ -1,7 +1,7 @@
 import { handler } from './build/handler.js'
 import polka from 'polka'
 import serveStatic from 'serve-static'
-import { join } from 'node:fs'
+import { join } from 'node:path'
 
 const app = polka()
 
@@ -12,6 +12,7 @@ app.use(serveStatic(publicPath))
 // let SvelteKit handle everything else
 app.use(handler)
 
-app.listen(3000, () => {
-	console.log('listening on port 3000')
+const port = process.env.PORT || 5180
+app.listen(port, () => {
+	console.log(`Listening on port ${port}`)
 })
