@@ -19,6 +19,7 @@
 	"editor.defaultColorDecorators": true,
 	"markdownlint.config": {
 		"default": true,
-		"MD026": { "punctuation": ".,;:。，；：！" }
+		"MD026": { "punctuation": ".,;:。，；：！" },
+		"MD010": false
 	}
 }
