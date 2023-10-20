@@ -35,31 +35,70 @@ CREATE TABLE "auth_key" (
 CREATE TABLE "Car" (
     "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
-    "shortId" TEXT NOT NULL,
+    "shortId" VARCHAR(8) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "revision" INTEGER NOT NULL DEFAULT 1,
     "name" TEXT,
+    "published" BOOLEAN NOT NULL DEFAULT false,
     "body" "Body" NOT NULL DEFAULT 'boxy',
-    "wheelColor" TEXT NOT NULL,
-    "wheelFromCenter" DECIMAL(65,30) NOT NULL,
-    "hatColor" TEXT,
+    "bodyColor" TEXT,
+    "bodyPopColor" TEXT,
+    "wheelColor" TEXT,
+    "wheelFromCenter" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "Car_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Decal" (
-    "id" SERIAL NOT NULL,
     "carId" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
-    "order" INTEGER NOT NULL,
+    "slot" INTEGER NOT NULL,
     "fill" TEXT NOT NULL,
-    "x" DECIMAL(65,30) NOT NULL,
-    "y" DECIMAL(65,30) NOT NULL,
-    "scale" DECIMAL(65,30) NOT NULL,
-    "rotate" DECIMAL(65,30) NOT NULL,
+    "x" DOUBLE PRECISION NOT NULL,
+    "y" DOUBLE PRECISION NOT NULL,
+    "scale" DOUBLE PRECISION NOT NULL,
+    "rotate" DOUBLE PRECISION NOT NULL,
+    "params" JSONB NOT NULL DEFAULT '{}',
 
-    CONSTRAINT "Decal_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Decal_pkey" PRIMARY KEY ("carId","slot")
+);
+
+-- CreateTable
+CREATE TABLE "Topper" (
+    "carId" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    "slot" INTEGER NOT NULL,
+    "colors" TEXT[],
+    "position" DOUBLE PRECISION NOT NULL,
+    "offset" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "scale" DOUBLE PRECISION NOT NULL DEFAULT 1,
+    "rotate" DOUBLE PRECISION NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Topper_pkey" PRIMARY KEY ("carId","slot")
+);
+
+-- CreateTable
+CREATE TABLE "GraceTrain" (
+    "id" BIGINT NOT NULL,
+    "ended" BOOLEAN NOT NULL DEFAULT false,
+    "score" DOUBLE PRECISION NOT NULL,
+
+    CONSTRAINT "GraceTrain_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "GraceTrainCar" (
+    "trainId" BIGINT NOT NULL,
+    "index" INTEGER NOT NULL,
+    "carId" INTEGER,
+    "userId" TEXT,
+    "twitchUserId" TEXT NOT NULL,
+    "addedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "carData" JSONB NOT NULL,
+
+    CONSTRAINT "GraceTrainCar_pkey" PRIMARY KEY ("trainId","index")
 );
 
 -- CreateIndex
@@ -92,6 +131,9 @@ CREATE INDEX "auth_key_user_id_idx" ON "auth_key"("user_id");
 -- CreateIndex
 CREATE UNIQUE INDEX "Car_shortId_key" ON "Car"("shortId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "GraceTrain_id_key" ON "GraceTrain"("id");
+
 -- AddForeignKey
 ALTER TABLE "auth_session" ADD CONSTRAINT "auth_session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth_user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -103,3 +145,15 @@ ALTER TABLE "Car" ADD CONSTRAINT "Car_userId_fkey" FOREIGN KEY ("userId") REFERE
 
 -- AddForeignKey
 ALTER TABLE "Decal" ADD CONSTRAINT "Decal_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Car"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Topper" ADD CONSTRAINT "Topper_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Car"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "GraceTrainCar" ADD CONSTRAINT "GraceTrainCar_trainId_fkey" FOREIGN KEY ("trainId") REFERENCES "GraceTrain"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "GraceTrainCar" ADD CONSTRAINT "GraceTrainCar_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Car"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "GraceTrainCar" ADD CONSTRAINT "GraceTrainCar_userId_fkey" FOREIGN KEY ("userId") REFERENCES "auth_user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
