@@ -9,6 +9,10 @@ import { carSchema } from '$lib/server/schemas'
 import DesignCar from '$lib/components/DesignCar.svelte'
 import sharp from 'sharp'
 import fs from 'node:fs'
+import { join } from 'node:path'
+import { PROJECT_PATH } from '$env/static/private'
+
+const assetsPath = join(PROJECT_PATH, './public/assets')
 
 export const actions = {
 	save: async (event) => {
@@ -91,12 +95,13 @@ export const actions = {
 			const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
 			sharp(Buffer.from(svgString))
 				.png({ compressionLevel: 9 })
-				.toFile(`./public/assets/car_${carData.shortId}_${updatedCar.revision}.png`)
+				.toFile(`${assetsPath}/car_${carData.shortId}_${updatedCar.revision}.png`)
+				.catch((e) => console.log('Error generating car image', e))
 			if (updatedCar.revision > 1) {
 				// Delete previous revision image
 				// TODO: Maybe timestamp the revisions and delete them after x time instead
 				fs.rm(
-					`./public/assets/car_${carData.shortId}_${updatedCar.revision - 1}.png`,
+					`${assetsPath}/car_${carData.shortId}_${updatedCar.revision - 1}.png`,
 					() => {}
 				)
 			}
