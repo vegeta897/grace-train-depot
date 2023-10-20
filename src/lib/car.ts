@@ -8,10 +8,9 @@ import type {
 import type { Prisma } from '@prisma/client'
 import type { ParamsObject } from 'grace-train-lib/components'
 import { decalDefs } from 'grace-train-lib/components'
-import type { GraceTrainCar } from 'grace-train-lib/trains'
 import { generateRandomString } from 'lucia/utils'
 
-type FullCarData = Prisma.CarGetPayload<{
+export type FullCarData = Prisma.CarGetPayload<{
 	include: { decals: true; toppers: true }
 }>
 
@@ -130,37 +129,4 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 		maybeChanged.rotate !== original.rotate ||
 		maybeChanged.colors.join(',') !== original.colors.join(',')
 	)
-}
-
-export function transformCarFromDBToGraceTrainCar(car: FullCarData): GraceTrainCar {
-	return {
-		body: car.body,
-		bodyColor: car.bodyColor || undefined,
-		bodyPopColor: car.bodyPopColor || undefined,
-		wheelColor: car.wheelColor || undefined,
-		wheelFromCenter: car.wheelFromCenter,
-		decals: car.decals.map((d) => {
-			const name = d.name as DecalData['name']
-			let params = d.params as ParamsObject
-			if (Object.keys(params).length === 0)
-				params = decalDefs[name].getDefaultParamsObject()
-			return {
-				name,
-				fill: d.fill,
-				x: d.x,
-				y: d.y,
-				scale: d.scale,
-				rotate: d.rotate,
-				params,
-			}
-		}),
-		toppers: car.toppers.map((t) => ({
-			name: t.name as TopperData['name'],
-			colors: t.colors,
-			position: t.position,
-			offset: t.offset,
-			scale: t.scale,
-			rotate: t.rotate,
-		})),
-	}
 }

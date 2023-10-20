@@ -5,6 +5,14 @@ export function wrapNumber(val: number, min: number, max: number) {
 	return min + ((((val - min) % range) + range) % range)
 }
 
+export const randomIntRange = (minOrMax: number, max?: number) => {
+	const min = max === undefined ? 0 : minOrMax
+	const range = max === undefined ? minOrMax : max - minOrMax
+	return Math.floor(min + Math.random() * (range + 1))
+}
+
+export const randomElement = <T>(arr: T[]): T => arr[randomIntRange(0, arr.length - 1)]
+
 // TODO: Ensure this doesn't leak store data across clients
 export function defineContext<T>(data: T): () => T {
 	const key = Symbol()

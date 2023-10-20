@@ -7,6 +7,8 @@ export const actions = {
 		console.log('delete', params.id)
 		const session = await locals.auth.validate()
 		if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}`)
+		// TODO: Flag for deletion instead of immediate delete
+		// This will make grace train car selection a bit safer
 		const deletedCar = await prisma.car.delete({
 			where: { userId: session.user.userId, shortId: params.id },
 		})
