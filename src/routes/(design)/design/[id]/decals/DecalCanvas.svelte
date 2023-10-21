@@ -174,7 +174,7 @@
 			<DesignCar
 				{car}
 				focusTopperSlot={$selectedSlot === null ? null : -1}
-				transition={['fill', 'opacity']}
+				transition={['fill', 'stroke', 'opacity']}
 				focusDecalZone={$selectedSlot !== null}
 				animateDecalAppear
 			/>
@@ -224,7 +224,7 @@
 									name={decal.name}
 									fill={decal.fillPreview || decal.fill}
 									params={decal.params}
-									transition={['fill']}
+									transition={['fill', 'stroke']}
 								/>
 							</g>
 						</svg>
