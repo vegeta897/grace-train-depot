@@ -86,27 +86,26 @@ export const actions = {
 				return fail(400, { invalid: true })
 			}
 		}
+		// TODO: Move this to another file
+		const { html } = (DesignCar as any).render({ car: carData })
+		// Important: Careful what css properties are used in the car SVG
+		// CSS variables are NOT supported
+		const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
 		try {
-			// TODO: Move this to another file
-			// Sharp toFile returns a promise that will not be caught here if it throws
-			const { html } = (DesignCar as any).render({ car: carData })
-			// Important: Careful what css properties are used in the car SVG
-			// CSS variables are NOT supported
-			const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
 			sharp(Buffer.from(svgString))
 				.png({ compressionLevel: 9 })
 				.toFile(`${assetsPath}/car_${carData.shortId}_${updatedCar.revision}.png`)
-				.catch((e) => console.log('Error generating car image', e))
+				.catch((e) => console.log('Error saving car image to file', e))
 			if (updatedCar.revision > 1) {
 				// Delete previous revision image
-				// TODO: Maybe timestamp the revisions and delete them after x time instead
+				// TODO: Store revisions in a db table for easier management and cleanup
 				fs.rm(
 					`${assetsPath}/car_${carData.shortId}_${updatedCar.revision - 1}.png`,
-					() => {}
+					(e) => e && console.log('Error deleting previous car revision image', e)
 				)
 			}
 		} catch (e) {
-			console.log('Error generating car image', e)
+			console.log('Error generating car image PNG', e)
 		}
 		throw redirect(302, `/c/${carData.shortId}`)
 	},
