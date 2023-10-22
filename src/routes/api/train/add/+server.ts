@@ -4,7 +4,12 @@ import type { RequestHandler } from './$types'
 import prisma, { orderBySlot } from '$lib/server/prisma'
 import type { Prisma } from '@prisma/client'
 import type { DepotTrainAddRequest } from 'grace-train-lib/trains'
-import { pickUserCar, transformCarFromDBToGraceTrainCar } from '../trains'
+import {
+	incrementGraceTrainTotalAppearances,
+	pickUserCar,
+	transformCarFromDBToGraceTrainCar,
+	updateGraceTrainCarStatsForTrain,
+} from '../trains'
 
 export const POST = (async ({ request }) => {
 	console.log('/api/train/add POST received!')
@@ -34,6 +39,11 @@ export const POST = (async ({ request }) => {
 	})
 	if (user && user.cars.length > 0) {
 		const pickedCar = pickUserCar(user.cars, train.cars)
+		await incrementGraceTrainTotalAppearances(pickedCar.id)
+		if (train.cars.some((c) => c.carId === pickedCar.id)) {
+			// Update train-specific stats if this is the first appearance in this train
+			await updateGraceTrainCarStatsForTrain([pickedCar.id], trainId)
+		}
 		graceTrainCarCreate.carData = transformCarFromDBToGraceTrainCar(pickedCar)
 		graceTrainCarCreate.carId = pickedCar.id
 		graceTrainCarCreate.userId = user.id

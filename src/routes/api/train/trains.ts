@@ -81,3 +81,29 @@ export function pickUserCar(
 	if (leastPicked.size === 0) return randomElement(userCars) // Just in case I coded badly
 	return randomElement([...leastPicked])
 }
+
+export async function incrementGraceTrainTotalAppearances(carId: number) {
+	await prisma.graceTrainCarStats.upsert({
+		where: { carId: carId },
+		create: {
+			carId,
+			totalAppearances: 1,
+		},
+		update: {
+			totalAppearances: { increment: 1 },
+		},
+	})
+}
+
+export async function updateGraceTrainCarStatsForTrain(
+	carIds: number[],
+	trainId: number
+) {
+	await prisma.graceTrainCarStats.updateMany({
+		where: { carId: { in: carIds }, lastGraceTrainId: { not: trainId } },
+		data: {
+			graceTrainCount: { increment: 1 },
+			lastGraceTrainId: trainId,
+		},
+	})
+}

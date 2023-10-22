@@ -45,23 +45,24 @@ model Key {
 }
 
 model Car {
-  id              Int             @id @default(autoincrement())
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String
-  shortId         String          @unique @db.VarChar(8)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  revision        Int             @default(1)
-  name            String?
-  published       Boolean         @default(false)
-  body            Body            @default(boxy)
-  bodyColor       String?
-  bodyPopColor    String?
-  wheelColor      String?
-  wheelFromCenter Float
-  decals          Decal[]
-  toppers         Topper[]
-  graceTrainCars  GraceTrainCar[]
+  id                 Int                 @id @default(autoincrement())
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  shortId            String              @unique @db.VarChar(8)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  revision           Int                 @default(1)
+  name               String?
+  published          Boolean             @default(false)
+  body               Body                @default(boxy)
+  bodyColor          String?
+  bodyPopColor       String?
+  wheelColor         String?
+  wheelFromCenter    Float
+  decals             Decal[]
+  toppers            Topper[]
+  graceTrainCars     GraceTrainCar[]
+  GraceTrainCarStats GraceTrainCarStats?
 }
 
 model Decal {
@@ -119,4 +120,12 @@ model GraceTrainCar {
   carData      Json
 
   @@id([trainId, index])
+}
+
+model GraceTrainCarStats {
+  car              Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId            Int    @unique
+  graceTrainCount  Int    @default(0)
+  totalAppearances Int    @default(0)
+  lastGraceTrainId BigInt @default(0)
 }

@@ -13,5 +13,8 @@ export const POST = (async ({ request }) => {
 		where: { id: trainId },
 		data: { score, ended: true },
 	})
-	return json('OK')
+	const carDebutCount = await prisma.graceTrainCarStats.count({
+		where: { lastGraceTrainId: trainId, graceTrainCount: 1 },
+	})
+	return json({ carDebutCount })
 }) satisfies RequestHandler

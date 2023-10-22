@@ -4,12 +4,19 @@ import type { RequestHandler } from './$types'
 import prisma, { orderBySlot } from '$lib/server/prisma'
 import type { Prisma } from '@prisma/client'
 import type { DepotTrainStartRequest } from 'grace-train-lib/trains'
-import { endAllTrains, pickUserCar, transformCarFromDBToGraceTrainCar } from '../trains'
+import {
+	endAllTrains,
+	incrementGraceTrainTotalAppearances,
+	pickUserCar,
+	transformCarFromDBToGraceTrainCar,
+	updateGraceTrainCarStatsForTrain,
+} from '../trains'
 
 export const POST = (async ({ request }) => {
 	console.log('/api/train/start POST received!')
 	const authHeader = request.headers.get('Authorization')
 	if (authHeader !== DEPOT_SECRET) throw error(401)
+	console.time('train start')
 	const { trainId, graces, score } = (await request.json()) as DepotTrainStartRequest
 	endAllTrains(trainId)
 	const users = await prisma.user.findMany({
@@ -23,7 +30,9 @@ export const POST = (async ({ request }) => {
 	})
 	// "Unchecked" is safe because we know the cars and users exist
 	const graceTrainCars: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput[] = []
-	graces.forEach((grace, i) => {
+	const pickedCarIds: Set<number> = new Set()
+	for (let i = 0; i < graces.length; i++) {
+		const grace = graces[i]
 		const graceTrainCarCreate: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput = {
 			index: i,
 			twitchUserId: grace.userId,
@@ -38,12 +47,15 @@ export const POST = (async ({ request }) => {
 					userId: gtc.userId || null,
 				}))
 			)
+			await incrementGraceTrainTotalAppearances(pickedCar.id)
+			pickedCarIds.add(pickedCar.id)
 			graceTrainCarCreate.carData = transformCarFromDBToGraceTrainCar(pickedCar)
 			graceTrainCarCreate.carId = pickedCar.id
 			graceTrainCarCreate.userId = user.id
 		}
 		graceTrainCars.push(graceTrainCarCreate)
-	})
+	}
+	await updateGraceTrainCarStatsForTrain([...pickedCarIds], trainId)
 	await prisma.graceTrain.create({
 		data: {
 			id: trainId,
@@ -53,6 +65,6 @@ export const POST = (async ({ request }) => {
 			},
 		},
 	})
-
+	console.timeEnd('train start')
 	return json(graceTrainCars.map((gtc) => gtc.carData))
 }) satisfies RequestHandler
