@@ -104,6 +104,7 @@
 	}
 </script>
 
+<!-- TODO: Navbar tabs misaligned when on finish page -->
 <header
 	class="navbar min-h-12 flex justify-between bg-base-200 p-2 lg:rounded-box lg:min-h-16 lg:p-3 lg:px-4"
 >
