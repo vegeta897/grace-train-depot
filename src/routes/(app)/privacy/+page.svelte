@@ -6,7 +6,8 @@
 		known as <em>OAuth</em> that lets you verify your identity without revealing any personal
 		info (not even your email) or granting unnecessary access to your account. The only information
 		you give to our site is your Twitch username and a numeric Twitch ID, which is not private
-		information. Our site is incapable of performing any actions on behalf of your Twitch account.
+		information. This site is incapable of performing any actions on behalf of your Twitch
+		account.
 	</p>
 	<h3 class="text-xl font-bold">User Sessions</h3>
 	<p>

@@ -9,9 +9,9 @@
 	<h3 class="text-xl font-bold">Content & User Moderation</h3>
 	<p>
 		All content created on this site is subject to removal by the admins if it is deemed
-		abusive. Specifically, that means train car designs containing offensive imagery. Any
-		user found to be intentionally abusing the site in any way is subject to termination.
-		Your actions on this site may be used as justification for bans within the associated
-		Twitch channel.
+		abusive. Specifically, that means train car designs containing offensive or
+		problematic imagery. Any user found to be intentionally abusing the site in any way is
+		subject to termination. Your actions on this site may be used as justification for
+		bans within the associated Twitch channel.
 	</p>
 </section>
