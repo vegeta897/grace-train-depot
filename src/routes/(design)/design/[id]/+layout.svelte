@@ -52,7 +52,7 @@
 	onNavigate((navigation) => {
 		if (!document.startViewTransition) return
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-		if (window.matchMedia('(min-width: 1024px)').matches) return
+		// if (window.matchMedia('(min-width: 1024px)').matches) return
 		return new Promise((resolve) => {
 			const transition = document.startViewTransition(async () => {
 				resolve()
@@ -111,29 +111,24 @@
 	<a
 		href={backLink}
 		on:click={exitDesigner}
-		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] px-6">Back</a
+		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] px-6 font-black lg:h-20 lg:text-lg"
+		>Back</a
 	>
-	<div class="hidden sm:flex lg:hidden">
+	<div class="hidden sm:flex">
 		<NavTabs {currentPage} carShortId={$page.params.id} />
 	</div>
 	{#if currentPage !== 'finish'}
 		<a
 			href="/design/{$page.params.id}/finish"
-			class="btn btn-success btn-outline btn-sm h-[2.5rem] min-h-[2.5rem] text-lg font-black"
+			class="btn btn-success btn-outline btn-sm h-[2.5rem] min-h-[2.5rem] text-lg font-black lg:h-20"
 		>
 			Finish
 		</a>
 	{/if}
 </header>
-<div
-	class="mx-auto mt-2 w-full max-w-2xl gap-x-4 lg:mt-4 lg:flex lg:max-w-full lg:items-start"
->
-	<div class="sticky top-2 hidden w-72 shrink-0 flex-col gap-4 lg:flex">
+<div class="mx-auto mt-2 w-full max-w-2xl gap-x-4 lg:mt-4 lg:max-w-full">
+	<!-- <div class="sticky top-2 hidden w-72 shrink-0 flex-col gap-4 lg:flex">
 		<div class="rounded-box flex flex-col gap-2 bg-neutral p-6">
-			<!-- <div class="flex items-baseline justify-between px-2">
-				<h2 class="font-black uppercase text-2xl mb-2">Design</h2>
-			</div> -->
-			<!-- TODO: Consider a non-button treatment for this -->
 			{#each PAGES as [icon, name]}
 				{@const current = name === currentPage}
 				<a
@@ -147,7 +142,7 @@
 				</a>
 			{/each}
 		</div>
-	</div>
+	</div> -->
 	<div class="flex min-w-0 grow flex-col items-center">
 		<div class="mx-2 justify-center self-stretch xs:self-center sm:hidden">
 			<NavTabs {currentPage} carShortId={$page.params.id} />
