@@ -4,6 +4,7 @@
 	import type { ActionData, PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
 	import { applyAction, enhance } from '$app/forms'
+	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 
 	export let data: PageData
 	export let form: ActionData
@@ -77,6 +78,7 @@
 					class="input w-full max-w-xs"
 					value={$designCar.name || ''}
 					placeholder="Type here"
+					maxlength={CAR_NAME_MAX_LENGTH}
 				/>
 			</div>
 			<button class="btn btn-primary btn-lg"

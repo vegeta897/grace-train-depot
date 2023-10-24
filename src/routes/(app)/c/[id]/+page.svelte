@@ -9,6 +9,7 @@
 	import { applyAction, enhance } from '$app/forms'
 	import { tick } from 'svelte'
 	import { invalidateAll } from '$app/navigation'
+	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 
 	export let data: PageData
 
@@ -97,6 +98,7 @@
 						class="input h-16 w-full max-w-xs text-2xl"
 						value={data.car.name || ''}
 						placeholder="Type a name"
+						maxlength={CAR_NAME_MAX_LENGTH}
 						bind:this={nameInput}
 					/>
 					<button class="btn btn-primary btn-lg text-2xl font-bold">Save</button>

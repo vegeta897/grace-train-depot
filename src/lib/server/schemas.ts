@@ -7,6 +7,7 @@ import {
 } from 'grace-train-lib/components'
 import { z } from 'zod'
 import {
+	CAR_NAME_MAX_LENGTH,
 	DECAL_MAX_SCALE,
 	DECAL_MAX_SLOTS,
 	DECAL_MIN_SCALE,
@@ -69,7 +70,7 @@ const topperSchema = z.object({
 export const carSchema = z.object({
 	id: z.number().int().gte(0).readonly(),
 	shortId: z.string().min(1).readonly(),
-	name: z.string().min(1).optional(),
+	name: z.string().min(1).max(CAR_NAME_MAX_LENGTH).optional(),
 	published: z.boolean().optional(),
 	revision: z.number().int().gte(1).optional().readonly(),
 	body: z.enum(BODY_NAMES),

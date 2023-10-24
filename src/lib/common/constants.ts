@@ -7,6 +7,8 @@ export const PAGES = [
 	// ['🚥', 'finish'],
 ] as const
 
+export const CAR_NAME_MAX_LENGTH = 30
+
 export const DECAL_MAX_SLOTS = 5
 export const DECAL_MIN_SCALE = 0.5
 export const DECAL_MAX_SCALE = 4
