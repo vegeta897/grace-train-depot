@@ -44,12 +44,6 @@
 				<li>
 					<a on:click={closeMenu} href="/" class="justify-end">Home</a>
 				</li>
-				<li>
-					<a on:click={closeMenu} href="/terms" class="justify-end">Terms</a>
-				</li>
-				<li>
-					<a on:click={closeMenu} href="/privacy" class="justify-end">Privacy</a>
-				</li>
 				{#if data.user}
 					<li>
 						<a
@@ -65,3 +59,20 @@
 	</nav>
 </header>
 <slot />
+<footer
+	class="footer footer-center rounded-box gap-y-4 bg-base-200 p-6 text-base-content"
+>
+	<nav class="grid grid-flow-col gap-4">
+		<a class="link-hover link" href="/">Home</a>
+		<a class="link-hover link" href="/terms">Terms</a>
+		<a class="link-hover link" href="/privacy">Privacy</a>
+		<a
+			class="link-hover link"
+			href="https://github.com/vegeta897/grace-train-depot"
+			rel="external">GitHub</a
+		>
+	</nav>
+	<aside>
+		<p class="text-base-content/75">created by vegeta897<br />for the sweeties</p>
+	</aside>
+</footer>
