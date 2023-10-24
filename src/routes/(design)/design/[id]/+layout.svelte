@@ -106,7 +106,7 @@
 
 <!-- TODO: Navbar tabs misaligned when on finish page -->
 <header
-	class="navbar min-h-12 flex justify-between bg-base-200 p-2 lg:rounded-box lg:min-h-16 lg:p-3 lg:px-4"
+	class="navbar min-h-12 flex shrink-0 justify-between bg-base-200 p-2 lg:rounded-box lg:min-h-16 lg:p-3 lg:px-4"
 >
 	<a
 		href={backLink}
@@ -125,8 +125,10 @@
 		</a>
 	{/if}
 </header>
-<div class="mx-auto mt-2 w-full max-w-2xl lg:mt-4 lg:flex lg:max-w-full lg:items-start">
-	<div class="sticky top-2 hidden w-80 shrink-0 flex-col gap-4 lg:flex">
+<div
+	class="mx-auto mt-2 w-full max-w-2xl gap-x-4 lg:mt-4 lg:flex lg:max-w-full lg:items-start"
+>
+	<div class="sticky top-2 hidden w-72 shrink-0 flex-col gap-4 lg:flex">
 		<div class="rounded-box flex flex-col gap-2 bg-neutral p-6">
 			<!-- <div class="flex items-baseline justify-between px-2">
 				<h2 class="font-black uppercase text-2xl mb-2">Design</h2>
@@ -154,7 +156,7 @@
 			<h2 class="mt-3 text-3xl font-black uppercase">{currentPage}</h2>
 		{/if}
 		<div
-			class="self-stretch p-4 lg:grow lg:px-8"
+			class="self-stretch p-4 lg:grow"
 			style:view-transition-name="design-page-content"
 		>
 			<slot />
