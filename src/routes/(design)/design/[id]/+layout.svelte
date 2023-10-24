@@ -125,7 +125,7 @@
 		</a>
 	{/if}
 </header>
-<div class="mx-auto mt-2 max-w-2xl lg:mt-4 lg:flex lg:max-w-full lg:items-start">
+<div class="mx-auto mt-2 w-full max-w-2xl lg:mt-4 lg:flex lg:max-w-full lg:items-start">
 	<div class="sticky top-2 hidden w-80 shrink-0 flex-col gap-4 lg:flex">
 		<div class="rounded-box flex flex-col gap-2 bg-neutral p-6">
 			<!-- <div class="flex items-baseline justify-between px-2">

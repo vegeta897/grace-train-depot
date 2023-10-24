@@ -12,7 +12,14 @@
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
 <div
-	class="mx-auto w-full max-w-5xl pb-4 selection:bg-primary selection:text-primary-content lg:p-4"
+	class="full-height mx-auto flex w-full max-w-5xl flex-col selection:bg-primary selection:text-primary-content lg:p-4"
 >
 	<slot />
 </div>
+
+<style>
+	.full-height {
+		height: 100dvh;
+		height: 100vh;
+	}
+</style>
