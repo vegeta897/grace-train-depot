@@ -61,9 +61,11 @@
 			const [fromPageIndex, toPageIndex] = [
 				navigation.from?.route.id,
 				navigation.to?.route.id,
-			].map((fromOrToPage) =>
-				PAGES.findIndex((page) => page[1] === routePageName(fromOrToPage))
-			)
+			].map((fromOrToPage) => {
+				const pageName = routePageName(fromOrToPage)
+				if (pageName === 'finish') return Infinity
+				return PAGES.findIndex((page) => page[1] === pageName)
+			})
 			const animateLeft = toPageIndex > fromPageIndex
 			transition.ready.then(() => {
 				document.documentElement.animate(
@@ -104,7 +106,6 @@
 	}
 </script>
 
-<!-- TODO: Navbar tabs misaligned when on finish page -->
 <header
 	class="navbar min-h-12 flex shrink-0 justify-between bg-base-200 p-2 lg:rounded-box lg:min-h-16 lg:p-3 lg:px-4"
 >
@@ -117,14 +118,14 @@
 	<div class="hidden sm:flex">
 		<NavTabs {currentPage} carShortId={$page.params.id} />
 	</div>
-	{#if currentPage !== 'finish'}
-		<a
-			href="/design/{$page.params.id}/finish"
-			class="btn btn-success btn-outline btn-sm h-[2.5rem] min-h-[2.5rem] text-lg font-black lg:h-20"
-		>
-			Finish
-		</a>
-	{/if}
+	<a
+		href="/design/{$page.params.id}/finish"
+		class="btn btn-success btn-sm h-[2.5rem] min-h-[2.5rem] text-lg font-black lg:h-20"
+		class:pointer-events-none={currentPage === 'finish'}
+		class:btn-outline={currentPage !== 'finish'}
+	>
+		Finish
+	</a>
 </header>
 <div class="mx-auto mt-2 w-full max-w-2xl gap-x-4 lg:mt-4 lg:max-w-full">
 	<!-- <div class="sticky top-2 hidden w-72 shrink-0 flex-col gap-4 lg:flex">
