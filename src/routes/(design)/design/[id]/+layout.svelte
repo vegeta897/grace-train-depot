@@ -128,22 +128,6 @@
 	</a>
 </header>
 <div class="mx-auto mt-2 w-full max-w-2xl gap-x-4 lg:mt-4 lg:max-w-full">
-	<!-- <div class="sticky top-2 hidden w-72 shrink-0 flex-col gap-4 lg:flex">
-		<div class="rounded-box flex flex-col gap-2 bg-neutral p-6">
-			{#each PAGES as [icon, name]}
-				{@const current = name === currentPage}
-				<a
-					href="/design/{$page.params.id}/{name}"
-					class="btn btn-lg btn-block justify-start gap-8 text-xl font-black"
-					class:pointer-events-none={current}
-					class:btn-primary={current}
-				>
-					<div class="w-12 text-4xl">{icon}</div>
-					{name}
-				</a>
-			{/each}
-		</div>
-	</div> -->
 	<div class="flex min-w-0 grow flex-col items-center">
 		<div class="mx-2 justify-center self-stretch xs:self-center sm:hidden">
 			<NavTabs {currentPage} carShortId={$page.params.id} />
