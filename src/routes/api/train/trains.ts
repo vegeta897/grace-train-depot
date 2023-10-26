@@ -1,4 +1,4 @@
-import type { FullCarData } from '$lib/car'
+import type { FullCarData } from '$lib/server/car'
 import prisma from '$lib/server/prisma'
 import type { DecalData, TopperData } from '$lib/server/schemas'
 import { randomElement } from '$lib/util'

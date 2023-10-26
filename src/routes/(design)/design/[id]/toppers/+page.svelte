@@ -6,7 +6,7 @@
 		Topper,
 		type TopperName,
 	} from 'grace-train-lib/components'
-	import { getDesignStores } from '../../stores'
+	import { getDesignStores } from '../stores'
 	import type { TopperDataWithId } from '$lib/server/schemas'
 	import {
 		TOPPER_MAX_OFFSET,

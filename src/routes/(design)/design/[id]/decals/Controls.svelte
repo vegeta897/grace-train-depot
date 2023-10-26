@@ -4,9 +4,9 @@
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
-	import { getDesignStores } from '../../stores'
+	import { getDesignStores } from '../stores'
 	import ShapePicker from './ShapePicker.svelte'
-	import ColorSlider from '../../ColorSlider.svelte'
+	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { DecalData } from '$lib/server/schemas'
 

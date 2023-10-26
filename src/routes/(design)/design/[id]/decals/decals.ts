@@ -1,5 +1,5 @@
 import type { Transform } from '$lib/types'
-import type { DesignStores } from '../../stores'
+import type { DesignStores } from '../stores'
 
 export function updateDecalTransform(
 	cars: DesignStores['localCars'],

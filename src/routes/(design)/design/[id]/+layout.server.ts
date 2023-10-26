@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
-import { transformCarFromDB } from '$lib/car'
+import { transformCarFromDB } from '$lib/server/car'
 import type { User } from 'lucia'
 import type { CarDataWithIds } from '$lib/server/schemas'
 

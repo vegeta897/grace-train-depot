@@ -11,7 +11,7 @@
 	import type { Transform } from '$lib/types'
 	import type { CarDataWithIds } from '$lib/server/schemas'
 	import { updateDecalTransform } from './decals'
-	import { getDesignStores } from '../../stores'
+	import { getDesignStores } from '../stores'
 	import { browser } from '$app/environment'
 
 	export let car: CarDataWithIds

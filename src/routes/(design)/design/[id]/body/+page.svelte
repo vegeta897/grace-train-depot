@@ -1,8 +1,8 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
 	import { BODY_NAMES, type BodyName } from 'grace-train-lib/components'
-	import { getDesignStores } from '../../stores'
-	import ColorSlider from '../../ColorSlider.svelte'
+	import { getDesignStores } from '../stores'
+	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { CarData } from '$lib/server/schemas'
 

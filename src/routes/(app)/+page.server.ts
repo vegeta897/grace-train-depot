@@ -1,4 +1,4 @@
-import { transformCarFromDB } from '$lib/car'
+import { transformCarFromDB } from '$lib/server/car'
 import prisma, { orderBySlot } from '$lib/server/prisma'
 import type { PageServerLoad } from './$types'
 

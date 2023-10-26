@@ -1,8 +1,8 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
-	import { getDesignStores } from '../../stores'
+	import { getDesignStores } from '../stores'
 	import { WHEEL_DISTANCE_MAX, WHEEL_DISTANCE_MIN } from '$lib/common/constants'
-	import ColorSlider from '../../ColorSlider.svelte'
+	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { CarData } from '$lib/server/schemas'
 

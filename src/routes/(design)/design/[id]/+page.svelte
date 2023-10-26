@@ -1,7 +1,7 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
 	import type { PageData } from './$types'
-	import { getDesignStores } from '../stores'
+	import { getDesignStores } from './stores'
 	import { enhance } from '$app/forms'
 
 	export let data: PageData

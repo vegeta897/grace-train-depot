@@ -1,11 +1,11 @@
-import { transformCarFromDB } from '$lib/car'
+import { transformCarFromDB } from '$lib/server/car'
 import prisma from '$lib/server/prisma'
 import { fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 
 export const load = (async ({ params, parent }) => {
-	console.log('/c/ layout server load')
+	console.log('/c/ page server load')
 	const parentData = await parent()
 	const carData = await prisma.car.findUniqueOrThrow({
 		where: { shortId: params.id },

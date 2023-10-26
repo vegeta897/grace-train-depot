@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import { getDesignStores } from '../stores'
+	import { getDesignStores } from './stores'
 	import type { LayoutData } from './$types'
 	import { cloneCar, getCarChangesByPage, getNewCar } from '$lib/car'
 	import { PAGES } from '$lib/common/constants'

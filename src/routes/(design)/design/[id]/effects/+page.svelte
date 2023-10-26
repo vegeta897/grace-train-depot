@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
-	import { getDesignStores } from '../../stores'
+	import { getDesignStores } from '../stores'
 
 	const { designCar } = getDesignStores()
 </script>
