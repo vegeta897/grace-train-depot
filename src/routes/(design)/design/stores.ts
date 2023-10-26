@@ -1,7 +1,7 @@
 import { getNewCar } from '$lib/car'
 import type { CarDataWithIds } from '$lib/server/schemas'
 import { defineContext } from '$lib/util'
-import { persisted } from 'svelte-local-storage-store'
+import { persisted } from 'svelte-persisted-store'
 import { derived, writable } from 'svelte/store'
 
 const localCars = persisted<Record<string, CarDataWithIds>>('choochoo-localCars', {})
