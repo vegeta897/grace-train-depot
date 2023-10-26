@@ -5,8 +5,5 @@ import { defineConfig } from 'vite'
 export default defineConfig({
 	plugins: [sveltekit(), viteAssetPlugin()],
 	server: { port: 5180 },
-	optimizeDeps: {
-		exclude: ['grace-train-lib'],
-		force: true, // is this necessary?
-	},
+	optimizeDeps: { exclude: ['grace-train-lib'] },
 })
