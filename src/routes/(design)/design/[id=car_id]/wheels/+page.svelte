@@ -26,19 +26,6 @@
 </script>
 
 <section>
-	<div class="mx-auto mb-6 w-64">
-		<ContainerSvg>
-			<Body
-				name={$designCar.body}
-				baseColor={$designCar.bodyColor}
-				popColor={$designCar.bodyPopColor}
-			>
-				<svelte:fragment slot="decals">
-					<Decals decals={$designCar.decals} />
-				</svelte:fragment>
-			</Body>
-		</ContainerSvg>
-	</div>
 	<div class="mx-auto mb-6 w-64"><DesignCar car={$designCar} /></div>
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
 		<h3 class="text-2xl font-black uppercase">Color</h3>
