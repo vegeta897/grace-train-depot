@@ -8,18 +8,18 @@ export const GET = (async ({ cookies, locals, url }) => {
 	if (session) throw redirect(302, redirectTo || '/')
 	const [authUrl, state] = await twitchAuth.getAuthorizationUrl()
 	cookies.set('twitch_oauth_state', state, {
-		httpOnly: true,
 		secure: !dev,
 		path: '/',
 		maxAge: 60 * 60,
 	})
 	if (redirectTo) {
 		cookies.set('twitch_oauth_redirect_to', redirectTo, {
-			httpOnly: true,
 			secure: !dev,
 			path: '/',
 			maxAge: 60 * 60,
 		})
+	} else {
+		cookies.delete('twitch_oauth_redirect_to')
 	}
 	throw redirect(302, authUrl.toString())
 }) satisfies RequestHandler

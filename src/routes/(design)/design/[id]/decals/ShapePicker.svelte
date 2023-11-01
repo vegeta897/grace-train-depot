@@ -15,7 +15,7 @@
 		{@const params = decalDefs[name].getDefaultParamsObject()}
 		<button
 			on:click={() => onClick(name)}
-			class="btn-hover-grow btn btn-lg touch-manipulation px-0"
+			class="btn-hover-grow btn btn-lg h-20 touch-manipulation px-0"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

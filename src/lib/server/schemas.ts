@@ -28,8 +28,8 @@ const baseColorSchema = z.enum(COLORS.BASE)
 const decalSchema = z
 	.object({
 		name: z.enum(DECAL_NAMES),
-		x: z.number().gte(-100).lte(475),
-		y: z.number().gte(-100).lte(330),
+		x: z.number().gte(-203).lte(578),
+		y: z.number().gte(-178).lte(403),
 		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
 		rotate: z.number().gte(-180).lt(180),
 		fill: popColorSchema,

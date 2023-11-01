@@ -9,6 +9,7 @@
 	const closeMenu = () => menuElement.removeAttribute('open')
 </script>
 
+<svelte:head><title>Choo Choo!</title></svelte:head>
 <header
 	class="navbar min-h-12 flex justify-between bg-base-200 p-0 px-6 lg:rounded-box lg:min-h-16"
 >
@@ -63,13 +64,13 @@
 	class="footer footer-center mt-auto gap-y-4 bg-base-200 p-6 text-base-content lg:rounded-box"
 >
 	<nav class="grid grid-flow-col gap-4">
-		<a class="link-hover link" href="/">Home</a>
-		<a class="link-hover link" href="/terms">Terms</a>
-		<a class="link-hover link" href="/privacy">Privacy</a>
+		<a class="link-hover link" href="/">home</a>
+		<a class="link-hover link" href="/terms">terms</a>
+		<a class="link-hover link" href="/privacy">privacy</a>
 		<a
 			class="link-hover link"
 			href="https://github.com/vegeta897/grace-train-depot"
-			rel="external">GitHub</a
+			rel="external">github</a
 		>
 	</nav>
 	<aside>

@@ -82,7 +82,9 @@
 					>Design</a
 				>
 				<div class="flex gap-4">
-					<button class="btn btn-secondary" on:click={copyLink}>Copy Link</button>
+					<button class="btn btn-secondary font-black" on:click={copyLink}
+						>Copy Link</button
+					>
 				</div>
 			{:else}
 				<form
@@ -114,8 +116,8 @@
 	{/if}
 </section>
 {#if data.user}
-	<div class="flex justify-center">
-		<a href="/" class="btn btn-lg">Back</a>
+	<div class="mb-4 flex justify-center">
+		<a href="/" class="btn btn-lg font-black">Back</a>
 	</div>
 {/if}
 <div class="toast toast-center toast-top">

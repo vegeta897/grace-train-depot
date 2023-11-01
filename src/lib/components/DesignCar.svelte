@@ -26,6 +26,8 @@
 	export let focusDecalZone = false
 	export let focusTopperSlot: number | null = null
 	export let animateDecalAppear = false
+	export let excludeDecal: false | number = false
+	export let cropToCar = false
 
 	$: bodyName = bodyOverride || car.body
 	$: decals = decalsOverride || car.decals
@@ -35,6 +37,7 @@
 <div class="relative w-full">
 	<div
 		class="transition-all"
+		class:mt-[-80px]={cropToCar}
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>
@@ -78,7 +81,7 @@
 			<ContainerSvg>
 				<path fill={car.bodyColor || COLORS.BASE[3]} d={body[bodyName].decalClipPath} />
 				<g clip-path="url(#usercar-decal-clip)">
-					<Decals {decals} {transition} />
+					<Decals {decals} {transition} {excludeDecal} />
 				</g>
 				<defs>
 					<clipPath id="usercar-decal-clip">

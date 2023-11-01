@@ -5,7 +5,7 @@
 	import { cloneCar, getCarChangesByPage, getNewCar } from '$lib/car'
 	import { PAGES } from '$lib/common/constants'
 	import { goto, onNavigate } from '$app/navigation'
-	import { objectContainsTrue } from '$lib/util'
+	import { capitalize, objectContainsTrue } from '$lib/util'
 	import NavTabs from './NavTabs.svelte'
 
 	export let data: LayoutData
@@ -50,6 +50,7 @@
 	}
 
 	onNavigate((navigation) => {
+		if (!navigation.to?.route.id?.startsWith('/(design)/design/')) return
 		if (!document.startViewTransition) return
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 		// if (window.matchMedia('(min-width: 1024px)').matches) return
@@ -106,13 +107,16 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Choo Choo {capitalize(currentPage || 'design')}!</title>
+</svelte:head>
 <header
 	class="navbar min-h-12 flex shrink-0 justify-between bg-base-200 p-2 lg:rounded-box lg:min-h-16 lg:p-3 lg:px-4"
 >
 	<a
 		href={backLink}
 		on:click={exitDesigner}
-		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] px-6 font-black lg:h-20 lg:text-lg"
+		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] w-24 font-black lg:h-20 lg:text-lg"
 		>Back</a
 	>
 	<div class="hidden sm:flex">
@@ -120,7 +124,7 @@
 	</div>
 	<a
 		href="/design/{$page.params.id}/finish"
-		class="btn btn-success btn-sm h-[2.5rem] min-h-[2.5rem] text-lg font-black lg:h-20"
+		class="btn btn-success h-[2.5rem] min-h-[2.5rem] w-24 text-lg font-black lg:h-20"
 		class:pointer-events-none={currentPage === 'finish'}
 		class:btn-outline={currentPage !== 'finish'}
 	>
@@ -136,7 +140,7 @@
 			<h2 class="mt-3 text-3xl font-black uppercase">{currentPage}</h2>
 		{/if}
 		<div
-			class="self-stretch p-4 lg:grow"
+			class="self-stretch p-2 lg:grow lg:p-4"
 			style:view-transition-name="design-page-content"
 		>
 			<slot />

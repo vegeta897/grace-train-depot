@@ -2,7 +2,7 @@
 	import type { DecalName } from 'grace-train-lib/components'
 	import { decalDefs } from 'grace-train-lib/components'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
-	import { updateDecalTransform } from './decals'
+	import { removeDecal, updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../stores'
 	import ShapePicker from './ShapePicker.svelte'
@@ -13,7 +13,7 @@
 	export let slot: number
 
 	const { localCars, designCar, designShortId } = getDesignStores()
-	const { selectedSlot } = getDecalStores()
+	const { selectedSlot, dirtyCanvas } = getDecalStores()
 
 	$: decal = $designCar.decals[slot]
 	$: paramConfig = decalDefs[decal.name].paramConfig
@@ -23,15 +23,9 @@
 	const setToolMode = (mode: typeof toolMode) =>
 		(toolMode = toolMode === mode ? null : mode)
 
-	function removeDecal() {
-		localCars.update((cars) => {
-			cars[$designShortId].decals = cars[$designShortId].decals.filter(
-				(_, i) => i !== slot
-			)
-			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
-			selectedSlot.set(null)
-			return cars
-		})
+	function deleteDecal() {
+		removeDecal(localCars, $designShortId, slot)
+		selectedSlot.set(null)
 	}
 
 	function orderDecal(upOrDown: number) {
@@ -114,6 +108,7 @@
 					decal.scale = +e.currentTarget.value
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
+				on:change={() => dirtyCanvas.set(true)}
 				class="range range-primary"
 			/>
 		</div>
@@ -162,12 +157,11 @@
 		>
 			Shape
 		</button>
-		<button
-			on:click={() => removeDecal()}
+		<!-- <button
+			on:click={() => deleteDecal()}
 			class="btn btn-md touch-manipulation text-2xl hover:btn-error md:text-3xl"
 			>🗑️</button
-		>
-
+		> -->
 		<button
 			on:click={() => orderDecal(-1)}
 			disabled={slot === 0}

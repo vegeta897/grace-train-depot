@@ -6,19 +6,22 @@
 	export let decals: DecalDataWithId[]
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let animateAppear = false
+	export let excludeDecal: false | number = false
 </script>
 
 {#each decals as decal, d (decal.id)}
-	<Decal
-		name={decal.name}
-		x={decal.x}
-		y={decal.y}
-		scale={decal.scale}
-		rotate={decal.rotate}
-		fill={decal.fillPreview || decal.fill}
-		params={decal.params}
-		{transition}
-		{animateAppear}
-		delayAppear={d * 70}
-	/>
+	{#if excludeDecal !== d}
+		<Decal
+			name={decal.name}
+			x={decal.x}
+			y={decal.y}
+			scale={decal.scale}
+			rotate={decal.rotate}
+			fill={decal.fillPreview || decal.fill}
+			params={decal.params}
+			{transition}
+			{animateAppear}
+			delayAppear={d * 70}
+		/>
+	{/if}
 {/each}

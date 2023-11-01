@@ -28,3 +28,5 @@ export function objectContainsTrue(object: Record<string, any>) {
 		if (object[key]) return true
 	}
 }
+
+export const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)

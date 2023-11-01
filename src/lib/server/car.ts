@@ -52,6 +52,7 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 }
 
 // Length of 8 = 1M IDs before 1% chance of collision (https://zelark.github.io/nano-id-cc/)
+// IMPORTANT: If this changes, update /params/car_id.ts
 const shortIdAlphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 const shortIdLength = 8
 export const generateCarShortId = () =>
