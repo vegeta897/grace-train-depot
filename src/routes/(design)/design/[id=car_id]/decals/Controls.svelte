@@ -118,7 +118,8 @@
 				type="range"
 				min={-180}
 				max={180}
-				step="1"
+				step="2"
+				list="rotations"
 				value={decal.rotate}
 				on:input={(e) => {
 					decal.rotate = +e.currentTarget.value
@@ -126,6 +127,11 @@
 				}}
 				class="range range-secondary"
 			/>
+			<datalist id="rotations">
+				<option>-90</option>
+				<option>0</option>
+				<option>90</option>
+			</datalist>
 		</div>
 		{#each paramConfig as param}
 			<div class="col-span-2 flex flex-col justify-center px-2">
