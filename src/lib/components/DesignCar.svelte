@@ -34,10 +34,14 @@
 	$: toppers = toppersOverride || car.toppers
 </script>
 
-<div class="relative w-full">
+<div
+	class="relative"
+	style:width="calc(100% + {cropToCar ? '40px' : '0'})"
+	class:mt-[-80px]={cropToCar}
+	class:ml-[-20px]={cropToCar}
+>
 	<div
 		class="transition-all"
-		class:mt-[-80px]={cropToCar}
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>

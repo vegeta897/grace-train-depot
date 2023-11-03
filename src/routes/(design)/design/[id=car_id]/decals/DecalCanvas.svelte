@@ -29,28 +29,32 @@
 		rotate: d.rotate,
 	}))
 
-	let canvasTop: number
-	let canvasBottom: number
-	let canvasLeft: number
-	let canvasRight: number
+	const canvasTop = -10
+	const canvasBottom = 310
+	const canvasLeft = -10
+	const canvasRight = 385
+	const canvasCenterY = (canvasBottom - canvasTop) / 2
+	const canvasCenterX = (canvasRight - canvasLeft) / 2
+	const UI_PAD = 16
+
+	let decalTop: number
+	let decalBottom: number
+	let decalLeft: number
+	let decalRight: number
 
 	dirtyCanvas.subscribe((dirty) => {
 		if (!dirty) return
 		dirtyCanvas.set(false)
-		canvasTop = -10
-		canvasBottom = 310
-		canvasLeft = -10
-		canvasRight = 425
+		decalTop = canvasCenterY
+		decalBottom = canvasCenterY
+		decalLeft = canvasCenterX
+		decalRight = canvasCenterX
 		const transform = $selectedSlot !== null && draggables[$selectedSlot]
 		if (!transform) return
-		canvasTop = Math.min(canvasTop, transform.y - DECAL_RADIUS * transform.scale - 25)
-		canvasBottom = Math.max(
-			canvasBottom,
-			transform.y + DECAL_RADIUS * transform.scale + 25
-		)
-		canvasLeft = Math.min(canvasLeft, transform.x - DECAL_RADIUS * transform.scale - 5)
-		canvasRight = Math.max(canvasRight, transform.x + DECAL_RADIUS * transform.scale + 45)
-		// TODO: Apply canvas-scale-adjusted padding to handle larger resize/rotate handles
+		decalTop = transform.y - DECAL_RADIUS * transform.scale - 24
+		decalBottom = transform.y + DECAL_RADIUS * transform.scale + 24
+		decalLeft = transform.x - DECAL_RADIUS * transform.scale - 24
+		decalRight = transform.x + DECAL_RADIUS * transform.scale + 24
 	})
 
 	let containerElement: HTMLDivElement
@@ -58,14 +62,33 @@
 	let containerWidth: number
 	let containerHeight: number
 
-	$: canvasHeight = canvasBottom - canvasTop
-	$: canvasWidth = canvasRight - canvasLeft
-	$: canvasScale = Math.min(containerHeight / canvasHeight, containerWidth / canvasWidth)
+	// This makes my head hurt but it works well enough
+	$: panUp = Math.max(0, Math.min(UI_PAD, Math.max(0, canvasTop + UI_PAD - decalTop)))
+	$: panDown = Math.max(
+		0,
+		Math.min(UI_PAD, Math.max(0, decalBottom - (canvasBottom - UI_PAD)))
+	)
+	$: panLeft = Math.max(0, Math.min(UI_PAD, Math.max(0, canvasLeft + UI_PAD - decalLeft)))
+	$: panRight = Math.max(
+		0,
+		Math.min(UI_PAD, Math.max(0, decalRight - (canvasRight - UI_PAD)))
+	)
+	$: canvasHeight = Math.max(canvasBottom, decalBottom) - Math.min(canvasTop, decalTop)
+	$: canvasWidth = Math.max(canvasRight, decalRight) - Math.min(canvasLeft, decalLeft)
+	$: canvasScale = Math.min(
+		(containerHeight - (panUp + panDown)) / canvasHeight,
+		(containerWidth - (panLeft + panRight)) / canvasWidth
+	)
 	$: panY =
-		Math.max(0, containerHeight - canvasHeight * canvasScale) / 2 -
-		canvasTop * canvasScale
+		Math.max(0, containerHeight - panUp + panDown - canvasHeight * canvasScale) / 2 -
+		Math.min(canvasTop, decalTop) * canvasScale +
+		panUp -
+		panDown
 	$: panX =
-		Math.max(0, containerWidth - canvasWidth * canvasScale) / 2 - canvasLeft * canvasScale
+		Math.max(0, containerWidth - panLeft + panRight - canvasWidth * canvasScale) / 2 -
+		Math.min(canvasLeft, decalLeft) * canvasScale +
+		panLeft -
+		panRight
 
 	onMount(() => {
 		dirtyCanvas.set(true)
@@ -125,7 +148,7 @@
 		if ($selectedSlot === null) return
 		const transform = draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + (20 + transform.x) * canvasScale
+		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
 		setTestDot(originX, originY)
 		const radians = transform.rotate * (Math.PI / 180)
@@ -158,7 +181,7 @@
 		if ($selectedSlot === null) return
 		const transform = draggables[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
-		const originX = canvasBox.x + (20 + transform.x) * canvasScale
+		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
 		setTestDot(originX, originY)
 		rotating = {
@@ -199,27 +222,20 @@
 </script>
 
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
-<!-- <div class="absolute space-x-1">
-	<span>{Math.round(containerHeight)}</span>
-	<span>{Math.round(canvasHeight)}</span>
-	<span>{Math.round(canvasTop)}</span>
-	<span>{Math.round(canvasBottom)}</span>
-	<span>{Math.round(panY)}</span>
-</div> -->
 <div
 	class="relative overflow-clip outline-green-700"
 	bind:this={containerElement}
 	class:outline-dotted={outline}
 >
 	<div
-		class="relative mx-auto max-h-[40vh] max-w-[600px] outline-yellow-600"
+		class="relative mx-auto max-h-[40vh] max-w-[600px] outline-yellow-600 lg:max-h-full"
 		class:outline-dotted={outline}
 		style:aspect-ratio="4 / 3"
 		bind:clientWidth={containerWidth}
 		bind:clientHeight={containerHeight}
 	>
 		<div
-			class="absolute left-0 top-0 w-[415px] outline-red-400"
+			class="absolute left-0 top-0 w-[375px] outline-red-400"
 			class:outline-dotted={outline}
 			class:hidden={!browser}
 			style:transform-origin="left top"
@@ -237,7 +253,7 @@
 			{#each draggables as transform, d (transform.id)}
 				{@const decal = $designCar.decals[d]}
 				<div
-					class="absolute left-[20px] top-0 h-0 w-0 select-none"
+					class="absolute left-0 top-0 h-0 w-0 select-none"
 					class:z-10={$selectedSlot === d}
 					use:draggable={{
 						position: transform,
@@ -294,7 +310,7 @@
 				{@const transform = draggables[$selectedSlot]}
 				{#key $selectedSlot}
 					<div
-						class="pointer-events-none absolute left-[-30px] top-[-50px] z-10 h-0 w-0"
+						class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-0 w-0"
 						style:transform-origin="50px 50px"
 						style:transform="translate({transform.x}px,{transform.y}px) rotate({transform.rotate}deg)"
 						transition:fade={{ duration: 50 }}
@@ -319,7 +335,7 @@
 						{/each}
 						<div
 							class="transition-transform"
-							style:transform="translate(0, {(transform.scale - 1) * 50 + 90}px)"
+							style:transform="translate(0, {transform.scale * 50 + 32 / canvasScale}px)"
 						>
 							<button
 								on:pointerdown={() => startRotate()}
@@ -333,32 +349,24 @@
 					</div>
 				{/key}
 			{/if}
+			<!-- <div
+				class="absolute left-0 top-0 h-[2px] w-full bg-teal-300"
+				style:transform="translateY({canvasTop - 1}px)"
+			/>
+			<div
+				class="absolute left-0 top-0 h-[2px] w-full bg-teal-300"
+				style:transform="translateY({canvasBottom - 1}px)"
+			/>
+			<div
+				class="absolute left-0 top-0 h-full w-[2px] bg-teal-300"
+				style:transform="translateX({canvasLeft - 1}px)"
+			/>
+			<div
+				class="absolute left-0 top-0 h-full w-[2px] bg-teal-300"
+				style:transform="translateX({canvasRight - 1}px)"
+			/> -->
 		</div>
 	</div>
-	<!-- <button
-		on:click|preventDefault={(e) => (macroView = !macroView)}
-		style:-webkit-backdrop-filter="blur(4px)"
-		style:backdrop-filter="blur(4px)"
-		style:--tw-bg-opacity="0.8"
-		class="btn btn-circle absolute right-2 top-2 h-12 w-12 2xs:h-14 2xs:w-14 lg:right-4 lg:top-4 lg:h-16 lg:w-16"
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-			class="h-1/2 w-1/2 stroke-current"
-		>
-			<path
-				class="origin-center transition-transform"
-				style:transform="scale({macroView ? -1 : 1})"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="6"
-				vector-effect="non-scaling-stroke"
-				d="M21,3 L3,21 M21,3 h-10 M21,3 v10"
-			/>
-		</svg>
-	</button> -->
 	{#if $selectedSlot !== null}
 		{@const slot = $selectedSlot}
 		<button
