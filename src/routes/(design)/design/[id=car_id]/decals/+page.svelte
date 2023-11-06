@@ -35,7 +35,6 @@
 	selectedSlot.set(null)
 
 	function clickDecalSlot(slot: number) {
-		console.log('click', slot)
 		selectedSlot.set($selectedSlot === slot ? null : slot)
 	}
 
