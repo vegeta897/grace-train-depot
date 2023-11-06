@@ -20,5 +20,6 @@ export const load = (async ({ params, locals }) => {
 		data.savedCar = transformCarFromDB(savedCar)
 		return data
 	}
-	throw redirect(302, '/')
+	// Car doesn't belong to logged in user, redirect to car page
+	throw redirect(302, `/c/${params.id}`)
 }) satisfies LayoutServerLoad
