@@ -44,7 +44,7 @@
 		})
 	}
 
-	function setDecalShape(name: DecalName) {
+	function setDecalShape({ name }: { name: DecalName }) {
 		localCars.update((cars) => {
 			if (name !== cars[$designShortId].decals[slot].name) {
 				cars[$designShortId].decals[slot].name = name
@@ -214,7 +214,7 @@
 		<!-- </div> -->
 	{:else if toolMode === 'shape'}
 		<div class="col-span-4">
-			<ShapePicker fill={$designCar.decals[slot].fill} onClick={setDecalShape} />
+			<ShapePicker fillOverride={$designCar.decals[slot].fill} onClick={setDecalShape} />
 		</div>
 	{/if}
 </div>

@@ -1,22 +1,38 @@
+<script lang="ts" context="module">
+	export type DecalChoice = {
+		name: DecalName
+		fill?: string
+		defaultParams?: Record<string, any>
+	}
+</script>
+
 <script lang="ts">
+	import { COLORS } from 'grace-train-lib'
 	import {
-		DECAL_NAMES,
 		Decal,
 		decalDefs,
 		type DecalName,
+		PRIDE_FLAGS,
 	} from 'grace-train-lib/components'
 
-	export let fill = '#ffffff'
-	export let onClick: (name: DecalName) => void
+	export let fillOverride: string | undefined = undefined
+	export let onClick: (decalProps: DecalChoice) => void
 
-	const testDecals = [...DECAL_NAMES, ...DECAL_NAMES, ...DECAL_NAMES]
+	const decalChoices: DecalChoice[] = [
+		{ name: 'star', fill: COLORS.POP[4] },
+		{ name: 'heart', fill: COLORS.POP[1] },
+		{ name: 'circle', fill: COLORS.POP[6] },
+		...PRIDE_FLAGS.map(
+			(flag) => ({ name: 'flag', defaultParams: { flag } }) as DecalChoice
+		),
+	]
 </script>
 
 <div class="grid grid-cols-6 gap-2">
-	{#each testDecals as name}
-		{@const params = decalDefs[name].getDefaultParamsObject()}
+	{#each decalChoices as { name, fill, defaultParams }}
+		{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}
 		<button
-			on:click={() => onClick(name)}
+			on:click={() => onClick({ name, fill, defaultParams })}
 			class="btn-hover-grow btn btn-lg touch-manipulation px-0"
 		>
 			<svg
@@ -25,7 +41,7 @@
 				class="w-8 xs:w-10"
 			>
 				<!-- TODO: Define default colors for decals -->
-				<Decal {name} {fill} {params} />
+				<Decal {name} fill={fillOverride || fill} {params} />
 			</svg>
 		</button>
 	{/each}

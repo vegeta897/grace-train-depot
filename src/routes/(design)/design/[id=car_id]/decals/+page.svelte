@@ -1,17 +1,12 @@
 <script lang="ts">
-	import {
-		ContainerSvg,
-		Decal,
-		decalDefs,
-		type DecalName,
-	} from 'grace-train-lib/components'
+	import { ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
 	import { DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
 	import type { DecalDataWithId } from '$lib/server/schemas'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../stores'
-	import ShapePicker from './ShapePicker.svelte'
+	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import { flip } from 'svelte/animate'
 	import BoundingBox from './BoundingBox.svelte'
@@ -38,24 +33,26 @@
 		selectedSlot.set($selectedSlot === slot ? null : slot)
 	}
 
-	function addDecal(shape: DecalName) {
+	function addDecal(shape: DecalChoice) {
 		if ($designCar.decals.length >= DECAL_MAX_SLOTS) return
-		const newDecal: DecalDataWithId = {
-			name: shape,
+		const newDecal = {
+			name: shape.name,
 			id: Date.now(),
 			x: 375 / 2,
 			y: 120,
 			scale: 1,
 			rotate: 0,
-			fill: COLORS.POP[0], // Will be overwritten below
+			fill: shape.fill || COLORS.POP[0],
 			slot: 0, // Will be overwritten below
-			params: decalDefs[shape].getDefaultParamsObject(),
-		}
+			params: {
+				...decalDefs[shape.name].getDefaultParamsObject(),
+				...shape.defaultParams,
+			},
+		} as DecalDataWithId
 		localCars.update((cars) => {
 			const decals = cars[$designShortId].decals
 			decals.push(newDecal)
 			decals.forEach((d, i) => (d.slot = i)) // Re-number slots
-			newDecal.fill = COLORS.POP[(decals.length + 2) % decals.length]
 			selectedSlot.set(newDecal.slot)
 			return cars
 		})
