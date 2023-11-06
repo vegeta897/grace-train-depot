@@ -11,7 +11,7 @@ export function updateDecalTransform(
 ) {
 	cars.update((c) => {
 		const decal = c[shortId].decals[slot]
-		decal.scale = Math.round(transform.scale * 100) / 100
+		decal.scale = Math.round(transform.scale * 500) / 500
 		decal.rotate = transform.rotate
 		const radians = (decal.rotate / 180) * Math.PI
 		const xComponent = Math.abs(Math.cos(radians))

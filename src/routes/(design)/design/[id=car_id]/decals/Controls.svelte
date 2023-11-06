@@ -105,12 +105,15 @@
 			Size
 			<input
 				type="range"
-				min={DECAL_MIN_SCALE}
-				max={DECAL_MAX_SCALE}
-				step="0.05"
-				value={decal.scale}
+				min={0}
+				max={100}
+				step="1"
+				value={Math.round(
+					((decal.scale - DECAL_MIN_SCALE) / SCALE_RANGE) ** (1 / 1.5) * 100
+				)}
 				on:input={(e) => {
-					decal.scale = +e.currentTarget.value
+					const inputValue = (+e.currentTarget.value / 100) ** 1.5
+					decal.scale = DECAL_MIN_SCALE + SCALE_RANGE * inputValue
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
 				on:change={() => dirtyCanvas.set(true)}
