@@ -1,7 +1,9 @@
 <script lang="ts">
-	export let scale: number
-	export let selected: boolean
-	export let transforming: boolean
+	export let scale: number = 1
+	export let faded: boolean = false
+	export let corners: boolean = true
+	export let animate: boolean = false
+	export let hidden: boolean = false
 	export let strokeWidthScale = 1
 
 	$: size = 100 + 10 / scale
@@ -13,11 +15,10 @@
 		'stroke-width': (5 / scale) * strokeWidthScale,
 		'stroke-dasharray': `${dashSize} ${gapSize}`,
 	}
-	$: pathData = drawPath(size, !selected)
-	$: transition =
-		selected && !transforming
-			? 'stroke-width 150ms cubic-bezier(0.4,0,0.2,1), opacity 150ms cubic-bezier(0.4,0,0.2,1)'
-			: 'none'
+	$: pathData = drawPath(size, corners)
+	$: transition = animate
+		? 'stroke-width 150ms cubic-bezier(0.4,0,0.2,1), opacity 150ms cubic-bezier(0.4,0,0.2,1)'
+		: 'none'
 
 	const sides = [
 		[1, 0, 1, 1, 0, 1],
@@ -44,12 +45,15 @@
 	}
 </script>
 
+<!-- Invisible square for hitbox -->
 <rect {...rect} fill="#fff0" stroke="none" />
-<path
-	style:transition
-	class:opacity-30={selected && transforming}
-	d={pathData}
-	{...stroke}
-	stroke-linecap="round"
-	fill="none"
-/>
+{#if !hidden}
+	<path
+		style:transition
+		class:opacity-30={faded}
+		d={pathData}
+		{...stroke}
+		stroke-linecap="round"
+		fill="none"
+	/>
+{/if}

@@ -223,7 +223,7 @@
 
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
 <div
-	class="relative overflow-clip outline-green-700"
+	class="relative outline-green-700"
 	bind:this={containerElement}
 	class:outline-dotted={outline}
 >
@@ -247,7 +247,6 @@
 				focusTopperSlot={$selectedSlot === null ? null : -1}
 				transition={['fill', 'stroke', 'opacity']}
 				focusDecalZone={$selectedSlot !== null}
-				animateDecalAppear
 				cropToCar
 			/>
 			{#each draggables as transform, d (transform.id)}
@@ -290,9 +289,10 @@
 						>
 							<BoundingBox
 								scale={transform.scale}
-								selected={$selectedSlot === d}
+								animate={$selectedSlot === d && !transforming}
+								corners={$selectedSlot !== d}
 								strokeWidthScale={1 / canvasScale}
-								{transforming}
+								faded={$selectedSlot === d && transforming}
 							/>
 							<g class:opacity-25={$selectedSlot === d}>
 								<Decal

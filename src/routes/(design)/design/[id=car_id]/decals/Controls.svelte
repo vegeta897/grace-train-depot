@@ -183,6 +183,8 @@
 			Pull
 		</button>
 	{:else if toolMode === 'shape'}
-		<ShapePicker fill={$designCar.decals[slot].fill} onClick={setDecalShape} />
+		<div class="col-span-4">
+			<ShapePicker fill={$designCar.decals[slot].fill} onClick={setDecalShape} />
+		</div>
 	{/if}
 </div>

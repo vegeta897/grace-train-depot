@@ -13,6 +13,8 @@
 
 	let saveError: 'try-again' | null = null
 
+	// TODO: Make car name required, auto-generate one for the user
+
 	const onSave: SubmitFunction = () => {
 		saveError = null
 		return async ({ result }) => {

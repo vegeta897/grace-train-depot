@@ -2,7 +2,7 @@
 	import { COLORS } from 'grace-train-lib'
 	import {
 		Body,
-		Decal,
+		type Decal,
 		type BodyName,
 		ContainerSvg,
 		Topper,
@@ -25,8 +25,6 @@
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
 	export let focusTopperSlot: number | null = null
-	export let animateDecalAppear = false
-	export let excludeDecal: false | number = false
 	export let cropToCar = false
 
 	$: bodyName = bodyOverride || car.body
@@ -48,9 +46,7 @@
 		<ContainerSvg>
 			<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
 				<svelte:fragment slot="decals">
-					{#if !focusDecalZone}
-						<Decals {decals} {transition} animateAppear={animateDecalAppear} />
-					{/if}
+					<Decals {decals} {transition} />
 				</svelte:fragment>
 				<svelte:fragment slot="toppers" let:topLine>
 					{#each toppers as topper (topper.id)}
@@ -85,7 +81,7 @@
 			<ContainerSvg>
 				<path fill={car.bodyColor || COLORS.BASE[3]} d={body[bodyName].decalClipPath} />
 				<g clip-path="url(#usercar-decal-clip)">
-					<Decals {decals} {transition} {excludeDecal} />
+					<Decals {decals} {transition} />
 				</g>
 				<defs>
 					<clipPath id="usercar-decal-clip">
