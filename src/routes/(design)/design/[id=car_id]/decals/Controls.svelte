@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { DecalName } from 'grace-train-lib/components'
-	import { decalDefs } from 'grace-train-lib/components'
+	import { ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { removeDecal, updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
@@ -9,6 +9,9 @@
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { DecalData } from '$lib/server/schemas'
+	import { capitalize } from '$lib/util'
+
+	const SCALE_RANGE = DECAL_MAX_SCALE - DECAL_MIN_SCALE
 
 	export let slot: number
 
@@ -61,7 +64,7 @@
 		// toolMode = null
 	}
 
-	function setDecalParam(name: string, value: number | boolean) {
+	function setDecalParam(name: string, value: number | boolean | string) {
 		localCars.update((cars) => {
 			cars[$designShortId].decals[slot].params[name] = value
 			return cars
@@ -136,8 +139,11 @@
 			</datalist>
 		</div>
 		{#each paramConfig as param}
-			<div class="col-span-2 flex flex-col justify-center px-2">
-				{param.name}
+			<div
+				class="col-span-2 flex flex-col justify-center px-2"
+				class:col-span-4={param.type === 'stringList'}
+			>
+				{capitalize(param.name)}
 				{#if param.type === 'scalar'}
 					<input
 						type="range"
@@ -155,12 +161,30 @@
 						on:change={(e) => setDecalParam(param.name, e.currentTarget.checked)}
 						class="checkbox"
 					/>
+				{:else if (param.type = 'stringList')}
+					<div class="grid grid-cols-6 gap-1">
+						{#each param.list as listItem}
+							<button
+								class="btn btn-sm h-11 w-14 px-2"
+								on:click={() => setDecalParam(param.name, listItem)}
+							>
+								<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
+									<Decal
+										name={decal.name}
+										fill={decal.fill}
+										params={{ ...decal.params, [param.name]: listItem }}
+									/>
+								</ContainerSvg>
+							</button>
+						{/each}
+					</div>
 				{/if}
 			</div>
 		{/each}
+		<!-- <div class="col-span-4"> -->
 		<button
 			on:click={() => setToolMode('shape')}
-			class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class="btn btn-md col-start-1 touch-manipulation font-black 2xs:text-lg md:text-xl"
 			class:btn-active={toolMode === 'shape'}
 		>
 			Shape
@@ -184,6 +208,7 @@
 		>
 			Pull
 		</button>
+		<!-- </div> -->
 	{:else if toolMode === 'shape'}
 		<div class="col-span-4">
 			<ShapePicker fill={$designCar.decals[slot].fill} onClick={setDecalShape} />
