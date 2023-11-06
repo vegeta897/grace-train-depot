@@ -82,20 +82,22 @@
 
 <div class="grid grid-cols-4 gap-2 gap-y-3">
 	{#if toolMode === null}
-		<div class="col-span-4 flex flex-col justify-center gap-3 px-2">
-			Color
-			<ColorSlider
-				colors={COLORS.POP}
-				color={decal.fill}
-				onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
-			/>
-		</div>
-		<div class="col-span-4 flex flex-col justify-center px-2">
-			Mix <!-- (gradient to neighbor color) -->
-			<input type="range" min={-2} max={2} step="1" value={0} class="range" />
-			<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
+		{#if !decalDefs[decal.name].noFill}
+			<div class="col-span-4 flex flex-col justify-center gap-3 px-2">
+				Color
+				<ColorSlider
+					colors={COLORS.POP}
+					color={decal.fill}
+					onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
+				/>
+			</div>
+			<div class="col-span-4 flex flex-col justify-center px-2">
+				Mix <!-- (gradient to neighbor color) -->
+				<input type="range" min={-2} max={2} step="1" value={0} class="range" />
+				<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
 			<input type="range" min={-180} max={180} step="1" value={0} class="range" /> -->
-		</div>
+			</div>
+		{/if}
 		<div class="col-span-2 flex flex-col justify-center px-2">
 			Size
 			<input
