@@ -19,6 +19,9 @@ export const actions = {
 		console.log('finish save event!')
 	},
 	publish: async ({ locals, params, request }) => {
+		// TODO: Check car for flag decal in combination with certain other decals (like an X)
+		// Check if X is above flag, or just flag the car as needing manual approval anyway
+		// Or always put flags on top?
 		const session = await locals.auth.validate()
 		if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}/finish`)
 		let formCarData: any
@@ -51,11 +54,6 @@ export const actions = {
 				},
 			})
 		} else {
-			// TODO: Consider removing decal/topper tables
-			// Use arrays of serialized decal/topper instead
-			// Then we don't have to screw with IDs, and it might be faster
-			// Cons: Harder to find unused decals/toppers
-			// Update: Now using a composite ID based on carId and slot
 			try {
 				updatedCar = await prisma.car.update({
 					where: { shortId: carData.shortId, userId: session.user.userId },
