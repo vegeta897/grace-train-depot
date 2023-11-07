@@ -7,6 +7,7 @@
 	import type { CarData } from '$lib/server/schemas'
 	import { Body, ContainerSvg } from 'grace-train-lib/components'
 	import Decals from '$lib/components/Decals.svelte'
+	import { browser } from '$app/environment'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -26,7 +27,9 @@
 </script>
 
 <section>
-	<div class="mx-auto mb-6 w-64"><DesignCar car={$designCar} /></div>
+	<div class="mx-auto mb-6 w-64">
+		{#if browser}<DesignCar car={$designCar} />{/if}
+	</div>
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
 		<h3 class="text-2xl font-black uppercase">Color</h3>
 		<ColorSlider

@@ -243,13 +243,15 @@
 			style:transform="translate({panX}px, {panY}px) scale({canvasScale})"
 			bind:this={canvasElement}
 		>
-			<DesignCar
-				{car}
-				focusTopperSlot={$selectedSlot === null ? null : -1}
-				transition={['fill', 'stroke', 'opacity']}
-				focusDecalZone={$selectedSlot !== null}
-				cropToCar
-			/>
+			{#if browser}
+				<DesignCar
+					{car}
+					focusTopperSlot={$selectedSlot === null ? null : -1}
+					transition={['fill', 'stroke', 'opacity']}
+					focusDecalZone={$selectedSlot !== null}
+					cropToCar
+				/>
+			{/if}
 			{#each draggables as transform, d (transform.id)}
 				{@const decal = $designCar.decals[d]}
 				<div

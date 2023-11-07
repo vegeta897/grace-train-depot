@@ -3,6 +3,7 @@
 	import type { PageData } from './$types'
 	import { getDesignStores } from './stores'
 	import { enhance } from '$app/forms'
+	import { browser } from '$app/environment'
 
 	export let data: PageData
 
@@ -12,37 +13,21 @@
 </script>
 
 <section class="flex flex-col items-center gap-4">
-	<div class="w-48 lg:w-64"><DesignCar car={$designCar} /></div>
-	{#if !data.user}
-		<!-- <div class="alert mt-8">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				class="stroke-info shrink-0 w-6 h-6"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-				></path></svg
+	{#if browser}
+		<div class="w-48 lg:w-64">
+			<DesignCar car={$designCar} />
+		</div>
+		<h3 class="flex items-center gap-2 text-3xl font-black">
+			{#if $designCar.name}<span>{$designCar.name}</span>{/if}
+			<span
+				class="badge uppercase"
+				class:badge-primary={$designCar.published}
+				class:badge-warning={!$designCar.published}
 			>
-			<p class="text-sm lg:text-base">
-				<a href="/login" class="link font-bold">Link your Twitch account</a> to appear in Grace
-				Trains! You may do this at any time.
-			</p>
-		</div> -->
+				{#if $designCar.published}Live{:else}Draft{/if}
+			</span>
+		</h3>
 	{/if}
-	<h3 class="flex items-center gap-2 text-3xl font-black">
-		{#if $designCar.name}<span>{$designCar.name}</span>{/if}
-		<span
-			class="badge uppercase"
-			class:badge-primary={$designCar.published}
-			class:badge-warning={!$designCar.published}
-		>
-			{#if $designCar.published}Live{:else}Draft{/if}
-		</span>
-	</h3>
 	<div class="rounded-box flex flex-col items-center gap-4 bg-neutral p-6">
 		{#if $designShortId === 'new'}
 			<p class="text-xl">Let's design a Grace Train car!</p>

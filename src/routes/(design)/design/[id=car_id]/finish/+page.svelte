@@ -5,6 +5,7 @@
 	import { page } from '$app/stores'
 	import { applyAction, enhance } from '$app/forms'
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
+	import { browser } from '$app/environment'
 
 	export let data: PageData
 	export let form: ActionData
@@ -35,7 +36,9 @@
 </script>
 
 <section class="flex flex-col items-center">
-	<div class="w-64"><DesignCar car={$designCar} /></div>
+	<div class="w-64">
+		{#if browser}<DesignCar car={$designCar} />{/if}
+	</div>
 	{#if form?.invalid || saveError === 'try-again'}
 		<div class="alert alert-error mt-4 w-auto">
 			<svg

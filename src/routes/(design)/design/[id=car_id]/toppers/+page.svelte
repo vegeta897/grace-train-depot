@@ -15,6 +15,7 @@
 		TOPPER_MAX_SLOTS,
 		TOPPER_MIN_SCALE,
 	} from '$lib/common/constants'
+	import { browser } from '$app/environment'
 
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
 
@@ -85,10 +86,12 @@
 
 <section>
 	<div class="mx-auto mb-6 w-64">
-		<DesignCar
-			car={$designCar}
-			focusTopperSlot={hoveredSlot !== null ? hoveredSlot : null}
-		/>
+		{#if browser}
+			<DesignCar
+				car={$designCar}
+				focusTopperSlot={hoveredSlot !== null ? hoveredSlot : null}
+			/>
+		{/if}
 	</div>
 	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4">
 		<ol class="flex h-16 justify-center gap-2">

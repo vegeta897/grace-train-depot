@@ -5,6 +5,7 @@
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { CarData } from '$lib/server/schemas'
+	import { browser } from '$app/environment'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -39,7 +40,9 @@
 				on:click={() => setBody(name)}
 				disabled={current}
 			>
-				<div class="w-32"><DesignCar car={$designCar} bodyOverride={name} /></div>
+				<div class="w-32">
+					{#if browser}<DesignCar car={$designCar} bodyOverride={name} />{/if}
+				</div>
 			</button>
 		{/each}
 	</div>

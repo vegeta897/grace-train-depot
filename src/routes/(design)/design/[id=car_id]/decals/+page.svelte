@@ -10,6 +10,7 @@
 	import { COLORS } from 'grace-train-lib'
 	import { flip } from 'svelte/animate'
 	import BoundingBox from './BoundingBox.svelte'
+	import { browser } from '$app/environment'
 
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot, deleteMode } = getDecalStores()
@@ -112,26 +113,28 @@
 				{/each}
 			</ul>
 		{/if}
-		<div class="relative min-h-[220px] grow">
-			{#if $selectedSlot !== null}
-				<Controls slot={$selectedSlot} />
-			{:else}
-				{#if $designCar.decals.length === 0}
-					<h3 class="mb-2 text-center text-2xl font-bold">Pick a decal!</h3>
+		{#if browser}
+			<div class="relative min-h-[220px] grow">
+				{#if $selectedSlot !== null}
+					<Controls slot={$selectedSlot} />
+				{:else}
+					{#if $designCar.decals.length === 0}
+						<h3 class="mb-2 text-center text-2xl font-bold">Pick a decal!</h3>
+					{/if}
+					<ShapePicker onClick={addDecal} />
+					{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
+						<div
+							class="glass-bg rounded-box absolute left-0 top-0 h-full w-full bg-base-300 p-8 pt-14 text-center lg:p-14"
+						>
+							<h3 class="mb-2 text-3xl font-bold">
+								You can't add more than {DECAL_MAX_SLOTS} decals!
+							</h3>
+							<p class="italic text-base-content/75">tell Vegeta if this limit is bad</p>
+						</div>
+					{/if}
 				{/if}
-				<ShapePicker onClick={addDecal} />
-				{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
-					<div
-						class="glass-bg rounded-box absolute left-0 top-0 h-full w-full bg-base-300 p-8 pt-14 text-center lg:p-14"
-					>
-						<h3 class="mb-2 text-3xl font-bold">
-							You can't add more than {DECAL_MAX_SLOTS} decals!
-						</h3>
-						<p class="italic text-base-content/75">tell Vegeta if this limit is bad</p>
-					</div>
-				{/if}
-			{/if}
-		</div>
+			</div>
+		{/if}
 	</div>
 	<!-- <div
 			class="absolute left-0 top-0 z-50 h-[3px] w-[3px] rounded-sm bg-red-600"
