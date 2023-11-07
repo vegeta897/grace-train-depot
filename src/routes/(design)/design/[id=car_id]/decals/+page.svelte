@@ -75,9 +75,7 @@
 	</div>
 	<div class="flex w-full flex-grow items-start gap-3 lg:w-1/2">
 		{#if $designCar.decals.length > 0}
-			<ul
-				class="flex w-[3.25rem] flex-col-reverse justify-end gap-0.5 rounded-lg bg-neutral p-1"
-			>
+			<ul class="flex w-[3.25rem] flex-col-reverse justify-end rounded-lg bg-neutral p-1">
 				{#each $designCar.decals as decal, d (decal.id)}
 					<li class="flex" animate:flip={{ duration: 150 }}>
 						<button
@@ -123,7 +121,7 @@
 						<ShapePicker onClick={addDecal} />
 						{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
 							<div
-								class="glass-bg rounded-box absolute left-0 top-0 h-full w-full bg-base-300 p-8 pt-14 text-center lg:p-14"
+								class="glass-bg absolute left-0 top-0 h-full w-full rounded-lg bg-base-300 p-8 pt-14 text-center lg:p-14"
 							>
 								<h3 class="mb-2 text-3xl font-bold">
 									You can't add more than {DECAL_MAX_SLOTS} decals!
