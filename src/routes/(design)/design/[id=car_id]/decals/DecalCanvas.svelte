@@ -101,6 +101,7 @@
 		const transform = { ...draggables[slot] }
 		dragging.set({ slot, transform })
 		selectedSlot.set(slot)
+		hoveredSlot.set(null)
 		dirtyCanvas.set(true)
 	}
 

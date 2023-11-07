@@ -80,11 +80,11 @@
 		<div class="absolute left-0 top-0 w-full" out:fade={{ delay: 75, duration: 75 }}>
 			<ContainerSvg>
 				<path fill={car.bodyColor || COLORS.BASE[3]} d={body[bodyName].decalClipPath} />
-				<g clip-path="url(#usercar-decal-clip)">
+				<g clip-path="url(#designcar-decal-clip)">
 					<Decals {decals} {transition} />
 				</g>
 				<defs>
-					<clipPath id="usercar-decal-clip">
+					<clipPath id="designcar-decal-clip">
 						<path d={body[bodyName].decalClipPath} />
 					</clipPath>
 				</defs>

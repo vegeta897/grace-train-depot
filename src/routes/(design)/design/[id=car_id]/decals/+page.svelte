@@ -112,7 +112,7 @@
 				{/each}
 			</ul>
 		{/if}
-		<div class="grow">
+		<div class="relative min-h-[220px] grow">
 			{#if $selectedSlot !== null}
 				<Controls slot={$selectedSlot} />
 			{:else}

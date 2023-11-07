@@ -13,6 +13,7 @@
 		decalDefs,
 		type DecalName,
 		PRIDE_FLAGS,
+		ContainerSvg,
 	} from 'grace-train-lib/components'
 
 	export let fillOverride: string | undefined = undefined
@@ -33,16 +34,11 @@
 		{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}
 		<button
 			on:click={() => onClick({ name, fill, defaultParams })}
-			class="btn-hover-grow btn btn-lg touch-manipulation px-0"
+			class="btn-hover-grow btn h-auto w-full touch-manipulation p-2"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="-50 -50 100 100"
-				class="w-8 xs:w-10"
-			>
-				<!-- TODO: Define default colors for decals -->
+			<ContainerSvg viewBox="-50 -50 100 100">
 				<Decal {name} fill={fillOverride || fill} {params} />
-			</svg>
+			</ContainerSvg>
 		</button>
 	{/each}
 </div>
