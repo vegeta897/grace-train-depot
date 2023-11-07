@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { DecalName } from 'grace-train-lib/components'
 	import { ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { removeDecal, updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../stores'
-	import ShapePicker from './ShapePicker.svelte'
+	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { DecalData } from '$lib/server/schemas'
@@ -44,12 +43,15 @@
 		})
 	}
 
-	function setDecalShape({ name }: { name: DecalName }) {
+	function setDecalShape({ name, defaultParams }: DecalChoice) {
 		localCars.update((cars) => {
 			if (name !== cars[$designShortId].decals[slot].name) {
 				cars[$designShortId].decals[slot].name = name
 				cars[$designShortId].decals[slot].params =
 					decalDefs[name].getDefaultParamsObject()
+			} else if (name === 'flag') {
+				cars[$designShortId].decals[slot].params =
+					defaultParams || decalDefs[name].getDefaultParamsObject()
 			}
 			return cars
 		})
