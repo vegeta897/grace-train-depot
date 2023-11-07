@@ -7,6 +7,7 @@
 	import { goto, onNavigate } from '$app/navigation'
 	import { capitalize, objectContainsTrue } from '$lib/util'
 	import NavTabs from './NavTabs.svelte'
+	import { browser } from '$app/environment'
 
 	export let data: LayoutData
 
@@ -14,24 +15,26 @@
 
 	// TODO: Warn if refresh/navigate is attempted without saving?
 
-	designShortId.set($page.params.id)
-	if ($designShortId === 'new' && !$localCars.new) {
-		localCars.update((lc) => {
-			lc.new = getNewCar()
-			return lc
-		})
-	}
-	const savedCar = data.savedCar
-	if ($designShortId !== 'new' && savedCar) {
-		// TODO: Test SSR
-		if (
-			!$localCars[$designShortId] ||
-			(savedCar.revision || 0) > ($localCars[$designShortId].revision || 0)
-		) {
+	if (browser) {
+		// Do not modify any stores on the server!
+		designShortId.set($page.params.id)
+		if ($designShortId === 'new' && !$localCars.new) {
 			localCars.update((lc) => {
-				lc[$designShortId] = cloneCar(savedCar)
+				lc.new = getNewCar()
 				return lc
 			})
+		}
+		const savedCar = data.savedCar
+		if ($designShortId !== 'new' && savedCar) {
+			if (
+				!$localCars[$designShortId] ||
+				(savedCar.revision || 0) > ($localCars[$designShortId].revision || 0)
+			) {
+				localCars.update((lc) => {
+					lc[$designShortId] = cloneCar(savedCar)
+					return lc
+				})
+			}
 		}
 	}
 
