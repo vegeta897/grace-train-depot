@@ -140,7 +140,7 @@
 			<NavTabs {currentPage} carShortId={$page.params.id} />
 		</div>
 		{#if currentPage}
-			<h2 class="mt-3 text-3xl font-black uppercase">{currentPage}</h2>
+			<h2 class="my-2 text-3xl font-black uppercase lg:hidden">{currentPage}</h2>
 		{/if}
 		<div
 			class="self-stretch p-2 lg:grow lg:p-4"
