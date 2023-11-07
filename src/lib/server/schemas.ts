@@ -39,7 +39,10 @@ const decalSchema = z
 			.int()
 			.gte(0)
 			.lte(DECAL_MAX_SLOTS - 1),
-		params: z.record(z.string(), z.union([z.number().gte(0).lte(1), z.boolean()])),
+		params: z.record(
+			z.string(),
+			z.union([z.number().gte(0).lte(1), z.boolean(), z.string().min(0).max(30)])
+		),
 	})
 	.refine((decal) => {
 		const defaultParams = decalDefs[decal.name].getDefaultParamsObject()
@@ -50,6 +53,7 @@ const decalSchema = z
 		for (const [key, value] of Object.entries(decal.params)) {
 			if (typeof value !== typeof defaultParams[key]) return false
 		}
+		// TODO: Check string list params more thoroughly
 		return true
 	}, 'Invalid decal param count or types')
 
