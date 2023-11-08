@@ -43,15 +43,13 @@
 		})
 	}
 
-	function setDecalShape({ name, defaultParams }: DecalChoice) {
+	function setDecalShape({ name, fill, params }: DecalChoice) {
 		localCars.update((cars) => {
 			if (name !== cars[$designShortId].decals[slot].name) {
 				cars[$designShortId].decals[slot].name = name
+				if (fill) cars[$designShortId].decals[slot].fill = fill as DecalData['fill']
 				cars[$designShortId].decals[slot].params =
-					decalDefs[name].getDefaultParamsObject()
-			} else if (name === 'flag') {
-				cars[$designShortId].decals[slot].params =
-					defaultParams || decalDefs[name].getDefaultParamsObject()
+					params || decalDefs[name].getDefaultParamsObject()
 			}
 			return cars
 		})
@@ -85,7 +83,7 @@
 	}
 </script>
 
-<div class="grid grid-cols-4 gap-2 gap-y-3">
+<div class="rounded-box grid grid-cols-4 gap-2 bg-neutral p-2 sm:gap-y-3 sm:p-3">
 	{#if toolMode === null}
 		{#if !decalDefs[decal.name].noFill}
 			<div class="col-span-4 flex flex-col justify-center gap-3 px-2">
@@ -216,7 +214,16 @@
 		<!-- </div> -->
 	{:else if toolMode === 'shape'}
 		<div class="col-span-4">
-			<ShapePicker fillOverride={$designCar.decals[slot].fill} onClick={setDecalShape} />
+			<ShapePicker
+				fillOverride={decalDefs[decal.name].noFill
+					? undefined
+					: $designCar.decals[slot].fill}
+				onClick={setDecalShape}
+			/>
 		</div>
+		<button
+			class="btn-nd btn col-span-2 font-black 2xs:text-lg md:text-xl lg:col-span-1"
+			on:click={() => setToolMode(null)}>Back</button
+		>
 	{/if}
 </div>

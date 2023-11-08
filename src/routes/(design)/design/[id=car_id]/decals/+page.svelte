@@ -47,7 +47,7 @@
 			slot: 0, // Will be overwritten below
 			params: {
 				...decalDefs[shape.name].getDefaultParamsObject(),
-				...shape.defaultParams,
+				...shape.params,
 			},
 		} as DecalDataWithId
 		localCars.update((cars) => {
@@ -61,7 +61,7 @@
 	const testDot = { x: 0, y: 0 } // Position a red dot on the page
 </script>
 
-<section class="flex w-full flex-col items-start gap-3 lg:flex-row">
+<section class="flex w-full flex-col items-start gap-1 sm:gap-3 lg:flex-row">
 	<div
 		class="lg:remove-glass-bg glass-bg rounded-box sticky top-0 z-10 w-full overflow-clip bg-neutral lg:relative lg:w-1/2"
 	>
@@ -73,7 +73,7 @@
 			}}
 		/>
 	</div>
-	<div class="flex w-full flex-grow items-start gap-3 lg:w-1/2">
+	<div class="flex w-full flex-grow items-start gap-1 sm:gap-3 lg:w-1/2">
 		{#if $designCar.decals.length > 0}
 			<ul class="flex w-[3.25rem] flex-col-reverse justify-end rounded-lg bg-neutral p-1">
 				{#each $designCar.decals as decal, d (decal.id)}
@@ -109,32 +109,33 @@
 				{/each}
 			</ul>
 		{/if}
-		<div class="rounded-box relative bg-neutral p-3">
-			{#if browser}
-				<div class="relative min-h-[220px] grow">
-					{#if $selectedSlot !== null}
-						<Controls slot={$selectedSlot} />
-					{:else}
-						{#if $designCar.decals.length === 0}
-							<h3 class="mb-2 text-center text-2xl font-bold">Pick a decal!</h3>
-						{/if}
-						<ShapePicker onClick={addDecal} />
-						{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
-							<div
-								class="glass-bg absolute left-0 top-0 h-full w-full rounded-lg bg-base-300 p-8 pt-14 text-center lg:p-14"
-							>
-								<h3 class="mb-2 text-3xl font-bold">
-									You can't add more than {DECAL_MAX_SLOTS} decals!
-								</h3>
-								<p class="italic text-base-content/75">
-									tell Vegeta if this limit is bad
-								</p>
-							</div>
-						{/if}
+		{#if browser}
+			<div
+				class="relative grow"
+				class:min-h-[180px]={$designCar.decals.length >= DECAL_MAX_SLOTS}
+			>
+				{#if $selectedSlot !== null}
+					<Controls slot={$selectedSlot} />
+				{:else}
+					{#if $designCar.decals.length === 0}
+						<h3 class="mb-2 text-center text-2xl font-bold">Pick a decal!</h3>
 					{/if}
-				</div>
-			{/if}
-		</div>
+					<ShapePicker onClick={addDecal} />
+					{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
+						<div
+							class="glass-bg rounded-box absolute left-0 top-0 flex h-full w-full flex-col justify-center bg-base-300 p-6 text-center"
+						>
+							<h3 class="mb-2 text-xl font-bold sm:text-2xl">
+								You can't add more than {DECAL_MAX_SLOTS}&nbsp;decals!
+							</h3>
+							<p class="text-sm italic text-base-content/75 sm:text-base">
+								tell vegeta if this limit should be higher
+							</p>
+						</div>
+					{/if}
+				{/if}
+			</div>
+		{/if}
 	</div>
 	<!-- <div
 			class="absolute left-0 top-0 z-50 h-[3px] w-[3px] rounded-sm bg-red-600"

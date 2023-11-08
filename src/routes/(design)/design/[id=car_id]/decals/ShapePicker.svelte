@@ -2,8 +2,13 @@
 	export type DecalChoice = {
 		name: DecalName
 		fill?: string
-		defaultParams?: Record<string, any>
+		params?: Record<string, any>
 	}
+	type Tab = {
+		name: DecalName
+		defaultFill?: string
+		defaultParams?: Record<string, any>
+	}[]
 </script>
 
 <script lang="ts">
@@ -18,48 +23,49 @@
 
 	export let fillOverride: string | undefined = undefined
 	export let onClick: (decalProps: DecalChoice) => void
+	export let startingShape: DecalName | undefined = 'star' // Unnecessary?
 
-	let selectedTabIndex = 0
+	$: selectedTabIndex = tabs.findIndex((tab) => tab.some((d) => d.name === startingShape))
 
-	const tabs: DecalChoice[][] = [
+	const tabs: Tab[] = [
 		[
-			{ name: 'star', fill: COLORS.POP[4] },
-			{ name: 'heart', fill: COLORS.POP[1] },
-			{ name: 'circle', fill: COLORS.POP[6] },
+			{ name: 'star', defaultFill: COLORS.POP[4] },
+			{ name: 'heart', defaultFill: COLORS.POP[1] },
+			{ name: 'circle', defaultFill: COLORS.POP[6] },
 		],
 		PRIDE_FLAGS.map((flag) => ({ name: 'flag', defaultParams: { flag } }) as DecalChoice),
 	]
 </script>
 
-<!-- TODO: Move tabs inside decal box, vertical on right-hand side -->
-<div class="join mb-2">
-	{#each tabs as [{ name, fill }], t}
-		<button
-			on:click={() => (selectedTabIndex = t)}
-			class="btn join-item w-16"
-			class:btn-active={t === selectedTabIndex}
-			class:btn-primary={t === selectedTabIndex}
-		>
-			<ContainerSvg viewBox="-50 -50 100 100">
-				<Decal
-					{name}
-					fill={fillOverride || fill}
-					params={decalDefs[name].getDefaultParamsObject()}
-				/>
-			</ContainerSvg>
-		</button>
-	{/each}
-</div>
-<div class="grid grid-cols-6 gap-1 rounded-lg bg-base-100 p-2">
-	{#each tabs[selectedTabIndex] as { name, fill, defaultParams }}
-		{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}
-		<button
-			on:click={() => onClick({ name, fill, defaultParams })}
-			class="btn-hover-grow btn btn-ghost h-auto w-full touch-manipulation p-1"
-		>
-			<ContainerSvg viewBox="-50 -50 100 100">
-				<Decal {name} fill={fillOverride || fill} {params} />
-			</ContainerSvg>
-		</button>
-	{/each}
+<div class="rounded-box flex items-start gap-2 bg-base-300 p-2 sm:gap-0 sm:p-4">
+	<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
+		{#each tabs[selectedTabIndex] as { name, defaultFill, defaultParams }}
+			{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}
+			{@const fill = fillOverride || defaultFill}
+			<button
+				on:click={() => onClick({ name, fill, params: defaultParams })}
+				class="btn btn-ghost aspect-square h-auto min-h-full w-full touch-manipulation p-1"
+			>
+				<ContainerSvg viewBox="-50 -50 100 100">
+					<Decal {name} {fill} {params} />
+				</ContainerSvg>
+			</button>
+		{/each}
+	</div>
+	<div class="divider divider-horizontal mx-2 hidden sm:flex"></div>
+	<div class="join join-vertical">
+		{#each tabs as [{ name, defaultFill: fill }], t}
+			<button
+				on:click={() => (selectedTabIndex = t)}
+				class="btn join-item h-14 w-14 px-2 sm:h-16 sm:w-16 sm:px-3"
+				class:btn-neutral={t !== selectedTabIndex}
+				class:btn-active={t === selectedTabIndex}
+				class:btn-primary={t === selectedTabIndex}
+			>
+				<ContainerSvg viewBox="-50 -50 100 100">
+					<Decal {name} {fill} params={decalDefs[name].getDefaultParamsObject()} />
+				</ContainerSvg>
+			</button>
+		{/each}
+	</div>
 </div>
