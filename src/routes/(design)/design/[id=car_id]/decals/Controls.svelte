@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
-	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
+	import {
+		DECAL_MAX_SCALE,
+		DECAL_MAX_SLOTS,
+		DECAL_MIN_SCALE,
+	} from '$lib/common/constants'
 	import { removeDecal, updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../stores'
@@ -9,6 +13,7 @@
 	import { COLORS } from 'grace-train-lib'
 	import type { DecalData } from '$lib/server/schemas'
 	import { capitalize } from '$lib/util'
+	import { cloneDecal } from '$lib/car'
 
 	const SCALE_RANGE = DECAL_MAX_SCALE - DECAL_MIN_SCALE
 
@@ -28,6 +33,18 @@
 	function deleteDecal() {
 		removeDecal(localCars, $designShortId, slot)
 		selectedSlot.set(null)
+	}
+
+	function duplicateDecal() {
+		const decal = $designCar.decals[slot]
+		const decalCopy = cloneDecal(decal)
+		decalCopy.slot = $designCar.decals.length
+		decalCopy.id = Date.now()
+		localCars.update((cars) => {
+			cars[$designShortId].decals.push(decalCopy)
+			selectedSlot.set(decalCopy.slot)
+			return cars
+		})
 	}
 
 	function orderDecal(upOrDown: number) {
@@ -233,9 +250,15 @@
 		<button
 			on:click={() => setToolMode('shape')}
 			class="btn btn-md col-span-2 touch-manipulation font-black 2xs:text-lg md:text-xl"
-			class:btn-active={toolMode === 'shape'}
 		>
 			Shape
+		</button>
+		<button
+			on:click={() => duplicateDecal()}
+			class="btn btn-md col-span-2 touch-manipulation font-black 2xs:text-lg md:text-xl"
+			disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}
+		>
+			Copy
 		</button>
 		<!-- </div> -->
 	{:else if toolMode === 'shape'}
