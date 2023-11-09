@@ -378,10 +378,7 @@
 				selectedSlot.set(null)
 				dirtyCanvas.set(true)
 			}}
-			style:-webkit-backdrop-filter="blur(4px)"
-			style:backdrop-filter="blur(4px)"
-			style:--tw-bg-opacity="0.8"
-			class="btn btn-circle absolute bottom-2 right-2 h-12 w-12 text-2xl hover:btn-error 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
+			class="glass-bg btn btn-circle absolute bottom-2 right-2 h-12 w-12 text-2xl opacity-50 hover:btn-error hover:opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
 		>
 			🗑️
 		</button>

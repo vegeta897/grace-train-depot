@@ -83,10 +83,10 @@
 	}
 </script>
 
-<div class="rounded-box grid grid-cols-4 gap-2 bg-neutral p-2 sm:gap-y-3 sm:p-3">
+<div class="rounded-box grid grid-flow-row-dense grid-cols-4 gap-2 bg-neutral p-2 sm:p-4">
 	{#if toolMode === null}
 		{#if !decalDefs[decal.name].noFill}
-			<div class="col-span-4 flex flex-col justify-center gap-3 px-2">
+			<div class="col-span-4 mb-1 flex flex-col justify-center gap-3">
 				Color
 				<ColorSlider
 					colors={COLORS.POP}
@@ -94,14 +94,14 @@
 					onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
 				/>
 			</div>
-			<div class="col-span-4 flex flex-col justify-center px-2">
+			<div class="col-span-4 flex flex-col justify-center">
 				Mix <!-- (gradient to neighbor color) -->
-				<input type="range" min={-2} max={2} step="1" value={0} class="range" />
+				<input type="range" min={-2} max={2} step="1" value={0} class="range mb-1" />
 				<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
 			<input type="range" min={-180} max={180} step="1" value={0} class="range" /> -->
 			</div>
 		{/if}
-		<div class="col-span-2 flex flex-col justify-center px-2">
+		<div class="col-span-2 flex flex-col justify-center">
 			Size
 			<input
 				type="range"
@@ -117,10 +117,10 @@
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
 				on:change={() => dirtyCanvas.set(true)}
-				class="range range-primary"
+				class="range range-primary mb-1"
 			/>
 		</div>
-		<div class="col-span-2 flex flex-col justify-center px-2">
+		<div class="col-span-2 flex flex-col justify-center">
 			Spin
 			<input
 				type="range"
@@ -133,7 +133,7 @@
 					decal.rotate = +e.currentTarget.value
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
-				class="range range-secondary"
+				class="range range-secondary mb-1"
 			/>
 			<datalist id="rotations">
 				<option>-90</option>
@@ -143,7 +143,7 @@
 		</div>
 		{#each paramConfig as param}
 			<div
-				class="col-span-2 flex flex-col justify-center px-2"
+				class="col-span-2 flex flex-col justify-center"
 				class:col-span-4={param.type === 'stringList'}
 			>
 				{capitalize(param.name)}
@@ -155,7 +155,7 @@
 						step="0.01"
 						value={decal.params[param.name]}
 						on:input={(e) => setDecalParam(param.name, +e.currentTarget.value)}
-						class="range"
+						class="range mb-1"
 					/>
 				{:else if param.type === 'toggle'}
 					<input
@@ -165,10 +165,12 @@
 						class="checkbox"
 					/>
 				{:else if (param.type = 'stringList')}
-					<div class="grid grid-cols-6 gap-1">
+					<div
+						class="grid grid-cols-[repeat(auto-fill,_minmax(3.5rem,_1fr))] gap-1 rounded-lg bg-base-100 p-1"
+					>
 						{#each param.list as listItem}
 							<button
-								class="btn btn-sm h-11 w-14 px-2"
+								class="btn btn-ghost btn-sm h-auto w-full px-2"
 								on:click={() => setDecalParam(param.name, listItem)}
 							>
 								<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
@@ -185,31 +187,55 @@
 			</div>
 		{/each}
 		<!-- <div class="col-span-4"> -->
-		<button
-			on:click={() => setToolMode('shape')}
-			class="btn btn-md col-start-1 touch-manipulation font-black 2xs:text-lg md:text-xl"
-			class:btn-active={toolMode === 'shape'}
-		>
-			Shape
-		</button>
 		<!-- <button
 			on:click={() => deleteDecal()}
 			class="btn btn-md touch-manipulation text-2xl hover:btn-error md:text-3xl"
 			>🗑️</button
 		> -->
 		<button
-			on:click={() => orderDecal(-1)}
-			disabled={slot === 0}
-			class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
-		>
-			Push
-		</button>
-		<button
 			on:click={() => orderDecal(1)}
 			disabled={slot === $designCar.decals.length - 1}
-			class="btn btn-md touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black 2xs:text-lg md:text-xl"
 		>
-			Pull
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 10 10"
+				class="w-6 -scale-y-100 fill-none stroke-current"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
+				/>
+			</svg>
+			<span class="w-16">Pull</span>
+		</button>
+		<button
+			on:click={() => orderDecal(-1)}
+			disabled={slot === 0}
+			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black 2xs:text-lg md:text-xl"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 10 10"
+				class="w-6 fill-none stroke-current"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
+				/>
+			</svg>
+			<span class="w-16">Push</span>
+		</button>
+		<button
+			on:click={() => setToolMode('shape')}
+			class="btn btn-md col-span-2 touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class:btn-active={toolMode === 'shape'}
+		>
+			Shape
 		</button>
 		<!-- </div> -->
 	{:else if toolMode === 'shape'}
