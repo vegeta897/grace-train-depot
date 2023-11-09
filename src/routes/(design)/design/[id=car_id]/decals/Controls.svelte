@@ -89,27 +89,34 @@
 	}
 </script>
 
-<div class="rounded-box grid grid-flow-row-dense grid-cols-4 gap-2 bg-neutral p-2 sm:p-4">
+<div class="rounded-box grid grid-flow-row-dense grid-cols-4 gap-2 bg-neutral p-2 xs:p-4">
 	{#if toolMode === null}
 		{#if !decalDefs[decal.name].noFill}
-			<div class="col-span-4 mb-1 flex flex-col justify-center gap-3">
-				Color
-				<ColorSlider
-					colors={COLORS.POP}
-					color={decal.fill}
-					onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
-				/>
+			<!-- TODO: Make these controls into components -->
+			<div
+				class="col-span-4 my-1 flex items-center xs:col-span-2 xs:my-0 xs:flex-col xs:items-start"
+			>
+				<label for="color" class="w-16">Color</label>
+				<div class="w-full grow">
+					<ColorSlider
+						colors={COLORS.POP}
+						color={decal.fill}
+						onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
+					/>
+				</div>
 			</div>
-			<div class="col-span-4 flex flex-col justify-center">
-				Mix <!-- (gradient to neighbor color) -->
-				<input type="range" min={-2} max={2} step="1" value={0} class="range mb-1" />
+			<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
+				<!-- (gradient to neighbor color) -->
+				<label for="color" class="w-16">Mix</label>
+				<input id="mix" type="range" min={-2} max={2} step="1" value={0} class="range" />
 				<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
 			<input type="range" min={-180} max={180} step="1" value={0} class="range" /> -->
 			</div>
 		{/if}
-		<div class="col-span-2 flex flex-col justify-center">
-			Size
+		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
+			<label for="size" class="w-16">Size</label>
 			<input
+				id="size"
 				type="range"
 				min={0}
 				max={100}
@@ -123,12 +130,13 @@
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
 				on:change={() => dirtyCanvas.set(true)}
-				class="range range-primary mb-1"
+				class="range range-primary"
 			/>
 		</div>
-		<div class="col-span-2 flex flex-col justify-center">
-			Spin
+		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
+			<label for="size" class="w-16">Spin</label>
 			<input
+				id="spin"
 				type="range"
 				min={-180}
 				max={180}
@@ -139,7 +147,7 @@
 					decal.rotate = +e.currentTarget.value
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
-				class="range range-secondary mb-1"
+				class="range range-secondary"
 			/>
 			<datalist id="rotations">
 				<option>-90</option>
@@ -149,19 +157,20 @@
 		</div>
 		{#each paramConfig as param}
 			<div
-				class="col-span-2 flex flex-col justify-center"
-				class:col-span-4={param.type === 'stringList'}
+				class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col"
+				class:xs:col-span-4={param.type === 'stringList'}
 			>
-				{capitalize(param.name)}
+				<label for={param.name} class="w-16">{capitalize(param.name)}</label>
 				{#if param.type === 'scalar'}
 					<input
+						id={param.name}
 						type="range"
 						min={0}
 						max={1}
 						step="0.01"
 						value={decal.params[param.name]}
 						on:input={(e) => setDecalParam(param.name, +e.currentTarget.value)}
-						class="range mb-1"
+						class="range"
 					/>
 				{:else if param.type === 'toggle'}
 					<input

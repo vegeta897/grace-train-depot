@@ -1,4 +1,5 @@
 <script lang="ts">
+	export let id = 'color'
 	export let colors: string[] | readonly string[]
 	export let color: string
 	export let onInput: (
@@ -7,7 +8,7 @@
 		}
 	) => void
 
-	$: colorMargin = 1 / (colors.length * 3.5)
+	$: colorMargin = 0
 	$: colorsGradient = `linear-gradient(to right, ${colors
 		.map((c, i) => {
 			const p = i / (colors.length - 1)
@@ -18,7 +19,7 @@
 		.join(', ')})`
 </script>
 
-<div class="relative flex h-4 overflow-clip rounded-full">
+<div class="relative mb-2 flex h-4 overflow-clip rounded-full">
 	<div class="mx-[0.75rem] h-full grow" style:background={colorsGradient} />
 	<div class="absolute left-0 h-full w-4" style:background-color={colors[0]} />
 	<div
@@ -27,6 +28,7 @@
 	/>
 </div>
 <input
+	{id}
 	type="range"
 	min={0}
 	max={colors.length - 1}
