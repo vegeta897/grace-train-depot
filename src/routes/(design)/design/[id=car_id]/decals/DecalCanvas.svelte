@@ -300,7 +300,7 @@
 							<g class:opacity-25={$selectedSlot === d}>
 								<Decal
 									name={decal.name}
-									fill={decal.fillPreview || decal.fill}
+									fill={decal.fill}
 									params={decal.params}
 									transition={['fill', 'stroke']}
 								/>

@@ -14,7 +14,7 @@
 		y={decal.y}
 		scale={decal.scale}
 		rotate={decal.rotate}
-		fill={decal.fillPreview || decal.fill}
+		fill={decal.fill}
 		params={decal.params}
 		{transition}
 	/>

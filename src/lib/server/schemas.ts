@@ -33,7 +33,6 @@ const decalSchema = z
 		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
 		rotate: z.number().gte(-180).lt(180),
 		fill: popColorSchema,
-		fillPreview: popColorSchema.optional(),
 		slot: z
 			.number()
 			.int()

@@ -87,17 +87,6 @@
 			return cars
 		})
 	}
-
-	function previewDecalColor(color?: DecalData['fill']) {
-		localCars.update((cars) => {
-			if (color) {
-				cars[$designShortId].decals[slot].fillPreview = color
-			} else {
-				delete cars[$designShortId].decals[slot].fillPreview
-			}
-			return cars
-		})
-	}
 </script>
 
 <div class="rounded-box grid grid-flow-row-dense grid-cols-4 gap-2 bg-neutral p-2 sm:p-4">
