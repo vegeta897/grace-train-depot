@@ -8,7 +8,6 @@
 </script>
 
 <svelte:head>
-	<title>Choo Choo!</title>
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
 <div
