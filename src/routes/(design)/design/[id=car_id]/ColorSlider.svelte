@@ -8,25 +8,14 @@
 		}
 	) => void
 
-	$: colorMargin = 0
 	$: colorsGradient = `linear-gradient(to right, ${colors
-		.map((c, i) => {
-			const p = i / (colors.length - 1)
-			const start = Math.max(0, p - colorMargin)
-			const end = Math.min(1, p + colorMargin)
-			return `${c} ${Math.round(start * 100)}% ${Math.round(end * 100)}%`
-		})
+		.map((c, i) => `${c} ${Math.round((i / (colors.length - 1)) * 100)}%`)
 		.join(', ')})`
+	$: capsGradient = `linear-gradient(to right, ${colors[0]} 50%, ${
+		colors[colors.length - 1]
+	} 50%)`
 </script>
 
-<div class="relative mb-2 flex h-4 overflow-clip rounded-full">
-	<div class="mx-[0.75rem] h-full grow" style:background={colorsGradient} />
-	<div class="absolute left-0 h-full w-4" style:background-color={colors[0]} />
-	<div
-		class="absolute right-0 h-full w-4"
-		style:background-color={colors[colors.length - 1]}
-	/>
-</div>
 <input
 	{id}
 	type="range"
@@ -35,5 +24,10 @@
 	step="1"
 	value={colors.indexOf(color)}
 	on:input={onInput}
-	class="range"
+	class="range-gradient range"
+	style:background="{colorsGradient}, {capsGradient}"
+	style:background-position="0.75rem 0, 0"
+	style:background-size="calc(100% - 1.5rem), 100%"
+	style:background-repeat="no-repeat"
+	style:--range-gradient-color={color}
 />

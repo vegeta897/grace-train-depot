@@ -35,6 +35,31 @@ body {
 			transform: scale(1.12);
 		}
 	}
+	.range.range-gradient {
+		--range-shdw: none;
+	}
+	.range.range-gradient:focus-visible::-webkit-slider-thumb {
+		--focus-shadow: 0 0 0 6px var(--range-gradient-color) inset;
+	}
+	.range.range-gradient:focus-visible::-moz-range-thumb {
+		--focus-shadow: 0 0 0 6px var(--range-gradient-color) inset;
+	}
+	.range.range-gradient::-webkit-slider-runnable-track {
+		background: none;
+	}
+	.range.range-gradient::-moz-range-track {
+		background: none;
+	}
+	.range.range-gradient::-webkit-slider-thumb {
+		box-shadow:
+			0 0 0 3px var(--range-gradient-color) inset,
+			var(--focus-shadow, 0 0);
+	}
+	.range.range-gradient::-moz-range-thumb {
+		box-shadow:
+			0 0 0 3px var(--range-gradient-color) inset,
+			var(--focus-shadow, 0 0);
+	}
 }
 
 @layer utilities {
