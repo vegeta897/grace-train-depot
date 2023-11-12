@@ -97,7 +97,7 @@
 				class="col-span-4 my-1 flex items-center xs:col-span-2 xs:my-0 xs:flex-col xs:items-start"
 			>
 				<label for="color" class="w-16">Color</label>
-				<div class="w-full grow">
+				<div class="h-12 w-full grow">
 					<ColorSlider
 						colors={COLORS.POP}
 						color={decal.fill}
