@@ -3,7 +3,7 @@
 	import { wrapNumber, draggable } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
-	import { Decal, decalDefs } from 'grace-train-lib/components'
+	import { Decal } from 'grace-train-lib/components'
 	import BoundingBox from './BoundingBox.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
@@ -187,8 +187,6 @@
 		if ($selectedSlot === null) return
 		const transform = draggables[$selectedSlot]
 		const boundingBox = getDecalBoundingBox($designCar.decals[$selectedSlot])
-		const widthRatio = boundingBox.width / 100
-		const heightRatio = boundingBox.height / 100
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
@@ -203,14 +201,11 @@
 			calcScale: (x: number, y: number) => {
 				const nx = cos * (x - originX) + sin * (y - originY) + originX
 				const ny = cos * (y - originY) - sin * (x - originX) + originY
-				const xDistance = ((nx - originX) * corners[corner][0]) / widthRatio / canvasScale
-				const yDistance =
-					((ny - originY) * corners[corner][1]) / heightRatio / canvasScale
-				const avgDistance = (xDistance + yDistance) / 2
-				return Math.max(
-					DECAL_MIN_SCALE,
-					Math.min(DECAL_MAX_SCALE, (avgDistance - 5) / 50)
-				)
+				const xDistance = ((nx - originX) * corners[corner][0]) / canvasScale - 5
+				const yDistance = ((ny - originY) * corners[corner][1]) / canvasScale - 5
+				const avgDistance =
+					(xDistance / (boundingBox.width / 2) + yDistance / (boundingBox.height / 2)) / 2
+				return Math.max(DECAL_MIN_SCALE, Math.min(DECAL_MAX_SCALE, avgDistance))
 			},
 		}
 	}
