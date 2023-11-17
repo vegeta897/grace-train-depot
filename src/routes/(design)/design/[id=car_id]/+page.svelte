@@ -38,7 +38,9 @@
 		{:else}
 			<!-- TODO: Suggest a page based on existing design -->
 			<p class="text-xl">How about a new set of wheels?</p>
-			<a class="btn btn-lg font-black" href="/design/{$designShortId}/wheels"
+			<a
+				class="btn btn-lg font-black tracking-wide"
+				href="/design/{$designShortId}/wheels"
 				><span class="relative text-2xl">🎡</span> Wheels</a
 			>
 			<div class="divider my-0"></div>
@@ -59,16 +61,20 @@
 					<span>Are you sure you want to delete this car? This cannot be undone!</span>
 				</div>
 				<div class="flex gap-4">
-					<button class="btn font-black" on:click={() => (deleteMode = false)}
-						>Cancel</button
+					<button
+						class="btn font-black tracking-wide"
+						on:click={() => (deleteMode = false)}>Cancel</button
 					>
 					<form action="?/delete" method="POST" use:enhance>
-						<button class="btn font-black hover:btn-error">🗑️ Delete it!</button>
+						<button class="btn font-black tracking-wide hover:btn-error"
+							>🗑️ Delete it!</button
+						>
 					</form>
 				</div>
 			{:else}
-				<button class="btn btn-error font-black" on:click={() => (deleteMode = true)}
-					>Delete Car</button
+				<button
+					class="btn btn-error font-black tracking-wide"
+					on:click={() => (deleteMode = true)}>Delete Car</button
 				>
 			{/if}
 		{/if}

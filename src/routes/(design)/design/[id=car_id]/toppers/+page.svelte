@@ -216,8 +216,8 @@
 				</div>
 			</div>
 			<div class="grid gap-4 font-black sm:grid-cols-3">
-				<button class="btn btn-block text-xl">Style</button>
-				<button class="btn btn-block text-xl">Color</button>
+				<button class="btn btn-block text-xl font-black tracking-wide">Style</button>
+				<button class="btn btn-block text-xl font-black tracking-wide">Color</button>
 				<button
 					on:click={() => removeTopper(topper.slot)}
 					class="btn btn-block text-xl hover:btn-error md:text-2xl">🗑️</button

@@ -177,7 +177,7 @@
 						checked={decal.params[param.name]}
 						type="checkbox"
 						on:change={(e) => setDecalParam(param.name, e.currentTarget.checked)}
-						class="checkbox"
+						class="toggle"
 					/>
 				{:else if (param.type = 'stringList')}
 					<div
@@ -210,7 +210,7 @@
 		<button
 			on:click={() => orderDecal(1)}
 			disabled={slot === $designCar.decals.length - 1}
-			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -229,7 +229,7 @@
 		<button
 			on:click={() => orderDecal(-1)}
 			disabled={slot === 0}
-			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -247,13 +247,13 @@
 		</button>
 		<button
 			on:click={() => setToolMode('shape')}
-			class="btn btn-md col-span-2 touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class="btn btn-md col-span-2 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
 		>
 			Shape
 		</button>
 		<button
 			on:click={() => duplicateDecal()}
-			class="btn btn-md col-span-2 touch-manipulation font-black 2xs:text-lg md:text-xl"
+			class="btn btn-md col-span-2 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
 			disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}
 		>
 			Copy

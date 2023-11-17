@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	import { COLORS } from 'grace-train-lib'
+	import { COLORS, colorRun } from 'grace-train-lib'
 	import {
 		Decal,
 		decalDefs,
@@ -34,6 +34,12 @@
 			{ name: 'circle', defaultFill: COLORS.POP[6] },
 		],
 		PRIDE_FLAGS.map((flag) => ({ name: 'flag', defaultParams: { flag } }) as DecalChoice),
+		[
+			{
+				name: 'stripes',
+				defaultParams: { nodes: [[-90], [0, 3]], colors: colorRun('POP', 1, 3) },
+			},
+		],
 	]
 </script>
 
@@ -54,7 +60,8 @@
 	</div>
 	<div class="divider divider-horizontal mx-2 hidden sm:flex"></div>
 	<div class="join join-vertical">
-		{#each tabs as [{ name, defaultFill: fill }], t}
+		{#each tabs as [{ name, defaultFill: fill, defaultParams }], t}
+			{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}
 			<button
 				on:click={() => (selectedTabIndex = t)}
 				class="btn join-item h-14 w-14 px-2 sm:h-16 sm:w-16 sm:px-3"
@@ -63,7 +70,7 @@
 				class:btn-primary={t === selectedTabIndex}
 			>
 				<ContainerSvg viewBox="-50 -50 100 100">
-					<Decal {name} {fill} params={decalDefs[name].getDefaultParamsObject()} />
+					<Decal {name} {fill} {params} />
 				</ContainerSvg>
 			</button>
 		{/each}

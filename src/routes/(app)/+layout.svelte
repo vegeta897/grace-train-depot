@@ -17,7 +17,7 @@
 			🚂
 			<span class="hidden">Choo Choo!</span>
 		</h1> -->
-	<h2 class="text-xl font-black uppercase lg:text-2xl">
+	<h2 class="text-xl font-black uppercase tracking-wide lg:text-2xl">
 		<a href="/">Choo Choo!</a>
 	</h2>
 	<nav class="flex-none">

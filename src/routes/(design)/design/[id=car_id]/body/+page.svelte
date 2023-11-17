@@ -47,14 +47,14 @@
 		{/each}
 	</div>
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
-		<h3 class="text-2xl font-black uppercase">Base Color</h3>
+		<h3 class="text-2xl font-black uppercase tracking-wide">Base Color</h3>
 		TODO: Allow granular color selection using mix function in color2k
 		<ColorSlider
 			colors={COLORS.BASE}
 			color={$designCar.bodyColor || COLORS.BASE[3]}
 			onInput={(e) => setBodyColor(COLORS.BASE[+e.currentTarget.value])}
 		/>
-		<h3 class="mt-2 text-2xl font-black uppercase">Pop Color</h3>
+		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Pop Color</h3>
 		<ColorSlider
 			colors={COLORS.POP}
 			color={$designCar.bodyPopColor || COLORS.POP[1]}

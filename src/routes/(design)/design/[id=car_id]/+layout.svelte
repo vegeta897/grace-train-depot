@@ -99,6 +99,7 @@
 	function exitDesigner(e: Event) {
 		// TODO: Use daisyui modal component
 		// TODO: Show side-by-side comparison of original car and unsaved car
+		// Diff component (not supported on iOS) https://daisyui.com/components/diff/
 		if (currentPage === 'finish') {
 			if (confirm('Exit without finishing your car?')) goto(backLink)
 			else return e.preventDefault()
@@ -119,7 +120,7 @@
 	<a
 		href={backLink}
 		on:click={exitDesigner}
-		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] w-24 font-black lg:h-20 lg:text-lg"
+		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] w-24 font-black tracking-wide lg:h-20 lg:text-lg"
 		>Back</a
 	>
 	<div class="hidden sm:flex">
@@ -127,7 +128,7 @@
 	</div>
 	<a
 		href="/design/{$page.params.id}/finish"
-		class="btn btn-success h-[2.5rem] min-h-[2.5rem] w-24 text-lg font-black lg:h-20"
+		class="btn btn-success h-[2.5rem] min-h-[2.5rem] w-24 text-lg font-black tracking-wide lg:h-20"
 		class:pointer-events-none={currentPage === 'finish'}
 		class:btn-outline={currentPage !== 'finish'}
 	>
@@ -140,7 +141,9 @@
 			<NavTabs {currentPage} carShortId={$page.params.id} />
 		</div>
 		{#if currentPage}
-			<h2 class="my-2 text-3xl font-black uppercase lg:hidden">{currentPage}</h2>
+			<h2 class="my-2 text-3xl font-black uppercase tracking-wide lg:hidden">
+				{currentPage}
+			</h2>
 		{/if}
 		<div
 			class="self-stretch p-2 lg:grow lg:p-4"

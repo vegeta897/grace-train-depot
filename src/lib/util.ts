@@ -1,4 +1,10 @@
 import { getContext, hasContext, setContext } from 'svelte'
+import {
+	draggable as neodraggable,
+	type DragEventData,
+	type DragOptions,
+} from '@neodrag/svelte'
+import type { Action } from 'svelte/action'
 
 export function wrapNumber(val: number, min: number, max: number) {
 	const range = max - min
@@ -30,3 +36,14 @@ export function objectContainsTrue(object: Record<string, any>) {
 }
 
 export const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
+
+// Wrapper for neodrag to broaden HTMLElement type to Element
+export const draggable = neodraggable as Action<
+	Element,
+	DragOptions,
+	{
+		'on:neodrag:start': (e: CustomEvent<DragEventData>) => void
+		'on:neodrag': (e: CustomEvent<DragEventData>) => void
+		'on:neodrag:end': (e: CustomEvent<DragEventData>) => void
+	}
+>

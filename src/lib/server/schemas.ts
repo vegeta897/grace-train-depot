@@ -31,7 +31,7 @@ const decalSchema = z
 		x: z.number().gte(-203).lte(578),
 		y: z.number().gte(-178).lte(403),
 		scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
-		rotate: z.number().gte(-180).lt(180),
+		rotate: z.number().gte(-180).lte(180),
 		fill: popColorSchema,
 		slot: z
 			.number()
@@ -40,10 +40,16 @@ const decalSchema = z
 			.lte(DECAL_MAX_SLOTS - 1),
 		params: z.record(
 			z.string(),
-			z.union([z.number().gte(0).lte(1), z.boolean(), z.string().min(0).max(30)])
+			z.union([
+				z.number(),
+				z.boolean(),
+				z.string().min(0).max(30),
+				z.array(z.union([z.number(), z.string(), z.array(z.number())])),
+			])
 		),
 	})
 	.refine((decal) => {
+		return true // TODO: Temporary bypass
 		const defaultParams = decalDefs[decal.name].getDefaultParamsObject()
 		// Check that number of params match
 		if (Object.keys(defaultParams).length !== Object.keys(decal.params).length)

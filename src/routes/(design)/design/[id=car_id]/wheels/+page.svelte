@@ -5,9 +5,9 @@
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { CarData } from '$lib/server/schemas'
-	import { Body, ContainerSvg } from 'grace-train-lib/components'
-	import Decals from '$lib/components/Decals.svelte'
 	import { browser } from '$app/environment'
+
+	// TODO: Allow custom wheel size
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -31,13 +31,13 @@
 		{#if browser}<DesignCar car={$designCar} />{/if}
 	</div>
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
-		<h3 class="text-2xl font-black uppercase">Color</h3>
+		<h3 class="text-2xl font-black uppercase tracking-wide">Color</h3>
 		<ColorSlider
 			colors={COLORS.POP}
 			color={$designCar.wheelColor || COLORS.POP[1]}
 			onInput={(e) => setWheelColor(COLORS.POP[+e.currentTarget.value])}
 		/>
-		<h3 class="mt-2 text-2xl font-black uppercase">Spread</h3>
+		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Spread</h3>
 		<input
 			type="range"
 			min={WHEEL_DISTANCE_MIN}

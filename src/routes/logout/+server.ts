@@ -6,6 +6,8 @@ export const GET = (async ({ url, cookies, locals }) => {
 	if (session) {
 		locals.auth.setSession(null)
 		auth.invalidateSession(session.sessionId)
+		// TODO: Provide a link to log out of all sessions
+		// auth.invalidateAllUserSessions(session.user.userId)
 	}
 	throw redirect(302, '/')
 }) satisfies RequestHandler

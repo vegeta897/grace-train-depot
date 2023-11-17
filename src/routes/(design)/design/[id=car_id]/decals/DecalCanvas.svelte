@@ -1,33 +1,35 @@
 <script lang="ts">
-	import { draggable, type DragEventData } from '@neodrag/svelte'
-	import { wrapNumber } from '$lib/util'
+	import type { DragEventData } from '@neodrag/svelte'
+	import { wrapNumber, draggable } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
-	import { Decal } from 'grace-train-lib/components'
+	import { Decal, decalDefs } from 'grace-train-lib/components'
 	import BoundingBox from './BoundingBox.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import DesignCar from '$lib/components/DesignCar.svelte'
 	import type { Transform } from '$lib/types'
-	import type { CarDataWithIds } from '$lib/server/schemas'
-	import { DECAL_RADIUS, removeDecal, updateDecalTransform } from './decals'
+	import { getDecalBoundingBox, removeDecal, updateDecalTransform } from './decals'
 	import { getDesignStores } from '../stores'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
 
-	export let car: CarDataWithIds
 	export let setTestDot: (x: number, y: number) => void = () => {}
 
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas } = getDecalStores()
 
-	$: draggables = $designCar.decals.map((d) => ({
-		id: d.id,
-		x: d.x,
-		y: d.y,
-		scale: d.scale,
-		rotate: d.rotate,
-	}))
+	$: draggables = $designCar.decals.map((d) => {
+		return {
+			id: d.id,
+			x: d.x,
+			y: d.y,
+			scale: d.scale,
+			rotate: d.rotate,
+			// snapPoints:
+			// 	d.name === 'arc' ? getArcEndpoints({ ...d, ...(d.params as ArcParams) }) : [],
+		}
+	})
 
 	const canvasTop = -10
 	const canvasBottom = 310
@@ -49,12 +51,14 @@
 		decalBottom = canvasCenterY
 		decalLeft = canvasCenterX
 		decalRight = canvasCenterX
-		const transform = $selectedSlot !== null && draggables[$selectedSlot]
-		if (!transform) return
-		decalTop = transform.y - DECAL_RADIUS * transform.scale - 24
-		decalBottom = transform.y + DECAL_RADIUS * transform.scale + 24
-		decalLeft = transform.x - DECAL_RADIUS * transform.scale - 24
-		decalRight = transform.x + DECAL_RADIUS * transform.scale + 24
+		const decal = $selectedSlot !== null && $designCar.decals[$selectedSlot]
+		if (!decal) return
+		const boundingBox = getDecalBoundingBox(decal)
+		const decalRadius = (Math.max(boundingBox.width, boundingBox.height) / 2) * Math.SQRT2
+		decalTop = decal.y - decalRadius * decal.scale - 24
+		decalBottom = decal.y + decalRadius * decal.scale + 24
+		decalLeft = decal.x - decalRadius * decal.scale - 24
+		decalRight = decal.x + decalRadius * decal.scale + 24
 	})
 
 	let containerElement: HTMLDivElement
@@ -108,8 +112,42 @@
 	function onDrag({ offsetX, offsetY }: DragEventData, slot: number) {
 		if (!$dragging) return
 		const transform = draggables[slot]
-		transform.x = $dragging.transform.x + (offsetX - $dragging.transform.x) / canvasScale
-		transform.y = $dragging.transform.y + (offsetY - $dragging.transform.y) / canvasScale
+		const dragX = (offsetX - $dragging.transform.x) / canvasScale
+		const dragY = (offsetY - $dragging.transform.y) / canvasScale
+		let newX = $dragging.transform.x + dragX
+		let newY = $dragging.transform.y + dragY
+		// if (transform.snapPoints.length > 0) {
+		// 	let bestSnapDistance = Infinity
+		// 	let snapToX = null
+		// 	let snapToY = null
+		// 	for (let snapPoint of transform.snapPoints) {
+		// 		const draggedSnapX = snapPoint.x + (newX - transform.x)
+		// 		const draggedSnapY = snapPoint.y + (newY - transform.y)
+		// 		for (let otherDraggable of draggables) {
+		// 			if (otherDraggable === transform) continue
+		// 			for (let otherSnap of otherDraggable.snapPoints) {
+		// 				// TODO: Snap to angle if within 10 degrees
+		// 				if (Math.abs(otherSnap.angle - snapPoint.angle) % 360 !== 180) continue
+		// 				const snapDeltaX = otherSnap.x - draggedSnapX
+		// 				const snapDeltaY = otherSnap.y - draggedSnapY
+		// 				const snapDistance = Math.abs(snapDeltaX) + Math.abs(snapDeltaY)
+		// 				if (
+		// 					Math.abs(snapDeltaX) < 8 &&
+		// 					Math.abs(snapDeltaY) < 8 &&
+		// 					snapDistance < bestSnapDistance
+		// 				) {
+		// 					snapToX = $dragging.transform.x + dragX + snapDeltaX
+		// 					snapToY = $dragging.transform.y + dragY + snapDeltaY
+		// 					bestSnapDistance = snapDistance
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// 	if (snapToX !== null) newX = snapToX
+		// 	if (snapToY !== null) newY = snapToY
+		// }
+		transform.x = newX
+		transform.y = newY
 		updateDecalTransform(localCars, $designShortId, slot, transform)
 	}
 
@@ -148,6 +186,9 @@
 	function startResize(corner: number) {
 		if ($selectedSlot === null) return
 		const transform = draggables[$selectedSlot]
+		const boundingBox = getDecalBoundingBox($designCar.decals[$selectedSlot])
+		const widthRatio = boundingBox.width / 100
+		const heightRatio = boundingBox.height / 100
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
@@ -162,8 +203,9 @@
 			calcScale: (x: number, y: number) => {
 				const nx = cos * (x - originX) + sin * (y - originY) + originX
 				const ny = cos * (y - originY) - sin * (x - originX) + originY
-				const xDistance = ((nx - originX) * corners[corner][0]) / canvasScale
-				const yDistance = ((ny - originY) * corners[corner][1]) / canvasScale
+				const xDistance = ((nx - originX) * corners[corner][0]) / widthRatio / canvasScale
+				const yDistance =
+					((ny - originY) * corners[corner][1]) / heightRatio / canvasScale
 				const avgDistance = (xDistance + yDistance) / 2
 				return Math.max(
 					DECAL_MIN_SCALE,
@@ -224,19 +266,19 @@
 
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
 <div
-	class="relative outline-green-700"
+	class="relative touch-none outline-green-700"
 	bind:this={containerElement}
 	class:outline-dotted={outline}
 >
 	<div
-		class="relative mx-auto max-h-[40vh] max-w-[600px] outline-yellow-600 lg:max-h-full"
+		class="relative mx-auto max-h-[40vh] max-w-[600px] touch-none outline-yellow-600 lg:max-h-full"
 		class:outline-dotted={outline}
 		style:aspect-ratio="4 / 3"
 		bind:clientWidth={containerWidth}
 		bind:clientHeight={containerHeight}
 	>
 		<div
-			class="absolute left-0 top-0 w-[375px] outline-red-400"
+			class="absolute left-0 top-0 w-[375px] touch-none outline-red-400"
 			class:outline-dotted={outline}
 			class:hidden={!browser}
 			style:transform-origin="left top"
@@ -245,83 +287,93 @@
 		>
 			{#if browser}
 				<DesignCar
-					{car}
+					car={$designCar}
 					focusTopperSlot={$selectedSlot === null ? null : -1}
 					transition={['fill', 'stroke', 'opacity']}
 					focusDecalZone={$selectedSlot !== null}
 					cropToCar
 				/>
 			{/if}
-			{#each draggables as transform, d (transform.id)}
-				{@const decal = $designCar.decals[d]}
-				<div
-					class="absolute left-0 top-0 h-0 w-0 select-none"
-					class:z-10={$selectedSlot === d}
-					use:draggable={{
-						position: transform,
-						onDrag: (dragEvent) => onDrag(dragEvent, d),
-						onDragStart: () => onDragStart(d),
-						onDragEnd,
-					}}
-				>
-					<button
-						class="relative left-[-50px] top-[-50px] h-[100px] w-[100px] cursor-move rounded-xl"
-						style:transform-origin="50px 50px"
-						style:transform="rotate({transform.rotate}deg) scale({transform.scale})"
-						use:clickoutside={{
-							limit: { parent: containerElement },
-							enabled: !clickOutsideCooldown,
-						}}
-						on:mouseenter={() =>
-							!$dragging && !resizing && !rotating && hoveredSlot.set(d)}
-						on:mouseleave={() => hoveredSlot.set(null)}
-						on:focus={() => hoveredSlot.set(d)}
-						on:blur={() => hoveredSlot.set(null)}
-						on:clickoutside={() => {
-							selectedSlot.set(null)
-							dirtyCanvas.set(true)
-						}}
-						on:click|stopPropagation
+			<div class="absolute left-0 top-0 w-full touch-none">
+				{#each draggables as transform, d (transform.id)}
+					{@const decal = $designCar.decals[d]}
+					{@const boundingBox = getDecalBoundingBox(decal)}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 375 300"
+						width="100%"
+						class="pointer-events-none absolute left-0 top-0 touch-none overflow-visible"
+						class:z-10={$selectedSlot === d}
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="w-full overflow-visible"
-							viewBox="-50 -50 100 100"
+						<g
+							class="pointer-events-auto cursor-move select-none outline-none"
 							class:opacity-0={$selectedSlot !== d && $hoveredSlot !== d}
 							class:opacity-50={$selectedSlot !== d && $hoveredSlot === d}
+							use:draggable={{
+								position: transform,
+								onDrag: (dragEvent) => onDrag(dragEvent, d),
+								onDragStart: () => onDragStart(d),
+								onDragEnd,
+							}}
+							use:clickoutside={{
+								limit: { parent: containerElement },
+								enabled: !clickOutsideCooldown,
+							}}
+							on:mouseenter={() =>
+								!$dragging && !resizing && !rotating && hoveredSlot.set(d)}
+							on:mouseleave={() => hoveredSlot.set(null)}
+							on:focus={() => hoveredSlot.set(d)}
+							on:blur={() => hoveredSlot.set(null)}
+							on:clickoutside={() => {
+								selectedSlot.set(null)
+								dirtyCanvas.set(true)
+							}}
+							on:click|stopPropagation
+							on:keypress
+							role="button"
+							tabindex={d + 1}
 						>
-							<BoundingBox
-								scale={transform.scale}
-								animate={$selectedSlot === d && !transforming}
-								corners={$selectedSlot !== d}
-								strokeWidthScale={1 / canvasScale}
-								faded={$selectedSlot === d && transforming}
-							/>
-							<g class:opacity-25={$selectedSlot === d}>
-								<Decal
-									name={decal.name}
-									fill={decal.fill}
-									params={decal.params}
-									transition={['fill', 'stroke']}
+							<g style:transform="rotate({decal.rotate}deg) scale({decal.scale})">
+								<g class="opacity-50">
+									<Decal
+										name={decal.name}
+										fill={decal.fill}
+										params={decal.params}
+										transition={['fill', 'stroke']}
+									/>
+								</g>
+								<BoundingBox
+									{...boundingBox}
+									scale={transform.scale}
+									animate={$selectedSlot === d && !transforming}
+									corners={$selectedSlot !== d}
+									strokeWidthScale={1 / canvasScale}
+									faded={$selectedSlot === d && transforming}
+									fullHitbox={$selectedSlot === d}
 								/>
 							</g>
-						</svg>
-					</button>
-				</div>
-			{/each}
+						</g>
+					</svg>
+				{/each}
+			</div>
+
 			{#if $selectedSlot !== null}
 				{@const transform = draggables[$selectedSlot]}
-				{#key $selectedSlot}
+				{@const decal = $designCar.decals[$selectedSlot]}
+				{@const boundingBox = getDecalBoundingBox(decal)}
+				{#key decal.id}
 					<div
-						class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-0 w-0"
+						class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-0 w-0 select-none"
 						style:transform-origin="50px 50px"
 						style:transform="translate({transform.x}px,{transform.y}px) rotate({transform.rotate}deg)"
 						transition:fade={{ duration: 50 }}
 					>
 						{#each corners as [xDir, yDir], c}
 							<div
-								style:transform="translate({((transform.scale - 1) * 50 + 55) *
-									xDir}px,{((transform.scale - 1) * 50 + 55) * yDir}px)"
+								style:transform="translate({transform.scale *
+									((xDir * boundingBox.width) / 2) +
+									5 * xDir}px,{transform.scale * ((yDir * boundingBox.height) / 2) +
+									5 * yDir}px)"
 							>
 								<button
 									on:pointerdown={() => startResize(c)}
@@ -337,8 +389,8 @@
 							</div>
 						{/each}
 						<div
-							class="transition-transform"
-							style:transform="translate(0, {transform.scale * 50 + 32 / canvasScale}px)"
+							style:transform="translate(0, {(transform.scale * boundingBox.height) / 2 +
+								32 / canvasScale}px)"
 						>
 							<button
 								on:pointerdown={() => startRotate()}

@@ -1,7 +1,7 @@
+import type { DecalDataWithId } from '$lib/server/schemas'
 import type { Transform } from '$lib/types'
+import { decalDefs } from 'grace-train-lib/components'
 import type { DesignStores } from '../stores'
-
-export const DECAL_RADIUS = 50 * Math.SQRT2
 
 export function updateDecalTransform(
 	cars: DesignStores['localCars'],
@@ -33,4 +33,8 @@ export function removeDecal(
 		c[shortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
 		return c
 	})
+}
+
+export function getDecalBoundingBox(decal: DecalDataWithId) {
+	return decalDefs[decal.name].getBoundingBox(decal.params)
 }

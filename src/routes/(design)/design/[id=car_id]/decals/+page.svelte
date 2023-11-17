@@ -66,7 +66,6 @@
 		class="lg:remove-glass-bg glass-bg rounded-box sticky top-0 z-10 w-full overflow-clip bg-neutral lg:relative lg:w-1/2"
 	>
 		<DecalCanvas
-			car={$designCar}
 			setTestDot={(x, y) => {
 				testDot.x = x
 				testDot.y = y
@@ -87,15 +86,17 @@
 							on:blur={() => hoveredSlot.set(null)}
 						>
 							<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
-								<Decal
-									name={decal.name}
-									fill={decal.fill}
-									params={decal.params}
-									scale={0.7 + Math.log10(decal.scale) * 0.8}
-									rotate={decal.rotate}
-									transition={['fill', 'opacity']}
-									animateAppear
-								/>
+								<g transform="scale({0.7 - Math.log10(decal.scale) / 1.5})">
+									<Decal
+										name={decal.name}
+										fill={decal.fill}
+										params={decal.params}
+										scale={decal.scale}
+										rotate={decal.rotate}
+										transition={['fill', 'opacity']}
+										animateAppear
+									/>
+								</g>
 								<BoundingBox
 									scale={0.5}
 									strokeWidthScale={0.75}
@@ -138,7 +139,8 @@
 		{/if}
 	</div>
 	<!-- <div
-			class="absolute left-0 top-0 z-50 h-[3px] w-[3px] rounded-sm bg-red-600"
-			style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"
-		/> -->
+		id="testDot"
+		class="absolute left-0 top-0 z-50 h-[3px] w-[3px] rounded-sm bg-red-600"
+		style:transform="translate({testDot.x - 1.5}px,{testDot.y - 1.5}px)"
+	/> -->
 </section>

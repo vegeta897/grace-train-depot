@@ -86,7 +86,7 @@
 					maxlength={CAR_NAME_MAX_LENGTH}
 				/>
 			</div>
-			<button class="btn btn-primary btn-lg"
+			<button class="btn btn-primary btn-lg font-black tracking-wide"
 				>{#if $designCar.published}Save{:else}Publish{/if} Car</button
 			>
 			<button

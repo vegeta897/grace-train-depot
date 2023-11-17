@@ -1,21 +1,32 @@
 <script lang="ts">
+	$$restProps
 	export let scale: number = 1
+	export let width = 100
+	export let height = 100
 	export let faded: boolean = false
 	export let corners: boolean = true
 	export let animate: boolean = false
 	export let hidden: boolean = false
 	export let strokeWidthScale = 1
+	export let fullHitbox: boolean = false
 
-	$: size = 100 + 10 / scale
-	$: rect = { x: -size / 2, y: -size / 2, width: size, height: size }
-	$: dashSize = size / 4 / 2
-	$: gapSize = size / 4 / 2
+	$: pad = 10 / scale
+	$: paddedWidth = width + pad
+	$: paddedHeight = height + pad
+	$: rect = {
+		x: -width / 2 - pad / 2,
+		y: -height / 2 - pad / 2,
+		width: paddedWidth,
+		height: paddedHeight,
+	}
+	$: dashSize = paddedWidth / 4 / 2
+	$: gapSize = paddedWidth / 4 / 2
 	$: stroke = {
 		stroke: '#fff',
 		'stroke-width': (5 / scale) * strokeWidthScale,
 		'stroke-dasharray': `${dashSize} ${gapSize}`,
 	}
-	$: pathData = drawPath(size, corners)
+	$: pathData = drawPath(paddedWidth, true /*corners*/)
 	$: transition = animate
 		? 'stroke-width 150ms cubic-bezier(0.4,0,0.2,1), opacity 150ms cubic-bezier(0.4,0,0.2,1)'
 		: 'none'
@@ -45,15 +56,23 @@
 	}
 </script>
 
-<!-- Invisible square for hitbox -->
-<rect {...rect} fill="#fff0" stroke="none" />
+{#if fullHitbox}<rect {...rect} fill="#fff0" stroke="none" />{/if}
 {#if !hidden}
-	<path
+	<!-- <path
+		class="pointer-events-none"
 		style:transition
 		class:opacity-30={faded}
 		d={pathData}
 		{...stroke}
 		stroke-linecap="round"
 		fill="none"
-	/>
+	/> -->
 {/if}
+<rect
+	class="pointer-events-none"
+	{...rect}
+	stroke="#ff0"
+	stroke-width="2"
+	stroke-dasharray="5"
+	fill="none"
+/>

@@ -32,7 +32,7 @@
 		<div class="w-full max-w-lg rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10">
 			<h2 class="mb-4 text-xl">Hello, {data.user.twitchDisplayName}!</h2>
 			<div class="grid grid-cols-1 gap-4 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-				<div class="tooltip tooltip-success tooltip-bottom" data-tip="Make a new car">
+				<div class="tooltip tooltip-bottom tooltip-success" data-tip="Make a new car">
 					<a
 						href="/design/new"
 						data-sveltekit-preload-data="tap"
@@ -44,7 +44,7 @@
 					{#each data.savedCars as car}
 						<div class="indicator w-full">
 							<span
-								class="indicator-center indicator-bottom badge indicator-item font-black uppercase"
+								class="badge indicator-item indicator-center indicator-bottom font-black uppercase tracking-wide"
 								class:badge-primary={car.published}
 								class:badge-warning={!car.published}
 							>
@@ -96,7 +96,7 @@
 				>
 					<div class="flex max-w-lg flex-col items-start">
 						<h1
-							class="whitespace-nowrap pb-1 text-4xl font-black uppercase xs:pb-2 xs:text-5xl"
+							class="whitespace-nowrap pb-1 text-4xl font-black uppercase tracking-wide xs:pb-2 xs:text-5xl"
 						>
 							Choo Choo!
 						</h1>
@@ -107,7 +107,8 @@
 						<a
 							href="/login"
 							data-sveltekit-reload
-							class="btn btn-secondary btn-lg mb-4 font-black">Twitch Login</a
+							class="btn btn-secondary btn-lg mb-4 font-black tracking-wide"
+							>Twitch Login</a
 						>
 						<a href="/design/new" class="link opacity-70 hover:opacity-100"
 							>Just start designing</a
