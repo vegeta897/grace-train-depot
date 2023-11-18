@@ -338,9 +338,9 @@
 									/>
 								</g>
 								<BoundingBox
-									{...boundingBox}
+									width={boundingBox.width}
+									height={boundingBox.height}
 									scale={transform.scale}
-									animate={$selectedSlot === d && !transforming}
 									corners={$selectedSlot !== d}
 									strokeWidthScale={1 / canvasScale}
 									faded={$selectedSlot === d && transforming}

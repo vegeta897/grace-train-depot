@@ -102,7 +102,6 @@
 									strokeWidthScale={0.75}
 									faded={decal.slot !== $selectedSlot}
 									hidden={decal.slot !== $selectedSlot && decal.slot !== $hoveredSlot}
-									animate
 								/>
 							</ContainerSvg>
 						</button>
