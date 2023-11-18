@@ -121,17 +121,27 @@
 				min={0}
 				max={100}
 				step="1"
+				list="sizes"
 				value={Math.round(
 					((decal.scale - DECAL_MIN_SCALE) / SCALE_RANGE) ** (1 / 1.5) * 100
 				)}
 				on:input={(e) => {
 					const inputValue = (+e.currentTarget.value / 100) ** 1.5
 					decal.scale = DECAL_MIN_SCALE + SCALE_RANGE * inputValue
+					// This is kinda meh but whatever
+					if (Math.abs(1 - decal.scale) < 0.01) decal.scale = 1
+					else if (Math.abs(2 - decal.scale) < 0.01) decal.scale = 2
+					else if (Math.abs(3 - decal.scale) < 0.01) decal.scale = 3
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
 				on:change={() => dirtyCanvas.set(true)}
 				class="range range-primary"
 			/>
+			<datalist id="sizes">
+				<option
+					>{Math.round(((1 - DECAL_MIN_SCALE) / SCALE_RANGE) ** (1 / 1.5) * 100)}</option
+				>
+			</datalist>
 		</div>
 		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
 			<label for="size" class="w-16">Spin</label>
