@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
-	import { DECAL_MAX_SLOTS } from '$lib/common/constants'
+	import { DECAL_MAX_SCALE, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
 	import type { DecalDataWithId } from '$lib/server/schemas'
 	import DecalCanvas from './DecalCanvas.svelte'
@@ -11,12 +11,10 @@
 	import { flip } from 'svelte/animate'
 	import BoundingBox from './BoundingBox.svelte'
 	import { browser } from '$app/environment'
+	import { getDecalBoundingBox } from './decals'
 
 	const { localCars, designShortId, designCar } = getDesignStores()
 	const { hoveredSlot, selectedSlot, deleteMode } = getDecalStores()
-
-	// TODO: Prototype a "sliders" mode where x/y/scale/rotate can be set with sliders on one page
-	// Could even adjust decal order/slot with a slider! Embrace the sliders!
 
 	// TODO: Allow choosing body color to act as an "eraser" decal
 
@@ -75,18 +73,22 @@
 	<div class="flex w-full flex-grow items-start gap-1 xs:gap-3 lg:w-1/2">
 		{#if $designCar.decals.length > 0}
 			<ul class="flex w-[3.25rem] flex-col-reverse justify-end rounded-lg bg-neutral p-1">
-				{#each $designCar.decals as decal, d (decal.id)}
+				{#each $designCar.decals as decal (decal.id)}
+					{@const { width: bw, height: bh } = getDecalBoundingBox(decal)}
+					{@const normalize = 80 / Math.max(bw, bh, 100)}
+					{@const upscale =
+						(Math.log((decal.scale - 0.5) / (DECAL_MAX_SCALE - 0.5) + 0.5) + 0.7) * 0.2}
 					<li class="flex" animate:flip={{ duration: 150 }}>
 						<button
-							class="btn btn-ghost btn-sm h-11 w-11 p-1 hover:bg-transparent"
+							class="btn btn-ghost btn-sm h-11 w-11 touch-manipulation p-1 hover:bg-transparent"
 							on:click={() => clickDecalSlot(decal.slot)}
-							on:mouseenter={() => hoveredSlot.set(decal.slot)}
-							on:mouseleave={() => hoveredSlot.set(null)}
+							on:pointerenter={() => hoveredSlot.set(decal.slot)}
+							on:pointerleave={() => hoveredSlot.set(null)}
 							on:focus={() => hoveredSlot.set(decal.slot)}
 							on:blur={() => hoveredSlot.set(null)}
 						>
 							<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
-								<g transform="scale({0.7 - Math.log10(decal.scale) / 1.5})">
+								<g transform="scale({(normalize + upscale) / decal.scale})">
 									<Decal
 										name={decal.name}
 										fill={decal.fill}
@@ -98,10 +100,11 @@
 									/>
 								</g>
 								<BoundingBox
-									scale={0.5}
-									strokeWidthScale={0.75}
+									scale={1}
+									strokeWidthScale={1.5}
 									faded={decal.slot !== $selectedSlot}
 									hidden={decal.slot !== $selectedSlot && decal.slot !== $hoveredSlot}
+									fullHitbox
 								/>
 							</ContainerSvg>
 						</button>
