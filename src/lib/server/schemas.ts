@@ -40,12 +40,7 @@ const decalSchema = z
 			.lte(DECAL_MAX_SLOTS - 1),
 		params: z.record(
 			z.string(),
-			z.union([
-				z.number(),
-				z.boolean(),
-				z.string().min(0).max(30),
-				z.array(z.union([z.number(), z.string(), z.array(z.number())])),
-			])
+			z.union([z.number(), z.boolean(), z.string().min(0).max(30), z.array(z.any())])
 		),
 	})
 	.refine((decal) => {
