@@ -19,7 +19,7 @@
 	$: pWidth = width + pad
 	$: pHeight = height + pad
 	$: rect = { x: -pWidth / 2, y: -pHeight / 2, width: pWidth, height: pHeight }
-	$: cRadius = (25 + pad) / 2 // Should complement decals with 25 stroke-width corners
+	$: cRadius = Math.min(pWidth / 2, pHeight / 2, (25 + pad) / 2) // Fits stroke-width 25 corners
 	$: ccos = cRadius * cornerCosUnit
 	$: cSize = cRadius - ccos - cRadius * cornerSinUnit
 	$: availableWidth = pWidth - (ccos + cSize) * 2
