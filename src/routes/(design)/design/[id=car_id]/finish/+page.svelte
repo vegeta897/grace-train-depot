@@ -89,9 +89,8 @@
 			<button class="btn btn-primary btn-lg font-black tracking-wide"
 				>{#if $designCar.published}Save{:else}Publish{/if} Car</button
 			>
-			<button
-				formaction="?/save"
-				class="btn btn-link btn-sm normal-case text-base-content"
+			<div class="divider my-1">or</div>
+			<button formaction="?/save" class="link"
 				>Save {#if $designCar.published}and move to drafts{:else}without publishing{/if}</button
 			>
 		</form>
