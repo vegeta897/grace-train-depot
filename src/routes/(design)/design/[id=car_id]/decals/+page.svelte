@@ -14,7 +14,7 @@
 	import { getDecalBoundingBox } from './decals'
 
 	const { localCars, designShortId, designCar } = getDesignStores()
-	const { hoveredSlot, selectedSlot, deleteMode } = getDecalStores()
+	const { hoveredSlot, selectedSlot } = getDecalStores()
 
 	// TODO: Allow choosing body color to act as an "eraser" decal
 

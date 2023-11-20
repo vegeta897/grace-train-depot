@@ -14,8 +14,7 @@
 	import type { DecalData } from '$lib/server/schemas'
 	import { capitalize } from '$lib/util'
 	import { cloneDecal } from '$lib/car'
-
-	const SCALE_RANGE = DECAL_MAX_SCALE - DECAL_MIN_SCALE
+	import StripesControls from './StripesControls.svelte'
 
 	export let slot: number
 
@@ -23,7 +22,11 @@
 	const { selectedSlot, dirtyCanvas } = getDecalStores()
 
 	$: decal = $designCar.decals[slot]
-	$: paramConfig = decalDefs[decal.name].paramConfig
+	$: decalDef = decalDefs[decal.name]
+	$: paramConfig = decalDef.paramConfig
+	$: minScale = decalDef.minScale || DECAL_MIN_SCALE
+	$: maxScale = decalDef.maxScale || DECAL_MAX_SCALE
+	$: scaleRange = maxScale - minScale
 
 	let toolMode: null | 'shape' = null
 
@@ -66,7 +69,7 @@
 				cars[$designShortId].decals[slot].name = name
 				if (fill) cars[$designShortId].decals[slot].fill = fill as DecalData['fill']
 				cars[$designShortId].decals[slot].params =
-					params || decalDefs[name].getDefaultParamsObject()
+					params || decalDef.getDefaultParamsObject()
 			}
 			return cars
 		})
@@ -91,6 +94,11 @@
 
 <div class="rounded-box grid grid-flow-row-dense grid-cols-4 gap-2 bg-neutral p-2 xs:p-4">
 	{#if toolMode === null}
+		{#if decal.name === 'stripes'}
+			<div class="col-span-4 rounded-xl bg-base-100 p-2 xs:p-4">
+				<StripesControls {decal} />
+			</div>
+		{/if}
 		{#if !decalDefs[decal.name].noFill}
 			<!-- TODO: Make these controls into components -->
 			<div
@@ -122,12 +130,10 @@
 				max={100}
 				step="1"
 				list="sizes"
-				value={Math.round(
-					((decal.scale - DECAL_MIN_SCALE) / SCALE_RANGE) ** (1 / 1.5) * 100
-				)}
+				value={Math.round(((decal.scale - minScale) / scaleRange) ** (1 / 1.5) * 100)}
 				on:input={(e) => {
 					const inputValue = (+e.currentTarget.value / 100) ** 1.5
-					decal.scale = DECAL_MIN_SCALE + SCALE_RANGE * inputValue
+					decal.scale = minScale + scaleRange * inputValue
 					// This is kinda meh but whatever
 					if (Math.abs(1 - decal.scale) < 0.01) decal.scale = 1
 					else if (Math.abs(2 - decal.scale) < 0.01) decal.scale = 2
@@ -138,9 +144,7 @@
 				class="range range-primary"
 			/>
 			<datalist id="sizes">
-				<option
-					>{Math.round(((1 - DECAL_MIN_SCALE) / SCALE_RANGE) ** (1 / 1.5) * 100)}</option
-				>
+				<option>{Math.round(((1 - minScale) / scaleRange) ** (1 / 1.5) * 100)}</option>
 			</datalist>
 		</div>
 		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">

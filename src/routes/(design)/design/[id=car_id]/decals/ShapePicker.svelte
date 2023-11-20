@@ -43,7 +43,7 @@
 	]
 </script>
 
-<div class="rounded-box flex items-start gap-2 bg-base-300 p-2 sm:gap-0 sm:p-4">
+<div class="rounded-box flex items-start gap-2 bg-base-200 p-2 sm:gap-0 sm:p-4">
 	<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
 		{#each tabs[selectedTabIndex] as { name, defaultFill, defaultParams }}
 			{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}

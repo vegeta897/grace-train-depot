@@ -13,11 +13,13 @@
 	import { getDesignStores } from '../stores'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
+	import { cubicOut } from 'svelte/easing'
 
 	export let setTestDot: (x: number, y: number) => void = () => {}
 
 	const { localCars, designShortId, designCar } = getDesignStores()
-	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas } = getDecalStores()
+	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas, previewDecal } =
+		getDecalStores()
 
 	$: draggables = $designCar.decals.map((d) => {
 		return {
@@ -292,6 +294,8 @@
 			<div class="absolute left-0 top-0 w-full touch-none">
 				{#each draggables as transform, d (transform.id)}
 					{@const decal = $designCar.decals[d]}
+					{@const params =
+						decal.id === $previewDecal?.id ? $previewDecal.params : decal.params}
 					{@const boundingBox = getDecalBoundingBox(decal)}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -329,23 +333,23 @@
 							tabindex={d + 1}
 						>
 							<g style:transform="rotate({decal.rotate}deg) scale({decal.scale})">
-								<g class="opacity-50">
-									<Decal
-										name={decal.name}
-										fill={decal.fill}
-										params={decal.params}
-										transition={['fill', 'stroke']}
-									/>
-								</g>
 								<BoundingBox
 									width={boundingBox.width}
 									height={boundingBox.height}
 									scale={transform.scale}
-									corners={$selectedSlot !== d}
+									corners={$selectedSlot !== d || $previewDecal !== null}
 									strokeWidthScale={1 / canvasScale}
 									faded={$selectedSlot === d && transforming}
 									fullHitbox={$selectedSlot === d}
 								/>
+								<g class="opacity-60">
+									<Decal
+										name={decal.name}
+										fill={decal.fill}
+										{params}
+										transition={['fill', 'stroke']}
+									/>
+								</g>
 							</g>
 						</g>
 					</svg>
@@ -361,28 +365,33 @@
 						class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-0 w-0 select-none"
 						style:transform-origin="50px 50px"
 						style:transform="translate({transform.x}px,{transform.y}px) rotate({transform.rotate}deg)"
-						transition:fade={{ duration: 50 }}
+						transition:fade={{ duration: 50, easing: cubicOut }}
 					>
-						{#each corners as [xDir, yDir], c}
-							<div
-								style:transform="translate({transform.scale *
-									((xDir * boundingBox.width) / 2) +
-									5 * xDir}px,{transform.scale * ((yDir * boundingBox.height) / 2) +
-									5 * yDir}px)"
-							>
-								<button
-									on:pointerdown={() => startResize(c)}
-									style:transform="scale({((resizing && getCornerScale(c)) ||
-										(rotating || $dragging ? 0.5 : 1)) / canvasScale})"
-									class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
-									class:transition-transform={!resizing}
-									class:transition-opacity={!resizing}
-									class:opacity-30={transforming}
-									class:!opacity-60={resizing?.corner === c}
-									style:cursor={getCornerCursor(Math.abs(xDir + yDir), transform.rotate)}
-								/>
-							</div>
-						{/each}
+						{#if $previewDecal === null}
+							{#each corners as [xDir, yDir], c}
+								<div
+									style:transform="translate({transform.scale *
+										((xDir * boundingBox.width) / 2) +
+										5 * xDir}px,{transform.scale * ((yDir * boundingBox.height) / 2) +
+										5 * yDir}px)"
+								>
+									<button
+										on:pointerdown={() => startResize(c)}
+										style:transform="scale({((resizing && getCornerScale(c)) ||
+											(rotating || $dragging ? 0.5 : 1)) / canvasScale})"
+										class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
+										class:transition-transform={!resizing}
+										class:transition-opacity={!resizing}
+										class:opacity-30={transforming}
+										class:!opacity-60={resizing?.corner === c}
+										style:cursor={getCornerCursor(
+											Math.abs(xDir + yDir),
+											transform.rotate
+										)}
+									/>
+								</div>
+							{/each}
+						{/if}
 						<div
 							style:transform="translate(0, {(transform.scale * boundingBox.height) / 2 +
 								32 / canvasScale}px)"

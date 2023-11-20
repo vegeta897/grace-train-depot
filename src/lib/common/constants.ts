@@ -13,6 +13,8 @@ export const DECAL_MAX_SLOTS = 10
 export const DECAL_MIN_SCALE = 0.5
 export const DECAL_MAX_SCALE = 4
 
+export const STRIPES_MAX_NODES = 10
+
 export const TOPPER_MAX_SLOTS = 3
 export const TOPPER_MIN_SCALE = 0.5
 export const TOPPER_MAX_SCALE = 1.2
