@@ -2,6 +2,7 @@ import type { DecalDataWithId } from '$lib/server/schemas'
 import type { Transform } from '$lib/types'
 import { decalDefs } from 'grace-train-lib/components'
 import type { DesignStores } from '../stores'
+import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 
 export function updateDecalTransform(
 	cars: DesignStores['localCars'],
@@ -11,7 +12,13 @@ export function updateDecalTransform(
 ) {
 	cars.update((c) => {
 		const decal = c[shortId].decals[slot]
-		decal.scale = Math.round(transform.scale * 500) / 500
+		const decalDef = decalDefs[decal.name]
+		const minScale = decalDef.minScale || DECAL_MIN_SCALE
+		const maxScale = decalDef.maxScale || DECAL_MAX_SCALE
+		decal.scale = Math.max(
+			minScale,
+			Math.min(maxScale, Math.round(transform.scale * 500) / 500)
+		)
 		decal.rotate = transform.rotate
 		const radians = (decal.rotate / 180) * Math.PI
 		const xComponent = Math.abs(Math.cos(radians))
