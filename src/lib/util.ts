@@ -37,6 +37,8 @@ export function objectContainsTrue(object: Record<string, any>) {
 
 export const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
+export const degToRad = (degrees: number) => degrees * (Math.PI / 180)
+
 // Wrapper for neodrag to broaden HTMLElement type to Element
 export const draggable = neodraggable as Action<
 	Element,

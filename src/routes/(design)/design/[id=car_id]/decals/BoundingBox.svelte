@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { degToRad } from '$lib/util'
+
 	export let scale: number = 1
 	export let width = 100
 	export let height = 100
@@ -7,8 +9,6 @@
 	export let hidden: boolean = false
 	export let strokeWidthScale = 1
 	export let fullHitbox: boolean = false
-
-	const degToRad = (deg: number) => deg * (Math.PI / 180)
 
 	const cornerAngleTrim = 25 // 25 deg trim = 40 deg sweep
 	const cornerCosUnit = 1 - Math.cos(degToRad(cornerAngleTrim))

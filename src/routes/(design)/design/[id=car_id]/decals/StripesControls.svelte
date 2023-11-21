@@ -9,11 +9,24 @@
 	import { getDecalStores } from './stores'
 	import { onDestroy } from 'svelte'
 	import { STRIPES_MAX_NODES } from '$lib/common/constants'
+	import { degToRad } from '$lib/util'
 
 	export let decal: DecalDataWithId
 
 	$: nodes = decal.params.nodes as StripesNode[]
-	$: selectedNode = adding || expandNodeTuple(nodes[nodes.length - 1 - prevNode])
+	$: selectedNode = adding || expandNodeTuple(nodes[nodes.length - prevNode])
+	$: if (prevNode > 0) {
+		previewDecal.set({
+			...decal,
+			params: {
+				...decal.params,
+				highlightNode: nodes.length - prevNode,
+				highlightColor: '#58c7f3',
+			},
+		})
+	} else if (!adding) {
+		previewDecal.set(null)
+	}
 
 	const { localCars } = getDesignStores()
 	const { dirtyCanvas, selectedSlot, previewDecal } = getDecalStores()
@@ -38,10 +51,9 @@
 			const updatedNode = trimNodeTuple(selectedNode)
 			localCars.update((lc) => {
 				const metrics = getStripesMetrics(decal.params as StripesParams)
-				nodes[nodes.length - 1 - prevNode] = updatedNode
+				nodes[nodes.length - prevNode] = updatedNode
 				const newMetrics = getStripesMetrics(decal.params as StripesParams)
-				decal.x += newMetrics.boundingBox.ox - metrics.boundingBox.ox
-				decal.y += newMetrics.boundingBox.oy - metrics.boundingBox.oy
+				applyNewDecalParams(decal, metrics, newMetrics)
 				dirtyCanvas.set(true)
 				return lc
 			})
@@ -53,11 +65,17 @@
 		else
 			previewDecal.set({
 				...decal,
-				params: { ...decal.params, nodes: [...nodes, adding] },
+				params: {
+					...decal.params,
+					nodes: [...nodes, adding],
+					highlightNode: nodes.length,
+					highlightColor: '#71ead2',
+				},
 			})
 	}
 
 	function expandNodeTuple(node: StripesNode): StripesNode {
+		if (!node) return node
 		return [node[0] || 0, node[1] || 0, node[2] || []]
 	}
 
@@ -70,6 +88,21 @@
 		return trimmed
 	}
 
+	type StripesMetrics = ReturnType<typeof getStripesMetrics>
+
+	function applyNewDecalParams(
+		decal: DecalDataWithId,
+		oldMetrics: StripesMetrics,
+		newMetrics: StripesMetrics
+	) {
+		const dx = newMetrics.boundingBox.ox - oldMetrics.boundingBox.ox
+		const dy = newMetrics.boundingBox.oy - oldMetrics.boundingBox.oy
+		const sin = Math.sin(degToRad(decal.rotate))
+		const cos = Math.cos(degToRad(decal.rotate))
+		decal.x += (dx * cos - dy * sin) * decal.scale
+		decal.y += (dy * cos + dx * sin) * decal.scale
+	}
+
 	function addNode() {
 		if (!adding) return
 		const addedNode = trimNodeTuple(adding)
@@ -79,8 +112,7 @@
 				...decal.params,
 				nodes: [...nodes, addedNode],
 			} as StripesParams)
-			decal.x += newMetrics.boundingBox.ox - metrics.boundingBox.ox
-			decal.y += newMetrics.boundingBox.oy - metrics.boundingBox.oy
+			applyNewDecalParams(decal, metrics, newMetrics)
 			nodes.push(addedNode)
 			adding = null
 			dirtyCanvas.set(true) // Decal has changed size and position
@@ -94,8 +126,7 @@
 			const metrics = getStripesMetrics(decal.params as StripesParams)
 			nodes.length = nodes.length - 1
 			const newMetrics = getStripesMetrics(decal.params as StripesParams)
-			decal.x += newMetrics.boundingBox.ox - metrics.boundingBox.ox
-			decal.y += newMetrics.boundingBox.oy - metrics.boundingBox.oy
+			applyNewDecalParams(decal, metrics, newMetrics)
 			dirtyCanvas.set(true)
 			return cars
 		})
@@ -103,10 +134,20 @@
 </script>
 
 <div class="grid grid-flow-dense grid-cols-3 gap-2">
-	<ul class="steps col-span-3">
+	<h3 class="col-span-3 mb-1 text-center text-2xl font-black uppercase tracking-wide">
 		{#if adding}
+			Add segment
+		{:else if prevNode > 0}
+			Edit segment
+		{:else}
+			Stripes design
+		{/if}
+	</h3>
+	<!-- <ul class="steps col-span-3">
+		{#if nodes.length < STRIPES_MAX_NODES}
 			<li
 				data-content="+"
+				class:step-success={adding !== null}
 				class="step step-success !min-w-[2rem] text-2xl font-black"
 			></li>
 		{/if}
@@ -114,10 +155,10 @@
 			<li
 				data-content="●"
 				class="step !min-w-[2rem]"
-				class:step-secondary={adding === null && n === prevNode}
+				class:step-secondary={adding === null && n === prevNode - 1}
 			></li>
 		{/each}
-	</ul>
+	</ul> -->
 	{#if adding !== null}
 		<button
 			on:click={addNode}
@@ -149,7 +190,7 @@
 		{/if}
 		<button
 			on:click={() => prevNode++}
-			disabled={prevNode === nodes.length - 1}
+			disabled={prevNode === nodes.length}
 			class="btn btn-lg text-xl">&gt;</button
 		>
 	{/if}
@@ -158,37 +199,39 @@
 		disabled={adding !== null || nodes.length === 1}
 		class="btn btn-lg text-xl hover:btn-error">🗑️</button
 	>
-	<div class="col-span-3 flex flex-col gap-1">
-		<label for="length" class="w-16">Length</label>
-		<input
-			id="length"
-			type="range"
-			class="range"
-			min="0"
-			max="8"
-			value={selectedNode[1]}
-			on:input={(e) => {
-				selectedNode[1] = +e.currentTarget.value
-				updateNode()
-			}}
-		/>
-	</div>
-	<div class="col-span-3 flex flex-col gap-1">
-		<label for="angle" class="w-16">Angle</label>
-		<input
-			id="angle"
-			type="range"
-			class="range"
-			min="-90"
-			max="90"
-			step="30"
-			value={selectedNode[0]}
-			on:input={(e) => {
-				selectedNode[0] = +e.currentTarget.value
-				updateNode()
-			}}
-		/>
-	</div>
+	{#if selectedNode}
+		<div class="col-span-3 flex flex-col gap-1">
+			<label for="length" class="w-16">Length</label>
+			<input
+				id="length"
+				type="range"
+				class="range"
+				min="0"
+				max="8"
+				value={selectedNode[1]}
+				on:input={(e) => {
+					selectedNode[1] = +e.currentTarget.value
+					updateNode()
+				}}
+			/>
+		</div>
+		<div class="col-span-3 flex flex-col gap-1">
+			<label for="angle" class="w-16">Angle</label>
+			<input
+				id="angle"
+				type="range"
+				class="range"
+				min="-90"
+				max="90"
+				step="30"
+				value={selectedNode[0]}
+				on:input={(e) => {
+					selectedNode[0] = +e.currentTarget.value
+					updateNode()
+				}}
+			/>
+		</div>
+	{/if}
 </div>
 <p>Adding: {adding}</p>
 <p>Nodes: {nodes.length}</p>
