@@ -98,9 +98,10 @@
 
 	onMount(() => {
 		dirtyCanvas.set(true)
-		setTimeout(() => canvasElement.classList.add('transition-transform'))
+		setTimeout(() => canvasElement?.classList.add('transition-transform'))
 	})
 
+	let snapping = false
 	$: transforming = !!($dragging || resizing || rotating)
 
 	const onDragStart = (slot: number) => {
@@ -128,7 +129,6 @@
 		// 		for (let otherDraggable of draggables) {
 		// 			if (otherDraggable === transform) continue
 		// 			for (let otherSnap of otherDraggable.snapPoints) {
-		// 				// TODO: Snap to angle if within 10 degrees
 		// 				if (Math.abs(otherSnap.angle - snapPoint.angle) % 360 !== 180) continue
 		// 				const snapDeltaX = otherSnap.x - draggedSnapX
 		// 				const snapDeltaY = otherSnap.y - draggedSnapY
@@ -231,11 +231,13 @@
 			calcRotate: (x: number, y: number) => {
 				let angle = Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
 				angle = wrapNumber(angle, -180, 180)
-				const snapped = snapRotation(angle)
-				rotating!.snap = false
-				if (snapped !== false) {
-					angle = snapped
-					rotating!.snap = true
+				if (snapping) {
+					const snapped = snapRotation(angle)
+					rotating!.snap = false
+					if (snapped !== false) {
+						angle = snapped
+						rotating!.snap = true
+					}
 				}
 				return Math.round(angle * 10) / 10
 			},
@@ -355,7 +357,6 @@
 					</svg>
 				{/each}
 			</div>
-
 			{#if $selectedSlot !== null}
 				{@const transform = draggables[$selectedSlot]}
 				{@const decal = $designCar.decals[$selectedSlot]}
@@ -426,15 +427,24 @@
 			/> -->
 		</div>
 	</div>
-	{#if $selectedSlot !== null}
+	{#if $selectedSlot !== null && !transforming}
 		{@const slot = $selectedSlot}
 		<button
+			in:fade={{ duration: 150, easing: cubicOut }}
+			on:click|preventDefault={() => (snapping = !snapping)}
+			class="glass-bg btn btn-circle absolute bottom-2 left-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
+			class:btn-secondary={snapping}
+		>
+			🧲
+		</button>
+		<button
+			in:fade={{ duration: 150, easing: cubicOut }}
 			on:click|preventDefault={() => {
 				removeDecal(localCars, $designShortId, slot)
 				selectedSlot.set(null)
 				dirtyCanvas.set(true)
 			}}
-			class="glass-bg btn btn-circle absolute bottom-2 right-2 h-12 w-12 text-2xl opacity-50 hover:btn-error hover:opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
+			class="glass-bg btn btn-circle absolute bottom-2 right-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:bg-error hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
 		>
 			🗑️
 		</button>
