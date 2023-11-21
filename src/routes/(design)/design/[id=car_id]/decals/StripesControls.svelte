@@ -124,7 +124,7 @@
 	function removeNode() {
 		localCars.update((cars) => {
 			const metrics = getStripesMetrics(decal.params as StripesParams)
-			nodes.length = nodes.length - 1
+			nodes.splice(nodes.length - prevNode, 1)
 			const newMetrics = getStripesMetrics(decal.params as StripesParams)
 			applyNewDecalParams(decal, metrics, newMetrics)
 			dirtyCanvas.set(true)
@@ -134,7 +134,7 @@
 </script>
 
 <div class="grid grid-flow-dense grid-cols-3 gap-2">
-	<h3 class="col-span-3 mb-1 text-center text-2xl font-black uppercase tracking-wide">
+	<h3 class="col-span-3 mb-1 text-center text-xl font-black uppercase tracking-wide">
 		{#if adding}
 			Add segment
 		{:else if prevNode > 0}
@@ -196,11 +196,11 @@
 	{/if}
 	<button
 		on:click={removeNode}
-		disabled={adding !== null || nodes.length === 1}
+		disabled={nodes.length === 1 || prevNode < 1}
 		class="btn btn-lg text-xl hover:btn-error">🗑️</button
 	>
 	{#if selectedNode}
-		<div class="col-span-3 flex flex-col gap-1">
+		<div class="col-span-3 flex flex-col">
 			<label for="length" class="w-16">Length</label>
 			<input
 				id="length"
@@ -215,7 +215,7 @@
 				}}
 			/>
 		</div>
-		<div class="col-span-3 flex flex-col gap-1">
+		<div class="col-span-3 flex flex-col">
 			<label for="angle" class="w-16">Angle</label>
 			<input
 				id="angle"
