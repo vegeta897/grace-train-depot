@@ -78,6 +78,7 @@
 					{@const normalize = 80 / Math.max(bw, bh, 100)}
 					{@const upscale =
 						(Math.log((decal.scale - 0.5) / (DECAL_MAX_SCALE - 0.5) + 0.5) + 0.7) * 0.2}
+					{@const params = { ...decal.params, extraThickness: 2 }}
 					<li class="flex" animate:flip={{ duration: 150 }}>
 						<button
 							class="btn btn-ghost btn-sm h-11 w-11 touch-manipulation p-1 hover:bg-transparent"
@@ -92,7 +93,7 @@
 									<Decal
 										name={decal.name}
 										fill={decal.fill}
-										params={decal.params}
+										{params}
 										scale={decal.scale}
 										rotate={decal.rotate}
 										transition={['fill', 'opacity']}

@@ -46,7 +46,11 @@
 <div class="rounded-box flex items-start gap-2 bg-base-200 p-2 sm:gap-0 sm:p-4">
 	<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
 		{#each tabs[selectedTabIndex] as { name, defaultFill, defaultParams }}
-			{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}
+			{@const params = {
+				...decalDefs[name].getDefaultParamsObject(),
+				...defaultParams,
+				extraThickness: 2,
+			}}
 			{@const fill = fillOverride || defaultFill}
 			<button
 				on:click={() => onClick({ name, fill, params: defaultParams })}
@@ -61,7 +65,11 @@
 	<div class="divider divider-horizontal mx-2 hidden sm:flex"></div>
 	<div class="join join-vertical">
 		{#each tabs as [{ name, defaultFill: fill, defaultParams }], t}
-			{@const params = { ...decalDefs[name].getDefaultParamsObject(), ...defaultParams }}
+			{@const params = {
+				...decalDefs[name].getDefaultParamsObject(),
+				...defaultParams,
+				extraThickness: 2,
+			}}
 			<button
 				on:click={() => (selectedTabIndex = t)}
 				class="btn join-item h-14 w-14 px-2 sm:h-16 sm:w-16 sm:px-3"
