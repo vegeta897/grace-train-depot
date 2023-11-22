@@ -193,7 +193,7 @@
 						on:change={(e) => setDecalParam(param.name, e.currentTarget.checked)}
 						class="toggle"
 					/>
-				{:else if (param.type = 'stringList')}
+				{:else if param.type === 'stringList' || param.type === 'numberList'}
 					<div
 						class="grid grid-cols-[repeat(auto-fill,_minmax(3.5rem,_1fr))] gap-1 rounded-lg bg-base-100 p-1"
 					>
