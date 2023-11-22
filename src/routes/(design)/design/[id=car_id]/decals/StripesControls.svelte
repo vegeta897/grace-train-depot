@@ -131,6 +131,29 @@
 			return cars
 		})
 	}
+
+	function toggleStripe(node: StripesNode, stripe: number) {
+		if (node[2]?.includes(stripe)) {
+			node[2] = node[2].filter((s) => s !== stripe)
+			if (node[2].length === 0 && node.length === 3) node.length = 2
+		} else {
+			if (!node[2]) node[2] = []
+			node[2].push(stripe)
+		}
+	}
+
+	function onStripeToggleClick(stripe: number) {
+		if (adding) {
+			toggleStripe(adding, stripe)
+			adding = adding
+			updatePreviewDecal()
+		} else if (prevNode > 0) {
+			localCars.update((cars) => {
+				toggleStripe(nodes[nodes.length - prevNode], stripe)
+				return cars
+			})
+		}
+	}
 </script>
 
 <div class="grid grid-flow-dense grid-cols-3 gap-2">
@@ -231,6 +254,16 @@
 				}}
 			/>
 		</div>
+		{#each ['right', 'mid', 'left'] as stripe, s}
+			<button
+				on:click={() => onStripeToggleClick(s)}
+				class="btn btn-lg text-lg leading-tight"
+				class:btn-secondary={selectedNode[2]?.includes(s)}
+				style:grid-column-start={3 - s}
+			>
+				{stripe}
+			</button>
+		{/each}
 	{/if}
 </div>
 <p>Adding: {adding}</p>
