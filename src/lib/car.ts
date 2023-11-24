@@ -15,7 +15,7 @@ export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 }
 
 export function cloneDecal(decal: DecalDataWithId): DecalDataWithId {
-	return { ...decal, params: { ...decal.params } }
+	return { ...decal, params: JSON.parse(JSON.stringify(decal.params)) }
 }
 
 export function getNewCar(): CarDataWithIds {
