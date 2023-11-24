@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
-	import DesignCar from '$lib/components/DesignCar.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import { PUBLIC_HOST } from '$env/static/public'
 	import { fade } from 'svelte/transition'
@@ -10,6 +9,7 @@
 	import { tick } from 'svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
+	import { Car } from 'grace-train-lib/components'
 
 	export let data: PageData
 
@@ -64,7 +64,7 @@
 		class="flex grow flex-col items-center gap-4 p-4 lg:p-8"
 		style:min-width="min(400px, 100%)"
 	>
-		<div class="max-w-[20rem]"><DesignCar car={data.car} /></div>
+		<div class="max-w-[20rem]"><Car car={data.car} /></div>
 	</div>
 	{#if data.car.belongsToUser}
 		<div

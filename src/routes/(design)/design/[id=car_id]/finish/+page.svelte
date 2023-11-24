@@ -1,11 +1,11 @@
 <script lang="ts">
-	import DesignCar from '$lib/components/DesignCar.svelte'
 	import { getDesignStores } from '../stores'
 	import type { ActionData, PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
 	import { applyAction, enhance } from '$app/forms'
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 	import { browser } from '$app/environment'
+	import { Car } from 'grace-train-lib/components'
 
 	export let data: PageData
 	export let form: ActionData
@@ -37,7 +37,7 @@
 
 <section class="flex flex-col items-center">
 	<div class="w-64">
-		{#if browser}<DesignCar car={$designCar} />{/if}
+		{#if browser}<Car car={$designCar} />{/if}
 	</div>
 	{#if form?.invalid || saveError === 'try-again'}
 		<div class="alert alert-error mt-4 w-auto">

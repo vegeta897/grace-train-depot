@@ -1,9 +1,9 @@
 <script lang="ts">
-	import DesignCar from '$lib/components/DesignCar.svelte'
 	import type { PageData } from './$types'
 	import { getDesignStores } from './stores'
 	import { enhance } from '$app/forms'
 	import { browser } from '$app/environment'
+	import { Car } from 'grace-train-lib/components'
 
 	export let data: PageData
 
@@ -14,9 +14,7 @@
 
 <section class="flex flex-col items-center gap-4">
 	{#if browser}
-		<div class="w-48 lg:w-64">
-			<DesignCar car={$designCar} />
-		</div>
+		<div class="w-48 lg:w-64"><Car car={$designCar} /></div>
 		<h3 class="flex items-center gap-2 text-3xl font-black">
 			{#if $designCar.name}<span>{$designCar.name}</span>{/if}
 			<span
