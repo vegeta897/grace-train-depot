@@ -41,6 +41,7 @@
 
 	let prevNode = 0
 	let adding: StripesNode | null = null
+	let lastColors: string[] = COLORS.POP.slice(1, 6)
 
 	function toggleAddMode() {
 		adding = adding ? null : [0, 1, [], true]
@@ -160,6 +161,18 @@
 	function setStripeColor(stripe: number, color: string) {
 		localCars.update((cars) => {
 			decal.params.colors[stripe] = color
+			lastColors[stripe] = color
+			return cars
+		})
+	}
+
+	function setStripeCount(count: number) {
+		localCars.update((cars) => {
+			for (let s = 0; s < count; s++) {
+				decal.params.colors[s] ||= lastColors[s]
+			}
+			decal.params.colors.length = count
+			decal.params.stripeCount = count
 			return cars
 		})
 	}
@@ -274,8 +287,18 @@
 			</button>
 		{/each}
 	{:else}
-		<h4 class="col-span-3 font-black uppercase tracking-wide">Stripe colors</h4>
-		<div class="col-span-3 flex flex-col gap-4">
+		<label for="count" class="col-span-3 font-black uppercase tracking-wide">Count</label>
+		<input
+			id="count"
+			type="range"
+			class="range col-span-3"
+			min="1"
+			max="5"
+			value={decal.params.stripeCount}
+			on:input={(e) => setStripeCount(e.currentTarget.valueAsNumber)}
+		/>
+		<fieldset class="col-span-3 flex flex-col gap-4">
+			<legend class="h-8 font-black uppercase tracking-wide">Colors</legend>
 			{#each decal.params.colors as color, s}
 				<ColorSlider
 					colors={COLORS.POP}
@@ -283,9 +306,9 @@
 					onInput={(color) => setStripeColor(s, color)}
 				/>
 			{/each}
-		</div>
+		</fieldset>
 	{/if}
 </div>
-<p>Adding: {adding}</p>
+<!-- <p>Adding: {adding}</p>
 <p>Nodes: {nodes.length}</p>
-<p>Selected: {selectedNode}</p>
+<p>Selected: {selectedNode}</p> -->
