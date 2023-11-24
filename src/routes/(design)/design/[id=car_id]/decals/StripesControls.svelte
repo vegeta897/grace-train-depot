@@ -173,13 +173,14 @@
 			}
 			decal.params.colors.length = count
 			decal.params.stripeCount = count
+			dirtyCanvas.set(true)
 			return cars
 		})
 	}
 </script>
 
-<div class="grid grid-flow-dense grid-cols-3 gap-2">
-	<h3 class="col-span-3 mb-1 text-center text-xl font-black uppercase tracking-wide">
+<div class="grid grid-flow-dense grid-cols-3 gap-2 gap-y-3">
+	<h3 class="col-span-3 text-center text-xl font-black uppercase tracking-wide">
 		{#if adding}
 			Add segment
 		{:else if prevNode > 0}
@@ -276,27 +277,34 @@
 				}}
 			/>
 		</div>
-		{#each ['right', 'mid', 'left'] as stripe, s}
-			<button
-				on:click={() => onStripeToggleClick(s)}
-				class="btn btn-lg text-lg leading-tight"
-				class:btn-secondary={selectedNode[2]?.includes(s)}
-				style:grid-column-start={3 - s}
-			>
-				{stripe}
-			</button>
-		{/each}
+		<fieldset
+			class="col-span-3 grid gap-2"
+			style:grid-template-columns="repeat({decal.params.colors.length}, minmax(0, 1fr))"
+		>
+			<legend class="col-span-full mb-1">Toggle stripes</legend>
+			{#each decal.params.colors as _, s}
+				<button
+					on:click={() => onStripeToggleClick(s)}
+					class="btn btn-lg text-lg leading-tight"
+					class:btn-secondary={selectedNode[2]?.includes(s)}
+				>
+					{s + 1}
+				</button>
+			{/each}
+		</fieldset>
 	{:else}
-		<label for="count" class="col-span-3 font-black uppercase tracking-wide">Count</label>
-		<input
-			id="count"
-			type="range"
-			class="range col-span-3"
-			min="1"
-			max="5"
-			value={decal.params.stripeCount}
-			on:input={(e) => setStripeCount(e.currentTarget.valueAsNumber)}
-		/>
+		<div class="col-span-3 flex flex-col">
+			<label for="count" class="h-8 font-black uppercase tracking-wide">Count</label>
+			<input
+				id="count"
+				type="range"
+				class="range col-span-3"
+				min="1"
+				max="5"
+				value={decal.params.stripeCount}
+				on:input={(e) => setStripeCount(e.currentTarget.valueAsNumber)}
+			/>
+		</div>
 		<fieldset class="col-span-3 flex flex-col gap-4">
 			<legend class="h-8 font-black uppercase tracking-wide">Colors</legend>
 			{#each decal.params.colors as color, s}
