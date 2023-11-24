@@ -10,6 +10,8 @@
 	import { onDestroy } from 'svelte'
 	import { STRIPES_MAX_NODES } from '$lib/common/constants'
 	import { degToRad } from '$lib/util'
+	import ColorSlider from '../ColorSlider.svelte'
+	import { COLORS } from 'grace-train-lib'
 
 	export let decal: DecalDataWithId
 
@@ -154,6 +156,13 @@
 			})
 		}
 	}
+
+	function setStripeColor(stripe: number, color: string) {
+		localCars.update((cars) => {
+			decal.params.colors[stripe] = color
+			return cars
+		})
+	}
 </script>
 
 <div class="grid grid-flow-dense grid-cols-3 gap-2">
@@ -264,6 +273,17 @@
 				{stripe}
 			</button>
 		{/each}
+	{:else}
+		<h4 class="col-span-3 font-black uppercase tracking-wide">Stripe colors</h4>
+		<div class="col-span-3 flex flex-col gap-4">
+			{#each decal.params.colors as color, s}
+				<ColorSlider
+					colors={COLORS.POP}
+					{color}
+					onInput={(color) => setStripeColor(s, color)}
+				/>
+			{/each}
+		</div>
 	{/if}
 </div>
 <p>Adding: {adding}</p>

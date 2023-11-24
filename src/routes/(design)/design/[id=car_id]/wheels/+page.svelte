@@ -11,9 +11,9 @@
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
-	function setWheelColor(color: CarData['wheelColor']) {
+	function setWheelColor(color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].wheelColor = color
+			cars[$designShortId].wheelColor = color as CarData['wheelColor']
 			return cars
 		})
 	}
@@ -35,7 +35,7 @@
 		<ColorSlider
 			colors={COLORS.POP}
 			color={$designCar.wheelColor || COLORS.POP[1]}
-			onInput={(e) => setWheelColor(COLORS.POP[+e.currentTarget.value])}
+			onInput={setWheelColor}
 		/>
 		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Spread</h3>
 		<input

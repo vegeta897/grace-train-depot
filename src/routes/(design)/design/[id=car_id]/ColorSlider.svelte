@@ -2,11 +2,7 @@
 	export let id = 'color'
 	export let colors: string[] | readonly string[]
 	export let color: string
-	export let onInput: (
-		e: Event & {
-			currentTarget: EventTarget & HTMLInputElement
-		}
-	) => void
+	export let onInput: (color: string, index?: number) => void
 
 	$: colorsGradient = `linear-gradient(to right, ${colors
 		.map((c, i) => `${c} ${Math.round((i / (colors.length - 1)) * 100)}%`)
@@ -23,7 +19,7 @@
 	max={colors.length - 1}
 	step="1"
 	value={colors.indexOf(color)}
-	on:input={onInput}
+	on:input={(e) => onInput(colors[+e.currentTarget.value], +e.currentTarget.value)}
 	class="range-gradient range"
 	style:background="{colorsGradient}, {capsGradient}"
 	style:background-position="0.75rem 0, 0"

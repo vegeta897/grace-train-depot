@@ -16,16 +16,16 @@
 		})
 	}
 
-	function setBodyColor(color: CarData['bodyColor']) {
+	function setBodyColor(color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].bodyColor = color
+			cars[$designShortId].bodyColor = color as CarData['bodyColor']
 			return cars
 		})
 	}
 
-	function setBodyPopColor(color: CarData['bodyPopColor']) {
+	function setBodyPopColor(color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].bodyPopColor = color
+			cars[$designShortId].bodyPopColor = color as CarData['bodyPopColor']
 			return cars
 		})
 	}
@@ -52,13 +52,13 @@
 		<ColorSlider
 			colors={COLORS.BASE}
 			color={$designCar.bodyColor || COLORS.BASE[3]}
-			onInput={(e) => setBodyColor(COLORS.BASE[+e.currentTarget.value])}
+			onInput={setBodyColor}
 		/>
 		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Pop Color</h3>
 		<ColorSlider
 			colors={COLORS.POP}
 			color={$designCar.bodyPopColor || COLORS.POP[1]}
-			onInput={(e) => setBodyPopColor(COLORS.POP[+e.currentTarget.value])}
+			onInput={setBodyPopColor}
 		/>
 	</div>
 </section>

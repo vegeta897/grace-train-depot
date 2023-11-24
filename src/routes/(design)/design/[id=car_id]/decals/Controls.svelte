@@ -76,9 +76,9 @@
 		toolMode = null
 	}
 
-	function setDecalColor(color: DecalData['fill']) {
+	function setDecalColor(color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].decals[slot].fill = color
+			cars[$designShortId].decals[slot].fill = color as DecalData['fill']
 			return cars
 		})
 		// toolMode = null
@@ -106,11 +106,7 @@
 			>
 				<label for="color" class="w-16">Color</label>
 				<div class="h-6 w-full grow">
-					<ColorSlider
-						colors={COLORS.POP}
-						color={decal.fill}
-						onInput={(e) => setDecalColor(COLORS.POP[+e.currentTarget.value])}
-					/>
+					<ColorSlider colors={COLORS.POP} color={decal.fill} onInput={setDecalColor} />
 				</div>
 			</div>
 			<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
