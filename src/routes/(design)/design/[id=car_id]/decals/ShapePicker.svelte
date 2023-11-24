@@ -37,7 +37,11 @@
 		[
 			{
 				name: 'stripes',
-				defaultParams: { nodes: [[-90], [0, 1]], colors: colorRun('POP', 1, 3) },
+				defaultParams: {
+					nodes: [[-90], [0, 1]],
+					colors: colorRun('POP', 1, 3),
+					stripeCount: 3,
+				},
 			},
 		],
 	]

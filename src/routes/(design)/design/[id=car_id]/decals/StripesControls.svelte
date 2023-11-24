@@ -24,6 +24,7 @@
 				...decal.params,
 				highlightNode: nodes.length - prevNode,
 				highlightColor: '#58c7f3',
+				showNodes: true,
 			},
 		})
 	} else if (!adding) {
@@ -42,6 +43,7 @@
 	let prevNode = 0
 	let adding: StripesNode | null = null
 	let lastColors: string[] = COLORS.POP.slice(1, 6)
+	$: (decal.params.colors as string[]).forEach((c, i) => (lastColors[i] = c))
 
 	function toggleAddMode() {
 		adding = adding ? null : [0, 1, [], true]
@@ -161,7 +163,6 @@
 	function setStripeColor(stripe: number, color: string) {
 		localCars.update((cars) => {
 			decal.params.colors[stripe] = color
-			lastColors[stripe] = color
 			return cars
 		})
 	}
