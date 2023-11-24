@@ -170,9 +170,11 @@
 			</datalist>
 		</div>
 		{#each paramConfig as param}
+			{@const fullSpan =
+				(param.type === 'stringList' || param.type === 'numberList') && !param.slider}
 			<div
 				class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col"
-				class:xs:col-span-4={param.type === 'stringList'}
+				class:xs:col-span-4={fullSpan}
 			>
 				<label for={param.name} class="w-16">{capitalize(param.name)}</label>
 				{#if param.type === 'scalar'}
@@ -194,24 +196,38 @@
 						class="toggle"
 					/>
 				{:else if param.type === 'stringList' || param.type === 'numberList'}
-					<div
-						class="grid grid-cols-[repeat(auto-fill,_minmax(3.5rem,_1fr))] gap-1 rounded-lg bg-base-100 p-1"
-					>
-						{#each param.list as listItem}
-							<button
-								class="btn btn-ghost btn-sm h-auto w-full px-2"
-								on:click={() => setDecalParam(param.name, listItem)}
-							>
-								<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
-									<Decal
-										name={decal.name}
-										fill={decal.fill}
-										params={{ ...decal.params, [param.name]: listItem }}
-									/>
-								</ContainerSvg>
-							</button>
-						{/each}
-					</div>
+					{@const list = param.list}
+					{#if param.slider}
+						<input
+							id={param.name}
+							type="range"
+							min={0}
+							max={list.length - 1}
+							step="1"
+							value={list.indexOf(decal.params[param.name])}
+							on:input={(e) => setDecalParam(param.name, list[+e.currentTarget.value])}
+							class="range"
+						/>
+					{:else}
+						<div
+							class="grid grid-cols-[repeat(auto-fill,_minmax(3.5rem,_1fr))] gap-1 rounded-lg bg-base-100 p-1"
+						>
+							{#each param.list as listItem}
+								<button
+									class="btn btn-ghost btn-sm h-auto w-full px-2"
+									on:click={() => setDecalParam(param.name, listItem)}
+								>
+									<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
+										<Decal
+											name={decal.name}
+											fill={decal.fill}
+											params={{ ...decal.params, [param.name]: listItem }}
+										/>
+									</ContainerSvg>
+								</button>
+							{/each}
+						</div>
+					{/if}
 				{/if}
 			</div>
 		{/each}
