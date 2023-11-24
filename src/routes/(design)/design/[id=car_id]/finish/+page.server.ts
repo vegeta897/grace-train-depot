@@ -117,6 +117,7 @@ function transformCarToDB(car: CarData) {
 		bodyPopColor: car.bodyPopColor,
 		wheelColor: car.wheelColor,
 		wheelFromCenter: car.wheelFromCenter,
+		wheelSize: car.wheelSize,
 	}
 }
 

@@ -18,6 +18,8 @@ import {
 	TOPPER_MIN_SCALE,
 	WHEEL_DISTANCE_MAX,
 	WHEEL_DISTANCE_MIN,
+	WHEEL_SIZE_MAX,
+	WHEEL_SIZE_MIN,
 } from '../common/constants'
 import { COLORS } from 'grace-train-lib'
 
@@ -82,6 +84,7 @@ export const carSchema = z.object({
 	bodyPopColor: popColorSchema.optional(),
 	wheelColor: popColorSchema.optional(),
 	wheelFromCenter: z.number().int().gte(WHEEL_DISTANCE_MIN).lte(WHEEL_DISTANCE_MAX),
+	wheelSize: z.number().int().gte(WHEEL_SIZE_MIN).lte(WHEEL_SIZE_MAX),
 	decals: z.array(decalSchema).max(DECAL_MAX_SLOTS),
 	toppers: z.array(topperSchema).max(TOPPER_MAX_SLOTS),
 })

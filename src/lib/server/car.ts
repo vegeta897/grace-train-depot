@@ -20,6 +20,7 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 		bodyPopColor: (carData.bodyPopColor || undefined) as CarData['bodyPopColor'],
 		wheelColor: (carData.wheelColor || undefined) as CarData['wheelColor'],
 		wheelFromCenter: carData.wheelFromCenter,
+		wheelSize: carData.wheelSize,
 		toppers: carData.toppers.map((topper, t) => ({
 			name: topper.name as TopperData['name'],
 			id: t, // Used as a unique and persistent way to index {each} directives

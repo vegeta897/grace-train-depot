@@ -23,3 +23,5 @@ export const TOPPER_MAX_OFFSET = 20
 
 export const WHEEL_DISTANCE_MIN = 80
 export const WHEEL_DISTANCE_MAX = 115
+export const WHEEL_SIZE_MIN = 22
+export const WHEEL_SIZE_MAX = 32

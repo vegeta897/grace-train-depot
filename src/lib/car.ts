@@ -25,6 +25,7 @@ export function getNewCar(): CarDataWithIds {
 		body: 'boxy',
 		decals: [],
 		wheelFromCenter: 100,
+		wheelSize: 25,
 		toppers: [],
 	}
 }
@@ -41,7 +42,8 @@ export function getCarChangesByPage(original: CarData, maybeChanged: CarData) {
 			maybeChanged.toppers.some((md, i) => topperIsDifferent(original.toppers[i], md)),
 		wheels:
 			maybeChanged.wheelColor !== original.wheelColor ||
-			maybeChanged.wheelFromCenter !== original.wheelFromCenter,
+			maybeChanged.wheelFromCenter !== original.wheelFromCenter ||
+			maybeChanged.wheelSize !== original.wheelSize,
 		decals:
 			maybeChanged.decals.length !== original.decals.length ||
 			maybeChanged.decals.some((md, i) => decalIsDifferent(original.decals[i], md)),

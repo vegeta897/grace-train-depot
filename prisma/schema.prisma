@@ -59,6 +59,7 @@ model Car {
   bodyPopColor       String?
   wheelColor         String?
   wheelFromCenter    Float
+  wheelSize          Int                 @default(25)
   decals             Decal[]
   toppers            Topper[]
   graceTrainCars     GraceTrainCar[]
