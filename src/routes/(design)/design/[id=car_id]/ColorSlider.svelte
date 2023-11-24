@@ -19,7 +19,8 @@
 	max={colors.length - 1}
 	step="1"
 	value={colors.indexOf(color)}
-	on:input={(e) => onInput(colors[+e.currentTarget.value], +e.currentTarget.value)}
+	on:input={(e) =>
+		onInput(colors[e.currentTarget.valueAsNumber], e.currentTarget.valueAsNumber)}
 	class="range-gradient range"
 	style:background="{colorsGradient}, {capsGradient}"
 	style:background-position="0.75rem 0, 0"

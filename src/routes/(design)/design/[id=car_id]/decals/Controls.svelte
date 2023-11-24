@@ -128,7 +128,7 @@
 				list="sizes"
 				value={Math.round(((decal.scale - minScale) / scaleRange) ** (1 / 1.5) * 100)}
 				on:input={(e) => {
-					const inputValue = (+e.currentTarget.value / 100) ** 1.5
+					const inputValue = (e.currentTarget.valueAsNumber / 100) ** 1.5
 					decal.scale = minScale + scaleRange * inputValue
 					// This is kinda meh but whatever
 					if (Math.abs(1 - decal.scale) < 0.01) decal.scale = 1
@@ -154,7 +154,7 @@
 				list="rotations"
 				value={decal.rotate}
 				on:input={(e) => {
-					decal.rotate = +e.currentTarget.value
+					decal.rotate = e.currentTarget.valueAsNumber
 					updateDecalTransform(localCars, $designShortId, slot, decal)
 				}}
 				class="range range-secondary"
@@ -181,7 +181,7 @@
 						max={1}
 						step="0.01"
 						value={decal.params[param.name]}
-						on:input={(e) => setDecalParam(param.name, +e.currentTarget.value)}
+						on:input={(e) => setDecalParam(param.name, e.currentTarget.valueAsNumber)}
 						class="range"
 					/>
 				{:else if param.type === 'toggle'}
@@ -201,7 +201,8 @@
 							max={list.length - 1}
 							step="1"
 							value={list.indexOf(decal.params[param.name])}
-							on:input={(e) => setDecalParam(param.name, list[+e.currentTarget.value])}
+							on:input={(e) =>
+								setDecalParam(param.name, list[e.currentTarget.valueAsNumber])}
 							class="range"
 						/>
 					{:else}

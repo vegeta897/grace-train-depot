@@ -242,7 +242,7 @@
 				max="8"
 				value={selectedNode[1]}
 				on:input={(e) => {
-					selectedNode[1] = +e.currentTarget.value
+					selectedNode[1] = e.currentTarget.valueAsNumber
 					updateNode()
 				}}
 			/>
@@ -258,7 +258,7 @@
 				step="30"
 				value={selectedNode[0]}
 				on:input={(e) => {
-					selectedNode[0] = +e.currentTarget.value
+					selectedNode[0] = e.currentTarget.valueAsNumber
 					updateNode()
 				}}
 			/>

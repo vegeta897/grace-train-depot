@@ -165,7 +165,7 @@
 						step={1 / 400}
 						value={topper.position}
 						on:input={(e) =>
-							setTopperProp(topper.slot, 'position', +e.currentTarget.value)}
+							setTopperProp(topper.slot, 'position', e.currentTarget.valueAsNumber)}
 						class="range"
 					/>
 				</div>
@@ -180,7 +180,8 @@
 						max={TOPPER_MAX_OFFSET}
 						step="1"
 						value={topper.offset}
-						on:input={(e) => setTopperProp(topper.slot, 'offset', +e.currentTarget.value)}
+						on:input={(e) =>
+							setTopperProp(topper.slot, 'offset', e.currentTarget.valueAsNumber)}
 						class="range"
 					/>
 				</div>
@@ -195,7 +196,8 @@
 						max={TOPPER_MAX_ROTATE}
 						step="1"
 						value={topper.rotate}
-						on:input={(e) => setTopperProp(topper.slot, 'rotate', +e.currentTarget.value)}
+						on:input={(e) =>
+							setTopperProp(topper.slot, 'rotate', e.currentTarget.valueAsNumber)}
 						class="range range-secondary"
 					/>
 				</div>
@@ -210,7 +212,8 @@
 						max={1.5}
 						step="0.01"
 						value={topper.scale}
-						on:input={(e) => setTopperProp(topper.slot, 'scale', +e.currentTarget.value)}
+						on:input={(e) =>
+							setTopperProp(topper.slot, 'scale', e.currentTarget.valueAsNumber)}
 						class="range range-primary"
 					/>
 				</div>
