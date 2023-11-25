@@ -64,15 +64,14 @@
 			{@const params = {
 				...decalDefs[name].getDefaultParamsObject(),
 				...defaultParams,
-				extraThickness: 2,
 			}}
 			{@const fill = fillOverride || defaultFill}
 			<button
-				on:click={() => onClick({ name, fill, params: defaultParams })}
+				on:click={() => onClick({ name, fill, params })}
 				class="btn btn-ghost aspect-square h-auto min-h-full w-full touch-manipulation p-1"
 			>
 				<ContainerSvg viewBox="-50 -50 100 100">
-					<Decal {name} {fill} {params} />
+					<Decal {name} {fill} params={{ ...params, extraThickness: 2 }} />
 				</ContainerSvg>
 			</button>
 		{/each}
