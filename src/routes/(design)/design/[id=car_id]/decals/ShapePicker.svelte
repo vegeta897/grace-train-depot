@@ -30,8 +30,19 @@
 	const tabs: Tab[] = [
 		[
 			{ name: 'star', defaultFill: COLORS.POP[4] },
+			{
+				name: 'star',
+				defaultFill: COLORS.POP[2],
+				defaultParams: { outline: true, pinch: 0.2, strokeWidth: 0.5 },
+			},
 			{ name: 'heart', defaultFill: COLORS.POP[1] },
-			{ name: 'circle', defaultFill: COLORS.POP[6] },
+			{
+				name: 'heart',
+				defaultFill: COLORS.POP[0],
+				defaultParams: { dip: 0.5, taper: 0.8, outline: true, strokeWidth: 0.6 },
+			},
+			{ name: 'circle', defaultFill: COLORS.POP[8] },
+			{ name: 'circle', defaultFill: COLORS.POP[6], defaultParams: { hollow: 0.7 } },
 		],
 		PRIDE_FLAGS.map((flag) => ({ name: 'flag', defaultParams: { flag } }) as DecalChoice),
 		[
