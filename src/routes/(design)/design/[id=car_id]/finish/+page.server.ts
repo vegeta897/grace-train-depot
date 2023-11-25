@@ -39,6 +39,7 @@ export const actions = {
 			console.log(parseResult.error)
 			return fail(400, { invalid: true })
 		}
+		// Parsing strips out any extra properties
 		const carData: CarData = parseResult.data
 		// TODO: Check for changes, return early if none detected
 		const approval = session.user.trusted ? 'approved' : 'pending'

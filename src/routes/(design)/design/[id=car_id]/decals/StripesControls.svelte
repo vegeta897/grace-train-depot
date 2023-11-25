@@ -8,7 +8,11 @@
 	import { getDesignStores } from '../stores'
 	import { getDecalStores } from './stores'
 	import { onDestroy } from 'svelte'
-	import { STRIPES_MAX_NODES } from '$lib/common/constants'
+	import {
+		STRIPES_MAX_NODES,
+		STRIPES_MAX_NODE_LENGTH,
+		STRIPES_MAX_STRIPE_COUNT,
+	} from '$lib/common/constants'
 	import { degToRad } from '$lib/util'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
@@ -254,7 +258,7 @@
 				type="range"
 				class="range"
 				min="0"
-				max="8"
+				max={STRIPES_MAX_NODE_LENGTH}
 				value={selectedNode[1]}
 				on:input={(e) => {
 					selectedNode[1] = e.currentTarget.valueAsNumber
@@ -301,7 +305,7 @@
 				type="range"
 				class="range col-span-3"
 				min="1"
-				max="5"
+				max={STRIPES_MAX_STRIPE_COUNT}
 				value={decal.params.stripeCount}
 				on:input={(e) => setStripeCount(e.currentTarget.valueAsNumber)}
 			/>

@@ -21,6 +21,8 @@
 	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas, previewDecal } =
 		getDecalStores()
 
+	previewDecal.set(null)
+
 	$: draggables = $designCar.decals.map((d) => {
 		return {
 			id: d.id,
