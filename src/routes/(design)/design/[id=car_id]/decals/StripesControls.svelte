@@ -208,18 +208,23 @@
 	</ul> -->
 	{#if adding !== null}
 		<button
-			on:click={addNode}
-			disabled={adding[0] === 0 && adding[1] === 0}
-			class="btn btn-lg text-xl font-black uppercase tracking-wide hover:btn-success"
-			>Go</button
-		>
-		<button
 			on:click={toggleAddMode}
 			class="btn btn-lg text-xl font-black uppercase tracking-wide"
 		>
 			Cancel
 		</button>
+		<button
+			on:click={addNode}
+			disabled={adding[0] === 0 && adding[1] === 0}
+			class="btn btn-lg text-xl font-black uppercase tracking-wide hover:btn-success"
+			>Go</button
+		>
 	{:else}
+		<button
+			on:click={() => prevNode++}
+			disabled={prevNode === nodes.length}
+			class="btn btn-lg text-xl">&lt;</button
+		>
 		{#if prevNode === 0}
 			<button
 				on:click={toggleAddMode}
@@ -232,14 +237,9 @@
 			<button
 				on:click={() => prevNode--}
 				disabled={prevNode === 0}
-				class="btn btn-lg text-xl">&lt;</button
+				class="btn btn-lg text-xl">&gt;</button
 			>
 		{/if}
-		<button
-			on:click={() => prevNode++}
-			disabled={prevNode === nodes.length}
-			class="btn btn-lg text-xl">&gt;</button
-		>
 	{/if}
 	<button
 		on:click={removeNode}
