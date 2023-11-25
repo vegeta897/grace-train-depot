@@ -68,8 +68,10 @@
 			if (name !== cars[$designShortId].decals[slot].name) {
 				cars[$designShortId].decals[slot].name = name
 				if (fill) cars[$designShortId].decals[slot].fill = fill as DecalData['fill']
-				cars[$designShortId].decals[slot].params =
-					params || decalDef.getDefaultParamsObject()
+				cars[$designShortId].decals[slot].params = {
+					...decalDefs[name].getDefaultParamsObject(),
+					...params,
+				}
 			}
 			return cars
 		})

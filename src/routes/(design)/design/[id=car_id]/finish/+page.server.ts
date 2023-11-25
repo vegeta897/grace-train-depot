@@ -36,7 +36,7 @@ export const actions = {
 		const parseResult = carSchema.safeParse(formCarData)
 		if (!parseResult.success) {
 			// TODO: Attempt to correct errors, and log the schema violation
-			console.log(parseResult.error)
+			console.log(parseResult.error.errors)
 			return fail(400, { invalid: true })
 		}
 		// Parsing strips out any extra properties
