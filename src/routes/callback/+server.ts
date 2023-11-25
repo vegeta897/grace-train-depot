@@ -1,3 +1,4 @@
+import { userIsTrusted } from '$lib/server/admin'
 import { auth, twitchAuth } from '$lib/server/lucia.js'
 import { OAuthRequestError } from '@lucia-auth/oauth'
 import { redirect, type RequestHandler } from '@sveltejs/kit'
@@ -26,6 +27,7 @@ export const GET = (async ({ url, cookies, locals }) => {
 					twitchUserId: twitchUser.id,
 					twitchUsername: twitchUser.login,
 					twitchDisplayName: twitchUser.display_name,
+					trusted: userIsTrusted(twitchUser.id),
 				},
 			})
 			return user

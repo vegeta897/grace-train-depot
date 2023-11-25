@@ -9,10 +9,15 @@ export const POST = (async ({ request }) => {
 	const authHeader = request.headers.get('Authorization')
 	if (authHeader !== DEPOT_SECRET) throw error(401)
 	const { trainId, score } = (await request.json()) as DepotTrainEndRequest
-	await prisma.graceTrain.update({
-		where: { id: trainId },
-		data: { score, ended: true },
-	})
+	try {
+		await prisma.graceTrain.update({
+			where: { id: trainId },
+			data: { score, ended: true },
+		})
+	} catch (e) {
+		// Update throws if record not found
+		console.log('Error ending train ID', trainId, e)
+	}
 	const carDebutCount = await prisma.graceTrainCarStats.count({
 		where: { lastGraceTrainId: trainId, graceTrainCount: 1 },
 	})

@@ -16,6 +16,7 @@ model User {
   twitchUserId      String          @unique
   twitchUsername    String          @unique
   twitchDisplayName String          @unique
+  trusted           Boolean         @default(false)
   cars              Car[]
   graceTrainCars    GraceTrainCar[]
 
@@ -54,6 +55,7 @@ model Car {
   revision           Int                 @default(1)
   name               String?
   published          Boolean             @default(false)
+  approval           Approval            @default(pending)
   body               Body                @default(boxy)
   bodyColor          String?
   bodyPopColor       String?
@@ -101,6 +103,12 @@ enum Body {
   tanky
 }
 
+enum Approval {
+  pending
+  approved
+  rejected
+}
+
 model GraceTrain {
   id    BigInt          @id @unique
   cars  GraceTrainCar[]
@@ -114,6 +122,8 @@ model GraceTrainCar {
   index        Int
   car          Car?       @relation(fields: [carId], references: [id])
   carId        Int?
+  carRevision  Int?
+  approval     Approval?
   user         User?      @relation(fields: [userId], references: [id])
   userId       String?
   twitchUserId String

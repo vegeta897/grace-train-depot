@@ -16,7 +16,7 @@ const assetsPath = join(PROJECT_PATH, './public/assets')
 
 export const actions = {
 	save: async (event) => {
-		console.log('finish save event!')
+		console.log('finish save action!')
 	},
 	publish: async ({ locals, params, request }) => {
 		// TODO: Check car for flag decal in combination with certain other decals (like an X)
@@ -40,6 +40,8 @@ export const actions = {
 			return fail(400, { invalid: true })
 		}
 		const carData: CarData = parseResult.data
+		// TODO: Check for changes, return early if none detected
+		const approval = session.user.trusted ? 'approved' : 'pending'
 		let updatedCar: DBCar
 		if (carData.shortId === 'new') {
 			carData.shortId = generateCarShortId()
@@ -47,6 +49,7 @@ export const actions = {
 				data: {
 					shortId: carData.shortId,
 					published: true,
+					approval,
 					...transformCarToDB(carData),
 					userId: session.user.userId,
 					decals: { create: formCarData.decals.map(transformDecalToDB) },
@@ -59,6 +62,7 @@ export const actions = {
 					where: { shortId: carData.shortId, userId: session.user.userId },
 					data: {
 						published: true,
+						approval,
 						...transformCarToDB(carData),
 						revision: { increment: 1 },
 						decals: {

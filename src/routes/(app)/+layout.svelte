@@ -43,15 +43,19 @@
 			>
 			<ul class="menu dropdown-content rounded-box z-50 w-32 bg-neutral p-2 shadow">
 				<li>
-					<a on:click={closeMenu} href="/" class="justify-end">Home</a>
+					<a on:click={closeMenu} href="/" class="justify-end">home</a>
 				</li>
 				{#if data.user}
+					{#if data.user.isMod}<li>
+							<a class="justify-end" href="/mod">mod view</a>
+						</li>
+					{/if}
 					<li>
 						<a
 							data-sveltekit-reload
 							on:click={closeMenu}
 							href="/logout"
-							class="justify-end">Log out</a
+							class="justify-end">log out</a
 						>
 					</li>
 				{/if}

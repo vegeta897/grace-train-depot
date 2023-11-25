@@ -16,12 +16,17 @@ export const POST = (async ({ request }) => {
 	const authHeader = request.headers.get('Authorization')
 	if (authHeader !== DEPOT_SECRET) throw error(401)
 	const { trainId, grace, index, score } = (await request.json()) as DepotTrainAddRequest
-	const train = await prisma.graceTrain.update({
-		data: { score },
-		include: { cars: true },
-		where: { id: trainId },
-	})
-	if (!train) throw error(400, 'Unknown train ID')
+	let train
+	try {
+		train = await prisma.graceTrain.update({
+			data: { score },
+			include: { cars: true },
+			where: { id: trainId },
+		})
+	} catch (e) {
+		// Update throws if record not found
+		throw error(400, 'Unknown train ID')
+	}
 	const graceTrainCarCreate: Prisma.GraceTrainCarUncheckedCreateInput = {
 		trainId,
 		index,
@@ -46,12 +51,14 @@ export const POST = (async ({ request }) => {
 		}
 		graceTrainCarCreate.carData = transformCarFromDBToGraceTrainCar(pickedCar)
 		graceTrainCarCreate.carId = pickedCar.id
+		graceTrainCarCreate.carRevision = pickedCar.revision
+		graceTrainCarCreate.approval = pickedCar.approval
 		graceTrainCarCreate.userId = user.id
 	}
 	prisma.graceTrainCar
 		.create({
 			data: graceTrainCarCreate,
 		})
-		.then() // Prisma queries need to be awaited to work properly
+		.then() // Prisma queries need to be awaited to work properly, but we don't need to wait to return a response
 	return json(graceTrainCarCreate.carData)
 }) satisfies RequestHandler

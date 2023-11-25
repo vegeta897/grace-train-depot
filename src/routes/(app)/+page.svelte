@@ -30,7 +30,15 @@
 			</div>
 		{/if}
 		<div class="w-full max-w-lg rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10">
-			<h2 class="mb-4 text-xl">Hello, {data.user.twitchDisplayName}!</h2>
+			<div class="mb-4 flex items-center">
+				<h2 class="grow text-xl">
+					Hello, {data.user.twitchDisplayName}!
+				</h2>
+				{#if data.user.isMod}
+					<a href="/mod" class="btn btn-secondary font-black tracking-wide">🛡️ Mod view</a
+					>
+				{/if}
+			</div>
 			<div class="grid grid-cols-1 gap-4 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
 				<div class="tooltip tooltip-bottom tooltip-success" data-tip="Make a new car">
 					<a

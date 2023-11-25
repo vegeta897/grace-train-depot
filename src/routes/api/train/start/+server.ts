@@ -51,6 +51,8 @@ export const POST = (async ({ request }) => {
 			pickedCarIds.add(pickedCar.id)
 			graceTrainCarCreate.carData = transformCarFromDBToGraceTrainCar(pickedCar)
 			graceTrainCarCreate.carId = pickedCar.id
+			graceTrainCarCreate.carRevision = pickedCar.revision
+			graceTrainCarCreate.approval = pickedCar.approval
 			graceTrainCarCreate.userId = user.id
 		}
 		graceTrainCars.push(graceTrainCarCreate)

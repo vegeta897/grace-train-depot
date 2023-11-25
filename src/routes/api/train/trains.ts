@@ -15,6 +15,7 @@ export async function endAllTrains(exceptTrainId?: number) {
 	})
 }
 
+// Too many versions of this function exist
 export function transformCarFromDBToGraceTrainCar(car: FullCarData): GraceTrainCar {
 	return {
 		body: car.body,
@@ -22,6 +23,7 @@ export function transformCarFromDBToGraceTrainCar(car: FullCarData): GraceTrainC
 		bodyPopColor: car.bodyPopColor || undefined,
 		wheelColor: car.wheelColor || undefined,
 		wheelFromCenter: car.wheelFromCenter,
+		wheelSize: car.wheelSize,
 		decals: car.decals.map((d) => {
 			const name = d.name as DecalData['name']
 			let params = d.params as ParamsObject
