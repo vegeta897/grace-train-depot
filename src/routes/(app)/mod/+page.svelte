@@ -2,19 +2,55 @@
 	import { Car } from 'grace-train-lib/components'
 	import type { PageData } from './$types'
 	import { enhance } from '$app/forms'
+	import { flip } from 'svelte/animate'
 
 	export let data: PageData
 
 	$: cars = data.cars || []
+	$: filteredCars = cars.filter((c) => show[c.approval])
+
+	const approvalTypes = ['pending', 'approved', 'rejected']
+	const show: Record<(typeof approvalTypes)[number], boolean> = {
+		pending: true,
+		approved: false,
+		rejected: false,
+	}
 </script>
 
 <section class="lg:p-4">
 	<h2 class="p-2 text-2xl font-black uppercase tracking-wide">Mod view</h2>
-	<div class="bg-base-200 p-4 lg:rounded-box">
-		<h3 class="mb-2 text-xl font-black uppercase tracking-wide">Stream debuts</h3>
+	<div class="bg-base-200 p-2 lg:rounded-box xs:p-4">
+		<div class="mb-3 flex flex-wrap justify-between">
+			<h3 class="text-xl font-black uppercase tracking-wide">Stream debuts</h3>
+			<div
+				class="inline-flex items-center gap-3 rounded-lg bg-neutral px-2 xs:gap-4 xs:px-3"
+			>
+				<span
+					class="hidden text-sm font-black uppercase tracking-wide xs:inline xs:text-base"
+					>filter</span
+				>
+				{#each approvalTypes as approval}
+					<div class="form-control">
+						<label class="label cursor-pointer gap-2">
+							<span class="label-text">{approval}</span>
+							<input
+								type="checkbox"
+								bind:checked={show[approval]}
+								class="checkbox checkbox-sm xs:checkbox-md"
+								class:checkbox-success={approval === 'approved'}
+								class:checkbox-warning={approval === 'rejected'}
+							/>
+						</label>
+					</div>
+				{/each}
+			</div>
+		</div>
 		<ol class="grid grid-cols-[repeat(auto-fill,_minmax(10rem,_1fr))] gap-6">
-			{#each cars as { car, carId, shortId, revision, approval, username, trusted }, c}
-				<li class="relative flex flex-col items-center justify-end p-2 pt-5">
+			{#each filteredCars as { car, carId, shortId, revision, approval, username, trusted } (`${carId}:${revision}`)}
+				<li
+					class="relative flex flex-col items-center justify-end p-2 pt-5"
+					animate:flip={{ duration: 250 }}
+				>
 					<Car {car} />
 					{#if approval !== 'pending'}
 						<div class="absolute left-0 top-0 h-full w-full bg-base-200 bg-opacity-75" />
@@ -24,7 +60,6 @@
 							<div class="badge badge-neutral bg-opacity-70 backdrop-blur">
 								{#if trusted}<span class="-ml-1 mr-1 text-xs">🤍 </span>
 								{/if}{username}
-								{carId}
 							</div>
 						</div>
 					</div>
@@ -72,5 +107,15 @@
 				</li>
 			{/each}
 		</ol>
+		{#if filteredCars.length === 0}
+			<div class="grid h-32 place-items-center text-center text-lg italic">
+				<p>
+					no cars to show
+					{#if cars.length > 0}
+						<br /><span class="opacity-50">({cars.length} hidden by filters)</span>
+					{/if}
+				</p>
+			</div>
+		{/if}
 	</div>
 </section>

@@ -69,6 +69,7 @@ async function changeCarApproval(
 	const revision = +formData.get('revision')! as number
 	const previousApproval = formData.get('approval')!.toString() as string
 	const scope = formData.get('scope')
+	const approval = previousApproval === changeTo ? 'pending' : changeTo
 	console.log(
 		'mod action!',
 		session.user.twitchDisplayName,
@@ -77,9 +78,8 @@ async function changeCarApproval(
 		scope,
 		previousApproval,
 		'-->',
-		changeTo
+		approval
 	)
-	const approval = previousApproval === changeTo ? 'pending' : changeTo
 	await prisma.graceTrainCar.updateMany({
 		where: { carId, carRevision: revision },
 		data: { approval },
