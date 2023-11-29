@@ -4,6 +4,7 @@
 	import { page } from '$app/stores'
 	import { COLORS } from 'grace-train-lib'
 	import CarGrid from './CarGrid.svelte'
+	import Icon from '$lib/components/Icon.svelte'
 
 	export let data: PageData
 
@@ -47,7 +48,17 @@
 			</div>
 			<div class="rounded-xl bg-base-200 p-4">
 				<h2 class="text-3xl font-black uppercase tracking-wide">Your cars</h2>
-				<CarGrid cars={publishedCars} newButton />
+				<CarGrid cars={publishedCars}>
+					<div class="flex items-end p-2 pb-[15%]">
+						<a
+							href="/design/new"
+							data-sveltekit-preload-data="tap"
+							class="btn btn-outline btn-block aspect-square h-auto min-h-0"
+						>
+							<div class="w-[60%]"><Icon icon="plus" /></div>
+						</a>
+					</div>
+				</CarGrid>
 			</div>
 			{#if draftCars.length > 0}
 				<div class="rounded-xl bg-base-200 p-4">
