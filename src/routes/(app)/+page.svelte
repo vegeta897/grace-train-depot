@@ -3,8 +3,12 @@
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 	import { COLORS } from 'grace-train-lib'
+	import CarGrid from './CarGrid.svelte'
 
 	export let data: PageData
+
+	$: publishedCars = data.savedCars?.filter((c) => c.published) || []
+	$: draftCars = data.savedCars?.filter((c) => !c.published) || []
 
 	const carDeleted = $page.url.searchParams.get('carDeleted')
 </script>
@@ -29,54 +33,28 @@
 				Car deleted
 			</div>
 		{/if}
-		<div class="w-full max-w-lg rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10">
-			<div class="mb-4 flex items-center">
+		<div
+			class="flex w-full max-w-lg flex-col gap-4 rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10"
+		>
+			<div class="flex items-center">
 				<h2 class="grow text-xl">
-					Hello, {data.user.twitchDisplayName}!
+					hey {data.user.twitchDisplayName}!
 				</h2>
 				{#if data.user.isMod}
 					<a href="/mod" class="btn btn-secondary font-black tracking-wide">🛡️ Mod view</a
 					>
 				{/if}
 			</div>
-			<div class="grid grid-cols-1 gap-4 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-				<div class="tooltip tooltip-bottom tooltip-success" data-tip="Make a new car">
-					<a
-						href="/design/new"
-						data-sveltekit-preload-data="tap"
-						class="btn btn-outline btn-block h-[8.75rem] text-8xl font-black">+</a
-					>
-				</div>
-				<!-- TODO: Maybe separate live cars vs drafts -->
-				{#if data.savedCars}
-					{#each data.savedCars as car}
-						<div class="indicator w-full">
-							<span
-								class="badge indicator-item indicator-center indicator-bottom font-black uppercase tracking-wide"
-								class:badge-primary={car.published}
-								class:badge-warning={!car.published}
-							>
-								{#if car.published}Live{:else}Draft{/if}
-							</span>
-							<a
-								href="/c/{car.shortId}"
-								data-sveltekit-preload-data="tap"
-								class="btn-hover-grow btn btn-block h-[8.75rem] text-xl font-black"
-							>
-								<div class="flex max-w-full flex-col items-center gap-1 px-2 normal-case">
-									<div class="w-24"><Car {car} /></div>
-									{#if car.name}
-										<span
-											class="max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
-											>{car.name}</span
-										>
-									{/if}
-								</div>
-							</a>
-						</div>
-					{/each}
-				{/if}
+			<div class="rounded-xl bg-base-200 p-4">
+				<h2 class="text-3xl font-black uppercase tracking-wide">Your cars</h2>
+				<CarGrid cars={publishedCars} newButton />
 			</div>
+			{#if draftCars.length > 0}
+				<div class="rounded-xl bg-base-200 p-4">
+					<h2 class="text-3xl font-black uppercase tracking-wide">Your drafts</h2>
+					<CarGrid cars={draftCars} />
+				</div>
+			{/if}
 		</div>
 	</section>
 {:else}
