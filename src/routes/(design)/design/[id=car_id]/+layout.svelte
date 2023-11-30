@@ -55,8 +55,8 @@
 	onNavigate((navigation) => {
 		if (!navigation.to?.route.id?.startsWith('/(design)/design/')) return
 		if (!document.startViewTransition) return
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-		// if (window.matchMedia('(min-width: 1024px)').matches) return
+		if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+		// if (matchMedia('(min-width: 1024px)').matches) return
 		return new Promise((resolve) => {
 			const transition = document.startViewTransition(async () => {
 				resolve()
