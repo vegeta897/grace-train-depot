@@ -2,12 +2,14 @@
 	<h2 class="text-2xl font-bold">Privacy</h2>
 	<h3 class="text-xl font-bold">Twitch Authentication</h3>
 	<p>
-		This site requires you to log in with your Twitch account. This is a safe process
-		known as <em>OAuth</em> that lets you verify your identity without revealing any personal
+		This site requires you to log in with your Twitch account. This is done with <em
+			>OAuth,</em
+		>
+		a standard and secure action that lets you verify your identity without revealing any personal
 		info (not even your email) or granting unnecessary access to your account. The only information
 		you give to our site is your Twitch username and a numeric Twitch ID, which is not private
-		information. This site is incapable of performing any actions on behalf of your Twitch
-		account.
+		information. This site is incapable of performing
+		<em>any</em> actions on behalf of your Twitch account.
 	</p>
 	<h3 class="text-xl font-bold">User Sessions</h3>
 	<p>
@@ -19,9 +21,9 @@
 	<p>
 		The content you create while on this site is subject to being shared to other
 		visitors, as well as on any streams and stream archives that have an overlay utilizing
-		this data. In plain terms, the point of this site is to create train car designs to
-		show them in Grace Trains, and your designs may be viewed by others who visit the
-		site. Your designs may be publicly attributed (directly or indirectly) to your Twitch
+		this data. In plain terms, the point of this site is to create car designs to show
+		them in Grace Trains, and your designs may be viewed by others who visit the site.
+		Your designs may be publicly attributed (directly or indirectly) to your Twitch
 		username both on the site and in streams.
 	</p>
 	<h3 class="text-xl font-bold">Account Removal</h3>
