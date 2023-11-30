@@ -1,5 +1,4 @@
 import type {
-	CarData,
 	DecalData,
 	CarDataWithIds,
 	TopperData,
@@ -33,7 +32,10 @@ export function getNewCar(): CarDataWithIds {
 // TODO: This might be overkill and lead to user confusion
 // Just add a "modified" boolean in the design stores that gets changed to true whenever you change anything
 // Maybe run this function once before saving to allow the server to silently skip updating the db
-export function getCarChangesByPage(original: CarData, maybeChanged: CarData) {
+export function getCarChangesByPage(
+	original: CarDataWithIds,
+	maybeChanged: CarDataWithIds
+) {
 	if (original === maybeChanged) return {}
 	return {
 		body: maybeChanged.body !== original.body,
