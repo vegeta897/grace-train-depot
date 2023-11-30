@@ -1,5 +1,5 @@
 export const PAGES = [
-	['🚌', 'body'],
+	['🚃', 'body'],
 	['🎡', 'wheels'],
 	['💟', 'decals'],
 	['🎓', 'toppers'],
