@@ -12,6 +12,9 @@
 	$: draftCars = data.savedCars?.filter((c) => !c.published) || []
 
 	const carDeleted = $page.url.searchParams.get('carDeleted')
+
+	const carGridSizes = [5, 8, 14]
+	let carGridSize = 8
 </script>
 
 {#if data.user}
@@ -37,8 +40,8 @@
 		<div
 			class="flex w-full max-w-lg flex-col gap-4 rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10"
 		>
-			<div class="flex items-center">
-				<h2 class="grow text-xl">
+			<div class="flex items-center justify-between">
+				<h2 class="text-xl">
 					hey {data.user.twitchDisplayName}!
 				</h2>
 				{#if data.user.isMod}
@@ -47,17 +50,30 @@
 				{/if}
 			</div>
 			<div class="rounded-xl bg-base-200 p-4">
-				<h2 class="text-3xl font-black uppercase tracking-wide">Your cars</h2>
-				<CarGrid cars={publishedCars}>
-					<div class="flex items-end p-2 pb-[15%]">
-						<a
-							href="/design/new"
-							data-sveltekit-preload-data="tap"
-							class="btn btn-outline btn-block aspect-square h-auto min-h-0"
-						>
-							<div class="w-[60%]"><Icon icon="plus" /></div>
-						</a>
+				<div class="flex items-center">
+					<h2 class="grow text-xl font-black uppercase tracking-wide sm:text-3xl">
+						Your cars
+					</h2>
+					<!-- TODO: Move size buttons into CarGrid component -->
+					<div class="join">
+						{#each carGridSizes as gridSize, g}
+							<button
+								on:click={() => (carGridSize = gridSize)}
+								disabled={carGridSize === gridSize}
+								class="btn btn-neutral join-item btn-sm text-xl font-black"
+								><span style:transform="scale({[0.7, 1, 1.25][g]})">🚃</span>
+							</button>
+						{/each}
 					</div>
+				</div>
+				<CarGrid cars={publishedCars} size={carGridSize}>
+					<a
+						href="/design/new"
+						data-sveltekit-preload-data="tap"
+						class="btn btn-outline btn-lg aspect-square min-h-0 p-4"
+					>
+						<Icon icon="plus" />
+					</a>
 				</CarGrid>
 			</div>
 			{#if draftCars.length > 0}
