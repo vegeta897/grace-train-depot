@@ -5,6 +5,7 @@
 	import { COLORS } from 'grace-train-lib'
 	import CarGrid from './CarGrid.svelte'
 	import Icon from '$lib/components/Icon.svelte'
+	import { getSideFadeGradient } from '$lib/util'
 
 	export let data: PageData
 
@@ -13,8 +14,10 @@
 
 	const carDeleted = $page.url.searchParams.get('carDeleted')
 
-	const carGridSizes = [5, 8, 14]
-	let carGridSize = 8
+	const sideFadeGradient = getSideFadeGradient(20)
+
+	const carGridSizes = [0.5, 1, 1.65]
+	let carGridSize = 1
 </script>
 
 {#if data.user}
@@ -41,7 +44,7 @@
 			class="flex w-full max-w-lg flex-col gap-4 rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10"
 		>
 			<div class="flex items-center justify-between">
-				<h2 class="text-xl">
+				<h2 class="text-xl font-bold">
 					hey {data.user.twitchDisplayName}!
 				</h2>
 				{#if data.user.isMod}
@@ -50,7 +53,7 @@
 				{/if}
 			</div>
 			<div class="rounded-xl bg-base-200 p-4">
-				<div class="flex items-center">
+				<div class="mb-2 flex items-center">
 					<h2 class="grow text-xl font-black uppercase tracking-wide sm:text-3xl">
 						Your cars
 					</h2>
@@ -60,8 +63,8 @@
 							<button
 								on:click={() => (carGridSize = gridSize)}
 								disabled={carGridSize === gridSize}
-								class="btn btn-neutral join-item btn-sm text-xl font-black"
-								><span style:transform="scale({[0.7, 1, 1.25][g]})">🚃</span>
+								class="btn btn-square btn-neutral join-item text-xl font-black"
+								><span style:transform="scale({[0.8, 1.2, 1.5][g]})">🚃</span>
 							</button>
 						{/each}
 					</div>
@@ -90,11 +93,11 @@
 			<div class="hero-content min-w-0 max-w-full flex-col px-6">
 				<div
 					class="relative flex min-w-0 max-w-full overflow-clip py-8 sm:py-16"
-					style="--fade-sides: linear-gradient(90deg, rgba(0,0,0,0) 0, rgba(0,0,0,1) 20% 80%, rgba(0,0,0,0) 100%)"
-					style:-webkit-mask="var(--fade-sides)"
-					style:mask="var(--fade-sides)"
+					style:-webkit-mask={sideFadeGradient}
+					style:mask={sideFadeGradient}
 				>
 					<div class="origin-left scale-125 sm:scale-200">
+						<!-- TODO: Animate each car instead of whole container! -->
 						<div style:left="-4rem" class="train-scroll relative whitespace-nowrap">
 							{#each Array(14) as _, i}
 								<div class="mx-[3px] inline-block w-16">
@@ -113,8 +116,8 @@
 						>
 							Choo Choo!
 						</h1>
-						<p class="py-2 text-xl">All aboard the Grace Train!</p>
-						<p class="py-2 text-lg">Design your own cars and see them on stream!</p>
+						<p class="py-2 text-xl">all aboard the Grace Train!</p>
+						<p class="py-2 text-lg">design your own cars and see them on stream!</p>
 					</div>
 					<div class="flex max-w-lg flex-col items-center">
 						<a
@@ -124,7 +127,7 @@
 							>Twitch Login</a
 						>
 						<a href="/design/new" class="link opacity-70 hover:opacity-100"
-							>Just start designing</a
+							>just start designing</a
 						>
 					</div>
 				</div>

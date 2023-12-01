@@ -5,6 +5,7 @@ import {
 	type DragOptions,
 } from '@neodrag/svelte'
 import type { Action } from 'svelte/action'
+import { quadInOut } from 'svelte/easing'
 
 export function wrapNumber(val: number, min: number, max: number) {
 	const range = max - min
@@ -49,3 +50,22 @@ export const draggable = neodraggable as Action<
 		'on:neodrag:end': (e: CustomEvent<DragEventData>) => void
 	}
 >
+
+// https://larsenwork.com/easing-gradients/
+export function getSideFadeGradient(sidePercent: number) {
+	const steps = 10
+	const step = (i: number) => (i + 1) / steps
+	const percent = (i: number) => step(i) * sidePercent
+	return `linear-gradient(90deg, rgba(0,0,0,0) 0, ${createArray(
+		steps,
+		(_, i) => `rgba(0,0,0,${quadInOut(step(i))}) ${percent(i)}%`
+	)} ${100 - sidePercent}%, ${createArray(
+		steps,
+		(_, i) => `rgba(0,0,0,${1 - quadInOut(step(i))}) ${100 - sidePercent + percent(i)}%`
+	)})`
+}
+
+const createArray = <T extends any>(
+	length: number,
+	fn: (_: unknown, i: number) => T
+): T[] => Array.from({ length }, fn)
