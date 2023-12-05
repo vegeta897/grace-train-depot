@@ -9,13 +9,20 @@ export const load = (async ({ params, parent }) => {
 	const parentData = await parent()
 	const carData = await prisma.car.findUnique({
 		where: { shortId: params.id },
-		include: { decals: { orderBy: { slot: 'asc' } }, toppers: true },
+		include: {
+			decals: { orderBy: { slot: 'asc' } },
+			toppers: true,
+			graceTrainCarStats: true,
+		},
 	})
 	if (!carData) throw error(404, 'Unknown car ID')
 	return {
 		car: {
 			...transformCarFromDB(carData),
 			belongsToUser: carData.userId === parentData.user?.userId,
+			trainCount: carData.graceTrainCarStats?.graceTrainCount,
+			totalAppearances: carData.graceTrainCarStats?.totalAppearances,
+			lastAppeared: Number(carData.graceTrainCarStats?.lastGraceTrainId ?? 0),
 		},
 	}
 }) satisfies PageServerLoad

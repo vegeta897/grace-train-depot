@@ -65,7 +65,7 @@ model Car {
   decals             Decal[]
   toppers            Topper[]
   graceTrainCars     GraceTrainCar[]
-  GraceTrainCarStats GraceTrainCarStats?
+  graceTrainCarStats GraceTrainCarStats?
 }
 
 model Decal {

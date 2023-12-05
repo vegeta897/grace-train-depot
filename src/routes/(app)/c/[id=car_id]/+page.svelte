@@ -115,7 +115,13 @@
 		<h2 class="text-4xl font-black">{data.car.name}</h2>
 	{/if}
 </section>
+{#if data.car.totalAppearances}
+	<p>seen {data.car.totalAppearances} times in {data.car.trainCount} trains</p>
+	<p>last seen on {new Date(data.car.lastAppeared).toLocaleDateString()}</p>
+{/if}
 {#if data.user}
+	<!-- Users not logged in have no page to go "back" to -->
+	<!-- TODO: Add a "design your own car!" button -->
 	<div class="mb-4 flex justify-center">
 		<a href="/" class="btn btn-lg font-black">Back</a>
 	</div>
