@@ -8,8 +8,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.auth = auth.handleRequest(event)
 	if (dev && SKIP_AUTH === 'true') {
 		console.log('skipping auth')
-		const sessionRecord = await prisma.session.findFirstOrThrow()
-		const luciaSession = await auth.getSession(sessionRecord.id)
+		const userWithSessions = await prisma.user.findUniqueOrThrow({
+			include: { auth_session: true },
+			where: { twitchUsername: 'vegeta897' },
+		})
+		const session = userWithSessions.auth_session[0]
+		const luciaSession = await auth.getSession(session.id)
 		event.locals.auth.setSession(luciaSession)
 	}
 	const response = await resolve(event)

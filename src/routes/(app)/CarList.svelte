@@ -21,8 +21,14 @@
 	function changePage(page: number) {
 		startIndex = getSafeIndex(startIndex + page * wholeCars)
 	}
+
+	// TODO: Page buttons are kind of clunky
+	// How do do you quickly get to the end, or middle, of a large list of cars?
+	// Would be better if you could expand to a grid view
+	// A big custom scroll bar could work, but custom scroll bars in general are usually bad
 </script>
 
+{startIndex + 1} - {startIndex + wholeCars} of {cars.length}
 <div
 	class="mb-4 overflow-x-clip"
 	style:padding-right="{sideFadePercent}%"
@@ -74,7 +80,7 @@
 	<slot />
 	<button
 		on:click={() => changePage(1)}
-		disabled={startIndex + wholeCars >= cars.length - 1}
+		disabled={startIndex + wholeCars >= cars.length}
 		class="btn btn-neutral btn-lg text-2xl font-black">&gt;</button
 	>
 </div>

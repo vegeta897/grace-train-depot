@@ -53,8 +53,8 @@ export const actions = {
 					approval,
 					...transformCarToDB(carData),
 					userId: session.user.userId,
-					decals: { create: formCarData.decals.map(transformDecalToDB) },
-					toppers: { create: formCarData.toppers.map(transformTopperToDB) },
+					decals: { create: carData.decals.map(transformDecalToDB) },
+					toppers: { create: carData.toppers.map(transformTopperToDB) },
 				},
 			})
 		} else {

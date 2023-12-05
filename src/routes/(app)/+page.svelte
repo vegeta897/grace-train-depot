@@ -3,8 +3,8 @@
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 	import { COLORS } from 'grace-train-lib'
-	import CarGrid from './CarGrid.svelte'
-	import Icon from '$lib/components/Icon.svelte'
+	import CarList from './CarList.svelte'
+	// import Icon from '$lib/components/Icon.svelte'
 	import { getSideFadeGradient } from '$lib/util'
 
 	export let data: PageData
@@ -54,9 +54,7 @@
 			</div>
 			<div class="rounded-xl bg-base-200 p-4">
 				<div class="mb-2 flex items-center">
-					<h2 class="grow text-xl font-black uppercase tracking-wide sm:text-3xl">
-						Your cars
-					</h2>
+					<h2 class="grow text-xl font-black sm:text-3xl">my cars</h2>
 					<!-- TODO: Move size buttons into CarGrid component -->
 					<div class="join">
 						{#each carGridSizes as gridSize, g}
@@ -69,20 +67,20 @@
 						{/each}
 					</div>
 				</div>
-				<CarGrid cars={publishedCars} size={carGridSize}>
+				<CarList cars={publishedCars} size={carGridSize}>
 					<a
 						href="/design/new"
 						data-sveltekit-preload-data="tap"
-						class="btn btn-outline btn-lg aspect-square min-h-0 p-4"
+						class="btn btn-outline btn-lg text-2xl font-black tracking-wide"
 					>
-						<Icon icon="plus" />
+						<!-- <Icon icon="plus" /> -->new
 					</a>
-				</CarGrid>
+				</CarList>
 			</div>
 			{#if draftCars.length > 0}
 				<div class="rounded-xl bg-base-200 p-4">
 					<h2 class="text-3xl font-black uppercase tracking-wide">Your drafts</h2>
-					<CarGrid cars={draftCars} />
+					<CarList cars={draftCars} />
 				</div>
 			{/if}
 		</div>
