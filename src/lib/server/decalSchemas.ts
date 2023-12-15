@@ -78,6 +78,17 @@ export const decalSchema = z.union([
 			colors: z.array(popColorSchema).min(1).max(STRIPES_MAX_STRIPE_COUNT),
 		}),
 	}),
+	decalBaseSchema.extend({
+		name: z.literal('flower'),
+		params: z.object({
+			petalColor: popColorSchema,
+			centerColor: popColorSchema,
+			petals: z.number().int().min(4).max(10),
+			petalBloom: scalar,
+			petalLength: scalar,
+			petalWidth: scalar,
+		}),
+	}),
 ])
 
 export const decalsSchema = z.array(decalSchema).max(DECAL_MAX_SLOTS)
