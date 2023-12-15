@@ -434,7 +434,7 @@
 		<button
 			in:fade={{ duration: 150, easing: cubicOut }}
 			on:click|preventDefault={() => (snapping = !snapping)}
-			class="glass-bg btn btn-circle absolute bottom-2 left-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
+			class="glass-bg btn btn-circle absolute bottom-2 left-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:left-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
 			class:btn-secondary={snapping}
 		>
 			🧲
