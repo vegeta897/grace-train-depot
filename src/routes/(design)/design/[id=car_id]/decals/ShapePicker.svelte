@@ -43,6 +43,30 @@
 			},
 			{ name: 'circle', defaultFill: COLORS.POP[8] },
 			{ name: 'circle', defaultFill: COLORS.POP[6], defaultParams: { hollow: 0.7 } },
+			{ name: 'flower' },
+			{
+				name: 'flower',
+				defaultParams: {
+					petalColor: COLORS.POP[5],
+					centerColor: COLORS.POP[3],
+					petals: 8,
+					petalBloom: 0.65,
+					petalLength: 0.6,
+					petalWidth: 0.08,
+					centerSize: 0.25,
+				},
+			},
+			{
+				name: 'flower',
+				defaultParams: {
+					petalColor: COLORS.POP[1],
+					centerColor: COLORS.POP[8],
+					petals: 5,
+					petalBloom: 0.55,
+					petalLength: 0,
+					petalWidth: 0.45,
+				},
+			},
 		],
 		PRIDE_FLAGS.map((flag) => ({ name: 'flag', defaultParams: { flag } }) as DecalChoice),
 		[
@@ -66,12 +90,15 @@
 				...defaultParams,
 			}}
 			{@const fill = fillOverride || defaultFill}
+			{@const boundingBox = decalDefs[name].getBoundingBox(params)}
 			<button
 				on:click={() => onClick({ name, fill, params })}
 				class="btn btn-ghost aspect-square h-auto min-h-full w-full touch-manipulation p-1"
 			>
 				<ContainerSvg viewBox="-50 -50 100 100">
-					<Decal {name} {fill} params={{ ...params, extraThickness: 2 }} />
+					<g transform="scale({100 / Math.max(boundingBox.width, boundingBox.height)})">
+						<Decal {name} {fill} params={{ ...params, extraThickness: 2 }} />
+					</g>
 				</ContainerSvg>
 			</button>
 		{/each}
