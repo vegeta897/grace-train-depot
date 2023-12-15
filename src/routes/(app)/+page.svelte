@@ -3,8 +3,7 @@
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 	import { COLORS } from 'grace-train-lib'
-	import CarList from './CarList.svelte'
-	// import Icon from '$lib/components/Icon.svelte'
+	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
 
 	export let data: PageData
@@ -15,9 +14,6 @@
 	const carDeleted = $page.url.searchParams.get('carDeleted')
 
 	const sideFadeGradient = getSideFadeGradient(20)
-
-	const carGridSizes = [0.5, 1, 1.65]
-	let carGridSize = 1
 </script>
 
 {#if data.user}
@@ -48,39 +44,14 @@
 					hey {data.user.twitchDisplayName}!
 				</h2>
 				{#if data.user.isMod}
-					<a href="/mod" class="btn btn-secondary font-black tracking-wide">🛡️ Mod view</a
-					>
+					<a href="/mod" class="btn font-black tracking-wide">🛡️ Mod view</a>
 				{/if}
 			</div>
-			<div class="rounded-xl bg-base-200 p-4">
-				<div class="mb-2 flex items-center">
-					<h2 class="grow text-xl font-black sm:text-3xl">my cars</h2>
-					<!-- TODO: Move size buttons into CarGrid component -->
-					<div class="join">
-						{#each carGridSizes as gridSize, g}
-							<button
-								on:click={() => (carGridSize = gridSize)}
-								disabled={carGridSize === gridSize}
-								class="btn btn-square btn-neutral join-item text-xl font-black"
-								><span style:transform="scale({[0.8, 1.2, 1.5][g]})">🚃</span>
-							</button>
-						{/each}
-					</div>
-				</div>
-				<CarList cars={publishedCars} size={carGridSize}>
-					<a
-						href="/design/new"
-						data-sveltekit-preload-data="tap"
-						class="btn btn-outline btn-lg text-2xl font-black tracking-wide"
-					>
-						<!-- <Icon icon="plus" /> -->new
-					</a>
-				</CarList>
-			</div>
+			<CarGrid cars={publishedCars} />
 			{#if draftCars.length > 0}
 				<div class="rounded-xl bg-base-200 p-4">
 					<h2 class="text-3xl font-black uppercase tracking-wide">Your drafts</h2>
-					<CarList cars={draftCars} />
+					<CarGrid cars={draftCars} />
 				</div>
 			{/if}
 		</div>

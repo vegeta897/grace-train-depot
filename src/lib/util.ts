@@ -52,17 +52,22 @@ export const draggable = neodraggable as Action<
 >
 
 // https://larsenwork.com/easing-gradients/
-export function getSideFadeGradient(sidePercent: number) {
+export function getSideFadeGradient(sidePercent: number, angle = 90) {
 	const steps = 10
 	const step = (i: number) => (i + 1) / steps
 	const percent = (i: number) => step(i) * sidePercent
-	return `linear-gradient(90deg, rgba(0,0,0,0) 0, ${createArray(
-		steps,
-		(_, i) => `rgba(0,0,0,${quadInOut(step(i))}) ${percent(i)}%`
-	)} ${100 - sidePercent}%, ${createArray(
-		steps,
-		(_, i) => `rgba(0,0,0,${1 - quadInOut(step(i))}) ${100 - sidePercent + percent(i)}%`
+	const stepValues = createArray(steps, (_, i) => quadInOut(step(i)))
+	return `linear-gradient(${angle}deg, rgba(0,0,0,0) 0, ${stepValues.map(
+		(v, i) => `rgba(0,0,0,${v}) ${percent(i)}%`
+	)} ${100 - sidePercent}%, ${stepValues.map(
+		(v, i) => `rgba(0,0,0,${1 - v}) ${100 - sidePercent + percent(i)}%`
 	)})`
+}
+
+export function getFadeGradient(hsl: string) {
+	const steps = 10
+	const stepValues = [...createArray(steps, (_, i) => quadInOut(i / 10)), 1]
+	return stepValues.map((v, i) => `hsl(${hsl} / ${v}) ${(i / steps) * 100}%`).join(', ')
 }
 
 const createArray = <T extends any>(
