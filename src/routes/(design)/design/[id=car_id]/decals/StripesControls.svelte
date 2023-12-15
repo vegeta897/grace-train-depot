@@ -185,13 +185,13 @@
 </script>
 
 <div class="grid grid-flow-dense grid-cols-3 gap-2 gap-y-3">
-	<h3 class="col-span-3 text-center text-xl font-black uppercase tracking-wide">
+	<h3 class="col-span-3 text-center text-2xl font-black">
 		{#if adding}
-			Add segment
+			add segment
 		{:else if prevNode > 0}
-			Edit segment
+			edit segment
 		{:else}
-			Stripes design
+			stripes design
 		{/if}
 	</h3>
 	<!-- <ul class="steps col-span-3">
@@ -252,7 +252,7 @@
 	>
 	{#if selectedNode}
 		<div class="col-span-3 flex flex-col">
-			<label for="length" class="w-16">Length</label>
+			<label for="length" class="w-16 text-lg">length</label>
 			<input
 				id="length"
 				type="range"
@@ -267,7 +267,7 @@
 			/>
 		</div>
 		<div class="col-span-3 flex flex-col">
-			<label for="angle" class="w-16">Angle</label>
+			<label for="angle" class="w-16 text-lg">angle</label>
 			<input
 				id="angle"
 				type="range"
@@ -286,7 +286,7 @@
 			class="col-span-3 grid gap-2"
 			style:grid-template-columns="repeat({decal.params.colors.length}, minmax(0, 1fr))"
 		>
-			<legend class="col-span-full mb-1">Toggle stripes</legend>
+			<legend class="col-span-full mb-1 text-lg">toggle stripes</legend>
 			{#each decal.params.colors as _, s}
 				<button
 					on:click={() => onStripeToggleClick(s)}
@@ -299,7 +299,7 @@
 		</fieldset>
 	{:else}
 		<div class="col-span-3 flex flex-col">
-			<label for="count" class="h-8 font-black uppercase tracking-wide">Count</label>
+			<label for="count" class="h-8 text-lg">count</label>
 			<input
 				id="count"
 				type="range"
@@ -311,7 +311,7 @@
 			/>
 		</div>
 		<fieldset class="col-span-3 flex flex-col gap-4">
-			<legend class="h-8 font-black uppercase tracking-wide">Colors</legend>
+			<legend class="h-8 text-lg">colors</legend>
 			{#each decal.params.colors as color, s}
 				<ColorSlider
 					colors={COLORS.POP}

@@ -12,7 +12,6 @@
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import type { DecalData } from '$lib/server/schemas'
-	import { capitalize } from '$lib/util'
 	import { cloneDecal } from '$lib/car'
 	import StripesControls from './StripesControls.svelte'
 
@@ -106,7 +105,7 @@
 			<div
 				class="col-span-4 my-1 flex items-center xs:col-span-2 xs:my-0 xs:flex-col xs:items-start"
 			>
-				<label for="color" class="w-16">Color</label>
+				<label for="color" class="w-16">color</label>
 				<div class="h-6 w-full grow">
 					<ColorSlider colors={COLORS.POP} color={decal.fill} onInput={setDecalColor} />
 				</div>
@@ -120,7 +119,7 @@
 			</div>
 		{/if}
 		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
-			<label for="size" class="w-16">Size</label>
+			<label for="size" class="w-16 xs:w-full xs:text-lg">size</label>
 			<input
 				id="size"
 				type="range"
@@ -146,7 +145,7 @@
 			</datalist>
 		</div>
 		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
-			<label for="size" class="w-16">Spin</label>
+			<label for="size" class="w-16 xs:w-full xs:text-lg">spin</label>
 			<input
 				id="spin"
 				type="range"
@@ -171,10 +170,14 @@
 			{@const fullSpan =
 				(param.type === 'stringList' || param.type === 'numberList') && !param.slider}
 			<div
-				class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col"
+				class="col-span-4 my-1 flex items-center xs:col-span-2 xs:my-0 xs:flex-col xs:items-start"
 				class:xs:col-span-4={fullSpan}
 			>
-				<label for={param.name} class="w-16">{capitalize(param.name)}</label>
+				<label
+					for={param.name}
+					class="w-16 leading-none xs:w-full xs:text-lg xs:leading-normal"
+					>{param.displayName}</label
+				>
 				{#if param.type === 'scalar'}
 					<input
 						id={param.name}
@@ -184,6 +187,7 @@
 						step="0.01"
 						value={decal.params[param.name]}
 						on:input={(e) => setDecalParam(param.name, e.currentTarget.valueAsNumber)}
+						on:change={() => dirtyCanvas.set(true)}
 						class="range"
 					/>
 				{:else if param.type === 'toggle'}
@@ -196,17 +200,26 @@
 				{:else if param.type === 'stringList' || param.type === 'numberList'}
 					{@const list = param.list}
 					{#if param.slider}
-						<input
-							id={param.name}
-							type="range"
-							min={0}
-							max={list.length - 1}
-							step="1"
-							value={list.indexOf(decal.params[param.name])}
-							on:input={(e) =>
-								setDecalParam(param.name, list[e.currentTarget.valueAsNumber])}
-							class="range"
-						/>
+						{#if 'color' in param && param.color}
+							<ColorSlider
+								colors={list}
+								color={decal.params[param.name]}
+								onInput={(color) => setDecalParam(param.name, color)}
+							/>
+						{:else}
+							<input
+								id={param.name}
+								type="range"
+								min={0}
+								max={list.length - 1}
+								step="1"
+								value={list.indexOf(decal.params[param.name])}
+								on:input={(e) =>
+									setDecalParam(param.name, list[e.currentTarget.valueAsNumber])}
+								on:change={() => dirtyCanvas.set(true)}
+								class="range"
+							/>
+						{/if}
 					{:else}
 						<div
 							class="grid grid-cols-[repeat(auto-fill,_minmax(3.5rem,_1fr))] gap-1 rounded-lg bg-base-100 p-1"
@@ -236,57 +249,59 @@
 			class="btn btn-md touch-manipulation text-2xl hover:btn-error md:text-3xl"
 			>🗑️</button
 		> -->
-		<button
-			on:click={() => orderDecal(1)}
-			disabled={slot === $designCar.decals.length - 1}
-			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 10 10"
-				class="w-6 -scale-y-100 fill-none stroke-current"
+		<div class="col-span-4 grid grid-flow-row-dense grid-cols-2 gap-2">
+			<button
+				on:click={() => orderDecal(1)}
+				disabled={slot === $designCar.decals.length - 1}
+				class="btn btn-md col-start-1 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
 			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
-				/>
-			</svg>
-			<span class="w-16">Pull</span>
-		</button>
-		<button
-			on:click={() => orderDecal(-1)}
-			disabled={slot === 0}
-			class="btn btn-md col-span-2 col-start-1 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 10 10"
-				class="w-6 fill-none stroke-current"
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 10 10"
+					class="w-6 -scale-y-100 fill-none stroke-current"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
+					/>
+				</svg>
+				<span class="w-16">Pull</span>
+			</button>
+			<button
+				on:click={() => orderDecal(-1)}
+				disabled={slot === 0}
+				class="btn btn-md col-start-1 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
 			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
-				/>
-			</svg>
-			<span class="w-16">Push</span>
-		</button>
-		<button
-			on:click={() => setToolMode('shape')}
-			class="btn btn-md col-span-2 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
-		>
-			Shape
-		</button>
-		<button
-			on:click={() => duplicateDecal()}
-			class="btn btn-md col-span-2 touch-manipulation font-black tracking-wide 2xs:text-lg md:text-xl"
-			disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}
-		>
-			Copy
-		</button>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 10 10"
+					class="w-6 fill-none stroke-current"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
+					/>
+				</svg>
+				<span class="w-16">Push</span>
+			</button>
+			<button
+				on:click={() => setToolMode('shape')}
+				class="btn btn-md font-black tracking-wide 2xs:text-lg md:text-xl"
+			>
+				Shape
+			</button>
+			<button
+				on:click={() => duplicateDecal()}
+				class="btn btn-md font-black tracking-wide 2xs:text-lg md:text-xl"
+				disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}
+			>
+				Copy
+			</button>
+		</div>
 		<!-- </div> -->
 	{:else if toolMode === 'shape'}
 		<div class="col-span-4">
