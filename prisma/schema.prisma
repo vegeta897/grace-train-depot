@@ -56,7 +56,7 @@ model Car {
   name               String?
   published          Boolean             @default(false)
   approval           Approval            @default(pending)
-  body               Body                @default(boxy)
+  body               String              @default("boxy")
   bodyColor          String?
   bodyPopColor       String?
   wheelColor         String?
@@ -95,12 +95,6 @@ model Topper {
   rotate   Float    @default(0)
 
   @@id([carId, slot])
-}
-
-/// Unnecessary?
-enum Body {
-  boxy
-  tanky
 }
 
 enum Approval {
