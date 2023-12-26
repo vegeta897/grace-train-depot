@@ -7,7 +7,7 @@
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../stores'
 	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
-	import { COLORS } from 'grace-train-lib'
+	import { COLOR_NAMES } from 'grace-train-lib'
 	import { flip } from 'svelte/animate'
 	import BoundingBox from './BoundingBox.svelte'
 	import { browser } from '$app/environment'
@@ -41,7 +41,7 @@
 			y: 120,
 			scale: 1,
 			rotate: 0,
-			fill: shape.fill || COLORS.POP[0],
+			fill: shape.fill || COLOR_NAMES.POP.POP,
 			slot: 0, // Will be overwritten below
 			params: {
 				...decalDefs[shape.name].getDefaultParamsObject(),

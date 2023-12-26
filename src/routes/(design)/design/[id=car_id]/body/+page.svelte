@@ -3,7 +3,7 @@
 	import { BODY_NAMES, type BodyName } from 'grace-train-lib/components'
 	import { getDesignStores } from '../stores'
 	import ColorSlider from '../ColorSlider.svelte'
-	import { COLORS } from 'grace-train-lib'
+	import { COLORS, COLOR_NAMES } from 'grace-train-lib'
 	import type { CarData } from '$lib/server/schemas'
 	import { browser } from '$app/environment'
 
@@ -48,16 +48,15 @@
 	</div>
 	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
 		<h3 class="text-2xl font-black uppercase tracking-wide">Base Color</h3>
-		TODO: Allow granular color selection using mix function in color2k
 		<ColorSlider
 			colors={COLORS.BASE}
-			color={$designCar.bodyColor || COLORS.BASE[3]}
+			color={$designCar.bodyColor || COLOR_NAMES.BASE.BASE}
 			onInput={setBodyColor}
 		/>
 		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Pop Color</h3>
 		<ColorSlider
 			colors={COLORS.POP}
-			color={$designCar.bodyPopColor || COLORS.POP[1]}
+			color={$designCar.bodyPopColor || COLOR_NAMES.POP.POP}
 			onInput={setBodyPopColor}
 		/>
 	</div>

@@ -16,7 +16,9 @@ import { COLORS } from 'grace-train-lib'
 import { decalSchema, decalsSchema, popColorSchema } from './decalSchemas'
 
 const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i)
-const baseColorSchema = z.enum(COLORS.BASE)
+const baseColorSchema = z.custom<string>((val) => {
+	return typeof val === 'string' && COLORS.BASE.includes(val)
+})
 
 const topperSchema = z.object({
 	name: z.enum(TOPPER_NAMES),

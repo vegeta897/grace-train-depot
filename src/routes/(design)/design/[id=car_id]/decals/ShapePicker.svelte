@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	import { COLORS, colorRun } from 'grace-train-lib'
+	import { COLORS, COLOR_NAMES, colorRun } from 'grace-train-lib'
 	import {
 		Decal,
 		decalDefs,
@@ -29,26 +29,30 @@
 
 	const tabs: Tab[] = [
 		[
-			{ name: 'star', defaultFill: COLORS.POP[4] },
+			{ name: 'star', defaultFill: COLOR_NAMES.POP.CANARY },
 			{
 				name: 'star',
-				defaultFill: COLORS.POP[2],
+				defaultFill: COLOR_NAMES.POP.RUBY,
 				defaultParams: { outline: true, pinch: 0.2, strokeWidth: 0.5 },
 			},
-			{ name: 'heart', defaultFill: COLORS.POP[1] },
+			{ name: 'heart', defaultFill: COLOR_NAMES.POP.POP },
 			{
 				name: 'heart',
-				defaultFill: COLORS.POP[0],
+				defaultFill: COLOR_NAMES.POP.PIZZAZZ,
 				defaultParams: { dip: 0.5, taper: 0.8, outline: true, strokeWidth: 0.6 },
 			},
-			{ name: 'circle', defaultFill: COLORS.POP[8] },
-			{ name: 'circle', defaultFill: COLORS.POP[6], defaultParams: { hollow: 0.7 } },
+			{ name: 'circle', defaultFill: COLOR_NAMES.POP.SKY },
+			{
+				name: 'circle',
+				defaultFill: COLOR_NAMES.POP.EMERALD,
+				defaultParams: { hollow: 0.7 },
+			},
 			{ name: 'flower' },
 			{
 				name: 'flower',
 				defaultParams: {
-					petalColor: COLORS.POP[5],
-					centerColor: COLORS.POP[3],
+					petalColor: COLOR_NAMES.POP.LIME,
+					centerColor: COLOR_NAMES.POP.PUMPKIN,
 					petals: 8,
 					petalBloom: 0.65,
 					petalLength: 0.6,
@@ -59,8 +63,8 @@
 			{
 				name: 'flower',
 				defaultParams: {
-					petalColor: COLORS.POP[1],
-					centerColor: COLORS.POP[8],
+					petalColor: COLOR_NAMES.POP.POP,
+					centerColor: COLOR_NAMES.POP.SKY,
 					petals: 5,
 					petalBloom: 0.55,
 					petalLength: 0,
@@ -74,7 +78,7 @@
 				name: 'stripes',
 				defaultParams: {
 					nodes: [[-90], [0, 1]],
-					colors: colorRun('POP', 1, 3),
+					colors: colorRun('POP', 3, 3, 3),
 					stripeCount: 3,
 				},
 			},

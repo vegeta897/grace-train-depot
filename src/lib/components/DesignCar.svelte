@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { COLORS } from 'grace-train-lib'
+	import { COLOR_NAMES } from 'grace-train-lib'
 	import {
 		Body,
 		type Decal,
@@ -64,7 +64,7 @@
 				</svelte:fragment>
 				<Wheels
 					rimColor={car.wheelColor}
-					capColor={car.bodyColor || COLORS.BASE[3]}
+					capColor={car.bodyColor || COLOR_NAMES.BASE.BASE}
 					fromCenter={car.wheelFromCenter}
 					size={car.wheelSize}
 					slot="wheels"
@@ -75,7 +75,10 @@
 	{#if focusDecalZone}
 		<div class="absolute left-0 top-0 w-full" out:fade={{ delay: 75, duration: 75 }}>
 			<ContainerSvg>
-				<path fill={car.bodyColor || COLORS.BASE[3]} d={body[bodyName].decalClipPath} />
+				<path
+					fill={car.bodyColor || COLOR_NAMES.BASE.BASE}
+					d={body[bodyName].decalClipPath}
+				/>
 				<g clip-path="url(#designcar-decal-clip)">
 					<Decals {decals} {transition} />
 				</g>

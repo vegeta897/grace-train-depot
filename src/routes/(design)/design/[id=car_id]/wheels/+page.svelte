@@ -8,7 +8,7 @@
 		WHEEL_SIZE_MIN,
 	} from '$lib/common/constants'
 	import ColorSlider from '../ColorSlider.svelte'
-	import { COLORS } from 'grace-train-lib'
+	import { COLORS, COLOR_NAMES } from 'grace-train-lib'
 	import type { CarData } from '$lib/server/schemas'
 	import { browser } from '$app/environment'
 
@@ -44,7 +44,7 @@
 		<h3 class="text-2xl font-black uppercase tracking-wide">Color</h3>
 		<ColorSlider
 			colors={COLORS.POP}
-			color={$designCar.wheelColor || COLORS.POP[1]}
+			color={$designCar.wheelColor || COLOR_NAMES.POP.POP}
 			onInput={setWheelColor}
 		/>
 		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Spread</h3>

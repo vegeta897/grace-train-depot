@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
-	import { COLORS } from 'grace-train-lib'
+	import { COLOR_NAMES } from 'grace-train-lib'
 	import { PUBLIC_HOST } from '$env/static/public'
 	import { fade } from 'svelte/transition'
 	import { cubicIn } from 'svelte/easing'
@@ -57,7 +57,7 @@
 	<meta property="og:image:type" content="image/png" />
 	<meta property="og:image:width" content="375" />
 	<meta property="og:image:height" content="300" />
-	<meta name="theme-color" content="${COLORS.POP[1]}" />
+	<meta name="theme-color" content="${COLOR_NAMES.POP.POP}" />
 </svelte:head>
 <section class="flex flex-col items-center gap-4 px-4 py-8 lg:flex-row lg:px-8">
 	<div

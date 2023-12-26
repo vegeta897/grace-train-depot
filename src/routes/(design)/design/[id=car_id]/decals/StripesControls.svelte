@@ -15,7 +15,7 @@
 	} from '$lib/common/constants'
 	import { degToRad } from '$lib/util'
 	import ColorSlider from '../ColorSlider.svelte'
-	import { COLORS } from 'grace-train-lib'
+	import { colorRun, COLORS } from 'grace-train-lib'
 
 	export let decal: DecalDataWithId
 
@@ -46,7 +46,7 @@
 
 	let prevNode = 0
 	let adding: StripesNode | null = null
-	let lastColors: string[] = COLORS.POP.slice(1, 6)
+	let lastColors: string[] = colorRun('POP', 3, 5, 3)
 	$: (decal.params.colors as string[]).forEach((c, i) => (lastColors[i] = c))
 
 	function toggleAddMode() {

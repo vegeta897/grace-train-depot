@@ -10,7 +10,9 @@ import { COLORS } from 'grace-train-lib'
 import { PRIDE_FLAGS } from 'grace-train-lib/components'
 import { z } from 'zod'
 
-export const popColorSchema = z.enum(COLORS.POP)
+export const popColorSchema = z.custom<string>((val) => {
+	return typeof val === 'string' && COLORS.POP.includes(val)
+})
 
 const decalBaseSchema = z.object({
 	x: z.number().gte(-203).lte(578),
