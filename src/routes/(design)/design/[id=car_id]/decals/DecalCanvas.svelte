@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { DragEventData } from '@neodrag/svelte'
-	import { wrapNumber, draggable } from '$lib/util'
+	import { wrapNumber, draggable, degToRad } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
 	import { Decal } from 'grace-train-lib/components'
@@ -57,12 +57,16 @@
 		decalRight = canvasCenterX
 		const decal = $selectedSlot !== null && $designCar.decals[$selectedSlot]
 		if (!decal) return
-		const boundingBox = getDecalBoundingBox(decal)
-		const decalRadius = (Math.max(boundingBox.width, boundingBox.height) / 2) * Math.SQRT2
-		decalTop = decal.y - decalRadius * decal.scale - 24
-		decalBottom = decal.y + decalRadius * decal.scale + 24
-		decalLeft = decal.x - decalRadius * decal.scale - 24
-		decalRight = decal.x + decalRadius * decal.scale + 24
+		const { width, height } = getDecalBoundingBox(decal)
+		const radians = degToRad(decal.rotate)
+		const cos = Math.cos(radians)
+		const sin = Math.sin(radians)
+		const decalHeight = (Math.abs(width * sin) + Math.abs(height * cos)) * decal.scale
+		const decalWidth = (Math.abs(width * cos) + Math.abs(height * sin)) * decal.scale
+		decalTop = decal.y - decalHeight / 2 - 32
+		decalBottom = decal.y + decalHeight / 2 + 32
+		decalLeft = decal.x - decalWidth / 2 - 32
+		decalRight = decal.x + decalWidth / 2 + 32
 	})
 
 	let containerElement: HTMLDivElement
@@ -195,7 +199,7 @@
 		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
 		setTestDot(originX, originY)
-		const radians = transform.rotate * (Math.PI / 180)
+		const radians = degToRad(transform.rotate)
 		const cos = Math.cos(radians)
 		const sin = Math.sin(radians)
 		resizing = {

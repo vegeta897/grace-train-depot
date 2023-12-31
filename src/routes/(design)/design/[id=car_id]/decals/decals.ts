@@ -3,6 +3,7 @@ import type { Transform } from '$lib/types'
 import { decalDefs } from 'grace-train-lib/components'
 import type { DesignStores } from '../stores'
 import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
+import { degToRad } from '$lib/util'
 
 export function updateDecalTransform(
 	cars: DesignStores['localCars'],
@@ -20,7 +21,7 @@ export function updateDecalTransform(
 			Math.min(maxScale, Math.round(transform.scale * 500) / 500)
 		)
 		decal.rotate = transform.rotate
-		const radians = (decal.rotate / 180) * Math.PI
+		const radians = degToRad(decal.rotate)
 		const xComponent = Math.abs(Math.cos(radians))
 		const yComponent = Math.abs(Math.sin(radians))
 		const reach = (xComponent + yComponent) * 40 * decal.scale
