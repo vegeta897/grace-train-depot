@@ -27,18 +27,13 @@
 	$: toppers = toppersOverride || car.toppers
 </script>
 
-<div
-	class="relative"
-	style:width="calc(100% + {cropToCar ? '40px' : '0'})"
-	class:mt-[-80px]={cropToCar}
-	class:ml-[-20px]={cropToCar}
->
+<div class="relative w-full">
 	<div
 		class="transition-all"
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>
-		<ContainerSvg>
+		<ContainerSvg viewBox={cropToCar ? '0 0 375 300' : undefined}>
 			<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
 				<svelte:fragment slot="decals">
 					<Decals {decals} {transition} />
@@ -73,7 +68,13 @@
 		</ContainerSvg>
 	</div>
 	{#if focusDecalZone}
-		<div class="absolute left-0 top-0 w-full" out:fade={{ delay: 75, duration: 75 }}>
+		<div
+			class="absolute"
+			style:width="calc(100% + {cropToCar ? '40px' : '0'})"
+			style:top="{cropToCar ? -80 : 0}px"
+			style:left="{cropToCar ? -20 : 0}px"
+			out:fade={{ delay: 75, duration: 75 }}
+		>
 			<ContainerSvg>
 				<path
 					fill={car.bodyColor || COLOR_NAMES.BASE.BASE}
