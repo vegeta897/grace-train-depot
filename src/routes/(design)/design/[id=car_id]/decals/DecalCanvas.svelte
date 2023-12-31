@@ -63,10 +63,14 @@
 		const sin = Math.sin(radians)
 		const decalHeight = (Math.abs(width * sin) + Math.abs(height * cos)) * decal.scale
 		const decalWidth = (Math.abs(width * cos) + Math.abs(height * sin)) * decal.scale
-		decalTop = decal.y - decalHeight / 2 - 32
-		decalBottom = decal.y + decalHeight / 2 + 32
-		decalLeft = decal.x - decalWidth / 2 - 32
-		decalRight = decal.x + decalWidth / 2 + 32
+		decalTop = decal.y - decalHeight / 2 - 8
+		decalBottom = decal.y + decalHeight / 2 + 8
+		decalLeft = decal.x - decalWidth / 2 - 8
+		decalRight = decal.x + decalWidth / 2 + 8
+		if (Math.abs(decal.rotate) > 150) decalTop -= 24
+		if (Math.abs(decal.rotate) < 30) decalBottom += 24
+		if (Math.abs(decal.rotate - 90) < 30) decalLeft -= 24
+		if (Math.abs(decal.rotate + 90) < 30) decalRight += 24
 	})
 
 	let containerElement: HTMLDivElement
