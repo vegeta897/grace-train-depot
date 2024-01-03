@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { PageData } from './$types'
+	// import type { PageData } from './$types'
 	import { getDesignStores } from './stores'
 	import { enhance } from '$app/forms'
 	import { browser } from '$app/environment'
 	import { Car } from 'grace-train-lib/components'
 
-	export let data: PageData
+	// export let data: PageData
 
 	const { designCar, designShortId } = getDesignStores()
 
@@ -18,24 +18,24 @@
 		<h3 class="flex items-center gap-2 text-3xl font-black">
 			{#if $designCar.name}<span>{$designCar.name}</span>{/if}
 			<span
-				class="badge uppercase"
+				class="badge badge-lg"
 				class:badge-primary={$designCar.published}
 				class:badge-warning={!$designCar.published}
 			>
-				{#if $designCar.published}Live{:else}Draft{/if}
+				{#if $designCar.published}live{:else}draft{/if}
 			</span>
 		</h3>
 	{/if}
 	<div class="rounded-box flex flex-col items-center gap-4 bg-neutral p-6">
 		{#if $designShortId === 'new'}
-			<p class="text-xl">Let's design a Grace Train car!</p>
-			<p>Start with the basics:</p>
+			<p class="text-xl">let's design a Grace Train car!</p>
+			<p>start with the basics:</p>
 			<a class="btn btn-lg font-black" href="/design/{$designShortId}/body"
 				><span class="relative top-[-3px] text-2xl">🚌</span> Pick a Body</a
 			>
 		{:else}
 			<!-- TODO: Suggest a page based on existing design -->
-			<p class="text-xl">How about a new set of wheels?</p>
+			<p class="text-xl">how about a new set of wheels?</p>
 			<a
 				class="btn btn-lg font-black tracking-wide"
 				href="/design/{$designShortId}/wheels"
@@ -56,7 +56,7 @@
 							d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
 						/></svg
 					>
-					<span>Are you sure you want to delete this car? This cannot be undone!</span>
+					<span>are you sure you want to delete this car? this cannot be undone!</span>
 				</div>
 				<div class="flex gap-4">
 					<button
@@ -77,9 +77,4 @@
 			{/if}
 		{/if}
 	</div>
-	<pre class="rounded-box mt-2 bg-base-300 p-2 text-xs">{JSON.stringify(
-			data,
-			null,
-			2
-		)}</pre>
 </section>
