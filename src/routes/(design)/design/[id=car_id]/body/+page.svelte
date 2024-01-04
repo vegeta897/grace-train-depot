@@ -35,7 +35,7 @@
 	class="flex w-full flex-col items-center gap-1 xs:gap-3 lg:flex-row lg:items-start"
 >
 	<div class="p-4 lg:w-1/2 lg:p-6">
-		<Car car={$designCar} />
+		{#if browser}<DesignCar car={$designCar} />{/if}
 	</div>
 	<div class="rounded-box space-y-4 bg-neutral px-6 py-5 lg:w-1/2">
 		<div class="rounded-box flex items-start gap-2 bg-base-200 p-2 sm:gap-0 sm:p-4">
@@ -47,7 +47,12 @@
 						class="btn btn-ghost h-auto min-h-full w-full touch-manipulation px-2 py-2 outline-2 outline-white"
 						class:outline={current}
 					>
-						<DesignCar car={$designCar} bodyOverride={name} cropToCar />
+						<DesignCar
+							car={$designCar}
+							bodyOverride={name}
+							cropToCar
+							toppersOverride={[]}
+						/>
 					</button>
 				{/each}
 			</div>
