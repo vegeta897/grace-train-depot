@@ -71,14 +71,16 @@
 				on:scroll={(e) => onScroll(e.currentTarget.scrollTop)}
 			>
 				<div
-					class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center gap-y-2 pb-2"
+					class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center pb-2"
 					bind:clientWidth={gridWidth}
 					bind:clientHeight={gridHeight}
 				>
 					{#each cars as car, c (car.id)}
 						<a href="/c/{car.shortId}" data-sveltekit-preload-data="tap" class="group">
-							<div class="flex shrink flex-col items-center gap-1 px-[5%]">
-								<div class="mt-[30%] transition-transform group-hover:-translate-y-2">
+							<div
+								class="flex shrink flex-col items-center gap-1 overflow-clip px-[5%] pt-2"
+							>
+								<div class="pt-[30%] transition-transform group-hover:-translate-y-2">
 									<Car {car} />
 								</div>
 								<div
