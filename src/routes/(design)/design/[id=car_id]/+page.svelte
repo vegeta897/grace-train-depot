@@ -14,7 +14,7 @@
 
 <section class="flex flex-col items-center gap-4">
 	{#if browser}
-		<div class="w-48 lg:w-64"><Car car={$designCar} /></div>
+		<div class="w-48 lg:w-64"><Car car={$designCar} viewBox="0 -60 375 360" /></div>
 		<h3 class="flex items-center gap-2 text-3xl font-black">
 			{#if $designCar.name}<span>{$designCar.name}</span>{/if}
 			<span

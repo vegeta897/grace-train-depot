@@ -76,3 +76,9 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 		maybeChanged.colors.join(',') !== original.colors.join(',')
 	)
 }
+
+export function getCarBoundingBox(car: CarDataWithIds) {
+	// TODO: Use topper bounding boxes and positions to get accurate bounding box for whole car
+	// Useful for vertical centering of cars on pages, maybe use in car grid too
+	// Bento layout in car grid??
+}

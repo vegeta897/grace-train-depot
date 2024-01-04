@@ -124,7 +124,7 @@
 					{#if $designCar.decals.length === 0}
 						<h3 class="mb-2 text-center text-2xl font-bold">Pick a decal!</h3>
 					{/if}
-					<ShapePicker onClick={addDecal} />
+					<ShapePicker onPick={addDecal} />
 					{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
 						<div
 							class="glass-bg rounded-box absolute left-0 top-0 flex h-full w-full flex-col justify-center bg-base-300 p-6 text-center"

@@ -309,7 +309,7 @@
 				fillOverride={decalDefs[decal.name].noFill
 					? undefined
 					: $designCar.decals[slot].fill}
-				onClick={setDecalShape}
+				onPick={setDecalShape}
 			/>
 		</div>
 		<button

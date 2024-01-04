@@ -19,6 +19,9 @@
 
 	export let decal: DecalDataWithId
 
+	// TODO: Embed a visual stripes editor in the decal panel
+	// Keep canvas normal for resizing/rotating/moving etc
+
 	$: nodes = decal.params.nodes as StripesNode[]
 	$: selectedNode = adding || expandNodeTuple(nodes[nodes.length - prevNode])
 	$: if (prevNode > 0) {

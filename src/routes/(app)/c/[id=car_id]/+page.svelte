@@ -59,12 +59,14 @@
 	<meta property="og:image:height" content="300" />
 	<meta name="theme-color" content="${COLOR_NAMES.POP.POP}" />
 </svelte:head>
-<section class="flex flex-col items-center gap-4 px-4 py-8 lg:flex-row lg:px-8">
+<section
+	class="flex flex-col items-center gap-4 overflow-clip px-4 py-8 lg:flex-row lg:px-8"
+>
 	<div
 		class="flex grow flex-col items-center gap-4 p-4 lg:p-8"
 		style:min-width="min(400px, 100%)"
 	>
-		<div class="max-w-[20rem]"><Car car={data.car} /></div>
+		<div class="max-w-[20rem]"><Car car={data.car} viewBox="0 -60 375 360" /></div>
 	</div>
 	{#if data.car.belongsToUser}
 		<div

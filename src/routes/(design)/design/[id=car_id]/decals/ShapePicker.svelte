@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-	import { COLORS, COLOR_NAMES, colorRun } from 'grace-train-lib'
+	import { COLOR_NAMES, colorRun } from 'grace-train-lib'
 	import {
 		Decal,
 		decalDefs,
@@ -22,7 +22,7 @@
 	} from 'grace-train-lib/components'
 
 	export let fillOverride: string | undefined = undefined
-	export let onClick: (decalProps: DecalChoice) => void
+	export let onPick: (decalProps: DecalChoice) => void
 	export let startingShape: DecalName | undefined = 'star' // Unnecessary?
 
 	$: selectedTabIndex = tabs.findIndex((tab) => tab.some((d) => d.name === startingShape))
@@ -96,7 +96,7 @@
 			{@const fill = fillOverride || defaultFill}
 			{@const boundingBox = decalDefs[name].getBoundingBox(params)}
 			<button
-				on:click={() => onClick({ name, fill, params })}
+				on:click={() => onPick({ name, fill, params })}
 				class="btn btn-ghost aspect-square h-auto min-h-full w-full touch-manipulation p-1"
 			>
 				<ContainerSvg viewBox="-50 -50 100 100">

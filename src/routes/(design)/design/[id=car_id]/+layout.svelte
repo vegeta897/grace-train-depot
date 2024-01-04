@@ -135,9 +135,9 @@
 		Finish
 	</a>
 </header>
-<div class="mx-auto mt-2 w-full max-w-2xl gap-x-4 lg:mt-4 lg:max-w-full">
+<div class="mx-auto w-full max-w-2xl gap-x-4 lg:max-w-full">
 	<div class="flex min-w-0 grow flex-col items-center">
-		<div class="mx-2 justify-center self-stretch xs:self-center sm:hidden">
+		<div class="mx-2 mt-2 justify-center self-stretch xs:self-center sm:hidden">
 			<NavTabs {currentPage} carShortId={$page.params.id} />
 		</div>
 		{#if currentPage}
@@ -146,7 +146,7 @@
 			</h2>
 		{/if}
 		<div
-			class="self-stretch p-2 lg:grow lg:p-4"
+			class="self-stretch overflow-clip p-2 lg:grow lg:p-4"
 			style:view-transition-name="design-page-content"
 		>
 			<slot />
