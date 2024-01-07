@@ -17,6 +17,7 @@ declare global {
 		// interface Platform {}
 		interface Locals {
 			auth: import('lucia').AuthRequest
+			botAgent: boolean
 		}
 	}
 

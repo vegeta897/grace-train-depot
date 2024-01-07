@@ -4,8 +4,12 @@ import { auth } from '$lib/server/lucia'
 import prisma from '$lib/server/prisma'
 import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 
+// Regex for user agents from popular embed scrapers
+const botRegex = /(apple|discord|twitter|slack|telegram)bot/gi
+
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.auth = auth.handleRequest(event)
+	event.locals.botAgent = botRegex.test(event.request.headers.get('user-agent') ?? '')
 	if (dev && SKIP_AUTH === 'true') {
 		console.log('skipping auth')
 		const userWithSessions = await prisma.user.findUniqueOrThrow({

@@ -7,6 +7,8 @@ import type { CarDataWithIds } from '$lib/server/schemas'
 
 export const load = (async ({ params, locals }) => {
 	console.log('/design/ layout server load')
+	// Redirect bots to car page
+	if (locals.botAgent) throw redirect(302, params.id === 'new' ? '/' : `/c/${params.id}`)
 	const data: { user?: User; savedCar?: CarDataWithIds } = {}
 	const session = await locals.auth.validate()
 	if (session) data.user = session.user
