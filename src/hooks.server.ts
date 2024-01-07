@@ -5,7 +5,7 @@ import prisma from '$lib/server/prisma'
 import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 
 // Regex for user agents from popular embed scrapers
-const botRegex = /(apple|discord|twitter|slack|telegram)bot/gi
+const botRegex = /((apple|discord|twitter|slack|telegram)bot|facebookexternalhit)/gi
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.auth = auth.handleRequest(event)
