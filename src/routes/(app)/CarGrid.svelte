@@ -1,10 +1,12 @@
 <script lang="ts">
+	import Icon from '$lib/components/Icon.svelte'
 	import type { CarDataWithIds } from '$lib/server/schemas'
 	import { getFadeGradient } from '$lib/util'
 	import { Car } from 'grace-train-lib/components'
 	import { tick } from 'svelte'
 
 	export let cars: CarDataWithIds[]
+	export let title = 'my cars'
 
 	const fadeGradient = getFadeGradient('var(--b3)')
 	const topGradient = `linear-gradient(to top, ${fadeGradient})`
@@ -40,15 +42,14 @@
 	}
 </script>
 
-<div class="rounded-xl bg-base-200 p-4" bind:this={containerElement}>
-	<div class="mb-2 flex items-center gap-4">
-		<h2 class="text-xl font-black sm:text-3xl">my cars</h2>
-		<button
-			class="btn btn-square text-lg"
-			class:btn-neutral={!small}
-			class:btn-secondary={small}
-			on:click={() => (small = !small)}>🔍</button
-		>
+<div class="rounded-xl bg-base-200" bind:this={containerElement}>
+	<div class="mb-2 flex items-center gap-4 p-4 xs:gap-6">
+		<h2 class="text-xl font-black sm:text-3xl">{title}</h2>
+		<div class="flex items-center gap-2">
+			<Icon icon="grid-large" class="h-4 w-4" />
+			<input type="checkbox" class="toggle" bind:checked={small} />
+			<Icon icon="grid-small" class="h-4 w-4" />
+		</div>
 		<a
 			href="/design/new"
 			data-sveltekit-preload-data="tap"
@@ -58,20 +59,21 @@
 		</a>
 	</div>
 	<div class="relative">
-		<div class="relative overflow-clip rounded-lg">
+		<div class="relative overflow-clip" class:rounded-xl={!expanded}>
 			<div
 				class="max-h-[100vh]"
 				class:overflow-clip={!expanded || !scroll}
 				class:overflow-y-scroll={expanded && scroll}
 				class:grid-expanded={expanded}
 				class:grid-not-expanded={!expanded}
-				style:--not-expanded-height={small ? '9rem' : '13.5rem'}
+				style:--not-expanded-height={small ? '12rem' : '14.5rem'}
 				style:--grid-width={small ? '5rem' : '8rem'}
 				bind:clientHeight={containerHeight}
 				on:scroll={(e) => onScroll(e.currentTarget.scrollTop)}
 			>
 				<div
-					class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center pb-2"
+					class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center"
+					class:pb-4={!expanded}
 					bind:clientWidth={gridWidth}
 					bind:clientHeight={gridHeight}
 				>
@@ -83,13 +85,11 @@
 								<div class="pt-[30%] transition-transform group-hover:-translate-y-2">
 									<Car {car} />
 								</div>
-								<div
-									class="badge badge-neutral block max-w-full truncate transition-all"
-									class:opacity-0={small}
-									class:-translate-y-4={small}
-								>
-									{car.name}
-								</div>
+								{#if !small}
+									<div class="badge badge-neutral block max-w-full truncate">
+										{car.name}
+									</div>
+								{/if}
 							</div>
 						</a>
 					{/each}
@@ -104,22 +104,22 @@
 			<div
 				class="pointer-events-none absolute bottom-0"
 				class:h-12={expanded}
-				class:h-16={!expanded}
+				class:h-20={!expanded && !small}
+				class:h-28={!expanded && small}
 				style:background-image={bottomGradient}
 				style:opacity={(scroll ? 1 : 0) * fadeBottom}
 				style:width="{gridWidth}px"
 			></div>
 		</div>
 		<div
-			class="bottom-0 flex w-full items-center justify-center p-2"
-			class:pb-0={expanded}
+			class="bottom-0 flex w-full items-center justify-center p-4"
 			class:absolute={!expanded}
 		>
 			{#if scroll || expanded}
 				<button
 					on:click={onExpand}
-					class="btn btn-neutral text-xl font-black tracking-wide"
-					>{expanded ? 'less' : 'more'}</button
+					class="btn btn-neutral h-10 min-h-[2.5rem] font-black tracking-wide"
+					>{expanded ? 'show less' : 'show all'}</button
 				>
 			{/if}
 		</div>

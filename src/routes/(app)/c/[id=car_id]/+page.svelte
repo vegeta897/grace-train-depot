@@ -92,7 +92,7 @@
 				</div>
 				<div class="stat-desc text-sm">
 					{#if data.car.stats}
-						on {data.car.stats?.lastAppearance.toLocaleDateString()}
+						on {data.car.stats.lastAppearance.toLocaleDateString()}
 					{:else}
 						maybe next stream
 					{/if}

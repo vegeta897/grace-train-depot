@@ -5,6 +5,7 @@
 	import { COLORS } from 'grace-train-lib'
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
+	import Icon from '$lib/components/Icon.svelte'
 
 	export let data: PageData
 
@@ -47,11 +48,12 @@
 			</div>
 		{/if}
 		<div
-			class="flex w-full max-w-lg flex-col gap-4 rounded-2xl bg-neutral p-6 sm:max-w-full md:p-10"
+			class="flex w-full max-w-lg flex-col gap-4 rounded-2xl bg-neutral p-4 sm:max-w-full md:p-10"
 		>
-			<div class="flex items-center justify-between">
-				<h2 class="text-xl font-bold">
-					hey {data.user.twitchDisplayName}!
+			<div class="flex flex-wrap items-center justify-between gap-2">
+				<h2 class="flex items-end gap-2 text-lg font-bold">
+					<Icon icon="twitch" class="h-6 w-6" />
+					{data.user.twitchDisplayName}
 				</h2>
 				{#if data.user.isMod}
 					<a href="/mod" class="btn font-black tracking-wide">🛡️ Mod view</a>
@@ -59,10 +61,7 @@
 			</div>
 			<CarGrid cars={publishedCars} />
 			{#if draftCars.length > 0}
-				<div class="rounded-xl bg-base-200 p-4">
-					<h2 class="text-3xl font-black uppercase tracking-wide">Your drafts</h2>
-					<CarGrid cars={draftCars} />
-				</div>
+				<CarGrid title="my drafts" cars={draftCars} />
 			{/if}
 		</div>
 	</section>
