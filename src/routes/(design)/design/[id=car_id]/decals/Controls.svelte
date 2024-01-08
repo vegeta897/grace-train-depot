@@ -14,6 +14,7 @@
 	import type { DecalData } from '$lib/server/schemas'
 	import { cloneDecal } from '$lib/car'
 	import StripesControls from './StripesControls.svelte'
+	import BoundingBox from './BoundingBox.svelte'
 
 	export let slot: number
 
@@ -93,33 +94,38 @@
 	}
 </script>
 
-<div class="rounded-box grid grid-flow-row-dense grid-cols-4 gap-2 bg-neutral p-2 xs:p-4">
+<div class="rounded-box space-y-4 bg-neutral p-2 xs:p-4">
 	{#if toolMode === null}
 		{#if decal.name === 'stripes'}
 			<div class="col-span-4 rounded-xl bg-base-100 p-2 xs:p-4">
 				<StripesControls {decal} />
 			</div>
 		{/if}
-		{#if !decalDefs[decal.name].noFill}
-			<!-- TODO: Make these controls into components -->
-			<div
-				class="col-span-4 my-1 flex items-center xs:col-span-2 xs:my-0 xs:flex-col xs:items-start"
-			>
-				<label for="color" class="w-16">color</label>
-				<div class="h-6 w-full grow">
-					<ColorSlider colors={COLORS.POP} color={decal.fill} onInput={setDecalColor} />
-				</div>
-			</div>
-			<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
+		<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
+			{#if !decalDefs[decal.name].noFill}
+				<!-- TODO: Make these controls into components -->
+				<label for="fill" class="text-lg lg:text-xl">color</label>
+				<ColorSlider
+					id="fill"
+					colors={COLORS.POP}
+					color={decal.fill}
+					onInput={setDecalColor}
+				/>
 				<!-- (gradient to neighbor color) -->
-				<label for="color" class="w-16">Mix</label>
-				<input id="mix" type="range" min={-2} max={2} step="1" value={0} class="range" />
+				<label for="mix" class="text-lg lg:text-xl">mix</label>
+				<input
+					id="mix"
+					type="range"
+					min={-Math.min(COLORS.POP.indexOf(decal.fill), 6)}
+					max={Math.min(COLORS.POP.length - COLORS.POP.indexOf(decal.fill) - 1, 6)}
+					step="1"
+					value={0}
+					class="range"
+				/>
 				<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
 			<input type="range" min={-180} max={180} step="1" value={0} class="range" /> -->
-			</div>
-		{/if}
-		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
-			<label for="size" class="w-16 xs:w-full xs:text-lg">size</label>
+			{/if}
+			<label for="size" class="text-lg lg:text-xl">size</label>
 			<input
 				id="size"
 				type="range"
@@ -143,9 +149,7 @@
 			<datalist id="sizes">
 				<option>{Math.round(((1 - minScale) / scaleRange) ** (1 / 1.5) * 100)}</option>
 			</datalist>
-		</div>
-		<div class="col-span-4 my-1 flex xs:col-span-2 xs:my-0 xs:flex-col">
-			<label for="size" class="w-16 xs:w-full xs:text-lg">spin</label>
+			<label for="size" class="text-lg lg:text-xl">spin</label>
 			<input
 				id="spin"
 				type="range"
@@ -165,19 +169,12 @@
 				<option>0</option>
 				<option>90</option>
 			</datalist>
-		</div>
-		{#each paramConfig as param}
-			{@const fullSpan =
-				(param.type === 'stringList' || param.type === 'numberList') && !param.slider}
-			<div
-				class="col-span-4 my-1 flex items-center xs:col-span-2 xs:my-0 xs:flex-col xs:items-start"
-				class:xs:col-span-4={fullSpan}
-			>
-				<label
-					for={param.name}
-					class="w-16 leading-none xs:w-full xs:text-lg xs:leading-normal"
-					>{param.displayName}</label
-				>
+			{#each paramConfig as param}
+				{#if param.type !== 'listPicker'}
+					<label for={param.name} class="whitespace-nowrap text-lg lg:text-xl"
+						>{param.displayName}</label
+					>
+				{/if}
 				{#if param.type === 'scalar'}
 					<input
 						id={param.name}
@@ -197,9 +194,9 @@
 						on:change={(e) => setDecalParam(param.name, e.currentTarget.checked)}
 						class="toggle"
 					/>
-				{:else if param.type === 'stringList' || param.type === 'numberList'}
+				{:else if 'list' in param}
 					{@const list = param.list}
-					{#if param.slider}
+					{#if param.type === 'listSlider'}
 						{#if 'color' in param && param.color}
 							<ColorSlider
 								colors={list}
@@ -221,28 +218,36 @@
 							/>
 						{/if}
 					{:else}
+						{@const thumbWidth = param.thumbSize[0] + 20}
+						{@const thumbHeight = param.thumbSize[1] + 20}
 						<div
-							class="grid grid-cols-[repeat(auto-fill,_minmax(3.5rem,_1fr))] gap-1 rounded-lg bg-base-100 p-1"
+							class="col-span-2 grid grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-2 rounded-lg bg-base-100 p-2"
 						>
 							{#each param.list as listItem}
 								<button
-									class="btn btn-ghost btn-sm h-auto w-full px-2"
+									class="btn btn-ghost btn-sm h-auto w-full p-0"
 									on:click={() => setDecalParam(param.name, listItem)}
 								>
-									<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
+									<ContainerSvg
+										viewBox="-{thumbWidth / 2} -{thumbHeight /
+											2} {thumbWidth} {thumbHeight}"
+									>
 										<Decal
 											name={decal.name}
 											fill={decal.fill}
 											params={{ ...decal.params, [param.name]: listItem }}
 										/>
+										{#if decal.params[param.name] === listItem}
+											<BoundingBox height={thumbHeight} width={thumbWidth} />
+										{/if}
 									</ContainerSvg>
 								</button>
 							{/each}
 						</div>
 					{/if}
 				{/if}
-			</div>
-		{/each}
+			{/each}
+		</div>
 		<!-- <div class="col-span-4"> -->
 		<!-- <button
 			on:click={() => deleteDecal()}

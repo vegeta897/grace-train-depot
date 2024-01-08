@@ -11,6 +11,7 @@
 	import { COLORS, COLOR_NAMES } from 'grace-train-lib'
 	import type { CarData } from '$lib/server/schemas'
 	import { browser } from '$app/environment'
+	import { getCarViewBox } from '$lib/car'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -36,34 +37,39 @@
 	}
 </script>
 
-<section>
-	<div class="mx-auto mb-6 w-64">
-		{#if browser}<DesignCar car={$designCar} />{/if}
+<section class="flex w-full flex-col items-center gap-1 xs:gap-3 lg:flex-row">
+	<div class="p-4 lg:w-1/2 lg:p-6">
+		{#if browser}<DesignCar car={$designCar} viewBox={getCarViewBox($designCar)} />{/if}
 	</div>
-	<div class="rounded-box flex flex-col gap-3 bg-neutral px-6 py-5">
-		<h3 class="text-2xl font-black uppercase tracking-wide">Color</h3>
-		<ColorSlider
-			colors={COLORS.POP}
-			color={$designCar.wheelColor || COLOR_NAMES.POP.POP}
-			onInput={setWheelColor}
-		/>
-		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Spread</h3>
-		<input
-			type="range"
-			min={WHEEL_DISTANCE_MIN}
-			max={WHEEL_DISTANCE_MAX}
-			on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
-			value={$designCar.wheelFromCenter}
-			class="range range-primary"
-		/>
-		<h3 class="mt-2 text-2xl font-black uppercase tracking-wide">Size</h3>
-		<input
-			type="range"
-			min={WHEEL_SIZE_MIN}
-			max={WHEEL_SIZE_MAX}
-			on:input={(e) => setWheelSize(e.currentTarget.valueAsNumber)}
-			value={$designCar.wheelSize}
-			class="range range-primary"
-		/>
+	<div class="rounded-box w-full bg-neutral p-4 lg:w-1/2 lg:p-5">
+		<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
+			<label for="color" class="text-lg lg:text-xl">color</label>
+			<ColorSlider
+				id="color"
+				colors={COLORS.POP}
+				color={$designCar.wheelColor || COLOR_NAMES.POP.POP}
+				onInput={setWheelColor}
+			/>
+			<label for="wheelSize" class="text-lg lg:text-xl">size</label>
+			<input
+				id="wheelSize"
+				type="range"
+				min={WHEEL_SIZE_MIN}
+				max={WHEEL_SIZE_MAX}
+				on:input={(e) => setWheelSize(e.currentTarget.valueAsNumber)}
+				value={$designCar.wheelSize}
+				class="range"
+			/>
+			<label for="wheelDistance" class="text-lg lg:text-xl">spread</label>
+			<input
+				id="wheelDistance"
+				type="range"
+				min={WHEEL_DISTANCE_MIN}
+				max={WHEEL_DISTANCE_MAX}
+				on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
+				value={$designCar.wheelFromCenter}
+				class="range"
+			/>
+		</div>
 	</div>
 </section>

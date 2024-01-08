@@ -6,11 +6,11 @@ import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/server/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { carSchema } from '$lib/server/schemas'
-import DesignCar from '$lib/components/DesignCar.svelte'
 import sharp from 'sharp'
-import fs from 'node:fs'
 import { join } from 'node:path'
 import { PROJECT_PATH } from '$env/static/private'
+import { getCarViewBox } from '$lib/car'
+import { Car } from 'grace-train-lib/components'
 
 const assetsPath = join(PROJECT_PATH, './public/assets')
 
@@ -90,23 +90,19 @@ export const actions = {
 			}
 		}
 		// TODO: Move this to another file
-		const { html } = (DesignCar as any).render({ car: carData })
+		const { html } = (Car as any).render({
+			car: carData,
+			viewBox: getCarViewBox(carData),
+			width: '250px', // Good size for large image embed without being too large
+		})
 		// Important: Careful what css properties are used in the car SVG
 		// CSS variables are NOT supported
 		const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
 		try {
 			sharp(Buffer.from(svgString))
 				.png({ compressionLevel: 9 })
-				.toFile(`${assetsPath}/car_${carData.shortId}_${updatedCar.revision}.png`)
+				.toFile(`${assetsPath}/car_${carData.shortId}.png`)
 				.catch((e) => console.log('Error saving car image to file', e))
-			if (updatedCar.revision > 1) {
-				// Delete previous revision image
-				// TODO: Store revisions in a db table for easier management and cleanup
-				fs.rm(
-					`${assetsPath}/car_${carData.shortId}_${updatedCar.revision - 1}.png`,
-					(e) => e && console.log('Error deleting previous car revision image', e)
-				)
-			}
 		} catch (e) {
 			console.log('Error generating car image PNG', e)
 		}
@@ -116,7 +112,7 @@ export const actions = {
 
 function transformCarToDB(car: CarData) {
 	return {
-		name: car.name || null,
+		name: car.name,
 		body: car.body,
 		bodyColor: car.bodyColor,
 		bodyPopColor: car.bodyPopColor,

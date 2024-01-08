@@ -12,7 +12,7 @@ export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
-		name: carData.name || undefined,
+		name: carData.name,
 		published: carData.published,
 		revision: carData.revision,
 		body: carData.body as CarData['body'],

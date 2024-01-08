@@ -13,7 +13,7 @@ export const actions = {
 			where: { userId: session.user.userId, shortId: params.id },
 		})
 		// Delete car image
-		fs.rm(`./public/assets/car_${params.id}_${deletedCar.revision}.png`, () => {})
+		fs.rm(`./public/assets/car_${params.id}.png`, () => {})
 		throw redirect(302, '/?carDeleted=true')
 	},
 } satisfies Actions

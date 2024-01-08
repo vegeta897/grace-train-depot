@@ -53,14 +53,14 @@ model Car {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   revision           Int                 @default(1)
-  name               String?
+  name               String
   published          Boolean             @default(false)
   approval           Approval            @default(pending)
   body               String              @default("boxy")
   bodyColor          String?
   bodyPopColor       String?
   wheelColor         String?
-  wheelFromCenter    Float
+  wheelFromCenter    Int                 @default(100)
   wheelSize          Int                 @default(25)
   decals             Decal[]
   toppers            Topper[]

@@ -37,7 +37,7 @@ const topperSchema = z.object({
 export const carSchema = z.object({
 	id: z.number().int().gte(0).readonly(),
 	shortId: z.string().min(1).readonly(),
-	name: z.string().min(1).max(CAR_NAME_MAX_LENGTH).optional(),
+	name: z.string().min(1).max(CAR_NAME_MAX_LENGTH),
 	published: z.boolean().optional(),
 	revision: z.number().int().gte(1).optional().readonly(),
 	body: z.enum(BODY_NAMES),

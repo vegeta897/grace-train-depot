@@ -3,7 +3,10 @@ import type {
 	CarDataWithIds,
 	TopperData,
 	DecalDataWithId,
+	CarData,
 } from '$lib/server/schemas'
+import { body, getYposition, topperDefs } from 'grace-train-lib/components'
+import { degToRad } from './util'
 
 export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 	return {
@@ -20,6 +23,7 @@ export function cloneDecal(decal: DecalDataWithId): DecalDataWithId {
 export function getNewCar(): CarDataWithIds {
 	return {
 		id: 0,
+		name: '',
 		shortId: 'new',
 		body: 'boxy',
 		decals: [],
@@ -77,8 +81,35 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 	)
 }
 
-export function getCarBoundingBox(car: CarDataWithIds) {
-	// TODO: Use topper bounding boxes and positions to get accurate bounding box for whole car
-	// Useful for vertical centering of cars on pages, maybe use in car grid too
-	// Bento layout in car grid??
+export function getCarViewBox(car: CarData | CarDataWithIds) {
+	if (car.toppers.length === 0) return '0 0 375 300'
+	const topLine = body[car.body].topperLine
+	const topLineWidth = topLine[topLine.length - 1][0] - topLine[0][0]
+	let left = 0
+	let right = 375
+	let top = 0
+	let bottom = 300
+	for (const topper of car.toppers) {
+		const { origin, getBoundingBox } = topperDefs[topper.name]
+		const boundingBox = getBoundingBox()
+		const x = topLine[0][0] + topLineWidth * topper.position
+		const y = getYposition(x, topLine)
+		const radians = degToRad(topper.rotate)
+		const cos = Math.cos(radians)
+		const sin = Math.sin(radians)
+		const rotatedHeight =
+			(Math.abs(origin.x * sin) + Math.abs(origin.y * cos)) * topper.scale
+		const widthCos = origin.x * cos
+		const lowerHeight = origin.y - boundingBox.height
+		const topperLeft =
+			x +
+			Math.min(-widthCos + origin.y * sin, -widthCos + lowerHeight * sin) * topper.scale
+		const topperRight =
+			x + Math.max(widthCos + origin.y * sin, widthCos + lowerHeight * sin) * topper.scale
+		const topperTop = y - rotatedHeight - topper.offset
+		if (topperTop < top) top = topperTop
+		if (topperLeft < left) left = topperLeft
+		if (topperRight > right) right = topperRight
+	}
+	return `${left} ${top} ${right - left} ${bottom - top}`
 }

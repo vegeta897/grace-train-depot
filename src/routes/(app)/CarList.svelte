@@ -61,8 +61,8 @@
 					</div>
 					<div
 						class="badge badge-neutral block max-w-full truncate transition-all"
-						class:opacity-0={!car.name || size < 1}
-						class:-translate-y-4={!car.name || size < 1}
+						class:opacity-0={size < 1}
+						class:-translate-y-4={size < 1}
 					>
 						{car.name}
 					</div>

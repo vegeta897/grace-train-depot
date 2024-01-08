@@ -5,23 +5,24 @@
 	import type { DecalDataWithId } from '$lib/server/schemas'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
-	import { getDesignStores } from '../stores'
+	import { getDesignStores, setHint } from '../stores'
 	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import { COLOR_NAMES } from 'grace-train-lib'
 	import { flip } from 'svelte/animate'
 	import BoundingBox from './BoundingBox.svelte'
 	import { browser } from '$app/environment'
 	import { getDecalBoundingBox } from './decals'
+	import { fade, fly } from 'svelte/transition'
 
-	const { localCars, designShortId, designCar } = getDesignStores()
-	const { hoveredSlot, selectedSlot } = getDecalStores()
+	const { localCars, designShortId, designCar, hints } = getDesignStores()
+	const { hoveredSlot, selectedSlot, dirtyCanvas } = getDecalStores()
 
 	// TODO: Allow choosing body color to act as an "eraser" decal
 
 	// TODO: Add randomize button (here and on other pages)
 	// Changes shape, color, size, rotation, position, and params. Transition it if possible!
 
-	// TODO: Add keyboard shortcuts (delete, arrows, etc)
+	// TODO: Add keyboard shortcuts (delete, arrows, etc) see svelte-put shortcuts module
 
 	// TODO: Add a toast to discourage adding too many decals
 
@@ -30,6 +31,7 @@
 
 	function clickDecalSlot(slot: number) {
 		selectedSlot.set($selectedSlot === slot ? null : slot)
+		dirtyCanvas.set(true)
 	}
 
 	function addDecal(shape: DecalChoice) {
@@ -48,6 +50,9 @@
 				...shape.params,
 			},
 		} as DecalDataWithId
+		if ($hints.dragDecal === undefined && $designCar.decals.length === 0) {
+			setHint(hints, 'dragDecal', true)
+		}
 		localCars.update((cars) => {
 			const decals = cars[$designShortId].decals
 			decals.push(newDecal)
@@ -60,15 +65,23 @@
 </script>
 
 <section class="flex w-full flex-col items-start gap-1 xs:gap-3 lg:flex-row">
-	<div
-		class="lg:remove-glass-bg glass-bg rounded-box sticky top-0 z-10 w-full overflow-clip bg-neutral lg:relative lg:w-1/2"
-	>
-		<DecalCanvas
-			setTestDot={(x, y) => {
-				testDot.x = x
-				testDot.y = y
-			}}
-		/>
+	<div class="sticky top-0 z-10 w-full space-y-1 lg:relative lg:w-1/2">
+		<div class="lg:remove-glass-bg glass-bg rounded-box overflow-clip bg-neutral">
+			<DecalCanvas setTestDot={(x, y) => Object.assign(testDot, { x, y })} />
+		</div>
+		{#if $hints.dragDecal}
+			<div
+				in:fly={{ duration: 150, y: -100 }}
+				out:fade={{ duration: 150 }}
+				class="alert alert-info flex justify-between"
+			>
+				<p class="text-lg"><strong>hint:</strong> move decals by dragging!</p>
+				<button
+					class="btn btn-neutral font-black tracking-wide lg:btn-sm"
+					on:click={() => setHint(hints, 'dragDecal', false)}>OK</button
+				>
+			</div>
+		{/if}
 	</div>
 	<div class="flex w-full flex-grow items-start gap-1 xs:gap-3 lg:w-1/2">
 		{#if $designCar.decals.length > 0}

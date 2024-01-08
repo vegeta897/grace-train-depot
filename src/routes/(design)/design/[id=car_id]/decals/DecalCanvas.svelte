@@ -10,14 +10,14 @@
 	import DesignCar from '$lib/components/DesignCar.svelte'
 	import type { Transform } from '$lib/types'
 	import { getDecalBoundingBox, removeDecal, updateDecalTransform } from './decals'
-	import { getDesignStores } from '../stores'
+	import { getDesignStores, setHint } from '../stores'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
 
 	export let setTestDot: (x: number, y: number) => void = () => {}
 
-	const { localCars, designShortId, designCar } = getDesignStores()
+	const { localCars, designShortId, designCar, hints } = getDesignStores()
 	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas, previewDecal } =
 		getDecalStores()
 
@@ -169,6 +169,7 @@
 		dirtyCanvas.set(true)
 		dragging.set(null)
 		clickOutsideCooldown = true
+		setHint(hints, 'dragDecal', false)
 		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
 

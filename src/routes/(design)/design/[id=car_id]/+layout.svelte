@@ -126,6 +126,11 @@
 	<div class="hidden sm:flex">
 		<NavTabs {currentPage} carShortId={$page.params.id} />
 	</div>
+	{#if currentPage}
+		<h2 class="my-2 text-2xl font-black uppercase tracking-wide sm:hidden">
+			{currentPage}
+		</h2>
+	{/if}
 	<a
 		href="/design/{$page.params.id}/finish"
 		class="btn btn-success h-[2.5rem] min-h-[2.5rem] w-24 text-lg font-black tracking-wide lg:h-20"
@@ -141,7 +146,9 @@
 			<NavTabs {currentPage} carShortId={$page.params.id} />
 		</div>
 		{#if currentPage}
-			<h2 class="my-2 text-3xl font-black uppercase tracking-wide lg:hidden">
+			<h2
+				class="my-2 hidden text-3xl font-black uppercase tracking-wide sm:visible lg:hidden"
+			>
 				{currentPage}
 			</h2>
 		{/if}

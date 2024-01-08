@@ -19,6 +19,7 @@
 	import TopperPicker, { type TopperChoice } from './TopperPicker.svelte'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
+	import { getCarViewBox } from '$lib/car'
 
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
 
@@ -95,6 +96,7 @@
 			<DesignCar
 				car={$designCar}
 				focusTopperSlot={hoveredSlot !== null ? hoveredSlot : null}
+				viewBox={getCarViewBox($designCar)}
 			/>
 		{/if}
 	</div>

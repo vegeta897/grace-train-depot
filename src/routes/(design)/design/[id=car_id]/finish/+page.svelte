@@ -53,14 +53,14 @@
 					d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
 				/></svg
 			>
-			There was a problem saving your design.<br />Please refresh the page and try again.
+			there was a problem saving your design.<br />please refresh the page and try again.
 		</div>
 	{:else}
 		<p class="mt-6 text-lg font-bold">
 			{#if $page.params.id === 'new'}
-				What a cool car!
+				what a cool car!
 			{:else}
-				Looking good!
+				looking good!
 			{/if}
 		</p>
 	{/if}
@@ -74,28 +74,30 @@
 			<input type="hidden" name="carData" value={JSON.stringify($designCar)} />
 			<div class="form-control w-full max-w-xs">
 				<label for="carName" class="label">
-					<span class="label-text">Name this design</span>
-					<span class="label-text-alt opacity-70">optional</span>
+					<span class="label-text">car name</span>
+					<span class="label-text-alt opacity-70">required</span>
 				</label>
 				<input
+					required
 					type="text"
 					name="carName"
-					class="input w-full max-w-xs"
-					value={$designCar.name || ''}
-					placeholder="Type here"
+					class="input w-full max-w-xs invalid:input-warning"
+					value={$designCar.name}
+					placeholder="type here"
 					maxlength={CAR_NAME_MAX_LENGTH}
 				/>
 			</div>
-			<button class="btn btn-primary btn-lg font-black tracking-wide"
-				>{#if $designCar.published}Save{:else}Publish{/if} Car</button
-			>
+			<button class="btn btn-primary btn-lg font-black tracking-wide">
+				{#if $designCar.published}Save{:else}Publish{/if} Car
+			</button>
 			<div class="divider my-1">or</div>
 			<button formaction="?/save" class="link"
-				>Save {#if $designCar.published}and move to drafts{:else}without publishing{/if}</button
+				>save {#if $designCar.published}and move to drafts{:else}without publishing{/if}</button
 			>
 		</form>
 	{:else}
 		<div class="alert mt-4">
+			<!-- TODO: Replace with <Icon /> -->
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				class="h-6 w-6 shrink-0 stroke-current"
@@ -108,11 +110,11 @@
 					d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
 				/></svg
 			>
-			<p>Link your Twitch account to save this car and get it on the tracks!</p>
+			<p>link your Twitch account to save this car and get it on the tracks!</p>
 			<p>
 				<a
 					href="/login?redirectTo={$page.url.pathname + $page.url.search}"
-					class="btn btn-secondary btn-lg font-black">Twitch Login</a
+					class="btn btn-secondary btn-lg font-black tracking-wide">Twitch Login</a
 				>
 			</p>
 		</div>

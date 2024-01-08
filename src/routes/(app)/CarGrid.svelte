@@ -75,7 +75,7 @@
 					bind:clientWidth={gridWidth}
 					bind:clientHeight={gridHeight}
 				>
-					{#each cars as car, c (car.id)}
+					{#each cars as car (car.id)}
 						<a href="/c/{car.shortId}" data-sveltekit-preload-data="tap" class="group">
 							<div
 								class="flex shrink flex-col items-center gap-1 overflow-clip px-[5%] pt-2"
@@ -85,8 +85,8 @@
 								</div>
 								<div
 									class="badge badge-neutral block max-w-full truncate transition-all"
-									class:opacity-0={!car.name || small}
-									class:-translate-y-4={!car.name || small}
+									class:opacity-0={small}
+									class:-translate-y-4={small}
 								>
 									{car.name}
 								</div>

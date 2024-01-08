@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms'
 	import { browser } from '$app/environment'
 	import { Car } from 'grace-train-lib/components'
+	import { getCarViewBox } from '$lib/car'
 
 	// export let data: PageData
 
@@ -12,11 +13,15 @@
 	let deleteMode = false
 </script>
 
+<!-- TODO: Side by side layout in lg: view, like other design pages
+Make a unified layout component (with multiple slots, not a sveltekit layout) -->
 <section class="flex flex-col items-center gap-4">
 	{#if browser}
-		<div class="w-48 lg:w-64"><Car car={$designCar} viewBox="0 -60 375 360" /></div>
+		<div class="w-48 lg:w-64">
+			<Car car={$designCar} viewBox={getCarViewBox($designCar)} />
+		</div>
 		<h3 class="flex items-center gap-2 text-3xl font-black">
-			{#if $designCar.name}<span>{$designCar.name}</span>{/if}
+			<span>{$designCar.name}</span>
 			<span
 				class="badge badge-lg"
 				class:badge-primary={$designCar.published}

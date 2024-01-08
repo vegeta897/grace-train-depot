@@ -13,6 +13,7 @@ export const load = (async ({ params, parent }) => {
 			decals: { orderBy: { slot: 'asc' } },
 			toppers: true,
 			graceTrainCarStats: true,
+			user: { select: { twitchDisplayName: true } },
 		},
 	})
 	if (!carData) throw error(404, 'Unknown car ID')
@@ -23,6 +24,7 @@ export const load = (async ({ params, parent }) => {
 			trainCount: carData.graceTrainCarStats?.graceTrainCount,
 			totalAppearances: carData.graceTrainCarStats?.totalAppearances,
 			lastAppeared: Number(carData.graceTrainCarStats?.lastGraceTrainId ?? 0),
+			twitchName: carData.user.twitchDisplayName,
 		},
 	}
 }) satisfies PageServerLoad

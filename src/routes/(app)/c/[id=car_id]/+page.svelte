@@ -10,10 +10,12 @@
 	import { invalidateAll } from '$app/navigation'
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 	import { Car } from 'grace-train-lib/components'
+	import { getCarViewBox } from '$lib/car'
 
 	export let data: PageData
 
-	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}_${data.car.revision}.png`
+	$: embedTitle = `"${data.car.name}" by ${data.car.twitchName}`
+	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}.png`
 
 	let renaming = false
 	let renamed = false
@@ -27,7 +29,7 @@
 	}
 
 	const onRename: SubmitFunction = ({ formData, cancel }) => {
-		if (formData.get('carName') === (data.car.name || '')) {
+		if (formData.get('carName') === data.car.name) {
 			renaming = false
 			return cancel()
 		}
@@ -48,16 +50,15 @@
 </script>
 
 <svelte:head>
-	<meta property="og:title" content="Choo Choo!" />
-	<meta property="twitter:title" content="Choo Choo!" />
-	<meta property="twitter:card" content="summary" />
-	<meta property="twitter:image" content={imageUrl} />
-	<meta name="twitter:creator" content="@vegeta897" />
+	<meta property="og:title" content={embedTitle} />
+	<meta property="og:site_name" content="choochoo.fun" />
 	<meta property="og:image" content={imageUrl} />
 	<meta property="og:image:type" content="image/png" />
-	<meta property="og:image:width" content="375" />
-	<meta property="og:image:height" content="300" />
-	<meta name="theme-color" content="${COLOR_NAMES.POP.POP}" />
+	<meta property="twitter:title" content={embedTitle} />
+	<meta property="twitter:site" content="choochoo.fun" />
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:image" content={imageUrl} />
+	<meta name="theme-color" content={COLOR_NAMES.POP.POP} />
 </svelte:head>
 <section
 	class="flex flex-col items-center gap-4 overflow-clip px-4 py-8 lg:flex-row lg:px-8"
@@ -66,7 +67,9 @@
 		class="flex grow flex-col items-center gap-4 p-4 lg:p-8"
 		style:min-width="min(400px, 100%)"
 	>
-		<div class="max-w-[20rem]"><Car car={data.car} viewBox="0 -60 375 360" /></div>
+		<div class="max-w-[20rem]">
+			<Car car={data.car} viewBox={getCarViewBox(data.car)} />
+		</div>
 	</div>
 	{#if data.car.belongsToUser}
 		<div
@@ -75,8 +78,7 @@
 			{#if !renaming}
 				<button
 					class="btn btn-ghost btn-lg text-3xl font-black normal-case leading-none lg:text-4xl"
-					class:[&:not(:hover)]:opacity-70={!data.car.name}
-					on:click={enableRename}>{data.car.name || '(no name)'}</button
+					on:click={enableRename}>{data.car.name}</button
 				>
 				<a
 					href="/design/{data.car.shortId}"
@@ -87,6 +89,7 @@
 					<button class="btn btn-secondary font-black" on:click={copyLink}
 						>Copy Link</button
 					>
+					TODO: "Manage" button for renaming, deleting, publish/drafting
 				</div>
 			{:else}
 				<form
@@ -100,8 +103,8 @@
 						type="text"
 						name="carName"
 						class="input h-16 w-full max-w-xs text-2xl"
-						value={data.car.name || ''}
-						placeholder="Type a name"
+						value={data.car.name}
+						placeholder="type a name"
 						maxlength={CAR_NAME_MAX_LENGTH}
 						bind:this={nameInput}
 					/>
@@ -113,7 +116,7 @@
 				</form>
 			{/if}
 		</div>
-	{:else if data.car.name}
+	{:else}
 		<h2 class="text-4xl font-black">{data.car.name}</h2>
 	{/if}
 </section>
@@ -146,7 +149,7 @@
 					d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
 				/></svg
 			>
-			<span>Link copied!</span>
+			<span>link copied!</span>
 		</div>
 	{/if}
 	{#if renamed}
@@ -166,7 +169,7 @@
 					d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
 				/></svg
 			>
-			<span>Car renamed!</span>
+			<span>car renamed!</span>
 		</div>
 	{/if}
 </div>

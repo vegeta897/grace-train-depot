@@ -21,19 +21,21 @@
 	export let focusDecalZone = false
 	export let focusTopperSlot: number | null = null
 	export let cropToCar = false
+	export let viewBox = '0 0 375 300'
 
 	$: bodyName = bodyOverride || car.body
 	$: decals = car.decals
 	$: toppers = toppersOverride || car.toppers
 </script>
 
+<!-- <div class="relative w-full outline outline-1"> -->
 <div class="relative w-full">
 	<div
 		class="transition-all"
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>
-		<ContainerSvg viewBox={cropToCar ? '0 0 375 300' : undefined}>
+		<ContainerSvg viewBox={cropToCar ? '0 0 375 300' : viewBox}>
 			<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
 				<svelte:fragment slot="decals">
 					<Decals {decals} {transition} />

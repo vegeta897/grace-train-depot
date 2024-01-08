@@ -9,6 +9,7 @@
 	export let hidden: boolean = false
 	export let strokeWidthScale = 1
 	export let fullHitbox: boolean = false
+	export let centered = true
 
 	const cornerAngleTrim = 25 // 25 deg trim = 40 deg sweep
 	const cornerCosUnit = 1 - Math.cos(degToRad(cornerAngleTrim))
@@ -18,7 +19,9 @@
 	$: pad = 10 / scale
 	$: pWidth = width + pad
 	$: pHeight = height + pad
-	$: rect = { x: -pWidth / 2, y: -pHeight / 2, width: pWidth, height: pHeight }
+	$: top = -(centered ? pHeight : pad) / 2
+	$: left = -(centered ? pWidth : pad) / 2
+	$: rect = { x: left, y: top, width: pWidth, height: pHeight }
 	$: cRadius = Math.min(pWidth / 2, pHeight / 2, (25 + pad) / 2) // Fits stroke-width 25 corners
 	$: ccos = cRadius * cornerCosUnit
 	$: cSize = cRadius - ccos - cRadius * cornerSinUnit
@@ -54,14 +57,16 @@
 		[-1, 0, -1, -1],
 	]
 
-	$: cornersPath = cornerPathNodes
-		.map(
-			([mx, my, ax, ay], c) =>
-				`m${availableWidth * mx - (c === 0 ? cSize : 0)},${
-					availableHeight * my
-				} a${cRadius} ${cRadius} 0 0 1 ${cSize * ax} ${cSize * ay}`
-		)
-		.join(' ')
+	$: cornersPath =
+		(centered ? '' : `M${width / 2} ${height / 2}`) +
+		cornerPathNodes
+			.map(
+				([mx, my, ax, ay], c) =>
+					`m${availableWidth * mx - (c === 0 ? cSize : 0)},${
+						availableHeight * my
+					} a${cRadius} ${cRadius} 0 0 1 ${cSize * ax} ${cSize * ay}`
+			)
+			.join(' ')
 </script>
 
 {#if fullHitbox}<rect {...rect} fill="#fff0" stroke="none" />{/if}
@@ -80,13 +85,14 @@
 		<!-- Horizontal dashes -->
 		<path
 			stroke-dasharray={widthDashes[0]}
-			d="M{-pWidth / 2 + cSize + ccos},{-pHeight /
-				2} m{widthSpacer},0 h{dashedWidth} m0,{pHeight} h{-dashedWidth}"
+			d="M{left +
+				cSize +
+				ccos},{top} m{widthSpacer},0 h{dashedWidth} m0,{pHeight} h{-dashedWidth}"
 		/>
 		<!-- Vertical dashes -->
 		<path
 			stroke-dasharray={heightDashes[0]}
-			d="M{-pWidth / 2},{-pHeight / 2 +
+			d="M{left},{top +
 				cSize +
 				ccos} m0,{heightSpacer} v{dashedHeight} m{pWidth},0 v{-dashedHeight}"
 		/>
