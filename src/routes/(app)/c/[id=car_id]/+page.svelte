@@ -9,6 +9,7 @@
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
+	import { pluralize } from '$lib/util'
 
 	export let data: PageData
 
@@ -50,7 +51,7 @@
 	<meta property="twitter:image" content={imageUrl} />
 	<meta property="twitter:site" content="choochoo.fun" />
 </svelte:head>
-<section class="card mb-6 rounded-none bg-neutral xs:rounded-box md:card-side xs:m-6">
+<section class="card mb-4 rounded-none bg-neutral xs:rounded-box md:card-side xs:m-6">
 	<figure class="bg-base-200/70 p-4 md:w-1/2 md:p-6 lg:px-12 lg:py-8">
 		<div class="h-auto max-w-[32rem]">
 			<Car car={data.car} viewBox={getCarViewBox(data.car)} />
@@ -65,33 +66,39 @@
 				by <strong>{data.car.twitchName}</strong>
 			</small>
 		</h2>
-		{#if data.car.stats}
-			<div class="stats">
-				<div class="stat px-4 xs:px-6">
-					<div class="stat-title">appeared</div>
-					<div class="stat-value text-xl">
-						<span class="text-2xl leading-[inherit]">
-							{data.car.stats.totalAppearances}
-						</span> times
-					</div>
-					<div class="stat-desc text-sm">
-						in <strong>{data.car.stats.trainCount}</strong> grace trains
-					</div>
+		<div class="stats">
+			<div class="stat px-4 xs:px-6">
+				<div class="stat-title">appeared</div>
+				<div class="stat-value text-xl">
+					<span class="text-2xl leading-[inherit]">
+						{data.car.stats?.totalAppearances ?? 0}
+					</span>
+					{pluralize(data.car.stats?.totalAppearances ?? 0, 'time')}
 				</div>
-				<div class="stat px-4 xs:px-6">
-					<div class="stat-title">last seen</div>
-					<div class="stat-value text-xl">
-						<span class="text-2xl leading-[inherit]">
-							{data.car.stats.lastAppearanceRelative[0]}
-						</span>
-						{data.car.stats.lastAppearanceRelative[1]} ago
-					</div>
-					<div class="stat-desc text-sm">
-						on {data.car.stats.lastAppearance.toLocaleDateString()}
-					</div>
+				<div class="stat-desc text-sm">
+					in <strong>{data.car.stats?.trainCount ?? 0}</strong>
+					{pluralize(data.car.stats?.trainCount ?? 0, 'grace train')}
 				</div>
 			</div>
-		{/if}
+			<div class="stat px-4 xs:px-6">
+				<div class="stat-title">last seen</div>
+				<div class="stat-value text-xl">
+					<span class="text-2xl leading-[inherit]">
+						{data.car.stats?.lastAppearanceRelative[0] ?? 'never'}
+					</span>
+					{#if data.car.stats}
+						{data.car.stats.lastAppearanceRelative[1]} ago
+					{/if}
+				</div>
+				<div class="stat-desc text-sm">
+					{#if data.car.stats}
+						on {data.car.stats?.lastAppearance.toLocaleDateString()}
+					{:else}
+						maybe next stream
+					{/if}
+				</div>
+			</div>
+		</div>
 		{#if data.car.belongsToUser}
 			<div class="card-actions rounded-box flex-nowrap bg-base-100 px-4 py-4 xs:px-6">
 				{#if managing}

@@ -70,7 +70,8 @@ export function getFadeGradient(hsl: string) {
 	return stepValues.map((v, i) => `hsl(${hsl} / ${v}) ${(i / steps) * 100}%`).join(', ')
 }
 
-const pluralize = (quantity: number, unit: string) => unit + (quantity === 1 ? '' : 's')
+export const pluralize = (quantity: number, unit: string) =>
+	unit + (quantity === 1 ? '' : 's')
 
 export function getRelativeTime(since: Date) {
 	const now = Date.now()
