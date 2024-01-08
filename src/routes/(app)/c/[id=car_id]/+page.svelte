@@ -6,7 +6,6 @@
 	import { fade } from 'svelte/transition'
 	import { cubicIn } from 'svelte/easing'
 	import { applyAction, enhance } from '$app/forms'
-	import { tick } from 'svelte'
 	import { invalidateAll } from '$app/navigation'
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 	import { Car } from 'grace-train-lib/components'
@@ -14,28 +13,21 @@
 
 	export let data: PageData
 
+	let managing = false
+	let deleting = false
+	let wantDelete = false
+	let understandDelete = false
+	let renamed = false
+	let copied = false
+
 	$: embedTitle = `"${data.car.name}" by ${data.car.twitchName}`
 	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}.png`
 
-	let renaming = false
-	let renamed = false
-	let copied = false
-	let nameInput: HTMLInputElement
-
-	const enableRename = async () => {
-		renaming = true
-		await tick()
-		nameInput?.select()
-	}
-
 	const onRename: SubmitFunction = ({ formData, cancel }) => {
-		if (formData.get('carName') === data.car.name) {
-			renaming = false
-			return cancel()
-		}
+		if (formData.get('carName') === data.car.name) return cancel()
 		return async ({ result }) => {
 			await applyAction(result)
-			renaming = false
+			managing = false
 			renamed = true
 			setTimeout(() => (renamed = false), 3000)
 			invalidateAll()
@@ -60,70 +52,144 @@
 	<meta property="twitter:image" content={imageUrl} />
 	<meta name="theme-color" content={COLOR_NAMES.POP.POP} />
 </svelte:head>
-<section
-	class="flex flex-col items-center gap-4 overflow-clip px-4 py-8 lg:flex-row lg:px-8"
->
-	<div
-		class="flex grow flex-col items-center gap-4 p-4 lg:p-8"
-		style:min-width="min(400px, 100%)"
-	>
-		<div class="max-w-[20rem]">
+<section class="card mb-6 rounded-none bg-neutral xs:rounded-box md:card-side xs:m-6">
+	<figure class="bg-base-200/70 p-4 md:w-1/2 md:p-6 lg:px-12 lg:py-8">
+		<div class="h-auto max-w-[32rem]">
 			<Car car={data.car} viewBox={getCarViewBox(data.car)} />
 		</div>
-	</div>
-	{#if data.car.belongsToUser}
-		<div
-			class="rounded-box flex w-full max-w-lg flex-col items-center gap-4 bg-neutral p-4 lg:p-8"
+	</figure>
+	<div class="card-body p-4 xs:px-6 md:p-6 lg:p-8 lg:px-8">
+		<h2
+			class="card-title grow flex-wrap items-baseline gap-x-4 gap-y-0 text-3xl font-black lg:text-4xl"
 		>
-			{#if !renaming}
-				<button
-					class="btn btn-ghost btn-lg text-3xl font-black normal-case leading-none lg:text-4xl"
-					on:click={enableRename}>{data.car.name}</button
-				>
-				<a
-					href="/design/{data.car.shortId}"
-					class="btn btn-primary rounded-box btn-lg btn-block h-20 text-4xl font-black"
-					>Design</a
-				>
-				<div class="flex gap-4">
-					<button class="btn btn-secondary font-black" on:click={copyLink}
-						>Copy Link</button
-					>
-					TODO: "Manage" button for renaming, deleting, publish/drafting
+			{data.car.name}
+			<small class="text-lg font-normal text-base-content/70">
+				by <strong>{data.car.twitchName}</strong>
+			</small>
+		</h2>
+		{#if data.car.stats}
+			<div class="stats">
+				<div class="stat px-4 xs:px-6">
+					<div class="stat-title">appeared</div>
+					<div class="stat-value text-xl">
+						<span class="text-2xl leading-[inherit]">
+							{data.car.stats.totalAppearances}
+						</span> times
+					</div>
+					<div class="stat-desc text-sm">
+						in <strong>{data.car.stats.trainCount}</strong> grace trains
+					</div>
 				</div>
-			{:else}
-				<form
-					action="?/rename"
-					method="POST"
-					use:enhance={onRename}
-					class="flex flex-col gap-4"
-				>
-					<!-- TODO: Use contenteditable="plaintext-only" ? -->
-					<input
-						type="text"
-						name="carName"
-						class="input h-16 w-full max-w-xs text-2xl"
-						value={data.car.name}
-						placeholder="type a name"
-						maxlength={CAR_NAME_MAX_LENGTH}
-						bind:this={nameInput}
-					/>
-					<button class="btn btn-primary btn-lg text-2xl font-bold">Save</button>
-					<!-- Avoid submitting form by adding type="button" -->
-					<button type="button" class="btn" on:click={() => (renaming = false)}>
-						Cancel
+				<div class="stat px-4 xs:px-6">
+					<div class="stat-title">last seen</div>
+					<div class="stat-value text-xl">
+						<span class="text-2xl leading-[inherit]">
+							{data.car.stats.lastAppearanceRelative[0]}
+						</span>
+						{data.car.stats.lastAppearanceRelative[1]} ago
+					</div>
+					<div class="stat-desc text-sm">
+						on {data.car.stats.lastAppearance.toLocaleDateString()}
+					</div>
+				</div>
+			</div>
+		{/if}
+		{#if data.car.belongsToUser}
+			<div class="card-actions rounded-box flex-nowrap bg-base-100 px-4 py-4 xs:px-6">
+				{#if managing}
+					<div class="flex grow flex-col gap-4">
+						{#if !deleting}
+							<form
+								class="flex gap-3"
+								use:enhance={onRename}
+								method="POST"
+								action="?/rename"
+							>
+								<div class="grow">
+									<input
+										required
+										type="text"
+										name="carName"
+										class="input input-bordered w-full invalid:input-warning"
+										value={data.car.name}
+										placeholder="type a name"
+										maxlength={CAR_NAME_MAX_LENGTH}
+									/>
+								</div>
+								<button class="btn btn-primary font-black">Rename</button>
+							</form>
+						{/if}
+						{#if deleting}
+							<form
+								class="flex flex-col gap-4"
+								use:enhance
+								method="POST"
+								action="?/delete"
+							>
+								<div>
+									<label class="label cursor-pointer justify-center gap-3">
+										<span class="text-lg">i want to delete this car</span>
+										<input
+											required
+											type="checkbox"
+											bind:checked={wantDelete}
+											class="checkbox-error checkbox"
+										/>
+									</label>
+									<label class="label cursor-pointer justify-center gap-3">
+										<span class="text-lg">i know it can't be undone</span>
+										<input
+											required
+											type="checkbox"
+											bind:checked={understandDelete}
+											class="checkbox-error checkbox"
+										/>
+									</label>
+								</div>
+								<button
+									disabled={!wantDelete || !understandDelete}
+									class="btn btn-error btn-lg font-black">Delete it!</button
+								>
+								<button type="button" class="link" on:click={() => (deleting = false)}
+									>i don't want to delete it!</button
+								>
+							</form>
+						{:else}
+							<div class="flex w-full justify-between">
+								<button
+									class="btn font-black hover:btn-error"
+									on:click={() => {
+										deleting = true
+										wantDelete = false
+										understandDelete = false
+									}}>Delete</button
+								>
+								<button class="btn font-black" on:click={() => (managing = false)}>
+									Cancel
+								</button>
+							</div>
+						{/if}
+					</div>
+				{:else}
+					<button
+						class="btn btn-ghost px-3 font-black"
+						on:click={() => (managing = true)}
+					>
+						Manage
 					</button>
-				</form>
-			{/if}
-		</div>
-	{:else}
-		<h2 class="text-4xl font-black">{data.car.name}</h2>
-	{/if}
+					<div class="flex-1">
+						<button class="btn btn-ghost px-3 font-black" on:click={copyLink}>
+							Share
+						</button>
+					</div>
+					<a href="/design/{data.car.shortId}" class="btn btn-secondary font-black">
+						Design
+					</a>
+				{/if}
+			</div>
+		{/if}
+	</div>
 </section>
-{#if data.car.totalAppearances}
-	<p>seen {data.car.totalAppearances} times in {data.car.trainCount} trains</p>
-	<p>last seen on {new Date(data.car.lastAppeared).toLocaleDateString()}</p>
-{/if}
 {#if data.user}
 	<!-- Users not logged in have no page to go "back" to -->
 	<!-- TODO: Add a "design your own car!" button -->

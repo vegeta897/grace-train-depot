@@ -70,6 +70,20 @@ export function getFadeGradient(hsl: string) {
 	return stepValues.map((v, i) => `hsl(${hsl} / ${v}) ${(i / steps) * 100}%`).join(', ')
 }
 
+const pluralize = (quantity: number, unit: string) => unit + (quantity === 1 ? '' : 's')
+
+export function getRelativeTime(since: Date) {
+	const now = Date.now()
+	const minutes = Math.round((now - since.getTime()) / 1000 / 60)
+	if (minutes < 60) return [minutes, pluralize(minutes, 'minute')]
+	const hours = Math.round(minutes / 60)
+	if (hours < 24) return [hours, pluralize(hours, 'hour')]
+	const days = Math.round(hours / 24)
+	if (days < 365) return [days, pluralize(days, 'day')]
+	const years = Math.round(days / 365)
+	return [years, pluralize(years, 'year')]
+}
+
 const createArray = <T extends any>(
 	length: number,
 	fn: (_: unknown, i: number) => T

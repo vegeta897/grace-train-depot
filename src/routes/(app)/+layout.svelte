@@ -11,7 +11,7 @@
 
 <svelte:head><title>Choo Choo!</title></svelte:head>
 <header
-	class="navbar min-h-12 flex justify-between bg-base-200 p-0 px-6 lg:rounded-box lg:min-h-16"
+	class="navbar min-h-12 flex justify-between bg-base-200 p-0 px-6 sm:rounded-box sm:min-h-16"
 >
 	<!-- <h1 class="font-black text-left text-3xl uppercase">
 			🚂
@@ -65,7 +65,7 @@
 </header>
 <slot />
 <footer
-	class="footer footer-center mt-auto gap-y-4 bg-base-200 p-6 text-base-content lg:rounded-box"
+	class="footer footer-center mt-auto gap-y-4 bg-base-200 p-6 text-base-content sm:rounded-box"
 >
 	<nav class="grid grid-flow-col gap-4">
 		<a class="link-hover link" href="/">home</a>

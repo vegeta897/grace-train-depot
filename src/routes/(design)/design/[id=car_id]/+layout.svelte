@@ -115,7 +115,7 @@
 	<title>Choo Choo {capitalize(currentPage || 'design')}!</title>
 </svelte:head>
 <header
-	class="navbar min-h-12 flex shrink-0 justify-between bg-base-200 p-2 lg:rounded-box lg:min-h-16 lg:p-3 lg:px-4"
+	class="navbar min-h-12 flex shrink-0 justify-between bg-base-200 p-2 sm:rounded-box lg:min-h-16 sm:p-3 sm:px-4"
 >
 	<a
 		href={backLink}
@@ -147,13 +147,13 @@
 		</div>
 		{#if currentPage}
 			<h2
-				class="my-2 hidden text-3xl font-black uppercase tracking-wide sm:visible lg:hidden"
+				class="my-2 hidden text-3xl font-black uppercase tracking-wide sm:block lg:hidden"
 			>
 				{currentPage}
 			</h2>
 		{/if}
 		<div
-			class="self-stretch overflow-clip p-2 lg:grow lg:p-4"
+			class="self-stretch p-2 sm:p-0 lg:grow lg:p-4"
 			style:view-transition-name="design-page-content"
 		>
 			<slot />
