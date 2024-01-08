@@ -66,7 +66,7 @@
 		</div>
 	</section>
 {:else}
-	<section class="flex h-[75vh] flex-col items-center justify-center p-4 md:p-8">
+	<section class="flex grow flex-col items-center justify-center p-4 md:p-8">
 		<div class="hero max-w-3xl rounded-2xl bg-base-200 pb-4 sm:py-8">
 			<div class="hero-content min-w-0 max-w-full flex-col px-6">
 				<div

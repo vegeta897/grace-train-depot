@@ -20,32 +20,32 @@
 	<h2 class="text-xl font-black uppercase tracking-wide lg:text-2xl">
 		<a href="/">Choo Choo!</a>
 	</h2>
-	<nav class="flex-none">
-		<details
-			bind:this={menuElement}
-			class="dropdown dropdown-end"
-			use:clickoutside={{}}
-			on:clickoutside={closeMenu}
-		>
-			<summary class="btn"
-				><svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					class="inline-block h-6 w-6 stroke-current"
-					><path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M4 6h16M4 12h16M4 18h16"
-					/></svg
-				></summary
+	{#if data.user}
+		<nav class="flex-none">
+			<details
+				bind:this={menuElement}
+				class="dropdown dropdown-end"
+				use:clickoutside={{}}
+				on:clickoutside={closeMenu}
 			>
-			<ul class="menu dropdown-content rounded-box z-50 w-32 bg-neutral p-2 shadow">
-				<li>
-					<a on:click={closeMenu} href="/" class="justify-end">home</a>
-				</li>
-				{#if data.user}
+				<summary class="btn"
+					><svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						class="inline-block h-6 w-6 stroke-current"
+						><path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 6h16M4 12h16M4 18h16"
+						/></svg
+					></summary
+				>
+				<ul class="menu dropdown-content rounded-box z-50 w-32 bg-neutral p-2 shadow">
+					<li>
+						<a on:click={closeMenu} href="/" class="justify-end">home</a>
+					</li>
 					{#if data.user.isMod}<li>
 							<a class="justify-end" href="/mod">mod view</a>
 						</li>
@@ -58,10 +58,10 @@
 							class="justify-end">log out</a
 						>
 					</li>
-				{/if}
-			</ul>
-		</details>
-	</nav>
+				</ul>
+			</details>
+		</nav>
+	{/if}
 </header>
 <slot />
 <footer
