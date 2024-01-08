@@ -16,6 +16,16 @@
 	const sideFadeGradient = getSideFadeGradient(20)
 </script>
 
+<svelte:head>
+	<meta property="og:title" content="Choo Choo!" />
+	<meta property="og:image" content="/apple-touch-icon.png" />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="twitter:title" content="Choo Choo!" />
+	<meta property="twitter:image" content="/apple-touch-icon.png" />
+	<meta property="twitter:card" content="summary" />
+	<meta property="twitter:description" content="Customize your Grace Train car" />
+	<meta name="description" content="Customize your Grace Train car" />
+</svelte:head>
 {#if data.user}
 	<!-- TODO: Move this to a /me or /depot route? -->
 	<section class="flex flex-col items-center gap-4 p-4 md:p-8">

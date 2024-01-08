@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
-	import { COLOR_NAMES } from 'grace-train-lib'
 	import { PUBLIC_HOST } from '$env/static/public'
 	import { fade } from 'svelte/transition'
 	import { cubicIn } from 'svelte/easing'
@@ -43,14 +42,13 @@
 
 <svelte:head>
 	<meta property="og:title" content={embedTitle} />
-	<meta property="og:site_name" content="choochoo.fun" />
 	<meta property="og:image" content={imageUrl} />
 	<meta property="og:image:type" content="image/png" />
+	<meta property="og:site_name" content="choochoo.fun" />
 	<meta property="twitter:title" content={embedTitle} />
-	<meta property="twitter:site" content="choochoo.fun" />
 	<meta property="twitter:card" content="summary_large_image" />
 	<meta property="twitter:image" content={imageUrl} />
-	<meta name="theme-color" content={COLOR_NAMES.POP.POP} />
+	<meta property="twitter:site" content="choochoo.fun" />
 </svelte:head>
 <section class="card mb-6 rounded-none bg-neutral xs:rounded-box md:card-side xs:m-6">
 	<figure class="bg-base-200/70 p-4 md:w-1/2 md:p-6 lg:px-12 lg:py-8">

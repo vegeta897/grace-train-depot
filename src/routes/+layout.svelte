@@ -5,10 +5,11 @@
 	import '@fontsource-variable/nunito'
 	import '../app.postcss'
 	import './styles.css'
+	import { COLOR_NAMES } from 'grace-train-lib'
 </script>
 
 <svelte:head>
-	<meta name="description" content="Customize your Grace Train car" />
+	<meta name="theme-color" content={COLOR_NAMES.POP.POP} />
 </svelte:head>
 <div
 	class="full-height mx-auto flex w-full max-w-5xl flex-col selection:bg-primary selection:text-primary-content sm:p-4"
