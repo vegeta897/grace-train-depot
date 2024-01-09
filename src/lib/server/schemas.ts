@@ -1,4 +1,4 @@
-import { BODY_NAMES, TOPPER_NAMES, type ParamsObject } from 'grace-train-lib/components'
+import { BODY_NAMES, TOPPER_NAMES } from 'grace-train-lib/components'
 import { z } from 'zod'
 import {
 	CAR_NAME_MAX_LENGTH,
@@ -13,12 +13,15 @@ import {
 	WHEEL_SIZE_MIN,
 } from '../common/constants'
 import { COLORS } from 'grace-train-lib'
-import { decalSchema, decalsSchema, popColorSchema } from './decalSchemas'
+import {
+	decalsSchema,
+	popColorSchema,
+	type DecalDataWithId,
+	listSchema,
+} from './decalSchemas'
 
 const hexColorSchema = z.string().regex(/^#[A-F0-9]{6}$/i)
-const baseColorSchema = z.custom<string>((val) => {
-	return typeof val === 'string' && COLORS.BASE.includes(val)
-})
+const baseColorSchema = listSchema(COLORS.BASE)
 
 const topperSchema = z.object({
 	name: z.enum(TOPPER_NAMES),
@@ -55,9 +58,6 @@ export type CarDataWithIds = Omit<CarData, 'decals' | 'toppers'> & {
 	decals: DecalDataWithId[]
 	toppers: TopperDataWithId[]
 }
-export type DecalData = Omit<z.infer<typeof decalSchema>, 'params'> & {
-	params: ParamsObject
-}
-export type DecalDataWithId = DecalData & { id: number }
+export type { DecalData, DecalDataWithId } from './decalSchemas'
 export type TopperData = z.infer<typeof topperSchema>
 export type TopperDataWithId = TopperData & { id: number }
