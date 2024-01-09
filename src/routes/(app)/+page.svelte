@@ -47,9 +47,7 @@
 				Car deleted
 			</div>
 		{/if}
-		<div
-			class="flex w-full max-w-lg flex-col gap-4 rounded-2xl bg-neutral p-4 sm:max-w-full md:p-10"
-		>
+		<div class="flex w-full flex-col gap-4 rounded-2xl bg-neutral p-4 md:p-10">
 			<div class="flex flex-wrap items-center justify-between gap-2">
 				<h2 class="flex items-end gap-2 text-lg font-bold">
 					<Icon icon="twitch" class="h-6 w-6" />

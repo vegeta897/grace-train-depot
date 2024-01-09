@@ -13,13 +13,12 @@
 	const bottomGradient = `linear-gradient(to bottom, ${fadeGradient})`
 
 	let small = false
-	let gridWidth: number
-	let gridHeight: number
-	let containerHeight: number
+	let gridInnerHeight: number
+	let gridOuterHeight: number
 
 	let containerElement: HTMLDivElement
 
-	$: scroll = gridHeight > containerHeight
+	$: overflow = gridInnerHeight > gridOuterHeight
 
 	let expanded = false
 	let fadeTop = 0
@@ -27,14 +26,15 @@
 
 	function onScroll(scrollTop: number) {
 		fadeTop = Math.min(1, scrollTop / 40)
-		fadeBottom = 1 - Math.max(0, (scrollTop + containerHeight - (gridHeight - 40)) / 40)
+		fadeBottom =
+			1 - Math.max(0, (scrollTop + gridOuterHeight - (gridInnerHeight - 40)) / 40)
 	}
 
 	async function onExpand() {
 		expanded = !expanded
 		if (expanded) {
 			await tick() // Allow container to resize
-			containerElement.scrollIntoView({ behavior: 'smooth' })
+			containerElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 		} else {
 			fadeTop = 0
 			fadeBottom = 1
@@ -58,31 +58,29 @@
 			<!-- <Icon icon="plus" /> -->new
 		</a>
 	</div>
-	<div class="relative">
+	<div class="relative" class:pb-4={!expanded && !overflow}>
 		<div class="relative overflow-clip" class:rounded-xl={!expanded}>
 			<div
 				class="max-h-[100vh]"
-				class:overflow-clip={!expanded || !scroll}
-				class:overflow-y-scroll={expanded && scroll}
+				class:overflow-clip={!expanded || !overflow}
+				class:overflow-y-scroll={expanded && overflow}
 				class:grid-expanded={expanded}
 				class:grid-not-expanded={!expanded}
-				style:--not-expanded-height={small ? '12rem' : '14.5rem'}
+				style:--not-expanded-height={small ? '12rem' : '14rem'}
 				style:--grid-width={small ? '5rem' : '8rem'}
-				bind:clientHeight={containerHeight}
+				bind:clientHeight={gridOuterHeight}
 				on:scroll={(e) => onScroll(e.currentTarget.scrollTop)}
 			>
 				<div
-					class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center"
-					class:pb-4={!expanded}
-					bind:clientWidth={gridWidth}
-					bind:clientHeight={gridHeight}
+					class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center px-2"
+					bind:clientHeight={gridInnerHeight}
 				>
 					{#each cars as car (car.id)}
 						<a href="/c/{car.shortId}" data-sveltekit-preload-data="tap" class="group">
-							<div
-								class="flex shrink flex-col items-center gap-1 overflow-clip px-[5%] pt-2"
-							>
-								<div class="pt-[30%] transition-transform group-hover:-translate-y-2">
+							<div class="flex shrink flex-col items-center gap-1 overflow-clip">
+								<div
+									class="px-[10%] pt-[30%] transition-transform group-hover:-translate-y-2"
+								>
 									<Car {car} />
 								</div>
 								{#if !small}
@@ -96,26 +94,24 @@
 				</div>
 			</div>
 			<div
-				class="pointer-events-none absolute top-0 h-12"
+				class="pointer-events-none absolute top-0 h-12 w-full"
 				style:background-image={topGradient}
 				style:opacity={fadeTop}
-				style:width="{gridWidth}px"
 			></div>
 			<div
-				class="pointer-events-none absolute bottom-0"
+				class="pointer-events-none absolute bottom-0 w-full"
 				class:h-12={expanded}
 				class:h-20={!expanded && !small}
 				class:h-28={!expanded && small}
 				style:background-image={bottomGradient}
-				style:opacity={(scroll ? 1 : 0) * fadeBottom}
-				style:width="{gridWidth}px"
+				style:opacity={(overflow ? 1 : 0) * fadeBottom}
 			></div>
 		</div>
 		<div
 			class="bottom-0 flex w-full items-center justify-center p-4"
 			class:absolute={!expanded}
 		>
-			{#if scroll || expanded}
+			{#if overflow || expanded}
 				<button
 					on:click={onExpand}
 					class="btn btn-neutral h-10 min-h-[2.5rem] font-black tracking-wide"
@@ -128,8 +124,8 @@
 
 <style>
 	.grid-expanded {
-		max-height: calc(100vh - 9rem); /* fallback */
-		max-height: calc(100svh - 9rem);
+		max-height: calc(100vh - 10.5rem); /* fallback */
+		max-height: calc(100svh - 10.5rem);
 	}
 
 	.grid-not-expanded {
