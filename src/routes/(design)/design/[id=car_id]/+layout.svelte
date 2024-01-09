@@ -8,6 +8,7 @@
 	import { capitalize, objectContainsTrue } from '$lib/util'
 	import NavTabs from './NavTabs.svelte'
 	import { browser } from '$app/environment'
+	import { onDestroy } from 'svelte'
 
 	export let data: LayoutData
 
@@ -100,15 +101,24 @@
 		// TODO: Use daisyui modal component
 		// TODO: Show side-by-side comparison of original car and unsaved car
 		// Diff component (not supported on iOS) https://daisyui.com/components/diff/
-		if (currentPage === 'finish') {
-			if (confirm('Exit without finishing your car?')) goto(backLink)
-			else return e.preventDefault()
-		}
+		const newCar = $designShortId === 'new'
 		const carChanged = objectContainsTrue(designChanges)
-		if (!carChanged) return
-		if (confirm('You have unsaved changes!')) goto(backLink)
-		else e.preventDefault()
+		if (!newCar && !carChanged) return
+		if (
+			!confirm(
+				newCar ? "You haven't finished your car!" : 'Your changes will not be saved!'
+			)
+		)
+			e.preventDefault()
 	}
+
+	onDestroy(() => {
+		if ($designShortId !== 'new')
+			localCars.update((cars) => {
+				delete cars[$designShortId]
+				return cars
+			})
+	})
 </script>
 
 <svelte:head>
