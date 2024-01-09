@@ -218,27 +218,22 @@
 							/>
 						{/if}
 					{:else}
-						{@const thumbWidth = param.thumbSize[0] + 20}
-						{@const thumbHeight = param.thumbSize[1] + 20}
 						<div
 							class="col-span-2 grid grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-2 rounded-lg bg-base-100 p-2"
 						>
 							{#each param.list as listItem}
+								{@const params = { ...decal.params, [param.name]: listItem }}
+								{@const boundingBox = decalDef.getBoundingBox(params)}
+								{@const width = boundingBox.width + 20}
+								{@const height = boundingBox.height + 20}
 								<button
 									class="btn btn-ghost btn-sm h-auto w-full p-0"
 									on:click={() => setDecalParam(param.name, listItem)}
 								>
-									<ContainerSvg
-										viewBox="-{thumbWidth / 2} -{thumbHeight /
-											2} {thumbWidth} {thumbHeight}"
-									>
-										<Decal
-											name={decal.name}
-											fill={decal.fill}
-											params={{ ...decal.params, [param.name]: listItem }}
-										/>
+									<ContainerSvg viewBox="-{width / 2} -{height / 2} {width} {height}">
+										<Decal name={decal.name} fill={decal.fill} {params} />
 										{#if decal.params[param.name] === listItem}
-											<BoundingBox height={thumbHeight} width={thumbWidth} />
+											<BoundingBox {height} {width} />
 										{/if}
 									</ContainerSvg>
 								</button>
