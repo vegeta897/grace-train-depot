@@ -45,7 +45,7 @@ export const POST = (async ({ request }) => {
 	if (user && user.cars.length > 0) {
 		const pickedCar = pickUserCar(user.cars, train.cars)
 		await incrementGraceTrainTotalAppearances(pickedCar.id)
-		if (train.cars.some((c) => c.carId === pickedCar.id)) {
+		if (!train.cars.some((c) => c.carId === pickedCar.id)) {
 			// Update train-specific stats if this is the first appearance in this train
 			await updateGraceTrainCarStatsForTrain([pickedCar.id], trainId)
 		}

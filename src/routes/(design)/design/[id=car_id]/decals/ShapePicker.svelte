@@ -86,7 +86,7 @@
 	]
 </script>
 
-<div class="rounded-box flex items-start gap-2 bg-base-200 p-2 sm:gap-0 sm:p-4">
+<div class="rounded-box flex items-start gap-4 bg-base-200 p-2 sm:p-4">
 	<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
 		{#each tabs[selectedTabIndex] as { name, defaultFill, defaultParams }}
 			{@const params = {
@@ -107,7 +107,6 @@
 			</button>
 		{/each}
 	</div>
-	<div class="divider divider-horizontal mx-2 hidden sm:flex"></div>
 	<div class="join join-vertical">
 		{#each tabs as [{ name, defaultFill: fill, defaultParams }], t}
 			{@const params = {

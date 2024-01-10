@@ -87,7 +87,7 @@
 					maxlength={CAR_NAME_MAX_LENGTH}
 				/>
 			</div>
-			<button class="btn btn-primary btn-lg font-black tracking-wide">
+			<button class="btn btn-primary btn-lg">
 				{#if $designCar.published}Save{:else}Publish{/if} Car
 			</button>
 			<div class="divider my-1">or</div>
@@ -114,7 +114,7 @@
 			<p>
 				<a
 					href="/login?redirectTo={$page.url.pathname + $page.url.search}"
-					class="btn btn-secondary btn-lg font-black tracking-wide">Twitch Login</a
+					class="btn btn-secondary btn-lg">Twitch Login</a
 				>
 			</p>
 		</div>

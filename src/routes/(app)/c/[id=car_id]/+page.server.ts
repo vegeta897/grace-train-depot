@@ -50,7 +50,20 @@ export const actions = {
 			where: { shortId: params.id, userId: session.user.userId },
 			data: { name: name.substring(0, CAR_NAME_MAX_LENGTH).trim() },
 		})
-		return { success: true, name }
+		return { name }
+	},
+	status: async ({ locals, params, request }) => {
+		const session = await locals.auth.validate()
+		if (!session) throw redirect(302, `/login?redirectTo=/c/${params.id}`)
+		const formData = await request.formData()
+		const status = formData.get('status')
+		if (status !== 'active' && status !== 'draft') return fail(400, { invalid: true })
+		const published = status === 'active'
+		await prisma.car.update({
+			where: { shortId: params.id, userId: session.user.userId },
+			data: { published },
+		})
+		return { published }
 	},
 	delete: async ({ locals, params }) => {
 		console.log('deleting car', params.id)

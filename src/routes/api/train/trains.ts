@@ -1,6 +1,6 @@
 import type { FullCarData } from '$lib/server/car'
 import prisma from '$lib/server/prisma'
-import type { DecalData, TopperData } from '$lib/server/schemas'
+import type { CarData, DecalData, TopperData } from '$lib/server/schemas'
 import { randomElement } from '$lib/util'
 import type { Prisma } from '@prisma/client'
 import { decalDefs, type ParamsObject } from 'grace-train-lib/components'
@@ -15,10 +15,10 @@ export async function endAllTrains(exceptTrainId?: number) {
 	})
 }
 
-// Too many versions of this function exist
+// TODO: Too many versions of this function exist!
 export function transformCarFromDBToGraceTrainCar(car: FullCarData): GraceTrainCar {
 	return {
-		body: car.body,
+		body: car.body as CarData['body'],
 		bodyColor: car.bodyColor || undefined,
 		bodyPopColor: car.bodyPopColor || undefined,
 		wheelColor: car.wheelColor || undefined,
@@ -50,16 +50,18 @@ export function transformCarFromDBToGraceTrainCar(car: FullCarData): GraceTrainC
 	}
 }
 
-// Round-robin algorithm to randomly pick among the user's cars that appeared the least
+// Round-robin algorithm randomly picks among the user's cars
+// Prefers cars that appeared least in the current train
 // Also avoids picking the last picked car if possible
 export function pickUserCar(
 	userCars: FullCarData[],
 	trainCars: Pick<TrainCarData, 'userId' | 'carId'>[]
 ) {
-	if (userCars.length === 1) return userCars[0]
+	if (userCars.length === 1) return userCars[0] // Only one option
 	const userId = userCars[0].userId
-	const timesInTrainMap = new Map(userCars.map((uc) => [uc.id, 0]))
+	const timesInTrainMap = new Map(userCars.map((car) => [car.id, 0]))
 	let lastPickedUserCarId: number
+	// Count train appearances for each of the user's cars
 	for (const trainCar of trainCars) {
 		if (trainCar.userId !== userId || !trainCar.carId) continue
 		const timesInTrain = timesInTrainMap.get(trainCar.carId)
@@ -69,6 +71,7 @@ export function pickUserCar(
 	}
 	const leastPicked: Set<FullCarData> = new Set()
 	let leastPickedCount = Infinity
+	// Make a list of cars with the lowest appearance count
 	for (const userCar of userCars) {
 		if (userCar.id === lastPickedUserCarId!) continue
 		const timesInTrain = timesInTrainMap.get(userCar.id)!
@@ -102,7 +105,10 @@ export async function updateGraceTrainCarStatsForTrain(
 	trainId: number
 ) {
 	await prisma.graceTrainCarStats.updateMany({
-		where: { carId: { in: carIds }, lastGraceTrainId: { not: trainId } },
+		where: {
+			carId: { in: carIds },
+			lastGraceTrainId: { not: trainId }, // Exclude cars already updated for this train
+		},
 		data: {
 			graceTrainCount: { increment: 1 },
 			lastGraceTrainId: trainId,

@@ -29,7 +29,7 @@ export const load = (async (event) => {
 		revision: number
 		approval: $Enums.Approval
 		username: string
-		trusted: boolean
+		trustLevel: $Enums.TrustLevel
 	}[] = []
 	const addedCars = new Set<string>()
 	for (const train of trains) {
@@ -44,7 +44,7 @@ export const load = (async (event) => {
 					revision: car.carRevision!,
 					approval: car.approval!,
 					username: car.user!.twitchDisplayName,
-					trusted: car.user!.trusted,
+					trustLevel: car.user!.trustLevel,
 				})
 			}
 		}
@@ -54,11 +54,11 @@ export const load = (async (event) => {
 
 export const actions = {
 	approve: (event) => changeCarApproval('approved', event),
-	reject: (event) => changeCarApproval('rejected', event),
+	flag: (event) => changeCarApproval('flagged', event),
 } satisfies Actions
 
 async function changeCarApproval(
-	changeTo: 'approved' | 'rejected',
+	changeTo: 'approved' | 'flagged',
 	{ locals, request }: Parameters<Actions[string]>[0]
 ) {
 	const session = await locals.auth.validate()

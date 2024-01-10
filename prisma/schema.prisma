@@ -16,12 +16,18 @@ model User {
   twitchUserId      String          @unique
   twitchUsername    String          @unique
   twitchDisplayName String          @unique
-  trusted           Boolean         @default(false)
+  trustLevel        TrustLevel      @default(default)
   cars              Car[]
   graceTrainCars    GraceTrainCar[]
 
   @@index([id], type: Hash)
   @@map("auth_user")
+}
+
+enum TrustLevel {
+  default
+  trusted
+  flagged
 }
 
 model Session {
@@ -54,7 +60,7 @@ model Car {
   updatedAt          DateTime            @updatedAt
   revision           Int                 @default(1)
   name               String
-  published          Boolean             @default(false)
+  published          Boolean             @default(false) // rename to "active"
   approval           Approval            @default(pending)
   body               String              @default("boxy")
   bodyColor          String?
@@ -97,12 +103,6 @@ model Topper {
   @@id([carId, slot])
 }
 
-enum Approval {
-  pending
-  approved
-  rejected
-}
-
 model GraceTrain {
   id    BigInt          @id @unique
   cars  GraceTrainCar[]
@@ -125,6 +125,12 @@ model GraceTrainCar {
   carData      Json
 
   @@id([trainId, index])
+}
+
+enum Approval {
+  pending
+  approved
+  flagged
 }
 
 model GraceTrainCarStats {

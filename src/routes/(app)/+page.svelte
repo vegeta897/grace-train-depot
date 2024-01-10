@@ -47,14 +47,14 @@
 				Car deleted
 			</div>
 		{/if}
-		<div class="flex w-full flex-col gap-4 rounded-2xl bg-neutral p-4 md:p-10">
+		<div class="flex w-full flex-col gap-4 rounded-2xl bg-neutral p-4 md:px-10 md:py-8">
 			<div class="flex flex-wrap items-center justify-between gap-2">
 				<h2 class="flex items-end gap-2 text-lg font-bold">
 					<Icon icon="twitch" class="h-6 w-6" />
 					{data.user.twitchDisplayName}
 				</h2>
 				{#if data.user.isMod}
-					<a href="/mod" class="btn font-black tracking-wide">🛡️ Mod view</a>
+					<a href="/mod" class="btn">🛡️ Mod view</a>
 				{/if}
 			</div>
 			<CarGrid cars={publishedCars} />
@@ -96,10 +96,7 @@
 						<p class="py-2 text-lg">design your own cars and see them on stream!</p>
 					</div>
 					<div class="flex max-w-lg flex-col items-center">
-						<a
-							href="/login"
-							data-sveltekit-reload
-							class="btn btn-secondary btn-lg mb-4 font-black tracking-wide"
+						<a href="/login" data-sveltekit-reload class="btn btn-secondary btn-lg mb-4"
 							>Twitch Login</a
 						>
 						<a href="/design/new" class="link opacity-70 hover:opacity-100"

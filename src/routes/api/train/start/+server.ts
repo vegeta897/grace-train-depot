@@ -19,8 +19,12 @@ export const POST = (async ({ request }) => {
 	console.time('train start')
 	const { trainId, graces, score } = (await request.json()) as DepotTrainStartRequest
 	endAllTrains(trainId)
+	// Get all users and their cars
 	const users = await prisma.user.findMany({
-		where: { twitchUserId: { in: graces.map((g) => g.userId) } },
+		where: {
+			twitchUserId: { in: graces.map((g) => g.userId) },
+			trustLevel: { not: 'flagged' }, // No cars from flagged users
+		},
 		include: {
 			cars: {
 				include: { decals: orderBySlot, toppers: orderBySlot },

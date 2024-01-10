@@ -38,9 +38,7 @@ Make a unified layout component (with multiple slots, not a sveltekit layout) --
 		{:else}
 			<!-- TODO: Suggest a page based on existing design -->
 			<p class="text-xl">how about a new set of wheels?</p>
-			<a
-				class="btn btn-lg font-black tracking-wide"
-				href="/design/{$designShortId}/wheels"
+			<a class="btn btn-lg" href="/design/{$designShortId}/wheels"
 				><span class="relative text-2xl">🎡</span> Wheels</a
 			>
 		{/if}

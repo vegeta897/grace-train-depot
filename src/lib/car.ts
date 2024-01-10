@@ -7,6 +7,7 @@ import type {
 } from '$lib/server/schemas'
 import { body, getYposition, topperDefs } from 'grace-train-lib/components'
 import { degToRad } from './util'
+import { COLOR_NAMES } from 'grace-train-lib'
 
 export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 	return {
@@ -29,6 +30,7 @@ export function getNewCar(): CarDataWithIds {
 		decals: [],
 		wheelFromCenter: 100,
 		wheelSize: 25,
+		wheelColor: COLOR_NAMES.POP.POP,
 		toppers: [],
 	}
 }

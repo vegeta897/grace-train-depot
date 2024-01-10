@@ -236,8 +236,8 @@
 				{/each}
 			</div>
 			<div class="grid gap-4 font-black sm:grid-cols-3">
-				<button class="btn btn-block text-lg font-black tracking-wide">Style</button>
-				<button class="btn btn-block text-lg font-black tracking-wide">🎲 Rando</button>
+				<button class="btn btn-block text-lg">Style</button>
+				<button class="btn btn-block text-lg">🎲 Rando</button>
 				<button
 					on:click={() => removeTopper(topper.slot)}
 					class="btn btn-block text-lg hover:btn-error md:text-2xl">🗑️</button

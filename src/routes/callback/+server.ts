@@ -29,7 +29,7 @@ export const GET = (async ({ url, cookies, locals }) => {
 					twitchUserId: twitchUser.id,
 					twitchUsername: twitchUser.login,
 					twitchDisplayName: twitchUser.display_name,
-					trusted: userIsTrusted(twitchUser.id),
+					trustLevel: userIsTrusted(twitchUser.id) ? 'trusted' : 'default',
 				},
 			})
 			return user

@@ -77,7 +77,7 @@
 			>
 				<p class="text-lg"><strong>hint:</strong> move decals by dragging!</p>
 				<button
-					class="btn btn-neutral font-black tracking-wide lg:btn-sm"
+					class="btn btn-neutral lg:btn-sm"
 					on:click={() => setHint(hints, 'dragDecal', false)}>OK</button
 				>
 			</div>

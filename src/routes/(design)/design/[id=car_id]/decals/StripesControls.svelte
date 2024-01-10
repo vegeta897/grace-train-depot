@@ -214,17 +214,11 @@
 		{/each}
 	</ul> -->
 	{#if adding !== null}
-		<button
-			on:click={toggleAddMode}
-			class="btn btn-lg text-xl font-black uppercase tracking-wide"
-		>
-			Cancel
-		</button>
+		<button on:click={toggleAddMode} class="btn btn-lg text-xl"> Cancel </button>
 		<button
 			on:click={addNode}
 			disabled={adding[0] === 0 && adding[1] === 0}
-			class="btn btn-lg text-xl font-black uppercase tracking-wide hover:btn-success"
-			>Go</button
+			class="btn btn-lg text-xl hover:btn-success">Go</button
 		>
 	{:else}
 		<button
@@ -236,7 +230,7 @@
 			<button
 				on:click={toggleAddMode}
 				disabled={nodes.length >= STRIPES_MAX_NODES}
-				class="btn btn-lg text-xl font-black uppercase tracking-wide"
+				class="btn btn-lg text-xl"
 			>
 				Add
 			</button>

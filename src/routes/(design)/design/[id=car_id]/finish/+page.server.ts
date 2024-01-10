@@ -42,7 +42,7 @@ export const actions = {
 		// Parsing strips out any extra properties
 		const carData: CarData = parseResult.data
 		// TODO: Check for changes, return early if none detected
-		const approval = session.user.trusted ? 'approved' : 'pending'
+		const approval = session.user.trustLevel === 'trusted' ? 'approved' : 'pending'
 		let updatedCar: DBCar
 		if (carData.shortId === 'new') {
 			carData.shortId = generateCarShortId()

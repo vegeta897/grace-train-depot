@@ -19,7 +19,7 @@ export const auth = lucia({
 			twitchUsername: data.twitchUsername,
 			twitchDisplayName: data.twitchDisplayName,
 			twitchUserId: data.twitchUserId,
-			trusted: data.trusted,
+			trustLevel: data.trustLevel,
 		}
 	},
 	sessionExpiresIn: {

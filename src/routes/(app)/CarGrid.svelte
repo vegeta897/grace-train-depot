@@ -53,12 +53,12 @@
 		<a
 			href="/design/new"
 			data-sveltekit-preload-data="tap"
-			class="btn btn-primary ml-auto text-lg font-black tracking-wide"
+			class="btn btn-primary ml-auto text-lg"
 		>
 			<!-- <Icon icon="plus" /> -->new
 		</a>
 	</div>
-	<div class="relative" class:pb-4={!expanded && !overflow}>
+	<div class="relative" class:pb-6={!expanded && !overflow}>
 		<div class="relative overflow-clip" class:rounded-xl={!expanded}>
 			<div
 				class="max-h-[100vh]"
@@ -112,9 +112,7 @@
 			class:absolute={!expanded}
 		>
 			{#if overflow || expanded}
-				<button
-					on:click={onExpand}
-					class="btn btn-neutral h-10 min-h-[2.5rem] font-black tracking-wide"
+				<button on:click={onExpand} class="btn btn-neutral h-10 min-h-[2.5rem]"
 					>{expanded ? 'show less' : 'show all'}</button
 				>
 			{/if}

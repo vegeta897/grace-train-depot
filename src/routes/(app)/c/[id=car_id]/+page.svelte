@@ -4,33 +4,55 @@
 	import { PUBLIC_HOST } from '$env/static/public'
 	import { fade } from 'svelte/transition'
 	import { cubicIn } from 'svelte/easing'
-	import { applyAction, enhance } from '$app/forms'
-	import { invalidateAll } from '$app/navigation'
+	import { enhance } from '$app/forms'
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
 	import { pluralize } from '$lib/util'
+	import { tick } from 'svelte'
 
 	export let data: PageData
 
+	let renaming = false
+	let renamed = false
+	let toName = data.car.name
 	let managing = false
-	let deleting = false
 	let wantDelete = false
 	let understandDelete = false
-	let renamed = false
 	let copied = false
+	let toStatus: 'active' | 'draft' | 'delete' = data.car.published ? 'active' : 'draft'
+
+	let renameInputElement: HTMLInputElement
 
 	$: embedTitle = `"${data.car.name}" by ${data.car.twitchName}`
 	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}.png`
 
-	const onRename: SubmitFunction = ({ formData, cancel }) => {
-		if (formData.get('carName') === data.car.name) return cancel()
+	const onRename: SubmitFunction = ({ cancel }) => {
+		if (toName === data.car.name) return cancel()
 		return async ({ result }) => {
-			await applyAction(result)
+			if (result.type === 'success') {
+				const { data: resultData } = result as { data: { name: string } }
+				data.car.name = resultData.name
+				toName = resultData.name
+				renaming = false
+				renamed = true
+				setTimeout(() => (renamed = false), 3000)
+			} else {
+				console.log(result.type, result.status)
+			}
+		}
+	}
+
+	const onStatus: SubmitFunction = ({ cancel }) => {
+		if (toStatus === 'delete') return
+		if (toStatus === (data.car.published ? 'active' : 'draft')) return cancel()
+		return async ({ result }) => {
 			managing = false
-			renamed = true
-			setTimeout(() => (renamed = false), 3000)
-			invalidateAll()
+			if (result.type === 'success') {
+				const { data: resultData } = result as { data: { published: boolean } }
+				data.car.published = resultData.published
+				toStatus = resultData.published ? 'active' : 'draft'
+			}
 		}
 	}
 
@@ -57,7 +79,7 @@
 			<Car car={data.car} viewBox={getCarViewBox(data.car)} />
 		</div>
 	</figure>
-	<div class="card-body p-4 xs:px-6 md:p-6 lg:p-8 lg:px-8">
+	<div class="card-body gap-4 p-4 xs:px-6 md:p-6 lg:p-8 lg:px-8">
 		<h2
 			class="card-title grow flex-wrap items-baseline gap-x-4 gap-y-0 text-3xl font-black lg:text-4xl"
 		>
@@ -65,8 +87,15 @@
 			<small class="text-lg font-normal text-base-content/70">
 				by <strong>{data.car.twitchName}</strong>
 			</small>
+			<div
+				class="badge font-bold"
+				class:badge-primary={data.car.published}
+				class:badge-secondary={!data.car.published}
+			>
+				{data.car.published ? 'active' : 'draft'}
+			</div>
 		</h2>
-		<div class="stats">
+		<div class="stats grid-cols-2">
 			<div class="stat px-4 xs:px-6">
 				<div class="stat-title">appeared</div>
 				<div class="stat-value text-xl">
@@ -100,39 +129,28 @@
 			</div>
 		</div>
 		{#if data.car.belongsToUser}
-			<div class="card-actions rounded-box flex-nowrap bg-base-100 px-4 py-4 xs:px-6">
+			<div class="rounded-box flex flex-col bg-base-100 px-4 py-4 xs:px-6">
 				{#if managing}
 					<div class="flex grow flex-col gap-4">
-						{#if !deleting}
-							<form
-								class="flex gap-3"
-								use:enhance={onRename}
-								method="POST"
-								action="?/rename"
-							>
-								<div class="grow">
+						<form class="flex flex-col gap-4" use:enhance={onStatus} method="POST">
+							<div class="join">
+								<!-- TODO: Add icons to these buttons -->
+								{#each ['active', 'draft', 'delete'] as status}
 									<input
-										required
-										type="text"
-										name="carName"
-										class="input input-bordered w-full invalid:input-warning"
-										value={data.car.name}
-										placeholder="type a name"
-										maxlength={CAR_NAME_MAX_LENGTH}
+										aria-label={status}
+										name="status"
+										type="radio"
+										bind:group={toStatus}
+										value={status}
+										class:!btn-secondary={status === toStatus && status === 'draft'}
+										class:!btn-error={status === toStatus && status === 'delete'}
+										class="btn join-item grow"
 									/>
-								</div>
-								<button class="btn btn-primary font-black">Rename</button>
-							</form>
-						{/if}
-						{#if deleting}
-							<form
-								class="flex flex-col gap-4"
-								use:enhance
-								method="POST"
-								action="?/delete"
-							>
+								{/each}
+							</div>
+							{#if toStatus === 'delete'}
 								<div>
-									<label class="label cursor-pointer justify-center gap-3">
+									<label class="label cursor-pointer justify-end gap-3">
 										<span class="text-lg">i want to delete this car</span>
 										<input
 											required
@@ -141,7 +159,7 @@
 											class="checkbox-error checkbox"
 										/>
 									</label>
-									<label class="label cursor-pointer justify-center gap-3">
+									<label class="label cursor-pointer justify-end gap-3">
 										<span class="text-lg">i know it can't be undone</span>
 										<input
 											required
@@ -151,45 +169,89 @@
 										/>
 									</label>
 								</div>
-								<button
-									disabled={!wantDelete || !understandDelete}
-									class="btn btn-error btn-lg font-black">Delete it!</button
-								>
-								<button type="button" class="link" on:click={() => (deleting = false)}
-									>i don't want to delete it!</button
-								>
-							</form>
-						{:else}
+							{:else if toStatus === 'active'}
+								<p>active cars can appear in grace trains</p>
+							{:else}
+								<p>draft cars will not appear in grace trains</p>
+							{/if}
 							<div class="flex w-full justify-between">
-								<button
-									class="btn font-black hover:btn-error"
-									on:click={() => {
-										deleting = true
-										wantDelete = false
-										understandDelete = false
-									}}>Delete</button
-								>
-								<button class="btn font-black" on:click={() => (managing = false)}>
+								<button type="button" class="btn" on:click={() => (managing = false)}>
 									Cancel
 								</button>
+								{#if toStatus === 'delete'}
+									<button
+										formaction="?/delete"
+										disabled={!wantDelete || !understandDelete}
+										class="btn btn-error">Delete</button
+									>
+								{:else}
+									<button
+										formaction="?/status"
+										disabled={toStatus === (data.car.published ? 'active' : 'draft')}
+										class="btn btn-primary">Save</button
+									>
+								{/if}
 							</div>
-						{/if}
+						</form>
+					</div>
+				{:else if renaming}
+					<div class="flex grow flex-col gap-4">
+						<form
+							class="flex flex-col gap-3"
+							use:enhance={onRename}
+							method="POST"
+							action="?/rename"
+						>
+							<div class="grow">
+								<input
+									required
+									type="text"
+									name="carName"
+									class="input input-bordered w-full invalid:input-warning"
+									bind:value={toName}
+									placeholder="type a name"
+									maxlength={CAR_NAME_MAX_LENGTH}
+									bind:this={renameInputElement}
+								/>
+							</div>
+							<div class="flex w-full justify-between">
+								<button type="button" class="btn" on:click={() => (renaming = false)}>
+									Cancel
+								</button>
+								<button disabled={toName === data.car.name} class="btn btn-primary"
+									>Rename</button
+								>
+							</div>
+						</form>
 					</div>
 				{:else}
-					<button
-						class="btn btn-ghost px-3 font-black"
-						on:click={() => (managing = true)}
-					>
-						Manage
-					</button>
-					<div class="flex-1">
-						<button class="btn btn-ghost px-3 font-black" on:click={copyLink}>
-							Share
-						</button>
-					</div>
-					<a href="/design/{data.car.shortId}" class="btn btn-secondary font-black">
+					<a href="/design/{data.car.shortId}" class="btn btn-secondary w-full text-xl">
 						Design
 					</a>
+					<div class="divider my-2" />
+					<div class="grid grid-cols-3 gap-3">
+						<button
+							class="btn btn-ghost btn-sm"
+							on:click={async () => {
+								renaming = true
+								await tick()
+								renameInputElement?.focus()
+								renameInputElement?.select()
+							}}
+						>
+							Rename
+						</button>
+						<button
+							class="btn btn-ghost btn-sm"
+							on:click={() => {
+								managing = true
+								toStatus = data.car.published ? 'active' : 'draft'
+							}}
+						>
+							Manage
+						</button>
+						<button class="btn btn-ghost btn-sm" on:click={copyLink}> Share </button>
+					</div>
 				{/if}
 			</div>
 		{/if}
@@ -199,7 +261,7 @@
 	<!-- Users not logged in have no page to go "back" to -->
 	<!-- TODO: Add a "design your own car!" button -->
 	<div class="mb-4 flex justify-center">
-		<a href="/" class="btn btn-lg font-black">Back</a>
+		<a href="/" class="btn btn-lg">Home</a>
 	</div>
 {/if}
 <div class="toast toast-center toast-top">

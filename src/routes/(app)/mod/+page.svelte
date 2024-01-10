@@ -9,26 +9,23 @@
 	$: cars = data.cars || []
 	$: filteredCars = cars.filter((c) => show[c.approval])
 
-	const approvalTypes = ['pending', 'approved', 'rejected']
+	const approvalTypes = ['pending', 'approved', 'flagged']
 	const show: Record<(typeof approvalTypes)[number], boolean> = {
 		pending: true,
 		approved: false,
-		rejected: false,
+		flagged: false,
 	}
 </script>
 
-<section class="lg:p-4">
-	<h2 class="p-2 text-2xl font-black uppercase tracking-wide">Mod view</h2>
-	<div class="bg-base-200 p-2 lg:rounded-box xs:p-4">
-		<div class="mb-3 flex flex-wrap justify-between">
-			<h3 class="text-xl font-black uppercase tracking-wide">Stream debuts</h3>
+<section class="pb-4 lg:p-4">
+	<h2 class="p-2 text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
+	<div class="bg-base-200 p-2 sm:rounded-box xs:p-4">
+		<div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+			<h3 class="text-xl font-black">stream debuts</h3>
 			<div
 				class="inline-flex items-center gap-3 rounded-lg bg-neutral px-2 xs:gap-4 xs:px-3"
 			>
-				<span
-					class="hidden text-sm font-black uppercase tracking-wide xs:inline xs:text-base"
-					>filter</span
-				>
+				<span class="hidden text-lg font-bold 2xs:inline">filter</span>
 				{#each approvalTypes as approval}
 					<div class="form-control">
 						<label class="label cursor-pointer gap-2">
@@ -38,7 +35,7 @@
 								bind:checked={show[approval]}
 								class="checkbox checkbox-sm xs:checkbox-md"
 								class:checkbox-success={approval === 'approved'}
-								class:checkbox-warning={approval === 'rejected'}
+								class:checkbox-error={approval === 'flagged'}
 							/>
 						</label>
 					</div>
@@ -46,7 +43,8 @@
 			</div>
 		</div>
 		<ol class="grid grid-cols-[repeat(auto-fill,_minmax(10rem,_1fr))] gap-6">
-			{#each filteredCars as { car, carId, shortId, revision, approval, username, trusted } (`${carId}:${revision}`)}
+			{#each filteredCars as { car, carId, shortId, revision, approval, username, trustLevel } (`${carId}:${revision}`)}
+				{@const trusted = trustLevel === 'trusted'}
 				<li
 					class="relative flex flex-col items-center justify-end p-2 pt-5"
 					animate:flip={{ duration: 250 }}
@@ -69,7 +67,7 @@
 						use:enhance
 						class="-mt-9 flex gap-1 rounded-lg bg-neutral p-1 backdrop-blur"
 						class:bg-success={approval === 'approved'}
-						class:bg-warning={approval === 'rejected'}
+						class:bg-error={approval === 'flagged'}
 						class:bg-opacity-70={approval === 'pending'}
 						class:bg-opacity-30={approval !== 'pending'}
 					>
@@ -82,7 +80,7 @@
 							data-tip={approval === 'approved' ? 'approved' : 'approve'}
 						>
 							<button
-								class="btn btn-sm font-black tracking-wide hover:btn-success"
+								class="btn btn-sm hover:btn-success"
 								class:btn-success={approval === 'approved'}>✔️</button
 							>
 						</div>
@@ -94,13 +92,13 @@
 							{/if}
 						</div>
 						<div
-							class="sm:tooltip sm:tooltip-warning"
-							data-tip={approval === 'rejected' ? 'rejected' : 'reject'}
+							class="sm:tooltip sm:tooltip-error"
+							data-tip={approval === 'flagged' ? 'red flagged' : 'red flag'}
 						>
 							<button
-								formaction="?/reject"
-								class="btn btn-sm font-black tracking-wide hover:btn-warning"
-								class:btn-warning={approval === 'rejected'}>⚠️</button
+								formaction="?/flag"
+								class="btn btn-sm hover:btn-error"
+								class:btn-error={approval === 'flagged'}>🚩</button
 							>
 						</div>
 					</form>

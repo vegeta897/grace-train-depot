@@ -15,9 +15,10 @@ export const POST = (async ({ request }) => {
 			data: { score, ended: true },
 		})
 	} catch (e) {
-		// Update throws if record not found
+		// Update throws here if train record not found
 		console.log('Error ending train ID', trainId, e)
 	}
+	// Get a list of cars that debuted in this train
 	const carDebutCount = await prisma.graceTrainCarStats.count({
 		where: { lastGraceTrainId: trainId, graceTrainCount: 1 },
 	})

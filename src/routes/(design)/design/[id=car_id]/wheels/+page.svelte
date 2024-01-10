@@ -60,7 +60,7 @@
 				value={$designCar.wheelSize}
 				class="range"
 			/>
-			<label for="wheelDistance" class="text-lg lg:text-xl">spread</label>
+			<label for="wheelDistance" class="text-lg lg:text-xl">wheelbase</label>
 			<input
 				id="wheelDistance"
 				type="range"

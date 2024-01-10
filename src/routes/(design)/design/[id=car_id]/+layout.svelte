@@ -130,8 +130,7 @@
 	<a
 		href={backLink}
 		on:click={exitDesigner}
-		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] w-24 font-black tracking-wide lg:h-20 lg:text-lg"
-		>Back</a
+		class="btn btn-neutral h-[2.5rem] min-h-[2.5rem] w-24 lg:h-20 lg:text-lg">Back</a
 	>
 	<div class="hidden sm:flex">
 		<NavTabs {currentPage} carShortId={$page.params.id} />
@@ -143,7 +142,7 @@
 	{/if}
 	<a
 		href="/design/{$page.params.id}/finish"
-		class="btn btn-success h-[2.5rem] min-h-[2.5rem] w-24 text-lg font-black tracking-wide lg:h-20"
+		class="btn btn-success h-[2.5rem] min-h-[2.5rem] w-24 text-lg lg:h-20"
 		class:pointer-events-none={currentPage === 'finish'}
 		class:btn-outline={currentPage !== 'finish'}
 	>

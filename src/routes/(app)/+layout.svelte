@@ -42,12 +42,12 @@
 						/></svg
 					></summary
 				>
-				<ul class="menu dropdown-content rounded-box z-50 w-32 bg-neutral p-2 shadow">
+				<ul class="menu dropdown-content rounded-box z-50 w-36 bg-neutral p-2 shadow">
 					<li>
 						<a on:click={closeMenu} href="/" class="justify-end">home</a>
 					</li>
 					{#if data.user.isMod}<li>
-							<a class="justify-end" href="/mod">mod view</a>
+							<a class="justify-end" href="/mod">🛡️ mod view</a>
 						</li>
 					{/if}
 					<li>
