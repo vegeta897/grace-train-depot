@@ -44,11 +44,12 @@ export const actions = {
 		const session = await locals.auth.validate()
 		if (!session) throw redirect(302, `/login?redirectTo=/c/${params.id}`)
 		const formData = await request.formData()
-		const name = formData.get('carName')?.toString()
-		if (name === undefined) return fail(400, { invalid: true })
+		const nameString = formData.get('carName')?.toString()
+		if (nameString === undefined) return fail(400, { invalid: true })
+		const name = nameString.substring(0, CAR_NAME_MAX_LENGTH).trim()
 		await prisma.car.update({
 			where: { shortId: params.id, userId: session.user.userId },
-			data: { name: name.substring(0, CAR_NAME_MAX_LENGTH).trim() },
+			data: { name },
 		})
 		return { name }
 	},

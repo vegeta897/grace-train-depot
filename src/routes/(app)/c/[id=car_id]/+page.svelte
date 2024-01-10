@@ -9,20 +9,22 @@
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
 	import { pluralize } from '$lib/util'
-	import { tick } from 'svelte'
 
 	export let data: PageData
 
 	let renaming = false
 	let renamed = false
-	let toName = data.car.name
+	let toName: string
 	let managing = false
-	let wantDelete = false
-	let understandDelete = false
+	let wantDelete: boolean
+	let understandDelete: boolean
 	let copied = false
-	let toStatus: 'active' | 'draft' | 'delete' = data.car.published ? 'active' : 'draft'
+	let toStatus: 'active' | 'draft' | 'delete'
 
-	let renameInputElement: HTMLInputElement
+	$: if (!renaming) toName = data.car.name
+	$: if (!managing) toStatus = data.car.published ? 'active' : 'draft'
+	$: if (!managing) wantDelete = false
+	$: if (!managing) understandDelete = false
 
 	$: embedTitle = `"${data.car.name}" by ${data.car.twitchName}`
 	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}.png`
@@ -36,7 +38,7 @@
 				toName = resultData.name
 				renaming = false
 				renamed = true
-				setTimeout(() => (renamed = false), 3000)
+				setTimeout(() => (renamed = false), 3000) // Toast notification
 			} else {
 				console.log(result.type, result.status)
 			}
@@ -180,8 +182,8 @@
 								</button>
 								{#if toStatus === 'delete'}
 									<button
-										formaction="?/delete"
 										disabled={!wantDelete || !understandDelete}
+										formaction="?/delete"
 										class="btn btn-error">Delete</button
 									>
 								{:else}
@@ -211,7 +213,6 @@
 									bind:value={toName}
 									placeholder="type a name"
 									maxlength={CAR_NAME_MAX_LENGTH}
-									bind:this={renameInputElement}
 								/>
 							</div>
 							<div class="flex w-full justify-between">
@@ -230,24 +231,10 @@
 					</a>
 					<div class="divider my-2" />
 					<div class="grid grid-cols-3 gap-3">
-						<button
-							class="btn btn-ghost btn-sm"
-							on:click={async () => {
-								renaming = true
-								await tick()
-								renameInputElement?.focus()
-								renameInputElement?.select()
-							}}
-						>
+						<button class="btn btn-ghost btn-sm" on:click={() => (renaming = true)}>
 							Rename
 						</button>
-						<button
-							class="btn btn-ghost btn-sm"
-							on:click={() => {
-								managing = true
-								toStatus = data.car.published ? 'active' : 'draft'
-							}}
-						>
+						<button class="btn btn-ghost btn-sm" on:click={() => (managing = true)}>
 							Manage
 						</button>
 						<button class="btn btn-ghost btn-sm" on:click={copyLink}> Share </button>
