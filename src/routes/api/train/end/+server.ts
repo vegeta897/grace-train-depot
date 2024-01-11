@@ -7,7 +7,7 @@ import type { DepotTrainEndRequest } from 'grace-train-lib/trains'
 export const POST = (async ({ request }) => {
 	console.log('/api/train/end POST received!')
 	const authHeader = request.headers.get('Authorization')
-	if (authHeader !== DEPOT_SECRET) error(401);
+	if (authHeader !== DEPOT_SECRET) error(401)
 	const { trainId, score } = (await request.json()) as DepotTrainEndRequest
 	try {
 		await prisma.graceTrain.update({
