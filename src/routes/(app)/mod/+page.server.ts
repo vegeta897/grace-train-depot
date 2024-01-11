@@ -2,78 +2,48 @@ import { fail, redirect, error } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import type { GraceTrainCar } from 'grace-train-lib/trains'
-import type { $Enums } from '@prisma/client'
 import { userIsMod } from '$lib/server/admin'
 import { dev } from '$app/environment'
 
 const EIGHT_HOURS = 8 * 60 * 60 * 1000
-const trainsWhereCarsQuery = { some: { carId: { gte: 0 } } } as const
-const trainsIncludeQuery = {
-	cars: {
-		orderBy: { index: 'desc' },
-		include: {
-			car: { select: { shortId: true } },
-			user: { select: { twitchDisplayName: true, trustLevel: true } },
-		},
-		where: { carId: { not: null } }, // Only include designed cars
-	},
-} as const
 
 export const load = (async (event) => {
 	const parentData = await event.parent()
-	if (!parentData.user) redirect(302, `/login?redirectTo=/mod`);
+	if (!parentData.user) redirect(302, `/login?redirectTo=/mod`)
 	if (!parentData.user.isMod)
 		error(
-        			403,
-        			"you don't belong here, you're not a mod! ... uh, but if you are a mod, tell vegeta about this"
-        		);
-	const trains = await prisma.graceTrain.findMany({
-		where: {
-			cars: trainsWhereCarsQuery, // Only include trains with at least one designed car
-			id: dev ? {} : { gt: Date.now() - EIGHT_HOURS }, // Show all trains in dev mode
+			403,
+			"you don't belong here, you're not a mod! ... uh, but if you are a mod, tell vegeta about this"
+		)
+	const users = await prisma.user.findMany({
+		select: {
+			id: true,
+			twitchDisplayName: true,
+			trustLevel: true,
+			graceTrainCars: {
+				select: { carId: true, carRevision: true, carData: true },
+				where: {
+					trainId: dev ? {} : { gt: Date.now() - EIGHT_HOURS }, // Show all trains in dev mode
+					carId: { not: null }, // Only include designed cars
+				},
+				distinct: ['carId', 'carRevision'],
+				orderBy: [{ trainId: 'desc' }, { index: 'desc' }],
+			},
 		},
-		orderBy: { id: 'desc' },
-		include: trainsIncludeQuery,
+		orderBy: { graceTrainCars: { _count: 'desc' } },
+		where: {
+			//trustLevel: { in: ['default', 'flagged'] },
+		},
 	})
-	const users: {
-		username: string
-		trustLevel: $Enums.TrustLevel
-		cars: {
-			car: GraceTrainCar
-			carId: number
-			shortId?: string
-			revision: number
-			approval: $Enums.Approval
-		}[]
-	}[] = []
-	const cars: {
-		car: GraceTrainCar
-		carId: number
-		shortId?: string
-		revision: number
-		approval: $Enums.Approval
-		username: string
-		trustLevel: $Enums.TrustLevel
-	}[] = []
-	const addedCars = new Set<string>()
-	for (const train of trains) {
-		for (const car of train.cars) {
-			const carIdAndRevision = `${car.carId}:${car.carRevision}`
-			if (car.carId !== null && !addedCars.has(carIdAndRevision)) {
-				addedCars.add(carIdAndRevision)
-				cars.push({
-					car: car.carData as GraceTrainCar,
-					carId: car.carId,
-					shortId: car.car?.shortId,
-					revision: car.carRevision!,
-					approval: car.approval!,
-					username: car.user!.twitchDisplayName,
-					trustLevel: car.user!.trustLevel,
-				})
-			}
-		}
+	return {
+		users: users.map((user) => ({
+			...user,
+			graceTrainCars: user.graceTrainCars.map((gtCar) => ({
+				...gtCar,
+				carData: gtCar.carData as GraceTrainCar,
+			})),
+		})),
 	}
-	return { cars }
 }) satisfies PageServerLoad
 
 export const actions = {
@@ -86,7 +56,7 @@ async function changeCarApproval(
 	{ locals, request }: Parameters<Actions[string]>[0]
 ) {
 	const session = await locals.auth.validate()
-	if (!session) redirect(302, `/login?redirectTo=/mod`);
+	if (!session) redirect(302, `/login?redirectTo=/mod`)
 	if (!userIsMod(session.user)) return fail(403)
 	const formData = await request.formData()
 	const carId = +formData.get('carId')! as number
