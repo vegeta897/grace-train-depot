@@ -28,6 +28,7 @@ enum TrustLevel {
   default
   trusted
   flagged
+  banned
 }
 
 model Session {
