@@ -1,5 +1,5 @@
 import type { FullCarData } from '$lib/server/car'
-import prisma from '$lib/server/prisma'
+import prisma, { orderBySlot } from '$lib/server/prisma'
 import type { CarData, DecalData, TopperData } from '$lib/server/schemas'
 import { randomElement } from '$lib/util'
 import type { Prisma } from '@prisma/client'
@@ -87,6 +87,9 @@ export function pickUserCar(
 	return randomElement([...leastPicked])
 }
 
+const incrementAppearancesUpdateQuery = {
+	totalAppearances: { increment: 1 },
+} as const
 export async function incrementGraceTrainTotalAppearances(carId: number) {
 	await prisma.graceTrainCarStats.upsert({
 		where: { carId: carId },
@@ -94,9 +97,7 @@ export async function incrementGraceTrainTotalAppearances(carId: number) {
 			carId,
 			totalAppearances: 1,
 		},
-		update: {
-			totalAppearances: { increment: 1 },
-		},
+		update: incrementAppearancesUpdateQuery,
 	})
 }
 
@@ -115,3 +116,10 @@ export async function updateGraceTrainCarStatsForTrain(
 		},
 	})
 }
+
+export const userCarsIncludeQuery = {
+	cars: {
+		include: { decals: orderBySlot, toppers: orderBySlot },
+		where: { published: true },
+	},
+} as const

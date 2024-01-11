@@ -1,7 +1,7 @@
 import { DEPOT_SECRET } from '$env/static/private'
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import prisma, { orderBySlot } from '$lib/server/prisma'
+import prisma from '$lib/server/prisma'
 import type { Prisma } from '@prisma/client'
 import type { DepotTrainAddRequest } from 'grace-train-lib/trains'
 import {
@@ -9,6 +9,7 @@ import {
 	pickUserCar,
 	transformCarFromDBToGraceTrainCar,
 	updateGraceTrainCarStatsForTrain,
+	userCarsIncludeQuery,
 } from '../trains'
 
 export const POST = (async ({ request }) => {
@@ -35,12 +36,7 @@ export const POST = (async ({ request }) => {
 	}
 	const user = await prisma.user.findUnique({
 		where: { twitchUserId: grace.userId },
-		include: {
-			cars: {
-				include: { decals: orderBySlot, toppers: orderBySlot },
-				where: { published: true },
-			},
-		},
+		include: userCarsIncludeQuery,
 	})
 	if (user && user.cars.length > 0) {
 		const pickedCar = pickUserCar(user.cars, train.cars)

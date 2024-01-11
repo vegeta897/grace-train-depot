@@ -5,6 +5,8 @@ import { transformCarFromDB } from '$lib/server/car'
 import type { User } from 'lucia'
 import type { CarDataWithIds } from '$lib/server/schemas'
 
+const carIncludeQuery = { decals: true, toppers: true } as const
+
 export const load = (async ({ params, locals }) => {
 	console.log('/design/ layout server load')
 	// Redirect bots to car page
@@ -16,7 +18,7 @@ export const load = (async ({ params, locals }) => {
 	if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}`)
 	const savedCar = await prisma.car.findUnique({
 		where: { shortId: params.id, userId: session.user.userId },
-		include: { decals: true, toppers: true },
+		include: carIncludeQuery,
 	})
 	if (savedCar) {
 		data.savedCar = transformCarFromDB(savedCar)

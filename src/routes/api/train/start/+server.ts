@@ -1,7 +1,7 @@
 import { DEPOT_SECRET } from '$env/static/private'
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import prisma, { orderBySlot } from '$lib/server/prisma'
+import prisma from '$lib/server/prisma'
 import type { Prisma } from '@prisma/client'
 import type { DepotTrainStartRequest } from 'grace-train-lib/trains'
 import {
@@ -10,6 +10,7 @@ import {
 	pickUserCar,
 	transformCarFromDBToGraceTrainCar,
 	updateGraceTrainCarStatsForTrain,
+	userCarsIncludeQuery,
 } from '../trains'
 
 export const POST = (async ({ request }) => {
@@ -25,12 +26,7 @@ export const POST = (async ({ request }) => {
 			twitchUserId: { in: graces.map((g) => g.userId) },
 			trustLevel: { not: 'flagged' }, // No cars from flagged users
 		},
-		include: {
-			cars: {
-				include: { decals: orderBySlot, toppers: orderBySlot },
-				where: { published: true },
-			},
-		},
+		include: userCarsIncludeQuery,
 	})
 	// "Unchecked" is safe because we know the cars and users exist
 	const graceTrainCars: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput[] = []

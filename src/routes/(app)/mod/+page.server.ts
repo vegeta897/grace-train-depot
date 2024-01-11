@@ -7,6 +7,17 @@ import { userIsMod } from '$lib/server/admin'
 import { dev } from '$app/environment'
 
 const EIGHT_HOURS = 8 * 60 * 60 * 1000
+const trainsWhereCarsQuery = { some: { carId: { gte: 0 } } } as const
+const trainsIncludeQuery = {
+	cars: {
+		orderBy: { index: 'desc' },
+		include: {
+			car: { select: { shortId: true } },
+			user: { select: { twitchDisplayName: true, trustLevel: true } },
+		},
+		where: { carId: { not: null } }, // Only include designed cars
+	},
+} as const
 
 export const load = (async (event) => {
 	const parentData = await event.parent()
@@ -14,14 +25,23 @@ export const load = (async (event) => {
 	if (!parentData.user.isMod) return fail(403)
 	const trains = await prisma.graceTrain.findMany({
 		where: {
-			cars: { some: { carId: { gte: 0 } } }, // Only include trains with at least one designed car
+			cars: trainsWhereCarsQuery, // Only include trains with at least one designed car
 			id: dev ? {} : { gt: Date.now() - EIGHT_HOURS }, // Show all trains in dev mode
 		},
 		orderBy: { id: 'desc' },
-		include: {
-			cars: { orderBy: { index: 'desc' }, include: { car: true, user: true } },
-		},
+		include: trainsIncludeQuery,
 	})
+	// const users: {
+	// 	username: string
+	// 	trustLevel: $Enums.TrustLevel
+	// 	cars: {
+	// 		car: GraceTrainCar
+	// 		carId: number
+	// 		shortId?: string
+	// 		revision: number
+	// 		approval: $Enums.Approval
+	// 	}[]
+	// }[] = []
 	const cars: {
 		car: GraceTrainCar
 		carId: number

@@ -6,17 +6,19 @@ import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 import { getRelativeTime } from '$lib/util'
 import fs from 'node:fs'
 
+const carIncludeQuery = {
+	decals: { orderBy: { slot: 'asc' } },
+	toppers: true,
+	graceTrainCarStats: true,
+	user: { select: { twitchDisplayName: true } },
+} as const
+
 export const load = (async ({ params, parent }) => {
 	console.log('/c/ page server load')
 	const parentData = await parent()
 	const carData = await prisma.car.findUnique({
 		where: { shortId: params.id },
-		include: {
-			decals: { orderBy: { slot: 'asc' } },
-			toppers: true,
-			graceTrainCarStats: true,
-			user: { select: { twitchDisplayName: true } },
-		},
+		include: carIncludeQuery,
 	})
 	if (!carData) throw error(404, 'Unknown car ID')
 	const stats = carData.graceTrainCarStats
