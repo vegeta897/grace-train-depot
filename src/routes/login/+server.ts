@@ -5,7 +5,7 @@ import { redirect, type RequestHandler } from '@sveltejs/kit'
 export const GET = (async ({ cookies, locals, url }) => {
 	const redirectTo = url.searchParams.get('redirectTo')
 	const session = await locals.auth.validate()
-	if (session) throw redirect(302, redirectTo || '/')
+	if (session) redirect(302, redirectTo || '/')
 	const [authUrl, state] = await twitchAuth.getAuthorizationUrl()
 	cookies.set('twitch_oauth_state', state, {
 		secure: !dev,
@@ -19,7 +19,7 @@ export const GET = (async ({ cookies, locals, url }) => {
 			maxAge: 60 * 60,
 		})
 	} else {
-		cookies.delete('twitch_oauth_redirect_to')
+		cookies.delete('twitch_oauth_redirect_to', { path: '/' })
 	}
-	throw redirect(302, authUrl.toString())
+	redirect(302, authUrl.toString())
 }) satisfies RequestHandler

@@ -23,7 +23,7 @@ export const actions = {
 		// Check if X is above flag, or just flag the car as needing manual approval anyway
 		// Or always put flags on top?
 		const session = await locals.auth.validate()
-		if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}/finish`)
+		if (!session) redirect(302, `/login?redirectTo=/design/${params.id}/finish`);
 		let formCarData: any
 		try {
 			const formData = await request.formData()
@@ -106,7 +106,7 @@ export const actions = {
 		} catch (e) {
 			console.log('Error generating car image PNG', e)
 		}
-		throw redirect(302, `/c/${carData.shortId}`)
+		redirect(302, `/c/${carData.shortId}`);
 	},
 } satisfies Actions
 

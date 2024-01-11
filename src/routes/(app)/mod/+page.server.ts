@@ -21,12 +21,12 @@ const trainsIncludeQuery = {
 
 export const load = (async (event) => {
 	const parentData = await event.parent()
-	if (!parentData.user) throw redirect(302, `/login?redirectTo=/mod`)
+	if (!parentData.user) redirect(302, `/login?redirectTo=/mod`);
 	if (!parentData.user.isMod)
-		throw error(
-			403,
-			"you don't belong here, you're not a mod! ... uh, but if you are a mod, tell vegeta about this"
-		)
+		error(
+        			403,
+        			"you don't belong here, you're not a mod! ... uh, but if you are a mod, tell vegeta about this"
+        		);
 	const trains = await prisma.graceTrain.findMany({
 		where: {
 			cars: trainsWhereCarsQuery, // Only include trains with at least one designed car
@@ -86,7 +86,7 @@ async function changeCarApproval(
 	{ locals, request }: Parameters<Actions[string]>[0]
 ) {
 	const session = await locals.auth.validate()
-	if (!session) throw redirect(302, `/login?redirectTo=/mod`)
+	if (!session) redirect(302, `/login?redirectTo=/mod`);
 	if (!userIsMod(session.user)) return fail(403)
 	const formData = await request.formData()
 	const carId = +formData.get('carId')! as number

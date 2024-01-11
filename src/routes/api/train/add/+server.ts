@@ -15,7 +15,7 @@ import {
 export const POST = (async ({ request }) => {
 	console.log('/api/train/add POST received!')
 	const authHeader = request.headers.get('Authorization')
-	if (authHeader !== DEPOT_SECRET) throw error(401)
+	if (authHeader !== DEPOT_SECRET) error(401);
 	const { trainId, grace, index, score } = (await request.json()) as DepotTrainAddRequest
 	let train
 	try {
@@ -26,7 +26,7 @@ export const POST = (async ({ request }) => {
 		})
 	} catch (e) {
 		// Update throws if record not found
-		throw error(400, 'Unknown train ID')
+		error(400, 'Unknown train ID');
 	}
 	const graceTrainCarCreate: Prisma.GraceTrainCarUncheckedCreateInput = {
 		trainId,

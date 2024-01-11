@@ -20,7 +20,7 @@ export const load = (async ({ params, parent }) => {
 		where: { shortId: params.id },
 		include: carIncludeQuery,
 	})
-	if (!carData) throw error(404, 'Unknown car ID')
+	if (!carData) error(404, 'Unknown car ID');
 	const stats = carData.graceTrainCarStats
 		? {
 				trainCount: carData.graceTrainCarStats.graceTrainCount,
@@ -44,7 +44,7 @@ export const load = (async ({ params, parent }) => {
 export const actions = {
 	rename: async ({ locals, params, request }) => {
 		const session = await locals.auth.validate()
-		if (!session) throw redirect(302, `/login?redirectTo=/c/${params.id}`)
+		if (!session) redirect(302, `/login?redirectTo=/c/${params.id}`);
 		const formData = await request.formData()
 		const nameString = formData.get('carName')?.toString()
 		if (nameString === undefined) return fail(400, { invalid: true })
@@ -57,7 +57,7 @@ export const actions = {
 	},
 	status: async ({ locals, params, request }) => {
 		const session = await locals.auth.validate()
-		if (!session) throw redirect(302, `/login?redirectTo=/c/${params.id}`)
+		if (!session) redirect(302, `/login?redirectTo=/c/${params.id}`);
 		const formData = await request.formData()
 		const status = formData.get('status')
 		if (status !== 'active' && status !== 'draft') return fail(400, { invalid: true })
@@ -71,7 +71,7 @@ export const actions = {
 	delete: async ({ locals, params }) => {
 		console.log('deleting car', params.id)
 		const session = await locals.auth.validate()
-		if (!session) throw redirect(302, `/login?redirectTo=/design/${params.id}`)
+		if (!session) redirect(302, `/login?redirectTo=/design/${params.id}`);
 		// TODO: Flag for deletion instead of immediate delete
 		// This will make grace train car selection a bit safer
 		const deletedCar = await prisma.car.delete({
@@ -79,6 +79,6 @@ export const actions = {
 		})
 		// Delete car image
 		fs.rm(`./public/assets/car_${params.id}.png`, () => {})
-		throw redirect(302, '/?carDeleted=true')
+		redirect(302, '/?carDeleted=true');
 	},
 } satisfies Actions

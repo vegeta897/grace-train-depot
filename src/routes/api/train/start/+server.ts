@@ -16,7 +16,7 @@ import {
 export const POST = (async ({ request }) => {
 	console.log('/api/train/start POST received!')
 	const authHeader = request.headers.get('Authorization')
-	if (authHeader !== DEPOT_SECRET) throw error(401)
+	if (authHeader !== DEPOT_SECRET) error(401);
 	console.time('train start')
 	const { trainId, graces, score } = (await request.json()) as DepotTrainStartRequest
 	endAllTrains(trainId)

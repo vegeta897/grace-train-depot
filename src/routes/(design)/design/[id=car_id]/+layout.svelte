@@ -4,7 +4,7 @@
 	import type { LayoutData } from './$types'
 	import { cloneCar, getCarChangesByPage, getNewCar } from '$lib/car'
 	import { PAGES } from '$lib/common/constants'
-	import { goto, onNavigate } from '$app/navigation'
+	import { onNavigate } from '$app/navigation'
 	import { capitalize, objectContainsTrue } from '$lib/util'
 	import NavTabs from './NavTabs.svelte'
 	import { browser } from '$app/environment'

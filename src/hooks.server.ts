@@ -29,6 +29,6 @@ export const handleError: HandleServerError = async ({ error, event }) => {
 	const is404 = event.route.id === null
 	if (is404 && event.url.pathname.startsWith('/assets/car_')) {
 		// Redirect deleted car image requests to "unknown" image
-		throw redirect(302, '/car_unknown.png')
+		redirect(302, '/car_unknown.png');
 	}
 }

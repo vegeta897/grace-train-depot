@@ -9,5 +9,5 @@ export const GET = (async ({ url, cookies, locals }) => {
 		// TODO: Provide a link to log out of all sessions
 		// auth.invalidateAllUserSessions(session.user.userId)
 	}
-	throw redirect(302, '/')
+	redirect(302, '/');
 }) satisfies RequestHandler

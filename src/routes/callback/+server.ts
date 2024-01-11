@@ -5,9 +5,9 @@ import { redirect, type RequestHandler } from '@sveltejs/kit'
 
 export const GET = (async ({ url, cookies, locals }) => {
 	const redirectToCookie = cookies.get('twitch_oauth_redirect_to')
-	cookies.delete('twitch_oauth_redirect_to')
+	cookies.delete('twitch_oauth_redirect_to', { path: '/' })
 	const session = await locals.auth.validate()
-	if (session) throw redirect(302, redirectToCookie || '/')
+	if (session) redirect(302, redirectToCookie || '/')
 	const storedState = cookies.get('twitch_oauth_state')
 	const state = url.searchParams.get('state')
 	const code = url.searchParams.get('code')
@@ -50,5 +50,5 @@ export const GET = (async ({ url, cookies, locals }) => {
 	}
 	// Redirect new users to new car design page
 	const redirectTo = redirectToCookie || (newUser ? '/design/new' : '/')
-	throw redirect(302, redirectTo)
+	redirect(302, redirectTo)
 }) satisfies RequestHandler
