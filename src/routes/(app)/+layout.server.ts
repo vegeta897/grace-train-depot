@@ -7,7 +7,13 @@ export const load = (async (event) => {
 	// TODO: Move session or user property to locals in hooks file
 	// Or https://twitter.com/pilcrowonpaper/status/1707734991990571480
 	// TODO: Stream non-essential data https://svelte.dev/blog/streaming-snapshots-sveltekit
-	if (session) {
-		return { user: { ...session.user, isMod: userIsMod(session.user) } }
-	}
+	if (session)
+		return {
+			user: {
+				userId: session.user.userId,
+				twitchDisplayName: session.user.twitchDisplayName,
+				trustLevel: session.user.trustLevel,
+				isMod: userIsMod(session.user),
+			},
+		}
 }) satisfies LayoutServerLoad
