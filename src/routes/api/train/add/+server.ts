@@ -15,7 +15,7 @@ import {
 export const POST = (async ({ request }) => {
 	console.log('/api/train/add POST received!')
 	const authHeader = request.headers.get('Authorization')
-	if (authHeader !== DEPOT_SECRET) error(401);
+	if (authHeader !== DEPOT_SECRET) error(401)
 	const { trainId, grace, index, score } = (await request.json()) as DepotTrainAddRequest
 	let train
 	try {
@@ -26,18 +26,18 @@ export const POST = (async ({ request }) => {
 		})
 	} catch (e) {
 		// Update throws if record not found
-		error(400, 'Unknown train ID');
+		error(400, 'Unknown train ID')
 	}
+	const user = await prisma.user.findUnique({
+		where: { twitchUserId: grace.userId, trustLevel: { notIn: ['flagged', 'banned'] } },
+		include: userCarsIncludeQuery,
+	})
 	const graceTrainCarCreate: Prisma.GraceTrainCarUncheckedCreateInput = {
 		trainId,
 		index,
 		twitchUserId: grace.userId,
 		carData: grace.color,
 	}
-	const user = await prisma.user.findUnique({
-		where: { twitchUserId: grace.userId },
-		include: userCarsIncludeQuery,
-	})
 	if (user && user.cars.length > 0) {
 		const pickedCar = pickUserCar(user.cars, train.cars)
 		await incrementGraceTrainTotalAppearances(pickedCar.id)

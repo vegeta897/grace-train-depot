@@ -16,15 +16,15 @@ import {
 export const POST = (async ({ request }) => {
 	console.log('/api/train/start POST received!')
 	const authHeader = request.headers.get('Authorization')
-	if (authHeader !== DEPOT_SECRET) error(401);
+	if (authHeader !== DEPOT_SECRET) error(401)
 	console.time('train start')
 	const { trainId, graces, score } = (await request.json()) as DepotTrainStartRequest
 	endAllTrains(trainId)
-	// Get all users and their cars
+	// Get grace train users and their cars
 	const users = await prisma.user.findMany({
 		where: {
 			twitchUserId: { in: graces.map((g) => g.userId) },
-			trustLevel: { not: 'flagged' }, // No cars from flagged users
+			trustLevel: { notIn: ['flagged', 'banned'] }, // No cars from flagged or banned users
 		},
 		include: userCarsIncludeQuery,
 	})
