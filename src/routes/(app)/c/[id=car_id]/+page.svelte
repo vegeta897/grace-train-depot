@@ -83,7 +83,7 @@
 	</figure>
 	<div class="card-body gap-4 p-4 xs:px-6 md:p-6 lg:p-8 lg:px-8">
 		<h2
-			class="card-title grow flex-wrap items-baseline gap-x-4 gap-y-0 text-3xl font-black lg:text-4xl"
+			class="card-title grow flex-wrap content-start items-baseline gap-x-4 gap-y-0 text-3xl font-black lg:text-4xl"
 		>
 			{data.car.name}
 			<small class="text-lg font-normal text-base-content/70">
@@ -131,7 +131,10 @@
 			</div>
 		</div>
 		{#if data.car.belongsToUser}
-			<div class="rounded-box flex flex-col bg-base-100 px-4 py-4 xs:px-6">
+			<div
+				class="rounded-box box-content flex flex-col bg-base-100 px-4 py-4 xs:px-6"
+				class:h-28={!managing}
+			>
 				{#if managing}
 					<div class="flex grow flex-col gap-4">
 						<form class="flex flex-col gap-4" use:enhance={onStatus} method="POST">
@@ -197,7 +200,7 @@
 						</form>
 					</div>
 				{:else if renaming}
-					<div class="flex grow flex-col gap-4">
+					<div class="flex grow flex-col justify-center gap-4">
 						<form
 							class="flex flex-col gap-3"
 							use:enhance={onRename}
