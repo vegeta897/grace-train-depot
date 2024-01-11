@@ -391,7 +391,7 @@
 										on:pointerdown={() => startResize(c)}
 										style:transform="scale({((resizing && getCornerScale(c)) ||
 											(rotating || $dragging ? 0.5 : 1)) / canvasScale})"
-										class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-primary"
+										class="rounded-box pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none border-5 border-white bg-primary"
 										class:transition-transform={!resizing}
 										class:transition-opacity={!resizing}
 										class:opacity-30={transforming}
@@ -411,7 +411,7 @@
 							<button
 								on:pointerdown={() => startRotate()}
 								style:transform="scale({(rotating ? 1.5 : 1) / canvasScale})"
-								class="pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none rounded-2xl border-5 border-white bg-secondary"
+								class="rounded-box pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none border-5 border-white bg-secondary"
 								class:transition-all={!resizing}
 								class:opacity-60={rotating}
 								class:opacity-0={resizing || $dragging}

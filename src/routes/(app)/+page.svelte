@@ -47,7 +47,7 @@
 				Car deleted
 			</div>
 		{/if}
-		<div class="flex w-full flex-col gap-4 rounded-2xl bg-neutral p-4 md:px-10 md:py-8">
+		<div class="rounded-box flex w-full flex-col gap-4 bg-neutral p-4 md:px-10 md:py-8">
 			<div class="flex flex-wrap items-center justify-between gap-2">
 				<h2 class="flex items-end gap-2 text-lg font-bold">
 					<Icon icon="twitch" class="h-6 w-6" />
@@ -65,7 +65,7 @@
 	</section>
 {:else}
 	<section class="flex grow flex-col items-center justify-center p-4 md:p-8">
-		<div class="hero max-w-3xl rounded-2xl bg-base-200 pb-4 sm:py-8">
+		<div class="hero rounded-box max-w-3xl bg-base-200 pb-4 sm:py-8">
 			<div class="hero-content min-w-0 max-w-full flex-col px-6">
 				<div
 					class="relative flex min-w-0 max-w-full overflow-clip py-8 sm:py-16"
