@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit'
+import { fail, redirect, error } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import type { GraceTrainCar } from 'grace-train-lib/trains'
@@ -22,7 +22,11 @@ const trainsIncludeQuery = {
 export const load = (async (event) => {
 	const parentData = await event.parent()
 	if (!parentData.user) throw redirect(302, `/login?redirectTo=/mod`)
-	if (!parentData.user.isMod) return fail(403)
+	if (!parentData.user.isMod)
+		throw error(
+			403,
+			"you don't belong here, you're not a mod! ... uh, but if you are a mod, tell vegeta about this"
+		)
 	const trains = await prisma.graceTrain.findMany({
 		where: {
 			cars: trainsWhereCarsQuery, // Only include trains with at least one designed car
@@ -31,17 +35,17 @@ export const load = (async (event) => {
 		orderBy: { id: 'desc' },
 		include: trainsIncludeQuery,
 	})
-	// const users: {
-	// 	username: string
-	// 	trustLevel: $Enums.TrustLevel
-	// 	cars: {
-	// 		car: GraceTrainCar
-	// 		carId: number
-	// 		shortId?: string
-	// 		revision: number
-	// 		approval: $Enums.Approval
-	// 	}[]
-	// }[] = []
+	const users: {
+		username: string
+		trustLevel: $Enums.TrustLevel
+		cars: {
+			car: GraceTrainCar
+			carId: number
+			shortId?: string
+			revision: number
+			approval: $Enums.Approval
+		}[]
+	}[] = []
 	const cars: {
 		car: GraceTrainCar
 		carId: number
