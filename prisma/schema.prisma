@@ -62,7 +62,6 @@ model Car {
   revision           Int                 @default(1)
   name               String
   published          Boolean             @default(false) // rename to "active"
-  approval           Approval            @default(pending)
   body               String              @default("boxy")
   bodyColor          String?
   bodyPopColor       String?
@@ -118,7 +117,6 @@ model GraceTrainCar {
   car          Car?       @relation(fields: [carId], references: [id])
   carId        Int?
   carRevision  Int?
-  approval     Approval?
   user         User?      @relation(fields: [userId], references: [id])
   userId       String?
   twitchUserId String
@@ -126,12 +124,6 @@ model GraceTrainCar {
   carData      Json
 
   @@id([trainId, index])
-}
-
-enum Approval {
-  pending
-  approved
-  flagged
 }
 
 model GraceTrainCarStats {
