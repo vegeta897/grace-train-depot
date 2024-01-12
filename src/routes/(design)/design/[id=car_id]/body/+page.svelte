@@ -12,7 +12,7 @@
 	import type { CarData } from '$lib/server/schemas'
 	import { browser } from '$app/environment'
 	import { getCarViewBox } from '$lib/car'
-	import BoundingBox from '../decals/BoundingBox.svelte'
+	import BoundingBox from '$lib/components/BoundingBox.svelte'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -40,7 +40,10 @@
 
 <section class="flex w-full flex-col items-center gap-1 xs:gap-3 lg:flex-row">
 	<div class="p-4 lg:w-1/2 lg:p-6">
-		{#if browser}<Car car={$designCar} viewBox={getCarViewBox($designCar)} />{/if}
+		{#if browser}<Car
+				car={{ depotCar: $designCar }}
+				viewBox={getCarViewBox($designCar)}
+			/>{/if}
 	</div>
 	<div class="rounded-box w-full space-y-4 bg-neutral p-4 lg:w-1/2 lg:p-5">
 		<div class="rounded-box flex items-start gap-2 bg-base-100 p-2 sm:gap-0 sm:p-4">
@@ -58,7 +61,7 @@
 							toppersOverride={[]}
 						/>
 						{#if current}
-							<ContainerSvg viewBox="0 0 250 200" class="absolute">
+							<ContainerSvg viewBox="0 0 250 200" position="absolute">
 								<BoundingBox
 									width={250}
 									height={200}

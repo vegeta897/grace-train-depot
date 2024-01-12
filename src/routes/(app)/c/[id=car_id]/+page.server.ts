@@ -75,7 +75,7 @@ export const actions = {
 		// TODO: Flag for deletion instead of immediate delete
 		// This will make grace train car selection a bit safer
 		const deletedCar = await prisma.car.delete({
-			where: { userId: session.user.userId, shortId: params.id },
+			where: { shortId: params.id, userId: session.user.userId },
 		})
 		// Delete car image
 		fs.rm(`./public/assets/car_${params.id}.png`, () => {})

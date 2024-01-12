@@ -15,7 +15,7 @@ Make a unified layout component (with multiple slots, not a sveltekit layout) --
 <section class="flex flex-col items-center gap-4">
 	{#if browser}
 		<div class="w-48 lg:w-64">
-			<Car car={$designCar} viewBox={getCarViewBox($designCar)} />
+			<Car car={{ depotCar: $designCar }} viewBox={getCarViewBox($designCar)} />
 		</div>
 		<h3 class="flex items-center gap-2 text-3xl font-black">
 			<span>{$designCar.name}</span>

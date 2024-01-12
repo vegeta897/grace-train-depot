@@ -9,7 +9,7 @@
 	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import { COLOR_NAMES } from 'grace-train-lib'
 	import { flip } from 'svelte/animate'
-	import BoundingBox from './BoundingBox.svelte'
+	import BoundingBox from '$lib/components/BoundingBox.svelte'
 	import { browser } from '$app/environment'
 	import { getDecalBoundingBox } from './decals'
 	import { fade, fly } from 'svelte/transition'

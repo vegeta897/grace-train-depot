@@ -8,18 +8,21 @@
 		Topper,
 		Wheels,
 		body,
+		topperDefs,
 	} from 'grace-train-lib/components'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import type { CarDataWithIds, TopperDataWithId } from '$lib/server/schemas'
 	import Decals from './Decals.svelte'
+	import BoundingBox from './BoundingBox.svelte'
 
 	export let car: CarDataWithIds
 	export let bodyOverride: BodyName | null = null
 	export let toppersOverride: TopperDataWithId[] | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
-	export let focusTopperSlot: number | null = null
+	export let selectedTopperSlot: number | null = null
+	export let hoveredTopperSlot: number | null = null
 	export let cropToCar = false
 	export let viewBox = '0 0 375 300'
 
@@ -42,21 +45,27 @@
 				</svelte:fragment>
 				<svelte:fragment slot="toppers" let:topLine>
 					{#each toppers as topper (topper.id)}
-						<g
-							class="transition-opacity"
-							class:opacity-40={focusTopperSlot !== null &&
-								topper.slot !== focusTopperSlot}
+						<Topper
+							{topLine}
+							name={topper.name}
+							colors={topper.colors}
+							position={topper.position}
+							offset={topper.offset}
+							scale={topper.scale}
+							rotate={topper.rotate}
 						>
-							<Topper
-								{topLine}
-								name={topper.name}
-								colors={topper.colors}
-								position={topper.position}
-								offset={topper.offset}
-								scale={topper.scale}
-								rotate={topper.rotate}
-							/>
-						</g>
+							{#if topper.slot === selectedTopperSlot || topper.slot === hoveredTopperSlot}
+								{@const { width, height } = topperDefs[topper.name].getBoundingBox()}
+								<BoundingBox
+									padding={5}
+									centered={false}
+									{width}
+									{height}
+									faded={topper.slot !== selectedTopperSlot}
+									scale={topper.scale}
+								/>
+							{/if}
+						</Topper>
 					{/each}
 				</svelte:fragment>
 				<Wheels

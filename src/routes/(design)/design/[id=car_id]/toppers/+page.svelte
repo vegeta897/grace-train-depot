@@ -95,7 +95,8 @@
 		{#if browser}
 			<DesignCar
 				car={$designCar}
-				focusTopperSlot={hoveredSlot !== null ? hoveredSlot : null}
+				hoveredTopperSlot={hoveredSlot !== null ? hoveredSlot : null}
+				selectedTopperSlot={selectedSlot !== null ? selectedSlot : null}
 				viewBox={getCarViewBox($designCar)}
 			/>
 		{/if}

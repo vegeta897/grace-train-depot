@@ -77,7 +77,7 @@
 						<div style:left="-4rem" class="train-scroll relative whitespace-nowrap">
 							{#each Array(14) as _, i}
 								<div class="mx-[3px] inline-block w-16">
-									<Car car={COLORS.POP[(i * 3) % COLORS.POP.length]} />
+									<Car car={{ color: COLORS.POP[(i * 3) % COLORS.POP.length] }} />
 								</div>
 							{/each}
 						</div>

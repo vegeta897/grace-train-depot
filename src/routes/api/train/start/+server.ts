@@ -3,7 +3,7 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import prisma from '$lib/server/prisma'
 import type { Prisma } from '@prisma/client'
-import type { DepotTrainStartRequest } from 'grace-train-lib/trains'
+import type { DepotTrainStartRequest, GraceTrainCar } from 'grace-train-lib/trains'
 import {
 	endAllTrains,
 	incrementGraceTrainTotalAppearances,
@@ -17,56 +17,48 @@ export const POST = (async ({ request }) => {
 	console.log('/api/train/start POST received!')
 	const authHeader = request.headers.get('Authorization')
 	if (authHeader !== DEPOT_SECRET) error(401)
-	console.time('train start')
 	const { trainId, graces, score } = (await request.json()) as DepotTrainStartRequest
-	endAllTrains(trainId)
+	await endAllTrains(trainId)
 	// Get grace train users and their cars
 	const users = await prisma.user.findMany({
 		where: {
 			twitchUserId: { in: graces.map((g) => g.userId) },
 			trustLevel: { notIn: ['flagged', 'banned'] }, // No cars from flagged or banned users
+			cars: { some: {} }, // Only get users with at least one car
 		},
 		include: userCarsIncludeQuery,
 	})
-	// "Unchecked" is safe because we know the cars and users exist
-	const graceTrainCars: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput[] = []
+	const graceTrainCars: GraceTrainCar[] = []
+	const createGraceTrainCars: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput[] = []
+	const pickedCars: Parameters<typeof pickUserCar>[1] = []
 	const pickedCarIds: Set<number> = new Set()
 	for (let i = 0; i < graces.length; i++) {
 		const grace = graces[i]
-		const graceTrainCarCreate: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput = {
+		const createGraceTrainCar: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput = {
 			index: i,
 			twitchUserId: grace.userId,
-			carData: grace.color,
+			carData: { color: grace.color },
 		}
 		const user = users.find((u) => u.twitchUserId === grace.userId)
-		if (user && user.cars.length > 0) {
-			const pickedCar = pickUserCar(
-				user.cars,
-				graceTrainCars.map((gtc) => ({
-					carId: gtc.carId || null,
-					userId: gtc.userId || null,
-				}))
-			)
+		if (user) {
+			const pickedCar = pickUserCar(user.cars, pickedCars)
 			await incrementGraceTrainTotalAppearances(pickedCar.id)
+			const pickedCarData = { depotCar: transformCarFromDBToGraceTrainCar(pickedCar) }
+			graceTrainCars.push(pickedCarData)
+			pickedCars.push({ carId: pickedCar.id, userId: user.id })
 			pickedCarIds.add(pickedCar.id)
-			graceTrainCarCreate.carData = transformCarFromDBToGraceTrainCar(pickedCar)
-			graceTrainCarCreate.carId = pickedCar.id
-			graceTrainCarCreate.carRevision = pickedCar.revision
-			graceTrainCarCreate.approval = pickedCar.approval
-			graceTrainCarCreate.userId = user.id
+			createGraceTrainCar.carData = pickedCarData
+			createGraceTrainCar.carId = pickedCar.id
+			createGraceTrainCar.carRevision = pickedCar.revision
+			createGraceTrainCar.userId = user.id
+		} else {
+			graceTrainCars.push({ color: grace.color })
 		}
-		graceTrainCars.push(graceTrainCarCreate)
+		createGraceTrainCars.push(createGraceTrainCar)
 	}
 	await updateGraceTrainCarStatsForTrain([...pickedCarIds], trainId)
 	await prisma.graceTrain.create({
-		data: {
-			id: trainId,
-			score,
-			cars: {
-				create: graceTrainCars,
-			},
-		},
+		data: { id: trainId, score, cars: { create: createGraceTrainCars } },
 	})
-	console.timeEnd('train start')
-	return json(graceTrainCars.map((gtc) => gtc.carData))
+	return json(graceTrainCars)
 }) satisfies RequestHandler

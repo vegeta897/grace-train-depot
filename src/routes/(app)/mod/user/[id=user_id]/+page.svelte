@@ -44,7 +44,7 @@
 		</div>
 		{#if data.pageUser.lastActive && data.pageUser.lastActiveRelative}
 			<div class="stat">
-				<div class="stat-title">recently designed</div>
+				<div class="stat-title">last designed</div>
 				<div class="stat-value">
 					{data.pageUser.lastActiveRelative[0]}
 					<span class="text-2xl leading-[inherit]"
@@ -102,7 +102,9 @@
 			<p>
 				<strong class="text-success">trusted</strong> users skip the mod queue
 			</p>
-			<p><strong>default</strong> users will appear in the mod queue</p>
+			<p>
+				<strong>default</strong> users will appear in the mod queue so their cars can be reviewed
+			</p>
 			<p>
 				<strong class="text-warning">flagged</strong> users are excluded from grace trains
 				but can still use the site. their offence should be reviewed to decide whether to restore

@@ -3,7 +3,7 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import prisma from '$lib/server/prisma'
 import type { Prisma } from '@prisma/client'
-import type { DepotTrainAddRequest } from 'grace-train-lib/trains'
+import type { DepotTrainAddRequest, GraceTrainCar } from 'grace-train-lib/trains'
 import {
 	incrementGraceTrainTotalAppearances,
 	pickUserCar,
@@ -29,32 +29,38 @@ export const POST = (async ({ request }) => {
 		error(400, 'Unknown train ID')
 	}
 	const user = await prisma.user.findUnique({
-		where: { twitchUserId: grace.userId, trustLevel: { notIn: ['flagged', 'banned'] } },
+		where: {
+			twitchUserId: grace.userId,
+			trustLevel: { notIn: ['flagged', 'banned'] },
+			cars: { some: {} }, // Only get users with at least one car
+		},
 		include: userCarsIncludeQuery,
 	})
-	const graceTrainCarCreate: Prisma.GraceTrainCarUncheckedCreateInput = {
+	const createGraceTrainCar: Prisma.GraceTrainCarUncheckedCreateInput = {
 		trainId,
 		index,
 		twitchUserId: grace.userId,
-		carData: grace.color,
+		carData: { color: grace.color },
 	}
-	if (user && user.cars.length > 0) {
+	let graceTrainCar: GraceTrainCar = { color: grace.color }
+	if (user) {
 		const pickedCar = pickUserCar(user.cars, train.cars)
 		await incrementGraceTrainTotalAppearances(pickedCar.id)
 		if (!train.cars.some((c) => c.carId === pickedCar.id)) {
 			// Update train-specific stats if this is the first appearance in this train
 			await updateGraceTrainCarStatsForTrain([pickedCar.id], trainId)
 		}
-		graceTrainCarCreate.carData = transformCarFromDBToGraceTrainCar(pickedCar)
-		graceTrainCarCreate.carId = pickedCar.id
-		graceTrainCarCreate.carRevision = pickedCar.revision
-		graceTrainCarCreate.approval = pickedCar.approval
-		graceTrainCarCreate.userId = user.id
+		const pickedCarData = { depotCar: transformCarFromDBToGraceTrainCar(pickedCar) }
+		graceTrainCar = pickedCarData
+		createGraceTrainCar.carData = pickedCarData
+		createGraceTrainCar.carId = pickedCar.id
+		createGraceTrainCar.carRevision = pickedCar.revision
+		createGraceTrainCar.userId = user.id
 	}
 	prisma.graceTrainCar
 		.create({
-			data: graceTrainCarCreate,
+			data: createGraceTrainCar,
 		})
 		.then() // Prisma queries need to be awaited to work properly, but we don't need to wait to return a response
-	return json(graceTrainCarCreate.carData)
+	return json(graceTrainCar)
 }) satisfies RequestHandler

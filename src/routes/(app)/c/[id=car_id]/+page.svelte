@@ -78,7 +78,7 @@
 <section class="card mb-4 rounded-none bg-neutral xs:rounded-box md:card-side xs:m-6">
 	<figure class="bg-base-200/70 p-4 md:w-1/2 md:p-6 lg:px-12 lg:py-8">
 		<div class="h-auto max-w-[32rem]">
-			<Car car={data.car} viewBox={getCarViewBox(data.car)} />
+			<Car car={{ depotCar: data.car }} viewBox={getCarViewBox(data.car)} />
 		</div>
 	</figure>
 	<div class="card-body gap-4 p-4 xs:px-6 md:p-6 lg:p-8 lg:px-8">

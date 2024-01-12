@@ -1,10 +1,11 @@
+import { DEPOT_SECRET, SPICE_BOT_HOSTNAME, SPICE_BOT_URL } from '$env/static/private'
 import type { FullCarData } from '$lib/server/car'
 import prisma, { orderBySlot } from '$lib/server/prisma'
 import type { CarData, DecalData, TopperData } from '$lib/server/schemas'
 import { randomElement } from '$lib/util'
 import type { Prisma } from '@prisma/client'
 import { decalDefs, type ParamsObject } from 'grace-train-lib/components'
-import type { GraceTrainCar } from 'grace-train-lib/trains'
+import type { DepotCar } from 'grace-train-lib/trains'
 
 type TrainCarData = Prisma.GraceTrainCarGetPayload<{}>
 
@@ -16,7 +17,7 @@ export async function endAllTrains(exceptTrainId?: number) {
 }
 
 // TODO: Too many versions of this function exist!
-export function transformCarFromDBToGraceTrainCar(car: FullCarData): GraceTrainCar {
+export function transformCarFromDBToGraceTrainCar(car: FullCarData): DepotCar {
 	return {
 		body: car.body as CarData['body'],
 		bodyColor: car.bodyColor || undefined,
@@ -56,7 +57,7 @@ export function transformCarFromDBToGraceTrainCar(car: FullCarData): GraceTrainC
 export function pickUserCar(
 	userCars: FullCarData[],
 	trainCars: Pick<TrainCarData, 'userId' | 'carId'>[]
-) {
+): FullCarData {
 	if (userCars.length === 1) return userCars[0] // Only one option
 	const userId = userCars[0].userId
 	const timesInTrainMap = new Map(userCars.map((car) => [car.id, 0]))
@@ -117,9 +118,25 @@ export async function updateGraceTrainCarStatsForTrain(
 	})
 }
 
+export const carsIncludeQuery = { decals: orderBySlot, toppers: orderBySlot } as const
 export const userCarsIncludeQuery = {
 	cars: {
-		include: { decals: orderBySlot, toppers: orderBySlot },
+		include: carsIncludeQuery,
 		where: { published: true },
 	},
-} as const
+} satisfies Prisma.UserInclude
+
+export async function blockUserFromOverlay(twitchUserId: string) {
+	// send POST to spicebot /depot-user-block endpoint
+	console.log('blocking user', twitchUserId)
+	fetch(`${SPICE_BOT_URL}/depot-user-block/`, {
+		body: JSON.stringify({ userId: twitchUserId }),
+		method: 'POST',
+		headers: {
+			Authorization: DEPOT_SECRET,
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			Origin: SPICE_BOT_HOSTNAME,
+		},
+	}).catch((e) => console.log('error sending depot-user-block to spice-bot', e))
+}

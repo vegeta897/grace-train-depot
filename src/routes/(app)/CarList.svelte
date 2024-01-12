@@ -57,7 +57,7 @@
 					class="flex shrink flex-col items-center gap-1 px-[5%]"
 				>
 					<div class="mt-[30%] transition-transform group-hover:-translate-y-2">
-						<Car {car} />
+						<Car car={{ depotCar: car }} />
 					</div>
 					<div
 						class="badge badge-neutral block max-w-full truncate transition-all"

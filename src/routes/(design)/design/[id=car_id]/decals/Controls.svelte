@@ -14,7 +14,7 @@
 	import type { DecalData } from '$lib/server/schemas'
 	import { cloneDecal } from '$lib/car'
 	import StripesControls from './StripesControls.svelte'
-	import BoundingBox from './BoundingBox.svelte'
+	import BoundingBox from '$lib/components/BoundingBox.svelte'
 
 	export let slot: number
 

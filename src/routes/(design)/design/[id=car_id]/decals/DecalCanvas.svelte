@@ -4,7 +4,7 @@
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
 	import { Decal } from 'grace-train-lib/components'
-	import BoundingBox from './BoundingBox.svelte'
+	import BoundingBox from '$lib/components/BoundingBox.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import DesignCar from '$lib/components/DesignCar.svelte'
@@ -298,7 +298,7 @@
 			{#if browser}
 				<DesignCar
 					car={$designCar}
-					focusTopperSlot={$selectedSlot === null ? null : -1}
+					selectedTopperSlot={$selectedSlot === null ? null : -1}
 					transition={['fill', 'stroke', 'opacity']}
 					focusDecalZone={$selectedSlot !== null}
 					cropToCar

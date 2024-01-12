@@ -37,7 +37,7 @@
 
 <section class="flex flex-col items-center">
 	<div class="w-64">
-		{#if browser}<Car car={$designCar} />{/if}
+		{#if browser}<Car car={{ depotCar: $designCar }} />{/if}
 	</div>
 	{#if form?.invalid || saveError === 'try-again'}
 		<div class="alert alert-error mt-4 w-auto">

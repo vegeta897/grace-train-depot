@@ -81,7 +81,7 @@
 								<div
 									class="px-[10%] pt-[30%] transition-transform group-hover:-translate-y-2"
 								>
-									<Car {car} />
+									<Car car={{ depotCar: car }} />
 								</div>
 								{#if !small}
 									<div class="badge badge-neutral block max-w-full truncate">

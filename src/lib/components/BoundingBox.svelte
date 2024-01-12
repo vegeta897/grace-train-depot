@@ -1,39 +1,10 @@
-<script lang="ts">
+<script lang="ts" context="module">
 	import { degToRad } from '$lib/util'
-
-	export let scale: number = 1
-	export let width = 100
-	export let height = 100
-	export let faded: boolean = false
-	export let corners: boolean = true
-	export let hidden: boolean = false
-	export let strokeWidthScale = 1
-	export let fullHitbox: boolean = false
-	export let centered = true
 
 	const cornerAngleTrim = 25 // 25 deg trim = 40 deg sweep
 	const cornerCosUnit = 1 - Math.cos(degToRad(cornerAngleTrim))
 	const cornerSinUnit = Math.sin(degToRad(cornerAngleTrim))
 	const idealDashUnit = degToRad(90 - cornerAngleTrim * 2)
-
-	$: pad = 10 / scale
-	$: pWidth = width + pad
-	$: pHeight = height + pad
-	$: top = -(centered ? pHeight : pad) / 2
-	$: left = -(centered ? pWidth : pad) / 2
-	$: rect = { x: left, y: top, width: pWidth, height: pHeight }
-	$: cRadius = Math.min(pWidth / 2, pHeight / 2, (25 + pad) / 2) // Fits stroke-width 25 corners
-	$: ccos = cRadius * cornerCosUnit
-	$: cSize = cRadius - ccos - cRadius * cornerSinUnit
-	$: availableWidth = pWidth - (ccos + cSize) * 2
-	$: availableHeight = pHeight - (ccos + cSize) * 2
-	$: idealDash = idealDashUnit * cRadius // Matches corner length
-	$: widthDashes = calcDashes(idealDash, availableWidth)
-	$: dashedWidth = (widthDashes[1] - 2) * widthDashes[0]
-	$: widthSpacer = (availableWidth - dashedWidth) / 2
-	$: heightDashes = calcDashes(idealDash, availableHeight)
-	$: dashedHeight = (heightDashes[1] - 2) * heightDashes[0]
-	$: heightSpacer = (availableHeight - dashedHeight) / 2
 
 	function calcDashes(ideal: number, available: number) {
 		if (available <= 0) return [1, 1]
@@ -56,6 +27,38 @@
 		[0, 1, -1, 1],
 		[-1, 0, -1, -1],
 	]
+</script>
+
+<script lang="ts">
+	export let scale: number = 1
+	export let width = 100
+	export let height = 100
+	export let faded: boolean = false
+	export let corners: boolean = true
+	export let hidden: boolean = false
+	export let strokeWidthScale = 1
+	export let fullHitbox: boolean = false
+	export let centered = true
+	export let padding = 0
+
+	$: pad = 10 / scale
+	$: pWidth = width + pad + padding * 2
+	$: pHeight = height + pad + padding * 2
+	$: top = -(centered ? pHeight : pad) / 2 - padding
+	$: left = -(centered ? pWidth : pad) / 2 - padding
+	$: rect = { x: left, y: top, width: pWidth, height: pHeight }
+	$: cRadius = Math.min(pWidth / 2, pHeight / 2, (25 + pad) / 2) // Fits stroke-width 25 corners
+	$: ccos = cRadius * cornerCosUnit
+	$: cSize = cRadius - ccos - cRadius * cornerSinUnit
+	$: availableWidth = pWidth - (ccos + cSize) * 2
+	$: availableHeight = pHeight - (ccos + cSize) * 2
+	$: idealDash = idealDashUnit * cRadius // Matches corner length
+	$: widthDashes = calcDashes(idealDash, availableWidth)
+	$: dashedWidth = (widthDashes[1] - 2) * widthDashes[0]
+	$: widthSpacer = (availableWidth - dashedWidth) / 2
+	$: heightDashes = calcDashes(idealDash, availableHeight)
+	$: dashedHeight = (heightDashes[1] - 2) * heightDashes[0]
+	$: heightSpacer = (availableHeight - dashedHeight) / 2
 
 	$: cornersPath =
 		(centered ? '' : `M${width / 2} ${height / 2}`) +

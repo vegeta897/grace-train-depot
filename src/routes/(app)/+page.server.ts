@@ -1,8 +1,8 @@
 import { transformCarFromDB } from '$lib/server/car'
-import prisma, { orderBySlot } from '$lib/server/prisma'
+import prisma from '$lib/server/prisma'
+import { carsIncludeQuery } from '../api/train/trains'
 import type { PageServerLoad } from './$types'
 
-const carsIncludeQuery = { decals: orderBySlot, toppers: orderBySlot } as const
 const carsOrderByQuery = { createdAt: 'desc' } as const
 
 export const load = (async ({ parent }) => {

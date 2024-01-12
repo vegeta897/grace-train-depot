@@ -3,6 +3,8 @@ import type { PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import { getRelativeTime } from '$lib/util'
 import type { $Enums } from '@prisma/client'
+import { blockUserFromOverlay } from '../../../../api/train/trains'
+import { userIsAdmin, userIsMod } from '$lib/server/admin'
 
 const pageUserIncludeQuery = {
 	_count: { select: { cars: true } },
@@ -46,13 +48,19 @@ export const actions = {
 	trust: async ({ locals, params, request }) => {
 		const session = await locals.auth.validate()
 		if (!session) redirect(302, `/login?redirectTo=/mod/user/${params.id}`)
+		if (!userIsMod(session.user)) return fail(403)
 		const formData = await request.formData()
 		const trustLevel = formData.get('trustLevel')?.toString() as $Enums.TrustLevel
-		if (!trustLevels.includes(trustLevel)) return fail(400, { invalid: true })
-		await prisma.user.update({
+		if (!params.id || !trustLevels.includes(trustLevel))
+			return fail(400, { invalid: true })
+		// Don't allow non-admins to modify other mods
+		if (userIsMod(params.id) && !userIsAdmin(session.user)) return fail(403)
+		const user = await prisma.user.update({
 			where: { id: params.id },
 			data: { trustLevel },
 		})
+		if (trustLevel === 'banned' || trustLevel === 'flagged')
+			blockUserFromOverlay(user.twitchUserId)
 		return { trustLevel }
 	},
 } satisfies Actions
