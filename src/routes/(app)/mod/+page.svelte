@@ -1,36 +1,48 @@
 <script lang="ts">
 	import { Car } from 'grace-train-lib/components'
+	import { getRelativeTime } from '$lib/util'
 	import type { PageData } from './$types'
 
 	export let data: PageData
 </script>
 
-<section class="rounded-box m-4 flex flex-col gap-2 bg-neutral p-4">
-	<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
-	<p>these users have recently appeared in grace trains</p>
-	{#each data.users as user}
-		{@const flagged = user.trustLevel === 'flagged'}
-		<div class="space-y-2 rounded-lg bg-base-100 px-3 py-2">
-			<a href="/mod/user/{user.id}" class="link text-lg">{user.twitchDisplayName}</a>
-			{#if flagged}<span class="badge badge-warning badge-lg ml-2 font-bold">
-					flagged
-				</span>{/if}
-			{#if user.graceTrainCars.length > 0}
-				<ol
-					class="grid grid-cols-[repeat(auto-fill,_minmax(6rem,_1fr))] gap-3 rounded-lg bg-base-200 p-3"
-				>
-					{#each user.graceTrainCars as car (`${car.carId}:${car.carRevision}`)}
-						<li class="relative flex flex-col items-center justify-end pt-3">
-							<Car car={car.carData} />
-						</li>
-					{/each}
-				</ol>
-			{:else}
-				<span class="ml-2 italic text-base-content/70">no recent cars</span>
-			{/if}
-		</div>
-	{/each}
-	{#if data.users.length === 0}
-		<p class="my-12 text-center text-lg italic">no users to show</p>
-	{/if}
+<section class="p-4">
+	<div class="rounded-box flex flex-col gap-4 bg-neutral p-4">
+		<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
+		<h3 class="text-2xl font-black">latest trains</h3>
+		<ol class="space-y-4">
+			{#each data.trains as train, t}
+				<li>
+					<h4 class="mb-2 flex items-center gap-2">
+						<span
+							class="badge badge-lg font-bold"
+							class:badge-primary={!train.ended || t === 0}
+						>
+							{#if train.ended && t === 1}
+								{@const lastCarTimeRelative = getRelativeTime(train.cars[0].addedAt)}
+								ended {lastCarTimeRelative[0]}
+								{lastCarTimeRelative[1]} ago
+							{:else}
+								current train{/if}
+						</span>
+						{#if !train.ended || t === 0}
+							<button class="btn btn-neutral btn-sm">refresh</button>
+						{/if}
+					</h4>
+					<ol class="flex gap-4 overflow-x-scroll rounded-lg bg-base-200 px-4 py-2">
+						{#each train.cars as car}
+							<li class="w-24 shrink-0 overflow-clip pt-2">
+								<Car car={car.carData} />
+								<div
+									class="overflow-hidden text-wrap break-words text-center text-sm leading-none text-base-content/90"
+								>
+									{car.user?.twitchDisplayName}
+								</div>
+							</li>
+						{/each}
+					</ol>
+				</li>
+			{/each}
+		</ol>
+	</div>
 </section>
