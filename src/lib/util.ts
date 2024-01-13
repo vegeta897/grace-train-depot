@@ -75,7 +75,9 @@ export const pluralize = (quantity: number, unit: string) =>
 
 export function getRelativeTime(since: Date) {
 	const now = Date.now()
-	const minutes = Math.round((now - since.getTime()) / 1000 / 60)
+	const seconds = Math.round((now - since.getTime()) / 1000)
+	if (seconds < 60) return [seconds, pluralize(seconds, 'second')]
+	const minutes = Math.round(seconds / 60)
 	if (minutes < 60) return [minutes, pluralize(minutes, 'minute')]
 	const hours = Math.round(minutes / 60)
 	if (hours < 24) return [hours, pluralize(hours, 'hour')]
