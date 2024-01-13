@@ -17,7 +17,6 @@ export const popColorSchema = listSchema(COLORS.POP)
 const decalBaseSchema = z.object({
 	x: z.number().gte(-203).lte(578),
 	y: z.number().gte(-178).lte(403),
-	scale: z.number().gte(DECAL_MIN_SCALE).lte(DECAL_MAX_SCALE),
 	rotate: z.number().gte(-180).lte(180),
 	fill: popColorSchema,
 	slot: z
@@ -28,13 +27,18 @@ const decalBaseSchema = z.object({
 })
 
 function createDecalSchema(name: DecalName, params?: z.ZodType<ParamsObject>) {
+	const { minScale, maxScale, paramConfig } = decalDefs[name]
 	return decalBaseSchema.extend({
+		scale: z
+			.number()
+			.gte(minScale ?? DECAL_MIN_SCALE)
+			.lte(maxScale ?? DECAL_MAX_SCALE),
 		name: z.literal(name),
 		params:
 			params ||
 			z.object<ParamsObject>(
 				Object.fromEntries(
-					decalDefs[name].paramConfig.map((param) => {
+					paramConfig.map((param) => {
 						// param
 						let schema: z.ZodType
 						if (param.type === 'toggle') {
