@@ -77,11 +77,14 @@
 </svelte:head>
 <section class="card mb-4 rounded-none bg-neutral xs:rounded-box md:card-side xs:m-6">
 	<figure class="bg-base-200/70 p-4 md:w-1/2 md:p-6 lg:px-12 lg:py-8">
-		<div class="h-auto max-w-[32rem]">
+		<div class="flex h-auto max-w-[32rem] flex-col items-center gap-2">
 			<Car car={{ depotCar: data.car }} viewBox={getCarViewBox(data.car)} />
+			{#if !data.car.published}
+				<div class="badge badge-secondary badge-lg -mb-1 font-bold">draft</div>
+			{/if}
 		</div>
 	</figure>
-	<div class="card-body gap-4 p-4 xs:px-6 md:p-6 lg:p-8 lg:px-8">
+	<div class="card-body gap-4 p-4 xs:px-6 md:p-6 lg:max-w-[50%] lg:p-8 lg:px-8">
 		<h2
 			class="card-title grow flex-wrap content-start items-baseline gap-x-4 gap-y-0 text-3xl font-black lg:text-4xl"
 		>
@@ -89,13 +92,6 @@
 			<small class="text-lg font-normal text-base-content/70">
 				by <strong>{data.car.twitchName}</strong>
 			</small>
-			<div
-				class="badge font-bold"
-				class:badge-primary={data.car.published}
-				class:badge-secondary={!data.car.published}
-			>
-				{data.car.published ? 'active' : 'draft'}
-			</div>
 		</h2>
 		<div class="stats grid-cols-2">
 			<div class="stat px-4 xs:px-6">
@@ -193,7 +189,9 @@
 									<button
 										formaction="?/status"
 										disabled={toStatus === (data.car.published ? 'active' : 'draft')}
-										class="btn btn-primary">Save</button
+										class:btn-primary={toStatus === 'active'}
+										class:btn-secondary={toStatus === 'draft'}
+										class="btn">Save</button
 									>
 								{/if}
 							</div>
