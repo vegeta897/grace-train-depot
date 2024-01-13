@@ -7,8 +7,8 @@
 
 	let menuElement: HTMLDetailsElement
 
-	const closeMenu = () => menuElement.removeAttribute('open')
-	onNavigate(closeMenu)
+	const closeMenu = () => menuElement?.removeAttribute('open')
+	onNavigate(() => closeMenu())
 </script>
 
 <svelte:head><title>Choo Choo!</title></svelte:head>
@@ -19,9 +19,9 @@
 			🚂
 			<span class="hidden">Choo Choo!</span>
 		</h1> -->
-	<h2 class="text-xl font-black uppercase tracking-wide sm:text-2xl">
+	<h1 class="text-xl font-black uppercase tracking-wide sm:text-2xl">
 		<a href="/">Choo Choo!</a>
-	</h2>
+	</h1>
 	{#if data.user}
 		<nav class="flex-none">
 			<details
