@@ -11,6 +11,7 @@ import { join } from 'node:path'
 import { PROJECT_PATH } from '$env/static/private'
 import { getCarViewBox } from '$lib/car'
 import { Car } from 'grace-train-lib/components'
+import type { ComponentProps } from 'svelte'
 
 const assetsPath = join(PROJECT_PATH, './public/assets')
 
@@ -87,8 +88,10 @@ export const actions = {
 			}
 		}
 		// TODO: Move this to another file
-		const { html } = (Car as any).render({
-			car: carData,
+		const { html } = (
+			Car as unknown as { render: (props: ComponentProps<Car>) => { html: string } }
+		).render({
+			car: { depotCar: carData },
 			viewBox: getCarViewBox(carData),
 			width: '250px', // Good size for large image embed without being too large
 		})
