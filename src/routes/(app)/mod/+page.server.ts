@@ -35,6 +35,7 @@ export const load = (async ({ locals }) => {
 			cars: { some: { user: { isNot: null } } }, // Has at least one designed car
 			id: dev ? {} : { gt: Date.now() - EIGHT_HOURS },
 		},
+		orderBy: { id: 'desc' },
 	})
 	type Train = (typeof trains)[number]
 	type Car = Train['cars'][number]

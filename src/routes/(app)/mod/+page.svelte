@@ -14,18 +14,16 @@
 			{#each data.trains as train, t}
 				<li>
 					<h4 class="mb-2 flex items-center gap-2">
-						<span
-							class="badge badge-lg font-bold"
-							class:badge-primary={!train.ended || t === 0}
-						>
-							{#if train.ended && t === 1}
+						<span class="badge badge-lg font-bold" class:badge-primary={!train.ended}>
+							{#if train.ended}
 								{@const lastCarTimeRelative = getRelativeTime(train.cars[0].addedAt)}
 								ended {lastCarTimeRelative[0]}
 								{lastCarTimeRelative[1]} ago
 							{:else}
-								current train{/if}
+								current train
+							{/if}
 						</span>
-						{#if !train.ended || t === 0}
+						{#if !train.ended}
 							<button class="btn btn-neutral btn-sm">refresh</button>
 						{/if}
 					</h4>
