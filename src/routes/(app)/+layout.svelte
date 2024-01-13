@@ -66,8 +66,7 @@
 >
 	<nav class="grid grid-flow-col gap-4">
 		<a class="link-hover link" href="/">home</a>
-		<a class="link-hover link" href="/terms">terms</a>
-		<a class="link-hover link" href="/privacy">privacy</a>
+		<a class="link-hover link" href="/terms">terms of use</a>
 		<a
 			class="link-hover link"
 			href="https://github.com/vegeta897/grace-train-depot"
