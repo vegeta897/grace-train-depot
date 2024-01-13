@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import type { LayoutData } from './$types'
+	import { onNavigate } from '$app/navigation'
 
 	export let data: LayoutData
 
 	let menuElement: HTMLDetailsElement
 
 	const closeMenu = () => menuElement.removeAttribute('open')
+	onNavigate(closeMenu)
 </script>
 
 <svelte:head><title>Choo Choo!</title></svelte:head>
@@ -44,19 +46,14 @@
 				>
 				<ul class="menu dropdown-content rounded-box z-50 w-36 bg-neutral p-2 shadow">
 					<li>
-						<a on:click={closeMenu} href="/" class="justify-end">home</a>
+						<a href="/" class="justify-end">home</a>
 					</li>
 					{#if data.user.isMod}<li>
 							<a class="justify-end" href="/mod">🛡️ mod view</a>
 						</li>
 					{/if}
 					<li>
-						<a
-							data-sveltekit-reload
-							on:click={closeMenu}
-							href="/logout"
-							class="justify-end">log out</a
-						>
+						<a data-sveltekit-reload href="/logout" class="justify-end">log out</a>
 					</li>
 				</ul>
 			</details>
