@@ -92,6 +92,7 @@ const decalSchema = z.discriminatedUnion('name', [
 		})
 	),
 	createDecalSchema('flower'),
+	createDecalSchema('box'),
 ])
 
 export type DecalData = z.infer<typeof decalSchema>

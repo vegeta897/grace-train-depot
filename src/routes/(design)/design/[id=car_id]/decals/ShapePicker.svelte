@@ -1,4 +1,13 @@
 <script lang="ts" context="module">
+	import { COLORS, COLOR_NAMES, colorRun } from 'grace-train-lib'
+	import {
+		Decal,
+		decalDefs,
+		type DecalName,
+		PRIDE_FLAGS,
+		ContainerSvg,
+	} from 'grace-train-lib/components'
+
 	export type DecalChoice = {
 		name: DecalName
 		fill?: string
@@ -12,15 +21,6 @@
 </script>
 
 <script lang="ts">
-	import { COLOR_NAMES, colorRun } from 'grace-train-lib'
-	import {
-		Decal,
-		decalDefs,
-		type DecalName,
-		PRIDE_FLAGS,
-		ContainerSvg,
-	} from 'grace-train-lib/components'
-
 	export let fillOverride: string | undefined = undefined
 	export let onPick: (decalProps: DecalChoice) => void
 	export let startingShape: DecalName | undefined = 'star' // Unnecessary?
@@ -46,6 +46,12 @@
 				name: 'circle',
 				defaultFill: COLOR_NAMES.POP.EMERALD,
 				defaultParams: { hollow: 0.7 },
+			},
+			{ name: 'box', defaultFill: COLORS.POP[21] },
+			{
+				name: 'box',
+				defaultFill: COLORS.POP[14],
+				defaultParams: { outline: true, round: 0.5, strokeWidth: 0.25 },
 			},
 			{ name: 'flower' },
 			{
