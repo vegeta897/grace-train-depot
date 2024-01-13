@@ -2,6 +2,8 @@
 	export let icon: 'arrow' | 'plus' | 'grid-small' | 'grid-large' | 'twitch'
 	let className = ''
 	export { className as class }
+
+	// TODO: Get this crap organized
 </script>
 
 {#if icon === 'arrow'}
@@ -21,7 +23,7 @@
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 9 9"
-		class="w-full stroke-current {className}"
+		class="stroke-current {className}"
 	>
 		<path
 			stroke-linecap="round"
@@ -34,7 +36,7 @@
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 11 10"
-		class="w-full stroke-current {className}"
+		class="stroke-current {className}"
 	>
 		<path
 			stroke-linecap="round"
@@ -47,7 +49,7 @@
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 7 6"
-		class="w-full stroke-current {className}"
+		class="stroke-current {className}"
 	>
 		<path
 			stroke-linecap="round"
@@ -61,7 +63,7 @@
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 240 280"
-		class="w-full fill-current {className}"
+		class="fill-current {className}"
 	>
 		<path
 			d="M50,0L0,50v180h60v50l50-50h40l90-90V0H50z M220,130l-40,40h-40l-35,35v-35H60V20h160V130z"
@@ -82,7 +84,7 @@
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
 		viewBox="0 0 24 24"
-		class="h-1/2 w-1/2 stroke-current"
+		class="stroke-current {className}"
 	>
 		<path
 			stroke-linecap="round"
