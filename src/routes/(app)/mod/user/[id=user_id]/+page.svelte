@@ -20,6 +20,9 @@
 	}
 </script>
 
+<div class="pl-4 pt-4">
+	<a href="/mod" class="btn">Back to Mod View</a>
+</div>
 <section class="rounded-box m-4 flex flex-col gap-4 bg-neutral px-6 py-4">
 	<h2 class="text-3xl font-bold">{data.pageUser.twitchDisplayName}</h2>
 	<a
@@ -39,7 +42,7 @@
 				>
 			</div>
 			<div class="stat-desc text-sm">
-				on {data.pageUser.createdAt.toLocaleDateString()}
+				{data.pageUser.createdAt.toLocaleDateString()}
 			</div>
 		</div>
 		{#if data.pageUser.lastActive && data.pageUser.lastActiveRelative}
@@ -52,7 +55,8 @@
 					>
 				</div>
 				<div class="stat-desc text-sm">
-					on {data.pageUser.lastActive.toLocaleDateString()}
+					{data.pageUser.lastActive.toLocaleDateString()}
+					{data.pageUser.lastActive.toLocaleTimeString()}
 				</div>
 			</div>
 		{/if}
@@ -116,7 +120,4 @@
 			</p>
 		</div>
 	</div>
-	<pre>
-    {JSON.stringify(data.pageUser, null, 2)}
-  </pre>
 </section>
