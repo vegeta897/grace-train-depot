@@ -17,10 +17,12 @@ export const load = (async ({ locals }) => {
 		)
 	const trains = await prisma.graceTrain.findMany({
 		select: {
+			id: true,
 			ended: true,
 			cars: {
 				orderBy: { index: 'desc' },
 				select: {
+					index: true,
 					addedAt: true,
 					carData: true,
 					user: { select: { twitchUsername: true, twitchDisplayName: true } },
@@ -37,11 +39,14 @@ export const load = (async ({ locals }) => {
 		},
 		orderBy: { id: 'desc' },
 	})
-	type Train = (typeof trains)[number]
-	type Car = Train['cars'][number]
 	return {
-		trains: trains as (Omit<Train, 'cars'> & {
-			cars: (Omit<Car, 'carData'> & { carData: GraceTrainCar })[]
-		})[],
+		trains: trains.map((train) => ({
+			id: Number(train.id),
+			ended: train.ended,
+			cars: train.cars.map((car) => ({
+				...car,
+				carData: car.carData as GraceTrainCar,
+			})),
+		})),
 	}
 }) satisfies PageServerLoad
