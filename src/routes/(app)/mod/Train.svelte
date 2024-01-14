@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	export type Train = {
+	export type ModPageTrain = {
 		id: number
 		ended: boolean
 		cars: {
@@ -18,7 +18,7 @@
 	import { Car } from 'grace-train-lib/components'
 	import type { GraceTrainCar } from 'grace-train-lib/trains'
 
-	export let train: Train
+	export let train: ModPageTrain
 </script>
 
 <ol class="flex gap-4 overflow-x-scroll rounded-lg bg-base-200 px-4 py-2">

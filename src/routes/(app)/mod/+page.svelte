@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getRelativeTime } from '$lib/util'
 	import type { PageData } from './$types'
-	import Train from './Train.svelte'
+	import Train, { type ModPageTrain } from './Train.svelte'
 
 	export let data: PageData
 
@@ -12,7 +12,7 @@
 		const response = await fetch(`/api/train/${id}?afterIndex=${afterIndex}`)
 		const refreshData = (await response.json()) as {
 			ended: boolean
-			newCars: PageData['trains'][number]['cars']
+			newCars: ModPageTrain['cars']
 		}
 		refreshing = false
 		const train = data.trains.find((train) => train.id === id)

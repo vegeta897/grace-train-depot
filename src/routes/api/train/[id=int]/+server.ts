@@ -2,6 +2,9 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { userIsMod } from '$lib/server/admin'
 import prisma from '$lib/server/prisma'
+import type { ModPageTrain } from '../../../(app)/mod/Train.svelte'
+
+type ModPageTrainCar = ModPageTrain['cars'][number]
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const session = await locals.auth.validate()
@@ -35,7 +38,8 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 		ended: train.ended,
 		newCars: newCars.map((car) => ({
 			...car,
+			carData: car.carData as ModPageTrainCar['carData'],
 			addedAt: car.addedAt.getTime(), // Because we can't use sveltekit's serializer
-		})),
+		})) as (Omit<ModPageTrainCar, 'addedAt'> & { addedAt: number })[],
 	})
 }
