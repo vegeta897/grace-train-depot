@@ -25,7 +25,7 @@ export const load = (async ({ locals }) => {
 					index: true,
 					addedAt: true,
 					carData: true,
-					user: { select: { twitchUsername: true, twitchDisplayName: true } },
+					user: { select: { twitchUsername: true, twitchDisplayName: true, id: true } },
 				},
 				where: {
 					carId: { not: null }, // Only include designed cars

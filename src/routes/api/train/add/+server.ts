@@ -31,7 +31,7 @@ export const POST = (async ({ request }) => {
 	const user = await prisma.user.findUnique({
 		where: {
 			twitchUserId: grace.userId,
-			trustLevel: { notIn: ['flagged', 'banned'] },
+			trustLevel: { notIn: ['hidden', 'banned'] },
 			cars: { some: {} }, // Only get users with at least one car
 		},
 		include: userCarsIncludeQuery,

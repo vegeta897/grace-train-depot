@@ -8,7 +8,7 @@
 
 	let toTrustLevel = data.pageUser.trustLevel
 
-	const trustLevels: (typeof toTrustLevel)[] = ['trusted', 'default', 'flagged', 'banned']
+	const trustLevels: (typeof toTrustLevel)[] = ['trusted', 'default', 'hidden', 'banned']
 
 	const onTrustLevel: SubmitFunction = () => {
 		return async ({ result }) => {
@@ -20,6 +20,9 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Choo Choo {data.pageUser.twitchDisplayName}!</title>
+</svelte:head>
 <div class="pl-4 pt-4">
 	<a href="/mod" class="btn">Back to Mod View</a>
 </div>
@@ -83,7 +86,7 @@
 							name="trustLevel"
 							class="radio"
 							class:radio-success={level === 'trusted'}
-							class:radio-warning={level === 'flagged'}
+							class:radio-warning={level === 'hidden'}
 							class:radio-error={level === 'banned'}
 							bind:group={toTrustLevel}
 							value={level}
@@ -110,9 +113,9 @@
 				<strong>default</strong> users will appear in the mod queue so their cars can be reviewed
 			</p>
 			<p>
-				<strong class="text-warning">flagged</strong> users are excluded from grace trains
-				but can still use the site. their offence should be reviewed to decide whether to restore
-				them to the default level or ban them
+				<strong class="text-warning">hidden</strong> users are excluded from grace trains but
+				can still use the site. they should be reviewed to decide whether to restore them to
+				the default level or ban them
 			</p>
 			<p>
 				<strong class="text-error">banned</strong> users are excluded from grace trains and

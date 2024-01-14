@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import { getRelativeTime } from '$lib/util'
 import type { $Enums } from '@prisma/client'
-import { blockUserFromOverlay } from '../../../../api/train/trains'
+import { hideUserFromOverlay } from '../../../../api/train/trains'
 import { userIsAdmin, userIsMod } from '$lib/server/admin'
 
 const pageUserIncludeQuery = {
@@ -42,7 +42,7 @@ export const load = (async ({ params, parent }) => {
 	}
 }) satisfies PageServerLoad
 
-const trustLevels: $Enums.TrustLevel[] = ['trusted', 'default', 'flagged', 'banned']
+const trustLevels: $Enums.TrustLevel[] = ['trusted', 'default', 'hidden', 'banned']
 
 export const actions = {
 	trust: async ({ locals, params, request }) => {
@@ -59,8 +59,8 @@ export const actions = {
 			where: { id: params.id },
 			data: { trustLevel },
 		})
-		if (trustLevel === 'banned' || trustLevel === 'flagged')
-			blockUserFromOverlay(user.twitchUserId)
+		if (trustLevel === 'banned' || trustLevel === 'hidden')
+			hideUserFromOverlay(user.twitchUserId)
 		return { trustLevel }
 	},
 } satisfies Actions

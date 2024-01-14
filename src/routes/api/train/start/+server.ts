@@ -23,7 +23,7 @@ export const POST = (async ({ request }) => {
 	const users = await prisma.user.findMany({
 		where: {
 			twitchUserId: { in: graces.map((g) => g.userId) },
-			trustLevel: { notIn: ['flagged', 'banned'] }, // No cars from flagged or banned users
+			trustLevel: { notIn: ['hidden', 'banned'] }, // No cars from hidden or banned users
 			cars: { some: {} }, // Only get users with at least one car
 		},
 		include: userCarsIncludeQuery,

@@ -9,11 +9,11 @@
 	$: cars = data.cars || []
 	$: filteredCars = cars /*.filter((c) => show[c.approval])*/
 
-	const approvalTypes = ['pending', 'approved', 'flagged']
+	const approvalTypes = ['pending', 'approved', 'hidden']
 	const show: Record<(typeof approvalTypes)[number], boolean> = {
 		pending: true,
 		approved: false,
-		flagged: false,
+		hidden: false,
 	}
 </script>
 
@@ -35,7 +35,7 @@
 								bind:checked={show[approval]}
 								class="checkbox checkbox-sm xs:checkbox-md"
 								class:checkbox-success={approval === 'approved'}
-								class:checkbox-error={approval === 'flagged'}
+								class:checkbox-error={approval === 'hidden'}
 							/>
 						</label>
 					</div>

@@ -27,7 +27,7 @@ model User {
 enum TrustLevel {
   default
   trusted
-  flagged
+  hidden
   banned
 }
 

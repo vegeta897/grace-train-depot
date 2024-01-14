@@ -12,6 +12,7 @@
 			user: {
 				twitchUsername: string
 				twitchDisplayName: string
+				id: string
 			} | null
 		}[]
 	}
@@ -26,8 +27,8 @@
 <ol class="flex overflow-x-scroll rounded-lg bg-base-200 p-2">
 	{#each train.cars as car (car.index)}
 		<li class="">
-			<button
-				on:click={() => (selectedCar = selectedCar === car ? null : car)}
+			<a
+				href="?t={train.id}&i={car.index}"
 				class="flex w-[7.5rem] shrink-0 flex-col items-center gap-1 overflow-clip rounded-md px-2 pb-1 pt-3 transition-all"
 				class:bg-neutral={car === selectedCar}
 				class:outline={car === selectedCar}
@@ -38,7 +39,7 @@
 				>
 					{car.user?.twitchDisplayName || 'deleted user'}
 				</div>
-			</button>
+			</a>
 		</li>
 	{/each}
 </ol>

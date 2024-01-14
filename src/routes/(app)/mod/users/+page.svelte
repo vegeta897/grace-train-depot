@@ -9,11 +9,11 @@
 	<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
 	<p>these users have recently appeared in grace trains</p>
 	{#each data.users as user}
-		{@const flagged = user.trustLevel === 'flagged'}
+		{@const hidden = user.trustLevel === 'hidden'}
 		<div class="space-y-2 rounded-lg bg-base-100 px-3 py-2">
 			<a href="/mod/users/{user.id}" class="link text-lg">{user.twitchDisplayName}</a>
-			{#if flagged}<span class="badge badge-warning badge-lg ml-2 font-bold">
-					flagged
+			{#if hidden}<span class="badge badge-warning badge-lg ml-2 font-bold">
+					hidden
 				</span>{/if}
 			{#if user.graceTrainCars.length > 0}
 				<ol

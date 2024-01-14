@@ -127,10 +127,9 @@ export const userCarsIncludeQuery = {
 } satisfies Prisma.UserInclude
 
 // TODO: Call this when a user deletes their account
-export async function blockUserFromOverlay(twitchUserId: string) {
-	// send POST to spicebot /depot-user-block endpoint
-	console.log('blocking user', twitchUserId)
-	fetch(`${SPICE_BOT_URL}/depot-user-block/`, {
+export async function hideUserFromOverlay(twitchUserId: string) {
+	console.log('hiding user', twitchUserId)
+	fetch(`${SPICE_BOT_URL}/depot-user-hide/`, {
 		body: JSON.stringify({ userId: twitchUserId }),
 		method: 'POST',
 		headers: {
@@ -139,5 +138,5 @@ export async function blockUserFromOverlay(twitchUserId: string) {
 			'Content-Type': 'application/json',
 			Origin: SPICE_BOT_HOSTNAME,
 		},
-	}).catch((e) => console.log('error sending depot-user-block to spice-bot', e))
+	}).catch((e) => console.log('error POSTing depot-user-hide to spice-bot', e))
 }

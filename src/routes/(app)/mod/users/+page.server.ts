@@ -31,7 +31,7 @@ export const load = (async (event) => {
 		},
 		orderBy: { graceTrainCars: { _count: 'desc' } },
 		where: {
-			//trustLevel: { in: ['default', 'flagged'] },
+			//trustLevel: { in: ['default', 'hidden'] },
 		},
 	})
 	return {
