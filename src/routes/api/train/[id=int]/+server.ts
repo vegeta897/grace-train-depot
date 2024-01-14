@@ -2,9 +2,7 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { userIsMod } from '$lib/server/admin'
 import prisma from '$lib/server/prisma'
-import type { ModPageTrain } from '../../../(app)/mod/Train.svelte'
-
-type ModPageTrainCar = ModPageTrain['cars'][number]
+import type { ModPageTrainCar } from '../../../(app)/mod/Train.svelte'
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const session = await locals.auth.validate()
