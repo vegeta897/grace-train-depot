@@ -1,4 +1,5 @@
 <script lang="ts" context="module">
+	import type { $Enums } from '@prisma/client'
 	import { Car } from 'grace-train-lib/components'
 	import type { GraceTrainCar } from 'grace-train-lib/trains'
 
@@ -13,7 +14,10 @@
 				twitchUsername: string
 				twitchDisplayName: string
 				id: string
+				trustLevel: $Enums.TrustLevel
 			} | null
+			car: { shortId: string } | null
+			hidden: boolean
 		}[]
 	}
 	export type ModPageTrainCar = ModPageTrain['cars'][number]
@@ -26,7 +30,7 @@
 
 <ol class="flex overflow-x-scroll rounded-lg bg-base-200 p-2">
 	{#each train.cars as car (car.index)}
-		<li class="">
+		<li class:opacity-50={car.hidden} class:saturate-50={car.hidden}>
 			<a
 				href="?t={train.id}&i={car.index}"
 				class="flex w-[7.5rem] shrink-0 flex-col items-center gap-1 overflow-clip rounded-md px-2 pb-1 pt-3 transition-all"

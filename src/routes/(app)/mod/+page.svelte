@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { getRelativeTime } from '$lib/util'
-	import type { PageData } from './$types'
+	import type { PageData, SubmitFunction } from './$types'
 	import { Car } from 'grace-train-lib/components'
 	import Train, { type ModPageTrain, type ModPageTrainCar } from './Train.svelte'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
+	import Icon from '$lib/components/Icon.svelte'
+	import { enhance } from '$app/forms'
 
 	export let data: PageData
 
@@ -38,6 +40,9 @@
 		)
 		data = data
 	}
+
+	const onHideUser: SubmitFunction = () => () =>
+		goto('/mod', { replaceState: true, invalidateAll: true })
 </script>
 
 <svelte:head>
@@ -86,14 +91,41 @@
 	{#if selectedCar}
 		<div class="flex flex-col items-center gap-4 px-8 py-6">
 			<div class="overflow-clip p-2"><Car car={selectedCar.carData} /></div>
-			<h4 class="text-2xl font-bold">{selectedCar.user?.twitchDisplayName}</h4>
-			<div class="join join-vertical">
-				{#if selectedCar.user}
-					<a class="btn join-item" href="/mod/users/{selectedCar.user.id}">User page</a>
+			<h4 class="flex gap-2 text-2xl font-bold">
+				<Icon icon="twitch" class="w-4" />
+				{selectedCar.user?.twitchDisplayName}
+			</h4>
+			<div class="flex gap-8 text-lg">
+				{#if selectedCar.car}
+					<a class="link" href="/c/{selectedCar.car.shortId}">car page</a>
 				{/if}
-				<button class="btn join-item hover:btn-error">Hide this car</button>
-				<button class="btn join-item hover:btn-error">Hide all user's cars</button>
+				{#if selectedCar.user}
+					<a class="link" href="/mod/users/{selectedCar.user.id}">user page</a>
+				{/if}
 			</div>
+			{#if selectedCar.user && (selectedCar.user.trustLevel === 'default' || (selectedCar.user.trustLevel === 'trusted' && data.admin))}
+				<form
+					method="POST"
+					use:enhance={onHideUser}
+					action="?/hideUser"
+					class="flex flex-col gap-4"
+				>
+					<input name="userId" hidden type="text" value={selectedCar.user?.id} />
+					<button class="btn btn-lg hover:btn-error">🚫 Hide user's cars</button>
+				</form>
+			{:else}
+				<div>
+					<p class="alert alert-info">
+						{#if !selectedCar.user}
+							<span>❔</span> this user no longer exists
+						{:else if selectedCar.user.trustLevel === 'trusted'}
+							<span>🤍</span> this is a trusted user
+						{:else}
+							<span>🚫</span> this user is already {selectedCar.user.trustLevel}
+						{/if}
+					</p>
+				</div>
+			{/if}
 			<button on:click={() => dialog.close()} class="btn">Close</button>
 		</div>
 	{/if}

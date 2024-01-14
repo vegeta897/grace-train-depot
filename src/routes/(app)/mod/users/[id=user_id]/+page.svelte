@@ -32,7 +32,7 @@
 		class="link flex items-center gap-2 self-start"
 		href="https://twitch.tv/{data.pageUser.twitchUsername}"
 	>
-		<div class="w-4"><Icon icon="twitch" /></div>
+		<Icon icon="twitch" class="w-4" />
 		<span class="">visit twitch profile</span>
 	</a>
 	<div class="stats stats-vertical max-w-[42rem] rounded-lg md:stats-horizontal">
@@ -74,9 +74,9 @@
 			use:enhance={onTrustLevel}
 			action="?/trust"
 			method="POST"
-			class="flex basis-[14rem] flex-col gap-4 rounded-lg bg-base-200/70 px-6 py-4"
+			class="flex basis-[13rem] flex-col gap-4 rounded-lg bg-base-200/70 px-6 py-4"
 		>
-			<h3 class="text-lg font-bold">user trust level</h3>
+			<h3 class="text-lg font-bold">user level</h3>
 			<div>
 				{#each trustLevels as level}
 					<label class="label cursor-pointer py-1">
