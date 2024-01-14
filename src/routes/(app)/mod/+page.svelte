@@ -66,7 +66,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
-	class="rounded-box bg-neutral backdrop:bg-black/40 focus:outline-none"
+	class="open:backdrop:animate-fade open:animate-pop rounded-box bg-neutral backdrop:bg-black/40 focus:outline-none"
 	bind:this={dialog}
 	on:close={() => (selectedCar = null)}
 	on:click|self={() => dialog.close()}

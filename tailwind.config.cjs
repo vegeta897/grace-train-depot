@@ -14,6 +14,21 @@ const config = {
 			scale: {
 				200: '2',
 			},
+			animation: {
+				fade: 'fade 150ms ease-out',
+				pop: 'pop 150ms',
+			},
+			keyframes: {
+				fade: {
+					'0%': { opacity: 0 },
+					'100%': { opaicty: 1 },
+				},
+				pop: {
+					'0%': { transform: 'scale(0.95)', transitionTimingFunction: 'ease-out' },
+					'30%': { transform: 'scale(1.02)', transitionTimingFunction: 'ease-in' },
+					'100%': { transform: 'scale(1)' },
+				},
+			},
 		},
 	},
 
