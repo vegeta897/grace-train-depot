@@ -15,9 +15,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Choo Choo Log!</title>
-</svelte:head>
+<svelte:head><title>Choo Choo Log!</title></svelte:head>
 <div class="pl-4 pt-4">
 	<a href="/mod" class="btn">Back to Mod View</a>
 </div>

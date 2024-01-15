@@ -8,9 +8,7 @@
 	import { COLOR_NAMES } from 'grace-train-lib'
 </script>
 
-<svelte:head>
-	<meta name="theme-color" content={COLOR_NAMES.POP.POP} />
-</svelte:head>
+<svelte:head><meta name="theme-color" content={COLOR_NAMES.POP.POP} /></svelte:head>
 <div
 	class="full-height mx-auto flex w-full max-w-5xl flex-col selection:bg-primary selection:text-primary-content sm:p-4"
 >

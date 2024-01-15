@@ -20,9 +20,7 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Choo Choo {data.pageUser.twitchDisplayName}!</title>
-</svelte:head>
+<svelte:head><title>Choo Choo {data.pageUser.twitchDisplayName}!</title></svelte:head>
 <div class="pl-4 pt-4">
 	<a href="/mod" class="btn">Back to Mod View</a>
 </div>

@@ -121,9 +121,7 @@
 	})
 </script>
 
-<svelte:head>
-	<title>Choo Choo {capitalize(currentPage || 'design')}!</title>
-</svelte:head>
+<svelte:head><title>Choo Choo {capitalize(currentPage || 'design')}!</title></svelte:head>
 <header
 	class="navbar min-h-12 flex shrink-0 justify-between bg-base-200 p-2 sm:rounded-box lg:min-h-16 sm:p-3 sm:px-4"
 >

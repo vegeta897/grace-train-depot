@@ -43,9 +43,7 @@
 		goto('/mod', { replaceState: true, invalidateAll: true })
 </script>
 
-<svelte:head>
-	<title>Choo Choo Mod!</title>
-</svelte:head>
+<svelte:head><title>Choo Choo Mod!</title></svelte:head>
 <section class="p-4">
 	<div class="rounded-box flex flex-col gap-4 bg-neutral p-4">
 		<div class="flex justify-between">
