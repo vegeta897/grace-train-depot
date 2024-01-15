@@ -101,7 +101,7 @@
 			/>
 		{/if}
 	</div>
-	<div class="rounded-box flex flex-col gap-4 bg-neutral px-3 py-4 lg:w-1/2">
+	<div class="rounded-box space-y-4 bg-neutral p-2 xs:p-4 lg:w-1/2">
 		<TopperPicker onPick={addTopper} />
 		<ol class="flex h-16 justify-center gap-2">
 			{#each $designCar.toppers as topper}
@@ -157,83 +157,65 @@
 		{/if}
 		{#if selectedTopper}
 			{@const topper = selectedTopper}
-			<div class="mb-2 grid grid-cols-1 gap-x-8 gap-y-2 lg:grid-cols-2">
-				<div class="form-control">
-					<label for="topperPosition" class="label">
-						<span class="label-text text-lg">place</span>
-					</label>
-					<input
-						name="topperPosition"
-						type="range"
-						min={0}
-						max={1}
-						step={1 / 400}
-						value={topper.position}
-						on:input={(e) =>
-							setTopperProp(topper.slot, 'position', e.currentTarget.valueAsNumber)}
-						class="range"
-					/>
-				</div>
-				<div class="form-control">
-					<label for="topperOffset" class="label">
-						<span class="label-text text-lg">offset</span>
-					</label>
-					<input
-						name="topperOffset"
-						type="range"
-						min={-TOPPER_MAX_OFFSET}
-						max={TOPPER_MAX_OFFSET}
-						step="1"
-						value={topper.offset}
-						on:input={(e) =>
-							setTopperProp(topper.slot, 'offset', e.currentTarget.valueAsNumber)}
-						class="range"
-					/>
-				</div>
-				<div class="form-control">
-					<label for="topperRotate" class="label">
-						<span class="label-text text-lg">tilt</span>
-					</label>
-					<input
-						name="topperRotate"
-						type="range"
-						min={-TOPPER_MAX_ROTATE}
-						max={TOPPER_MAX_ROTATE}
-						step="1"
-						value={topper.rotate}
-						on:input={(e) =>
-							setTopperProp(topper.slot, 'rotate', e.currentTarget.valueAsNumber)}
-						class="range range-secondary"
-					/>
-				</div>
-				<div class="form-control">
-					<label for="topperScale" class="label">
-						<span class="label-text text-lg">size</span>
-					</label>
-					<input
-						name="topperScale"
-						type="range"
-						min={TOPPER_MIN_SCALE}
-						max={TOPPER_MAX_SCALE}
-						step="0.01"
-						value={topper.scale}
-						on:input={(e) =>
-							setTopperProp(topper.slot, 'scale', e.currentTarget.valueAsNumber)}
-						class="range range-primary"
-					/>
-				</div>
+			<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
+				<label for="topperPosition" class="text-lg lg:text-xl"> place </label>
+				<input
+					name="topperPosition"
+					type="range"
+					min={0}
+					max={1}
+					step={1 / 400}
+					value={topper.position}
+					on:input={(e) =>
+						setTopperProp(topper.slot, 'position', e.currentTarget.valueAsNumber)}
+					class="range"
+				/>
+				<label for="topperOffset" class="text-lg lg:text-xl"> offset </label>
+				<input
+					name="topperOffset"
+					type="range"
+					min={-TOPPER_MAX_OFFSET}
+					max={TOPPER_MAX_OFFSET}
+					step="1"
+					value={topper.offset}
+					on:input={(e) =>
+						setTopperProp(topper.slot, 'offset', e.currentTarget.valueAsNumber)}
+					class="range"
+				/>
+				<label for="topperRotate" class="text-lg lg:text-xl"> tilt </label>
+				<input
+					name="topperRotate"
+					type="range"
+					min={-TOPPER_MAX_ROTATE}
+					max={TOPPER_MAX_ROTATE}
+					step="1"
+					value={topper.rotate}
+					on:input={(e) =>
+						setTopperProp(topper.slot, 'rotate', e.currentTarget.valueAsNumber)}
+					class="range range-secondary"
+				/>
+				<label for="topperScale" class="text-lg lg:text-xl"> size </label>
+				<input
+					name="topperScale"
+					type="range"
+					min={TOPPER_MIN_SCALE}
+					max={TOPPER_MAX_SCALE}
+					step="0.01"
+					value={topper.scale}
+					on:input={(e) =>
+						setTopperProp(topper.slot, 'scale', e.currentTarget.valueAsNumber)}
+					class="range range-primary"
+				/>
 				{#each topper.colors as color, i}
-					<div class="form-control">
-						<label for="topperColor{i + 1}" class="label">
-							<span class="label-text text-lg">color {i + 1}</span>
-						</label>
-						<ColorSlider
-							id="topperColor{i + 1}"
-							{color}
-							colors={COLORS.POP}
-							onInput={() => {}}
-						/>
-					</div>
+					<label for="topperColor{i + 1}" class="whitespace-nowrap text-lg lg:text-xl">
+						color {i + 1}
+					</label>
+					<ColorSlider
+						id="topperColor{i + 1}"
+						{color}
+						colors={COLORS.POP}
+						onInput={() => {}}
+					/>
 				{/each}
 			</div>
 			<div class="grid gap-4 font-black sm:grid-cols-3">
