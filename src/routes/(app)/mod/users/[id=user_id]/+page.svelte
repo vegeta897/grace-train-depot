@@ -10,7 +10,7 @@
 
 	const trustLevels: (typeof toTrustLevel)[] = ['trusted', 'default', 'hidden', 'banned']
 
-	const onTrustLevel: SubmitFunction = () => {
+	const onSetUserLevel: SubmitFunction = () => {
 		return async ({ result }) => {
 			if (result.type === 'success') {
 				applyAction(result)
@@ -42,9 +42,14 @@
 					>{data.pageUser.createdAtRelative[1]} ago</span
 				>
 			</div>
-			<div class="stat-desc text-sm">
-				{data.pageUser.createdAt.toLocaleDateString()}
-			</div>
+			<time class="stat-desc text-sm" datetime={data.pageUser.createdAt.toISOString()}>
+				<div
+					class="tooltip tooltip-right"
+					data-tip={data.pageUser.createdAt.toLocaleTimeString()}
+				>
+					{data.pageUser.createdAt.toLocaleDateString()}
+				</div>
+			</time>
 		</div>
 		{#if data.pageUser.lastActive && data.pageUser.lastActiveRelative}
 			<div class="stat">
@@ -55,10 +60,14 @@
 						>{data.pageUser.lastActiveRelative[1]} ago</span
 					>
 				</div>
-				<div class="stat-desc text-sm">
-					{data.pageUser.lastActive.toLocaleDateString()}
-					{data.pageUser.lastActive.toLocaleTimeString()}
-				</div>
+				<time class="stat-desc text-sm" datetime={data.pageUser.lastActive.toISOString()}>
+					<div
+						class="tooltip tooltip-right"
+						data-tip={data.pageUser.lastActive.toLocaleTimeString()}
+					>
+						{data.pageUser.lastActive.toLocaleDateString()}
+					</div>
+				</time>
 			</div>
 		{/if}
 		<div class="stat">
@@ -69,7 +78,7 @@
 	</div>
 	<div class="flex flex-wrap items-start gap-4">
 		<form
-			use:enhance={onTrustLevel}
+			use:enhance={onSetUserLevel}
 			action="?/setUserLevel"
 			method="POST"
 			class="flex basis-[13rem] flex-col gap-4 rounded-lg bg-base-200/70 px-6 py-4"
