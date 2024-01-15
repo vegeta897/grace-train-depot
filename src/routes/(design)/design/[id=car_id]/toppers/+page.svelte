@@ -69,12 +69,6 @@
 			return cars
 		})
 	}
-
-	const scaleRange = TOPPER_MAX_SCALE - TOPPER_MIN_SCALE
-	function rescaleTopperForButton(scale: number) {
-		const normalized = (scale - TOPPER_MIN_SCALE) / scaleRange
-		return 0.7 + normalized * 0.3
-	}
 </script>
 
 <section
@@ -82,20 +76,18 @@
 >
 	<div class="sticky top-0 z-10 w-full lg:relative lg:w-1/2">
 		<div
-			class="lg:remove-glass-bg glass-bg rounded-box overflow-clip bg-neutral p-4 lg:p-6"
+			class:aspect-4-3={!showFullCar}
+			class="lg:remove-glass-bg glass-bg rounded-box overflow-clip bg-neutral p-4 lg:aspect-auto lg:p-6"
 		>
 			{#if browser}
 				<DesignCar
 					car={$designCar}
 					bind:hoveredTopper={hoveredSlot}
 					bind:selectedTopper={selectedSlot}
-					viewBox={getCarViewBox($designCar, {
-						top: -100,
-						bottom: showFullCar ? undefined : 150,
-					})}
+					viewBox={getCarViewBox($designCar, { top: -100 })}
 					interactiveToppers
 				/>
-				<div class="absolute bottom-0 left-0 flex w-full justify-center pb-2">
+				<div class="absolute bottom-0 left-0 flex w-full justify-center pb-2 lg:hidden">
 					<button
 						on:click|preventDefault={() => (showFullCar = !showFullCar)}
 						class="glass-bg btn btn-circle h-16 w-16 border-none !bg-opacity-60 p-4 text-3xl text-opacity-50 hover:!bg-opacity-80 hover:text-opacity-100"

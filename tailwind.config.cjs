@@ -29,6 +29,9 @@ const config = {
 					'100%': { transform: 'scale(1)' },
 				},
 			},
+			aspectRatio: {
+				'4-3': '4 / 3',
+			},
 		},
 	},
 
