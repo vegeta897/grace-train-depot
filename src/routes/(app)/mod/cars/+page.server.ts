@@ -6,7 +6,7 @@ import type { $Enums, Prisma } from '@prisma/client'
 import { dev } from '$app/environment'
 
 const EIGHT_HOURS = 8 * 60 * 60 * 1000
-const trainsWhereCarsQuery = { some: { carId: { not: null } } } as const
+const trainsWhereCarsQuery = { some: { car: { isNot: null } } } as const
 const trainsIncludeQuery = {
 	cars: {
 		orderBy: { index: 'desc' },
@@ -14,7 +14,7 @@ const trainsIncludeQuery = {
 			car: { select: { shortId: true } },
 			user: { select: { twitchDisplayName: true, trustLevel: true } },
 		},
-		where: { carId: { not: null } }, // Only include designed cars
+		where: { car: { isNot: null } }, // Only include designed cars
 	},
 } satisfies Prisma.GraceTrainInclude
 

@@ -37,7 +37,7 @@ export const load = (async ({ locals }) => {
 					car: { select: { shortId: true } },
 				},
 				where: {
-					carId: { not: null }, // Only include designed cars
+					car: { isNot: null }, // Only include designed cars
 					user: { isNot: null }, // Don't include deleted users
 				},
 			},
