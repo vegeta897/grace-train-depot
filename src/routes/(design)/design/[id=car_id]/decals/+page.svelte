@@ -83,9 +83,9 @@
 			</div>
 		{/if}
 	</div>
-	<div class="flex w-full flex-grow items-start gap-1 xs:gap-3 lg:w-1/2">
+	<div class="flex w-full grow items-start gap-1 xs:gap-3 lg:w-1/2">
 		{#if $designCar.decals.length > 0}
-			<ul class="flex w-[3.25rem] flex-col-reverse justify-end rounded-lg bg-neutral p-1">
+			<ol class="flex w-[3.25rem] flex-col-reverse justify-end rounded-lg bg-neutral p-1">
 				{#each $designCar.decals as decal (decal.id)}
 					{@const { width: bw, height: bh } = getDecalBoundingBox(decal)}
 					{@const normalize = 80 / Math.max(bw, bh, 100)}
@@ -124,7 +124,7 @@
 						</button>
 					</li>
 				{/each}
-			</ul>
+			</ol>
 		{/if}
 		{#if browser}
 			<div
@@ -135,7 +135,7 @@
 					<Controls slot={$selectedSlot} />
 				{:else}
 					{#if $designCar.decals.length === 0}
-						<h3 class="mb-2 text-center text-2xl font-bold">Pick a decal!</h3>
+						<h3 class="mb-2 text-center text-2xl font-bold">pick a decal!</h3>
 					{/if}
 					<ShapePicker onPick={addDecal} />
 					{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
@@ -143,7 +143,7 @@
 							class="glass-bg rounded-box absolute left-0 top-0 flex h-full w-full flex-col justify-center bg-base-300 p-6 text-center"
 						>
 							<h3 class="mb-2 text-xl font-bold xs:text-2xl">
-								You can't add more than {DECAL_MAX_SLOTS}&nbsp;decals!
+								you can't add more than {DECAL_MAX_SLOTS}&nbsp;decals!
 							</h3>
 							<p class="text-sm italic text-base-content/75 xs:text-base">
 								tell vegeta if this limit should be higher

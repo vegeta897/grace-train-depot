@@ -23,17 +23,15 @@
 
 	previewDecal.set(null)
 
-	$: draggables = $designCar.decals.map((d) => {
-		return {
-			id: d.id,
-			x: d.x,
-			y: d.y,
-			scale: d.scale,
-			rotate: d.rotate,
-			// snapPoints:
-			// 	d.name === 'arc' ? getArcEndpoints({ ...d, ...(d.params as ArcParams) }) : [],
-		}
-	})
+	$: draggables = $designCar.decals.map((d) => ({
+		id: d.id,
+		x: d.x,
+		y: d.y,
+		scale: d.scale,
+		rotate: d.rotate,
+		// snapPoints:
+		// 	d.name === 'arc' ? getArcEndpoints({ ...d, ...(d.params as ArcParams) }) : [],
+	}))
 
 	const canvasTop = -10
 	const canvasBottom = 310
@@ -298,7 +296,7 @@
 			{#if browser}
 				<DesignCar
 					car={$designCar}
-					selectedTopperSlot={$selectedSlot === null ? null : -1}
+					selectedTopper={$selectedSlot === null ? null : -1}
 					transition={['fill', 'stroke', 'opacity']}
 					focusDecalZone={$selectedSlot !== null}
 					cropToCar

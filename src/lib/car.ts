@@ -83,14 +83,17 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 	)
 }
 
-export function getCarViewBox(car: CarData | CarDataWithIds) {
-	if (car.toppers.length === 0) return '0 0 375 300'
+export function getCarViewBox(
+	car: CarData | CarDataWithIds,
+	minBounds: Partial<{ top: number; left: number; right: number; bottom: number }> = {}
+) {
+	let top = minBounds.top ?? 0
+	let left = minBounds.left ?? 0
+	let right = minBounds.right ?? 375
+	let bottom = minBounds.bottom ?? 300
+	if (car.toppers.length === 0) return `${left} ${top} ${right - left} ${bottom - top}`
 	const topLine = body[car.body].topperLine
 	const topLineWidth = topLine[topLine.length - 1][0] - topLine[0][0]
-	let left = 0
-	let right = 375
-	let top = 0
-	let bottom = 300
 	for (const topper of car.toppers) {
 		const { origin, getBoundingBox } = topperDefs[topper.name]
 		const boundingBox = getBoundingBox()

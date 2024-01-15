@@ -1,5 +1,12 @@
 <script lang="ts">
-	export let icon: 'arrow' | 'plus' | 'grid-small' | 'grid-large' | 'twitch'
+	export let icon:
+		| 'arrow'
+		| 'plus'
+		| 'grid-small'
+		| 'grid-large'
+		| 'twitch'
+		| 'downV'
+		| 'upV'
 	let className = ''
 	export { className as class }
 
@@ -17,6 +24,32 @@
 			stroke-linejoin="round"
 			stroke-width="2"
 			d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
+		/>
+	</svg>
+{:else if icon === 'downV'}
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 10 10"
+		class="fill-none stroke-current {className}"
+	>
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M1,4 l4,4 l4,-4"
+		/>
+	</svg>
+{:else if icon === 'upV'}
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 10 10"
+		class="fill-none stroke-current {className}"
+	>
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M1,6 l4,-4 l4,4"
 		/>
 	</svg>
 {:else if icon === 'plus'}

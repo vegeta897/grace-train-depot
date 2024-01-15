@@ -15,16 +15,20 @@
 	import type { CarDataWithIds, TopperDataWithId } from '$lib/server/schemas'
 	import Decals from './Decals.svelte'
 	import BoundingBox from './BoundingBox.svelte'
+	import { clickoutside } from '@svelte-put/clickoutside'
 
 	export let car: CarDataWithIds
 	export let bodyOverride: BodyName | null = null
 	export let toppersOverride: TopperDataWithId[] | null = null
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
-	export let selectedTopperSlot: number | null = null
-	export let hoveredTopperSlot: number | null = null
+	export let selectedTopper: number | null = null
+	export let hoveredTopper: number | null = null
+	export let interactiveToppers = false
 	export let cropToCar = false
 	export let viewBox = '0 0 375 300'
+
+	let svgElement: SVGElement
 
 	$: bodyName = bodyOverride || car.body
 	$: decals = car.decals
@@ -38,34 +42,43 @@
 		class:opacity-40={focusDecalZone}
 		class:saturate-70={focusDecalZone}
 	>
-		<ContainerSvg viewBox={cropToCar ? '0 0 375 300' : viewBox}>
+		<ContainerSvg viewBox={cropToCar ? '0 0 375 300' : viewBox} bind:svgElement>
 			<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
 				<svelte:fragment slot="decals">
 					<Decals {decals} {transition} />
 				</svelte:fragment>
 				<svelte:fragment slot="toppers" let:topLine>
-					{#each toppers as topper (topper.id)}
-						<Topper
-							{topLine}
-							name={topper.name}
-							colors={topper.colors}
-							position={topper.position}
-							offset={topper.offset}
-							scale={topper.scale}
-							rotate={topper.rotate}
-						>
-							{#if topper.slot === selectedTopperSlot || topper.slot === hoveredTopperSlot}
-								{@const { width, height } = topperDefs[topper.name].getBoundingBox()}
-								<BoundingBox
-									padding={5}
-									centered={false}
-									{width}
-									{height}
-									faded={topper.slot !== selectedTopperSlot}
-									scale={topper.scale}
-								/>
-							{/if}
-						</Topper>
+					{#each toppers as { id, slot, name, colors, position, offset, scale, rotate }, t (id)}
+						{@const topperData = { name, colors, position, offset, scale, rotate }}
+						{#if interactiveToppers}
+							<g
+								class="pointer-events-auto select-none outline-none"
+								on:click={() => (selectedTopper = t)}
+								use:clickoutside={{ limit: { parent: svgElement }, event: 'mousedown' }}
+								on:clickoutside={() => (selectedTopper = null)}
+								on:pointerenter={() => (hoveredTopper = t)}
+								on:pointerleave={() => (hoveredTopper = null)}
+								on:keypress
+								role="button"
+								tabindex={t + 1}
+							>
+								<Topper {topLine} {...topperData}>
+									{#if slot === selectedTopper || slot === hoveredTopper}
+										{@const { width, height } = topperDefs[name].getBoundingBox()}
+										<BoundingBox
+											padding={5}
+											centered={false}
+											{width}
+											{height}
+											faded={slot !== selectedTopper}
+											{scale}
+										/>
+									{/if}
+								</Topper>
+							</g>
+						{:else}
+							<Topper {topLine} {...topperData} />
+						{/if}
 					{/each}
 				</svelte:fragment>
 				<Wheels
