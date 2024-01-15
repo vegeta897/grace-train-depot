@@ -3,21 +3,15 @@
 
 	export let data: PageData
 
-	async function loadMoreRecords() {
+	async function getMoreEntries() {
 		const response = await fetch(`/mod/log?before=${data.lastId}`)
 		const moreLogEntries = (await response.json()) as PageData['logEntries']
 		if (moreLogEntries.length === 0) {
 			data.lastId = undefined
 			return
 		}
-		data.logEntries.push(
-			...moreLogEntries.map((entry) => ({
-				...entry,
-				addedAt: new Date(entry.addedAt),
-			}))
-		)
+		data.logEntries.push(...moreLogEntries)
 		data.lastId = data.logEntries.at(-1)!.id
-		// data = data
 	}
 </script>
 
@@ -41,9 +35,10 @@
 			</thead>
 			<tbody>
 				{#each data.logEntries as logEntry}
+					{@const addedAt = new Date(logEntry.addedAt)}
 					<tr>
-						<td>{logEntry.addedAt.toLocaleDateString()}</td>
-						<td>{logEntry.addedAt.toLocaleTimeString()}</td>
+						<td>{addedAt.toLocaleDateString()}</td>
+						<td>{addedAt.toLocaleTimeString()}</td>
 						<td>{logEntry.modUser?.twitchDisplayName}</td>
 						<td>
 							{logEntry.action}
@@ -56,7 +51,7 @@
 		</table>
 		{#if data.lastId}
 			<div>
-				<button class="btn btn-outline" on:click={() => loadMoreRecords()}>
+				<button class="btn btn-outline" on:click={() => getMoreEntries()}>
 					load more
 				</button>
 			</div>
