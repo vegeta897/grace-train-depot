@@ -56,6 +56,7 @@ export const load = (async ({ locals }) => {
 			cars: train.cars.map((car) => ({
 				...car,
 				carData: car.carData as GraceTrainCar,
+				addedAt: car.addedAt.getTime(), // To match api/train/[id] GET data
 				hidden:
 					!car.user ||
 					car.user.trustLevel === 'hidden' ||

@@ -35,9 +35,7 @@
 		const train = data.trains.find((train) => train.id === id)
 		if (!train) return
 		train.ended = refreshData.ended
-		train.cars.unshift(
-			...refreshData.newCars.map((car) => ({ ...car, addedAt: new Date(car.addedAt) }))
-		)
+		train.cars.unshift(...refreshData.newCars)
 		data = data
 	}
 
@@ -67,7 +65,7 @@
 		<h3 class="text-2xl font-black">ended trains</h3>
 		<ol class="space-y-4">
 			{#each data.trains.filter((t) => t.ended) as train}
-				{@const lastCarTimeRelative = getRelativeTime(train.cars[0].addedAt)}
+				{@const lastCarTimeRelative = getRelativeTime(new Date(train.cars[0].addedAt))}
 				<li class="flex flex-col gap-2">
 					<span class="badge badge-lg font-bold" class:badge-primary={!train.ended}>
 						{lastCarTimeRelative[0]}

@@ -1,25 +1,8 @@
 <script lang="ts" context="module">
-	import type { $Enums } from '@prisma/client'
 	import { Car } from 'grace-train-lib/components'
-	import type { GraceTrainCar } from 'grace-train-lib/trains'
+	import type { PageData } from './$types'
 
-	export type ModPageTrain = {
-		id: number
-		ended: boolean
-		cars: {
-			index: number
-			addedAt: Date
-			carData: GraceTrainCar
-			user: {
-				twitchUsername: string
-				twitchDisplayName: string
-				id: string
-				trustLevel: $Enums.TrustLevel
-			} | null
-			car: { shortId: string } | null
-			hidden: boolean
-		}[]
-	}
+	export type ModPageTrain = PageData['trains'][number]
 	export type ModPageTrainCar = ModPageTrain['cars'][number]
 </script>
 
