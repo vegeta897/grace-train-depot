@@ -45,7 +45,7 @@ export const load = (async ({ params, parent }) => {
 const trustLevels: $Enums.TrustLevel[] = ['trusted', 'default', 'hidden', 'banned']
 
 export const actions = {
-	trust: async ({ locals, params, request }) => {
+	setUserLevel: async ({ locals, params, request }) => {
 		const session = await locals.auth.validate()
 		if (!session) redirect(302, `/login?redirectTo=/mod/user/${params.id}`)
 		if (!userIsMod(session.user)) return fail(403)
@@ -61,6 +61,16 @@ export const actions = {
 		})
 		if (trustLevel === 'banned' || trustLevel === 'hidden')
 			hideUserFromOverlay(user.twitchUserId)
+		prisma.auditLog
+			.create({
+				data: {
+					modId: session.user.userId,
+					onUserId: params.id,
+					action: 'changeUserLevel',
+					data: trustLevel,
+				},
+			})
+			.then(/* prisma queries must be awaited */)
 		return { trustLevel }
 	},
 } satisfies Actions

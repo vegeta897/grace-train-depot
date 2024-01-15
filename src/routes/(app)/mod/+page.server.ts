@@ -17,6 +17,7 @@ export const load = (async ({ locals }) => {
 			"you don't belong here, you're not a mod! ... but if you want to be one, ask vegeta!"
 		)
 	const trains = await prisma.graceTrain.findMany({
+		// TODO: Make this a const
 		select: {
 			id: true,
 			ended: true,
@@ -84,6 +85,16 @@ export const actions = {
 				data: { trustLevel: 'hidden' },
 			})
 			hideUserFromOverlay(user.twitchUserId)
+			prisma.auditLog
+				.create({
+					data: {
+						modId: session.user.userId,
+						onUserId: userId,
+						action: 'changeUserLevel',
+						data: 'hidden',
+					},
+				})
+				.then(/* prisma queries must be awaited */)
 			return { trustLevel: user.trustLevel }
 		} catch (e) {
 			return fail(404, { invalidUser: true, notAllowed: false })

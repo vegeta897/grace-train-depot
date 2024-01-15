@@ -10,8 +10,8 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 	if (!userIsMod(session.user)) error(403)
 	const id = Number(params.id)
 	const afterIndex = Number(url.searchParams.get('afterIndex'))
-	console.log(id, afterIndex)
-	if (isNaN(afterIndex)) error(400)
+	// Empty search param results in 0 afterIndex
+	if (!url.searchParams.has('afterIndex') || isNaN(afterIndex)) error(400)
 	const train = await prisma.graceTrain.findUnique({
 		select: { ended: true },
 		where: { id },

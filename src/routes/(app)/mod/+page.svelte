@@ -48,7 +48,10 @@
 </svelte:head>
 <section class="p-4">
 	<div class="rounded-box flex flex-col gap-4 bg-neutral p-4">
-		<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
+		<div class="flex justify-between">
+			<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
+			<a href="/mod/log" class="btn"><span>📄</span>Audit log</a>
+		</div>
 		{#if data.trains[0] && !data.trains[0].ended}
 			{@const train = data.trains[0]}
 			<div class="flex flex-col gap-2">
@@ -109,7 +112,9 @@
 					class="flex flex-col gap-4"
 				>
 					<input name="userId" hidden type="text" value={selectedCar.user?.id} />
-					<button class="btn btn-lg hover:btn-error">🚫 Hide user's cars</button>
+					<button class="btn btn-lg hover:btn-error"
+						><span>🚫</span> Hide user's cars</button
+					>
 				</form>
 			{:else}
 				<div>

@@ -19,6 +19,8 @@ model User {
   trustLevel        TrustLevel      @default(default)
   cars              Car[]
   graceTrainCars    GraceTrainCar[]
+  logEntriesAsMod   AuditLog[]      @relation("LogEntriesAsMod")
+  logEntriesAsUser  AuditLog[]      @relation("LogEntriesAsUser")
 
   @@index([id], type: Hash)
   @@map("auth_user")
@@ -132,4 +134,21 @@ model GraceTrainCarStats {
   graceTrainCount  Int    @default(0)
   totalAppearances Int    @default(0)
   lastGraceTrainId BigInt @default(0)
+}
+
+model AuditLog {
+  id       Int       @id @default(autoincrement())
+  addedAt  DateTime  @default(now())
+  // modUser needs to be nullable in case user is deleted
+  modUser  User?     @relation("LogEntriesAsMod", fields: [modId], references: [id])
+  modId    String
+  onUser   User?     @relation("LogEntriesAsUser", fields: [onUserId], references: [id])
+  onUserId String?
+  action   ModAction
+  data     String?
+}
+
+enum ModAction {
+  changeUserLevel
+  deleteUser
 }

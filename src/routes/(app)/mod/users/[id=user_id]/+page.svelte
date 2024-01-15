@@ -72,7 +72,7 @@
 	<div class="flex flex-wrap items-start gap-4">
 		<form
 			use:enhance={onTrustLevel}
-			action="?/trust"
+			action="?/setUserLevel"
 			method="POST"
 			class="flex basis-[13rem] flex-col gap-4 rounded-lg bg-base-200/70 px-6 py-4"
 		>
