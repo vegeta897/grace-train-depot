@@ -1,6 +1,6 @@
 import prisma from '$lib/server/prisma'
 
-export const AUDIT_LOG_PAGE_SIZE = 30
+export const AUDIT_LOG_PAGE_SIZE = 15
 
 export async function getLogEntries(beforeId?: number) {
 	return (
