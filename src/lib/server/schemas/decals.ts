@@ -6,13 +6,9 @@ import {
 	STRIPES_MAX_NODE_LENGTH,
 	STRIPES_MAX_STRIPE_COUNT,
 } from '$lib/common/constants'
-import { COLORS } from 'grace-train-lib'
 import { decalDefs, type ParamsObject, type DecalName } from 'grace-train-lib/components'
 import { z } from 'zod'
-
-export const listSchema = <T extends any>(list: T[] | Readonly<T[]>) =>
-	z.custom<T>((val) => list.includes(val as T))
-export const popColorSchema = listSchema(COLORS.POP)
+import { createParamsSchema, popColorSchema } from './params'
 
 const decalBaseSchema = z.object({
 	x: z.number().gte(-203).lte(578),
@@ -34,24 +30,7 @@ function createDecalSchema(name: DecalName, params?: z.ZodType<ParamsObject>) {
 			.gte(minScale ?? DECAL_MIN_SCALE)
 			.lte(maxScale ?? DECAL_MAX_SCALE),
 		name: z.literal(name),
-		params:
-			params ||
-			z.object<ParamsObject>(
-				Object.fromEntries(
-					paramConfig.map((param) => {
-						// param
-						let schema: z.ZodType
-						if (param.type === 'toggle') {
-							schema = z.boolean()
-						} else if (param.type === 'scalar') {
-							schema = z.number().min(0).max(1)
-						} else {
-							schema = listSchema(param.list)
-						}
-						return [param.name, schema]
-					})
-				)
-			),
+		params: params || createParamsSchema(paramConfig),
 	})
 }
 

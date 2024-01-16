@@ -7,10 +7,10 @@ import type { DepotTrainAddRequest, GraceTrainCar } from 'grace-train-lib/trains
 import {
 	incrementGraceTrainTotalAppearances,
 	pickUserCar,
-	transformCarFromDBToGraceTrainCar,
 	updateGraceTrainCarStatsForTrain,
 	userCarsIncludeQuery,
 } from '../trains'
+import { transformCarFromDBToDepotCar } from '$lib/server/car'
 
 export const POST = (async ({ request }) => {
 	console.log('/api/train/add POST received!')
@@ -50,7 +50,7 @@ export const POST = (async ({ request }) => {
 			// Update train-specific stats if this is the first appearance in this train
 			await updateGraceTrainCarStatsForTrain([pickedCar.id], trainId)
 		}
-		const pickedCarData = { depotCar: transformCarFromDBToGraceTrainCar(pickedCar) }
+		const pickedCarData = { depotCar: transformCarFromDBToDepotCar(pickedCar) }
 		graceTrainCar = pickedCarData
 		createGraceTrainCar.carData = pickedCarData
 		createGraceTrainCar.carId = pickedCar.id

@@ -9,7 +9,7 @@
 	import { getDesignStores } from '../stores'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS, COLOR_NAMES } from 'grace-train-lib'
-	import type { CarData } from '$lib/server/schemas'
+	import type { CarData } from '$lib/server/schemas/car'
 	import { browser } from '$app/environment'
 	import { getCarViewBox } from '$lib/car'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'

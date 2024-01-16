@@ -8,10 +8,10 @@ import {
 	endAllTrains,
 	incrementGraceTrainTotalAppearances,
 	pickUserCar,
-	transformCarFromDBToGraceTrainCar,
 	updateGraceTrainCarStatsForTrain,
 	userCarsIncludeQuery,
 } from '../trains'
+import { transformCarFromDBToDepotCar } from '$lib/server/car'
 
 export const POST = (async ({ request }) => {
 	console.log('/api/train/start POST received!')
@@ -43,7 +43,7 @@ export const POST = (async ({ request }) => {
 		if (user) {
 			const pickedCar = pickUserCar(user.cars, pickedCars)
 			await incrementGraceTrainTotalAppearances(pickedCar.id)
-			const pickedCarData = { depotCar: transformCarFromDBToGraceTrainCar(pickedCar) }
+			const pickedCarData = { depotCar: transformCarFromDBToDepotCar(pickedCar) }
 			graceTrainCars.push(pickedCarData)
 			pickedCars.push({ carId: pickedCar.id, userId: user.id })
 			pickedCarIds.add(pickedCar.id)

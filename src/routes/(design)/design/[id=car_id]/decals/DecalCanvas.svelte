@@ -8,8 +8,12 @@
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import DesignCar from '$lib/components/DesignCar.svelte'
-	import type { Transform } from '$lib/types'
-	import { getDecalBoundingBox, removeDecal, updateDecalTransform } from './decals'
+	import {
+		getDecalBoundingBox,
+		removeDecal,
+		updateDecalTransform,
+		type Transform,
+	} from './decals'
 	import { getDesignStores, setHint } from '../stores'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'

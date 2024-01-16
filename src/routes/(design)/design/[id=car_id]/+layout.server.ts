@@ -1,9 +1,9 @@
 import { redirect } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
-import { transformCarFromDB } from '$lib/server/car'
+import { transformCarFromDBWithIds } from '$lib/server/car'
 import type { User } from 'lucia'
-import type { CarDataWithIds } from '$lib/server/schemas'
+import type { CarDataWithIds } from '$lib/server/schemas/car'
 
 const carIncludeQuery = { decals: true, toppers: true } as const
 
@@ -21,7 +21,7 @@ export const load = (async ({ params, locals }) => {
 		include: carIncludeQuery,
 	})
 	if (savedCar) {
-		data.savedCar = transformCarFromDB(savedCar)
+		data.savedCar = transformCarFromDBWithIds(savedCar)
 		return data
 	}
 	// Car doesn't belong to logged in user, redirect to car page

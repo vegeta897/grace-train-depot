@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte'
-	import type { CarDataWithIds } from '$lib/server/schemas'
+	import type { CarDataWithIds } from '$lib/server/schemas/car'
 	import { getFadeGradient } from '$lib/util'
 	import { Car } from 'grace-train-lib/components'
 	import { tick } from 'svelte'

@@ -6,17 +6,18 @@
 		type DecalName,
 		PRIDE_FLAGS,
 		ContainerSvg,
+		type ParamsObject,
 	} from 'grace-train-lib/components'
 
 	export type DecalChoice = {
 		name: DecalName
 		fill?: string
-		params?: Record<string, any>
+		params?: ParamsObject
 	}
 	type Tab = {
 		name: DecalName
 		defaultFill?: string
-		defaultParams?: Record<string, any>
+		defaultParams?: ParamsObject
 	}[]
 </script>
 

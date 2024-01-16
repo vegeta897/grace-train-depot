@@ -6,6 +6,7 @@
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 	import { browser } from '$app/environment'
 	import { Car } from 'grace-train-lib/components'
+	import { getCarViewBox } from '$lib/car'
 
 	export let data: PageData
 	export let form: ActionData
@@ -37,7 +38,10 @@
 
 <section class="flex flex-col items-center">
 	<div class="w-64">
-		{#if browser}<Car car={{ depotCar: $designCar }} />{/if}
+		{#if browser}<Car
+				car={{ depotCar: $designCar }}
+				viewBox={getCarViewBox($designCar)}
+			/>{/if}
 	</div>
 	{#if form?.invalid || saveError === 'try-again'}
 		<div class="alert alert-error mt-4 w-auto">

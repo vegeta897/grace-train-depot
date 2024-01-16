@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CarDataWithIds } from '$lib/server/schemas'
+	import type { CarDataWithIds } from '$lib/server/schemas/car'
 	import { getSideFadeGradient } from '$lib/util'
 	import { Car } from 'grace-train-lib/components'
 

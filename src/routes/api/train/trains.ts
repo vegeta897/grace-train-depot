@@ -1,11 +1,8 @@
 import { DEPOT_SECRET, SPICE_BOT_HOSTNAME, SPICE_BOT_URL } from '$env/static/private'
-import type { FullCarData } from '$lib/server/car'
+import type { DBCar } from '$lib/server/car'
 import prisma, { orderBySlot } from '$lib/server/prisma'
-import type { CarData, DecalData, TopperData } from '$lib/server/schemas'
 import { randomElement } from '$lib/util'
 import type { Prisma } from '@prisma/client'
-import { decalDefs, type ParamsObject } from 'grace-train-lib/components'
-import type { DepotCar } from 'grace-train-lib/trains'
 
 type TrainCarData = Prisma.GraceTrainCarGetPayload<{}>
 
@@ -16,48 +13,13 @@ export async function endAllTrains(exceptTrainId?: number) {
 	})
 }
 
-// TODO: Too many versions of this function exist!
-export function transformCarFromDBToGraceTrainCar(car: FullCarData): DepotCar {
-	return {
-		body: car.body as CarData['body'],
-		bodyColor: car.bodyColor || undefined,
-		bodyPopColor: car.bodyPopColor || undefined,
-		wheelColor: car.wheelColor || undefined,
-		wheelFromCenter: car.wheelFromCenter,
-		wheelSize: car.wheelSize,
-		decals: car.decals.map((d) => {
-			const name = d.name as DecalData['name']
-			let params = d.params as ParamsObject
-			if (Object.keys(params).length === 0)
-				params = decalDefs[name].getDefaultParamsObject()
-			return {
-				name,
-				fill: d.fill,
-				x: d.x,
-				y: d.y,
-				scale: d.scale,
-				rotate: d.rotate,
-				params,
-			}
-		}),
-		toppers: car.toppers.map((t) => ({
-			name: t.name as TopperData['name'],
-			colors: t.colors,
-			position: t.position,
-			offset: t.offset,
-			scale: t.scale,
-			rotate: t.rotate,
-		})),
-	}
-}
-
 // Round-robin algorithm randomly picks among the user's cars
 // Prefers cars that appeared least in the current train
 // Also avoids picking the last picked car if possible
 export function pickUserCar(
-	userCars: FullCarData[],
+	userCars: DBCar[],
 	trainCars: Pick<TrainCarData, 'userId' | 'carId'>[]
-): FullCarData {
+): DBCar {
 	if (userCars.length === 1) return userCars[0] // Only one option
 	const userId = userCars[0].userId
 	const timesInTrainMap = new Map(userCars.map((car) => [car.id, 0]))
@@ -70,7 +32,7 @@ export function pickUserCar(
 		if (timesInTrain === undefined) continue
 		timesInTrainMap.set(trainCar.carId, timesInTrain + 1)
 	}
-	const leastPicked: Set<FullCarData> = new Set()
+	const leastPicked: Set<DBCar> = new Set()
 	let leastPickedCount = Infinity
 	// Make a list of cars with the lowest appearance count
 	for (const userCar of userCars) {

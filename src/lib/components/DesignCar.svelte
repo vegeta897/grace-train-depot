@@ -12,7 +12,7 @@
 	} from 'grace-train-lib/components'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import type { CarDataWithIds, TopperDataWithId } from '$lib/server/schemas'
+	import type { CarDataWithIds, TopperDataWithId } from '$lib/server/schemas/car'
 	import Decals from './Decals.svelte'
 	import BoundingBox from './BoundingBox.svelte'
 	import { clickoutside } from '@svelte-put/clickoutside'
@@ -48,8 +48,8 @@
 					<Decals {decals} {transition} />
 				</svelte:fragment>
 				<svelte:fragment slot="toppers" let:topLine>
-					{#each toppers as { id, slot, name, colors, position, offset, scale, rotate }, t (id)}
-						{@const topperData = { name, colors, position, offset, scale, rotate }}
+					{#each toppers as { id, slot, name, params, position, offset, scale, rotate }, t (id)}
+						{@const topperData = { name, params, position, offset, scale, rotate }}
 						{#if interactiveToppers}
 							<g
 								class="pointer-events-auto select-none outline-none"

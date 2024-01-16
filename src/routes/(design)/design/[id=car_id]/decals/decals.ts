@@ -1,5 +1,4 @@
-import type { DecalDataWithId } from '$lib/server/schemas'
-import type { Transform } from '$lib/types'
+import type { DecalDataWithId } from '$lib/server/schemas/car'
 import { decalDefs } from 'grace-train-lib/components'
 import type { DesignStores } from '../stores'
 import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
@@ -45,4 +44,11 @@ export function removeDecal(
 
 export function getDecalBoundingBox(decal: DecalDataWithId) {
 	return decalDefs[decal.name].getBoundingBox(decal.params)
+}
+
+export type Transform = {
+	x: number
+	y: number
+	scale: number
+	rotate: number
 }

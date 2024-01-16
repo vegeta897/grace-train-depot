@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types'
-import { transformCarFromDB } from '$lib/server/car'
+import { transformCarFromDBWithIds } from '$lib/server/car'
 import prisma from '$lib/server/prisma'
 import { fail, redirect, type Actions, error } from '@sveltejs/kit'
 import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
@@ -33,7 +33,7 @@ export const load = (async ({ params, parent }) => {
 		: null
 	return {
 		car: {
-			...transformCarFromDB(carData),
+			...transformCarFromDBWithIds(carData),
 			belongsToUser: carData.userId === parentData.user?.userId,
 			stats,
 			twitchName: carData.user.twitchDisplayName,

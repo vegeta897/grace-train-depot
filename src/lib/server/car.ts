@@ -1,54 +1,86 @@
 import { generateRandomString } from 'lucia/utils'
 import type { Prisma } from '@prisma/client'
 import type { ParamsObject } from 'grace-train-lib/components'
-import { decalDefs } from 'grace-train-lib/components'
-import type { CarDataWithIds, CarData, TopperData, DecalData } from './schemas'
+import { decalDefs, topperDefs } from 'grace-train-lib/components'
+import type { CarDataWithIds, CarData, TopperData, DecalData } from './schemas/car'
+import type { DepotCar } from 'grace-train-lib/trains'
 
-export type FullCarData = Prisma.CarGetPayload<{
-	include: { decals: true; toppers: true }
-}>
+export type DBCar = Prisma.CarGetPayload<{ include: { decals: true; toppers: true } }>
 
-export function transformCarFromDB(carData: FullCarData): CarDataWithIds {
+export function transformCarFromDBWithIds(carData: DBCar): CarDataWithIds {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
 		name: carData.name,
 		published: carData.published,
 		revision: carData.revision,
-		body: carData.body as CarData['body'],
-		bodyColor: (carData.bodyColor || undefined) as CarData['bodyColor'],
-		bodyPopColor: (carData.bodyPopColor || undefined) as CarData['bodyPopColor'],
-		wheelColor: (carData.wheelColor || undefined) as CarData['wheelColor'],
-		wheelFromCenter: carData.wheelFromCenter,
-		wheelSize: carData.wheelSize,
-		toppers: carData.toppers.map((topper, t) => ({
-			name: topper.name as TopperData['name'],
-			id: t, // Used as a unique and persistent way to index {each} directives
-			colors: topper.colors,
-			position: topper.position,
-			slot: topper.slot,
-			offset: topper.offset,
-			scale: topper.scale,
-			rotate: topper.rotate,
+		...transformCarFromDBToDepotCarWithoutDecalsToppers(carData),
+		decals: carData.decals.map((decal, d) => ({
+			...transformDecalFromDB(decal),
+			id: d, // Used as a unique and persistent way to index {each} directives
+			slot: decal.slot,
 		})),
-		decals: carData.decals.map((decal, d) => {
-			const name = decal.name as DecalData['name']
-			let params = decal.params as ParamsObject
-			// Get default params if empty
-			if (Object.keys(params).length === 0)
-				params = decalDefs[name].getDefaultParamsObject()
-			return {
-				name,
-				id: d, // Used as a unique and persistent way to index {each} directives
-				x: decal.x,
-				y: decal.y,
-				rotate: decal.rotate,
-				scale: decal.scale,
-				slot: decal.slot,
-				fill: decal.fill as DecalData['fill'],
-				params,
-			}
-		}),
+		toppers: carData.toppers.map((topper, t) => ({
+			...transformTopperFromDB(topper),
+			id: t,
+			slot: topper.slot,
+		})),
+	}
+}
+
+function transformDecalFromDB(
+	decal: DBCar['decals'][number]
+): DepotCar['decals'][number] {
+	const name = decal.name as DecalData['name']
+	let params = decal.params as ParamsObject
+	// Get default params if empty
+	if (Object.keys(params).length === 0) params = decalDefs[name].getDefaultParamsObject()
+	return {
+		name,
+		x: decal.x,
+		y: decal.y,
+		rotate: decal.rotate,
+		scale: decal.scale,
+		fill: decal.fill as DecalData['fill'],
+		params,
+	}
+}
+
+function transformTopperFromDB(
+	topper: DBCar['toppers'][number]
+): DepotCar['toppers'][number] {
+	const name = topper.name as TopperData['name']
+	let params = topper.params as ParamsObject
+	// Get default params if empty
+	if (Object.keys(params).length === 0) params = topperDefs[name].getDefaultParamsObject()
+	return {
+		name: topper.name as TopperData['name'],
+		position: topper.position,
+		offset: topper.offset,
+		scale: topper.scale,
+		rotate: topper.rotate,
+		params,
+	}
+}
+
+function transformCarFromDBToDepotCarWithoutDecalsToppers(
+	car: DBCar
+): Omit<DepotCar, 'toppers' | 'decals'> {
+	return {
+		body: car.body as CarData['body'],
+		bodyColor: car.bodyColor || (undefined as CarData['bodyColor']),
+		bodyPopColor: car.bodyPopColor || (undefined as CarData['bodyPopColor']),
+		wheelColor: car.wheelColor || (undefined as CarData['wheelColor']),
+		wheelFromCenter: car.wheelFromCenter,
+		wheelSize: car.wheelSize,
+	}
+}
+
+export function transformCarFromDBToDepotCar(car: DBCar): DepotCar {
+	return {
+		...transformCarFromDBToDepotCarWithoutDecalsToppers(car),
+		decals: car.decals.map(transformDecalFromDB),
+		toppers: car.toppers.map(transformTopperFromDB),
 	}
 }
 

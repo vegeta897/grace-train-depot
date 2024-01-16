@@ -1,11 +1,10 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
-import type { DBCar } from '$lib/types'
-import type { CarData, DecalData, TopperData } from '$lib/server/schemas'
+import type { CarData, DecalData, TopperData } from '$lib/server/schemas/car'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/server/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { carSchema } from '$lib/server/schemas'
+import { carSchema } from '$lib/server/schemas/car'
 import sharp from 'sharp'
 import { join } from 'node:path'
 import { PROJECT_PATH } from '$env/static/private'
@@ -43,10 +42,9 @@ export const actions = {
 		// Parsing strips out any extra properties
 		const carData: CarData = parseResult.data
 		// TODO: Check for changes, return early if none detected
-		let updatedCar: DBCar
 		if (carData.shortId === 'new') {
 			carData.shortId = generateCarShortId()
-			updatedCar = await prisma.car.create({
+			await prisma.car.create({
 				data: {
 					shortId: carData.shortId,
 					published: true,
@@ -58,7 +56,7 @@ export const actions = {
 			})
 		} else {
 			try {
-				updatedCar = await prisma.car.update({
+				await prisma.car.update({
 					where: { shortId: carData.shortId, userId: session.user.userId },
 					data: {
 						published: true,
@@ -74,7 +72,6 @@ export const actions = {
 						},
 					},
 				})
-				console.log('updated car', updatedCar)
 			} catch (e) {
 				if (e instanceof PrismaClientKnownRequestError) {
 					if (e.code === 'P2025') {
@@ -139,10 +136,10 @@ function transformTopperToDB(topper: TopperData, slot: number) {
 	return {
 		slot,
 		name: topper.name,
-		colors: topper.colors,
 		position: topper.position,
 		offset: topper.offset,
 		scale: topper.scale,
 		rotate: topper.rotate,
+		params: topper.params,
 	}
 }

@@ -1,5 +1,5 @@
 import { getNewCar } from '$lib/car'
-import type { CarDataWithIds } from '$lib/server/schemas'
+import type { CarDataWithIds } from '$lib/server/schemas/car'
 import { defineContext } from '$lib/util'
 import { persisted } from 'svelte-persisted-store'
 import { derived, get, writable } from 'svelte/store'

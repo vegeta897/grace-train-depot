@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
+	import { decalDefs } from 'grace-train-lib/components'
 	import {
 		DECAL_MAX_SCALE,
 		DECAL_MAX_SLOTS,
@@ -11,10 +11,10 @@
 	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
-	import type { DecalData } from '$lib/server/schemas'
+	import type { DecalData } from '$lib/server/schemas/car'
 	import { cloneDecal } from '$lib/car'
 	import StripesControls from './StripesControls.svelte'
-	import BoundingBox from '$lib/components/BoundingBox.svelte'
+	import ParamControls from '../ParamControls.svelte'
 
 	export let slot: number
 
@@ -169,79 +169,11 @@
 				<option>0</option>
 				<option>90</option>
 			</datalist>
-			{#each paramConfig as param}
-				{#if param.type !== 'listPicker'}
-					<label for={param.name} class="whitespace-nowrap text-lg lg:text-xl"
-						>{param.displayName}</label
-					>
-				{/if}
-				{#if param.type === 'scalar'}
-					<input
-						id={param.name}
-						type="range"
-						min={0}
-						max={1}
-						step="0.01"
-						value={decal.params[param.name]}
-						on:input={(e) => setDecalParam(param.name, e.currentTarget.valueAsNumber)}
-						on:change={() => dirtyCanvas.set(true)}
-						class="range"
-					/>
-				{:else if param.type === 'toggle'}
-					<input
-						checked={decal.params[param.name]}
-						type="checkbox"
-						on:change={(e) => setDecalParam(param.name, e.currentTarget.checked)}
-						class="toggle"
-					/>
-				{:else if 'list' in param}
-					{@const list = param.list}
-					{#if param.type === 'listSlider'}
-						{#if 'color' in param && param.color}
-							<ColorSlider
-								colors={list}
-								color={decal.params[param.name]}
-								onInput={(color) => setDecalParam(param.name, color)}
-							/>
-						{:else}
-							<input
-								id={param.name}
-								type="range"
-								min={0}
-								max={list.length - 1}
-								step="1"
-								value={list.indexOf(decal.params[param.name])}
-								on:input={(e) =>
-									setDecalParam(param.name, list[e.currentTarget.valueAsNumber])}
-								on:change={() => dirtyCanvas.set(true)}
-								class="range"
-							/>
-						{/if}
-					{:else}
-						<div
-							class="col-span-2 grid grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-2 rounded-lg bg-base-100 p-2"
-						>
-							{#each param.list as listItem}
-								{@const params = { ...decal.params, [param.name]: listItem }}
-								{@const boundingBox = decalDef.getBoundingBox(params)}
-								{@const width = boundingBox.width + 20}
-								{@const height = boundingBox.height + 20}
-								<button
-									class="btn btn-ghost btn-sm h-auto w-full p-0"
-									on:click={() => setDecalParam(param.name, listItem)}
-								>
-									<ContainerSvg viewBox="-{width / 2} -{height / 2} {width} {height}">
-										<Decal name={decal.name} fill={decal.fill} {params} />
-										{#if decal.params[param.name] === listItem}
-											<BoundingBox {height} {width} />
-										{/if}
-									</ContainerSvg>
-								</button>
-							{/each}
-						</div>
-					{/if}
-				{/if}
-			{/each}
+			<ParamControls
+				object={{ type: 'decal', data: decal, def: decalDef }}
+				onInput={setDecalParam}
+				onChange={() => dirtyCanvas.set(true)}
+			/>
 		</div>
 		<!-- <div class="col-span-4"> -->
 		<!-- <button

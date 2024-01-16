@@ -1,4 +1,4 @@
-import { transformCarFromDB } from '$lib/server/car'
+import { transformCarFromDBWithIds } from '$lib/server/car'
 import prisma from '$lib/server/prisma'
 import { carsIncludeQuery } from '../api/train/trains'
 import type { PageServerLoad } from './$types'
@@ -15,7 +15,7 @@ export const load = (async ({ parent }) => {
 					include: carsIncludeQuery,
 					orderBy: carsOrderByQuery,
 				})
-			).map(transformCarFromDB),
+			).map(transformCarFromDBWithIds),
 		}
 	}
 }) satisfies PageServerLoad

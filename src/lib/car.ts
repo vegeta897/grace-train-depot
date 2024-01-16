@@ -4,7 +4,7 @@ import type {
 	TopperData,
 	DecalDataWithId,
 	CarData,
-} from '$lib/server/schemas'
+} from '$lib/server/schemas/car'
 import { body, getYposition, topperDefs } from 'grace-train-lib/components'
 import { degToRad } from './util'
 import { COLOR_NAMES } from 'grace-train-lib'
@@ -78,8 +78,7 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 		maybeChanged.slot !== original.slot ||
 		maybeChanged.offset !== original.offset ||
 		maybeChanged.scale !== original.scale ||
-		maybeChanged.rotate !== original.rotate ||
-		maybeChanged.colors.join(',') !== original.colors.join(',')
+		maybeChanged.rotate !== original.rotate
 	)
 }
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
 	import { getDesignStores } from '../stores'
-	import type { TopperDataWithId } from '$lib/server/schemas'
+	import type { TopperDataWithId } from '$lib/server/schemas/car'
 	import {
 		TOPPER_MAX_OFFSET,
 		TOPPER_MAX_ROTATE,
@@ -11,10 +11,10 @@
 	} from '$lib/common/constants'
 	import { browser } from '$app/environment'
 	import TopperPicker, { type TopperChoice } from './TopperPicker.svelte'
-	import ColorSlider from '../ColorSlider.svelte'
-	import { COLORS } from 'grace-train-lib'
 	import { getCarViewBox } from '$lib/car'
 	import Icon from '$lib/components/Icon.svelte'
+	import { topperDefs } from 'grace-train-lib/components'
+	import ParamControls from '../ParamControls.svelte'
 
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
 
@@ -26,7 +26,7 @@
 
 	$: selectedTopper = selectedSlot !== null ? $designCar.toppers[selectedSlot] : null
 
-	function addTopper({ name, colors }: TopperChoice) {
+	function addTopper({ name, params }: TopperChoice) {
 		localCars.update((cars) => {
 			const toppers = cars[$designShortId].toppers
 			const slot = toppers.length
@@ -34,7 +34,10 @@
 				name,
 				id: Date.now(),
 				slot,
-				colors,
+				params: {
+					...topperDefs[name].getDefaultParamsObject(),
+					...params,
+				},
 				position:
 					[0.15, 0.5, 0.85].find((p) =>
 						toppers.every((t) => Math.abs(t.position - p) >= 0.25)
@@ -66,6 +69,13 @@
 	) {
 		localCars.update((cars) => {
 			cars[$designShortId].toppers[slot][prop] = value
+			return cars
+		})
+	}
+
+	function setTopperParam(name: string, value: number | boolean | string) {
+		localCars.update((cars) => {
+			cars[$designShortId].toppers[selectedSlot!].params[name] = value
 			return cars
 		})
 	}
@@ -151,17 +161,10 @@
 							setTopperProp(topper.slot, 'rotate', e.currentTarget.valueAsNumber)}
 						class="range range-secondary"
 					/>
-					{#each topper.colors as color, i}
-						<label for="topperColor{i + 1}" class="whitespace-nowrap text-lg lg:text-xl">
-							color {i + 1}
-						</label>
-						<ColorSlider
-							id="topperColor{i + 1}"
-							{color}
-							colors={COLORS.POP}
-							onInput={() => {}}
-						/>
-					{/each}
+					<ParamControls
+						object={{ type: 'topper', data: topper, def: topperDefs[topper.name] }}
+						onInput={setTopperParam}
+					/>
 				</div>
 				<div class="grid gap-4 font-black sm:grid-cols-3">
 					<button class="btn btn-block text-lg">Style</button>
