@@ -44,8 +44,8 @@
 </script>
 
 <svelte:head><title>Choo Choo Mod!</title></svelte:head>
-<section class="p-4">
-	<div class="rounded-box flex flex-col gap-4 bg-neutral p-4">
+<section class="py-4 xs:px-4">
+	<div class="flex flex-col gap-4 bg-neutral p-4 xs:rounded-box">
 		<div class="flex justify-between">
 			<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
 			<a href="/mod/log" class="btn"><span>📄</span>Audit log</a>

@@ -5,6 +5,7 @@ import { getRelativeTime } from '$lib/util'
 import type { $Enums } from '@prisma/client'
 import { hideUserFromOverlay } from '../../../../api/train/trains'
 import { userIsAdmin, userIsMod } from '$lib/server/admin'
+import { getLogEntries } from '../../log/log'
 
 const pageUserIncludeQuery = {
 	_count: { select: { cars: true } },
@@ -28,6 +29,9 @@ export const load = (async ({ params, parent }) => {
 	const lastActive = pageUser.cars[0]
 		? new Date(Number(pageUser.cars[0].updatedAt))
 		: null
+	const logEntries = await getLogEntries({
+		where: { OR: [{ modId: params.id }, { onUserId: params.id }] },
+	})
 	return {
 		pageUser: {
 			twitchUsername: pageUser.twitchUsername,
@@ -39,6 +43,7 @@ export const load = (async ({ params, parent }) => {
 			lastActive,
 			lastActiveRelative: lastActive ? getRelativeTime(lastActive) : null,
 		},
+		logEntries,
 	}
 }) satisfies PageServerLoad
 

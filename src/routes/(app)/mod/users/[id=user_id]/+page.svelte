@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms'
 	import Icon from '$lib/components/Icon.svelte'
+	import Log from '../../log/Log.svelte'
 	import type { ActionData, PageData, SubmitFunction } from './$types'
 
 	export let data: PageData
@@ -24,15 +25,19 @@
 <div class="pl-4 pt-4">
 	<a href="/mod" class="btn">Back to Mod View</a>
 </div>
-<section class="rounded-box m-4 flex flex-col gap-4 bg-neutral px-6 py-4">
-	<h2 class="text-3xl font-bold">{data.pageUser.twitchDisplayName}</h2>
-	<a
-		class="link flex items-center gap-2 self-start"
-		href="https://twitch.tv/{data.pageUser.twitchUsername}"
-	>
-		<Icon icon="twitch" class="w-4" />
-		<span class="">visit twitch profile</span>
-	</a>
+<section
+	class="my-4 flex flex-col gap-4 bg-neutral px-4 py-4 xs:rounded-box xs:mx-4 xs:px-6"
+>
+	<div class="flex flex-wrap items-baseline gap-6">
+		<h2 class="text-3xl font-bold">{data.pageUser.twitchDisplayName}</h2>
+		<a
+			class="link flex items-center gap-2"
+			href="https://twitch.tv/{data.pageUser.twitchUsername}"
+		>
+			<Icon icon="twitch" class="w-4" />
+			<span class="">visit twitch profile</span>
+		</a>
+	</div>
 	<div class="stats stats-vertical max-w-[42rem] rounded-lg md:stats-horizontal">
 		<div class="stat">
 			<div class="stat-title">started designing</div>
@@ -130,4 +135,8 @@
 			</p>
 		</div>
 	</div>
+	<h3 class="text-2xl font-bold">
+		recent log events for {data.pageUser.twitchDisplayName}
+	</h3>
+	<Log logEntries={data.logEntries} />
 </section>
