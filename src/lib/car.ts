@@ -82,15 +82,14 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 	)
 }
 
-export function getCarViewBox(
+type Bounds = { top: number; left: number; right: number; bottom: number }
+
+export function getCarBounds(
 	car: CarData | CarDataWithIds,
-	minBounds: Partial<{ top: number; left: number; right: number; bottom: number }> = {}
+	minBounds: Partial<Bounds> = {}
 ) {
-	let top = minBounds.top ?? 0
-	let left = minBounds.left ?? 0
-	let right = minBounds.right ?? 375
-	let bottom = minBounds.bottom ?? 300
-	if (car.toppers.length === 0) return `${left} ${top} ${right - left} ${bottom - top}`
+	const bounds = Object.assign({ top: 0, left: 0, right: 375, bottom: 300 }, minBounds)
+	if (car.toppers.length === 0) return bounds
 	const topLine = body[car.body].topperLine
 	const topLineWidth = topLine[topLine.length - 1][0] - topLine[0][0]
 	for (const topper of car.toppers) {
@@ -111,9 +110,19 @@ export function getCarViewBox(
 		const topperRight =
 			x + Math.max(widthCos + origin.y * sin, widthCos + lowerHeight * sin) * topper.scale
 		const topperTop = y - rotatedHeight - topper.offset
-		if (topperTop < top) top = topperTop
-		if (topperLeft < left) left = topperLeft
-		if (topperRight > right) right = topperRight
+		if (topperTop < bounds.top) bounds.top = topperTop
+		if (topperLeft < bounds.left) bounds.left = topperLeft
+		if (topperRight > bounds.right) bounds.right = topperRight
 	}
-	return `${left} ${top} ${right - left} ${bottom - top}`
+	return bounds
 }
+
+export const getCarViewBox = (
+	car: CarData | CarDataWithIds,
+	minBounds?: Partial<Bounds>
+) => boundsToViewbox(getCarBounds(car, minBounds))
+
+export const boundsToViewbox = (bounds: Bounds) =>
+	`${bounds.left} ${bounds.top} ${bounds.right - bounds.left} ${
+		bounds.bottom - bounds.top
+	}`

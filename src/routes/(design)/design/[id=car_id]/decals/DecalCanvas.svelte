@@ -300,7 +300,7 @@
 			{#if browser}
 				<DesignCar
 					car={$designCar}
-					selectedTopper={$selectedSlot === null ? null : -1}
+					fadeToppers={$selectedSlot !== null}
 					transition={['fill', 'stroke', 'opacity']}
 					focusDecalZone={$selectedSlot !== null}
 					cropToCar

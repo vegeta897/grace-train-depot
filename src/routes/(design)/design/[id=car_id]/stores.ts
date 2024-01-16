@@ -11,7 +11,7 @@ const designCar = derived(
 	([$localCars, $designShortId]) =>
 		($localCars[$designShortId] || getNewCar()) as Readonly<CarDataWithIds>
 )
-type Hint = 'dragDecal'
+type Hint = 'dragDecal' | 'dragTopper'
 
 const hints = persisted<Partial<Record<Hint, boolean>>>('choochoo-hints', {})
 
