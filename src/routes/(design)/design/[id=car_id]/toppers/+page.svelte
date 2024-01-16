@@ -103,7 +103,7 @@
 			{@const topper = selectedTopper}
 			<div class="rounded-box grow space-y-4 bg-neutral p-2 xs:p-4">
 				<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
-					<label for="topperPosition" class="text-lg lg:text-xl"> place </label>
+					<label for="topperPosition" class="text-lg lg:text-xl">place</label>
 					<input
 						name="topperPosition"
 						type="range"
@@ -115,7 +115,7 @@
 							setTopperProp(topper.slot, 'position', e.currentTarget.valueAsNumber)}
 						class="range"
 					/>
-					<label for="topperOffset" class="text-lg lg:text-xl"> offset </label>
+					<label for="topperOffset" class="text-lg lg:text-xl">offset</label>
 					<input
 						name="topperOffset"
 						type="range"
@@ -127,19 +127,7 @@
 							setTopperProp(topper.slot, 'offset', e.currentTarget.valueAsNumber)}
 						class="range"
 					/>
-					<label for="topperRotate" class="text-lg lg:text-xl"> tilt </label>
-					<input
-						name="topperRotate"
-						type="range"
-						min={-TOPPER_MAX_ROTATE}
-						max={TOPPER_MAX_ROTATE}
-						step="1"
-						value={topper.rotate}
-						on:input={(e) =>
-							setTopperProp(topper.slot, 'rotate', e.currentTarget.valueAsNumber)}
-						class="range range-secondary"
-					/>
-					<label for="topperScale" class="text-lg lg:text-xl"> size </label>
+					<label for="topperScale" class="text-lg lg:text-xl">size</label>
 					<input
 						name="topperScale"
 						type="range"
@@ -150,6 +138,18 @@
 						on:input={(e) =>
 							setTopperProp(topper.slot, 'scale', e.currentTarget.valueAsNumber)}
 						class="range range-primary"
+					/>
+					<label for="topperRotate" class="text-lg lg:text-xl">tilt</label>
+					<input
+						name="topperRotate"
+						type="range"
+						min={-TOPPER_MAX_ROTATE}
+						max={TOPPER_MAX_ROTATE}
+						step="1"
+						value={topper.rotate}
+						on:input={(e) =>
+							setTopperProp(topper.slot, 'rotate', e.currentTarget.valueAsNumber)}
+						class="range range-secondary"
 					/>
 					{#each topper.colors as color, i}
 						<label for="topperColor{i + 1}" class="whitespace-nowrap text-lg lg:text-xl">
@@ -172,14 +172,26 @@
 					>
 				</div>
 			</div>
-		{:else}
-			<div class="relative grow">
+		{:else if browser}
+			<div
+				class="relative grow"
+				class:min-h-[180px]={$designCar.toppers.length >= TOPPER_MAX_SLOTS}
+			>
 				{#if $designCar.toppers.length === 0}
 					<h3 class="mb-2 text-center text-2xl font-bold">pick a topper!</h3>
 				{/if}
 				<TopperPicker onPick={addTopper} />
 				{#if $designCar.toppers.length >= TOPPER_MAX_SLOTS}
-					you can't add more than {TOPPER_MAX_SLOTS}&nbsp;toppers!
+					<div
+						class="glass-bg rounded-box absolute left-0 top-0 flex h-full w-full flex-col justify-center bg-base-300 p-6 text-center"
+					>
+						<h3 class="mb-2 text-xl font-bold xs:text-2xl">
+							you can't add more than {TOPPER_MAX_SLOTS}&nbsp;toppers!
+						</h3>
+						<p class="text-sm italic text-base-content/75 xs:text-base">
+							tell vegeta if this limit should be higher
+						</p>
+					</div>
 				{/if}
 			</div>
 		{/if}
