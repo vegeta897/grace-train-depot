@@ -12,7 +12,7 @@
 			return
 		}
 		data.logEntries.push(...moreLogEntries)
-		data.lastId = data.logEntries.at(-1)!.id
+		data.lastId = data.logEntries.at(data.logEntries.length - 1)!.id
 	}
 </script>
 
