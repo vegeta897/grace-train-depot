@@ -12,6 +12,7 @@
 
 	let refreshing = false
 	let dialog: HTMLDialogElement
+	let confirmingHide = false
 
 	$: urlTrainId = Number($page.url.searchParams.get('t'))
 	$: urlCarIndex = Number($page.url.searchParams.get('i'))
@@ -39,8 +40,10 @@
 		data = data
 	}
 
-	const onHideUser: SubmitFunction = () => () =>
+	const onHideUser: SubmitFunction = () => () => {
 		goto('/mod', { replaceState: true, invalidateAll: true })
+		confirmingHide = false
+	}
 </script>
 
 <svelte:head><title>Choo Choo Mod!</title></svelte:head>
@@ -84,7 +87,10 @@
 <dialog
 	class="rounded-box bg-neutral shadow-lg shadow-black/40 backdrop:bg-black/40 open:animate-pop open:backdrop:animate-fade focus:outline-none"
 	bind:this={dialog}
-	on:close={() => goto('/mod', { replaceState: true })}
+	on:close={() => {
+		goto('/mod', { replaceState: true })
+		confirmingHide = false
+	}}
 	on:click|self={() => dialog.close()}
 >
 	{#if selectedCar}
@@ -110,9 +116,23 @@
 					class="flex flex-col gap-4"
 				>
 					<input name="userId" hidden type="text" value={selectedCar.user?.id} />
-					<button class="btn btn-lg hover:btn-error"
-						><span>🚫</span> Hide user's cars</button
-					>
+					{#if confirmingHide}
+						<div class="grid grid-cols-2 gap-3">
+							<p class="col-span-2 text-center text-lg font-bold">are you sure?</p>
+							<button type="button" on:click={() => (confirmingHide = false)} class="btn">
+								Cancel
+							</button>
+							<button class="btn hover:btn-error">Do it</button>
+						</div>
+					{:else}
+						<button
+							type="button"
+							on:click={() => (confirmingHide = true)}
+							class="btn btn-lg"
+						>
+							<span>🚫</span> Hide user's cars
+						</button>
+					{/if}
 				</form>
 			{:else}
 				<div>
