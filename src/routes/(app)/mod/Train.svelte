@@ -16,11 +16,13 @@
 		<li class:opacity-50={car.hidden} class:saturate-50={car.hidden}>
 			<a
 				href="?t={train.id}&i={car.index}"
-				class="flex w-[7.5rem] shrink-0 flex-col items-center gap-1 overflow-clip rounded-md px-2 pb-1 pt-3 transition-all"
+				class="group flex w-[7.5rem] shrink-0 flex-col items-center gap-1 overflow-clip rounded-md px-2 pb-1 pt-3 transition-all"
 				class:bg-neutral={car === selectedCar}
 				class:outline={car === selectedCar}
 			>
-				<Car car={car.carData} />
+				<div class="transition-transform group-hover:-translate-y-2">
+					<Car car={car.carData} />
+				</div>
 				<div
 					class="overflow-hidden text-wrap break-words text-center text-sm leading-none text-base-content/90"
 				>
