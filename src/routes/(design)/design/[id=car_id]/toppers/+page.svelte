@@ -96,28 +96,26 @@
 		})
 	}
 
-	let topperDrag: { slot: number; x: number; position: number } | null = null
+	let dragging: { slot: number; x: number; position: number } | null = null
 
 	function onTopperDragStart(slot: number, { clientX: x }: PointerEvent) {
 		selectedSlot = slot
-		topperDrag = { slot, x, position: $designCar.toppers[slot].position }
+		dragging = { slot, x, position: $designCar.toppers[slot].position }
 	}
 	function onPointerMove(e: PointerEvent) {
-		if (!topperDrag) return
+		if (!dragging) return
 		e.preventDefault()
-		const normalizedX = ((e.clientX - topperDrag.x) * carWidthRatio) / topperLineWidth
-		const newPosition = Math.max(0, Math.min(1, topperDrag.position + normalizedX))
-		topperDrag.x = e.clientX
-		topperDrag.position = newPosition
+		const normalizedX = ((e.clientX - dragging.x) * carWidthRatio) / topperLineWidth
+		const newPosition = Math.max(0, Math.min(1, dragging.position + normalizedX))
 		localCars.update((cars) => {
-			cars[$designShortId].toppers[topperDrag!.slot].position = newPosition
+			cars[$designShortId].toppers[dragging!.slot].position = newPosition
 			return cars
 		})
 	}
 	function onPointerUp() {
-		if (!topperDrag) return
+		if (!dragging) return
 		setHint(hints, 'dragTopper', false)
-		topperDrag = null
+		dragging = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
@@ -151,7 +149,7 @@
 								}}
 								on:clickoutside={() => (selectedSlot = null)}
 								on:pointerenter={() => {
-									if (!topperDrag) hoveredSlot = t
+									if (!dragging) hoveredSlot = t
 								}}
 								on:pointerleave={() => (hoveredSlot = null)}
 								on:keypress
