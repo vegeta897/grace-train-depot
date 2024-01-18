@@ -3,9 +3,9 @@ import type { PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import { getRelativeTime } from '$lib/util'
 import type { $Enums } from 'grace-train-lib/prisma'
-import { hideUserFromOverlay } from '../../../../api/train/trains'
 import { userIsAdmin, userIsMod } from '$lib/server/admin'
 import { getLogEntries } from '../../log/log'
+import { hideUserFromOverlay } from '../../mod'
 
 const pageUserIncludeQuery = {
 	_count: { select: { cars: true } },

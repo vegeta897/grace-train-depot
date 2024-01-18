@@ -4,7 +4,7 @@ import { userIsAdmin, userIsMod } from '$lib/server/admin'
 import prisma from '$lib/server/prisma'
 import type { GraceTrainCar } from 'grace-train-lib/data'
 import { dev } from '$app/environment'
-import { hideUserFromOverlay } from '../../api/train/trains'
+import { hideUserFromOverlay } from './mod'
 
 const EIGHT_HOURS = 8 * 60 * 60 * 1000
 

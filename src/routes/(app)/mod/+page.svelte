@@ -27,7 +27,7 @@
 
 	async function refreshTrain(id: number, afterIndex: number) {
 		refreshing = true
-		const response = await fetch(`/api/train/${id}?afterIndex=${afterIndex}`)
+		const response = await fetch(`/mod?id=${id}&afterIndex=${afterIndex}`)
 		const refreshData = (await response.json()) as {
 			ended: boolean
 			newCars: ModPageTrain['cars']

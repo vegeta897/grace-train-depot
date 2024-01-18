@@ -2,13 +2,15 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { userIsMod } from '$lib/server/admin'
 import prisma from '$lib/server/prisma'
-import type { ModPageTrainCar } from '../../../(app)/mod/Train.svelte'
+import type { ModPageTrainCar } from './Train.svelte'
 
-export const GET: RequestHandler = async ({ locals, params, url }) => {
+// TODO: Move this into mod folder
+
+export const GET: RequestHandler = async ({ locals, url }) => {
 	const session = await locals.auth.validate()
 	if (!session) error(401)
 	if (!userIsMod(session.user)) error(403)
-	const id = Number(params.id)
+	const id = Number(url.searchParams.get('id'))
 	const afterIndex = Number(url.searchParams.get('afterIndex'))
 	// Empty search param results in 0 afterIndex
 	if (!url.searchParams.has('afterIndex') || isNaN(afterIndex)) error(400)

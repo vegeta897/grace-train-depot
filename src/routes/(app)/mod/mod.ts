@@ -1,5 +1,4 @@
-import { DEPOT_SECRET, SPICE_BOT_HOSTNAME, SPICE_BOT_URL } from '$env/static/private'
-import type { Prisma } from 'grace-train-lib/prisma'
+import { SPICE_BOT_URL, DEPOT_SECRET, SPICE_BOT_HOSTNAME } from '$env/static/private'
 
 // TODO: Call this when a user deletes their account
 export async function hideUserFromOverlay(twitchUserId: string) {
