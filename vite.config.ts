@@ -6,4 +6,5 @@ export default defineConfig({
 	plugins: [sveltekit(), viteAssetPlugin()],
 	server: { port: 5180 },
 	optimizeDeps: { exclude: ['grace-train-lib'] },
+	ssr: { external: ['grace-train-lib/prisma'] },
 })

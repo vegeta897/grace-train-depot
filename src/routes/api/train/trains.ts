@@ -1,10 +1,12 @@
 import { DEPOT_SECRET, SPICE_BOT_HOSTNAME, SPICE_BOT_URL } from '$env/static/private'
 import type { DBCar } from '$lib/server/car'
-import prisma, { orderBySlot } from '$lib/server/prisma'
+import prisma from '$lib/server/prisma'
 import { randomElement } from '$lib/util'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from 'grace-train-lib/prisma'
 
 type TrainCarData = Prisma.GraceTrainCarGetPayload<{}>
+
+export const orderBySlot = { orderBy: { slot: 'asc' } } as const
 
 export async function endAllTrains(exceptTrainId?: number) {
 	return await prisma.graceTrain.updateMany({

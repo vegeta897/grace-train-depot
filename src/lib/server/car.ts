@@ -1,5 +1,5 @@
 import { generateRandomString } from 'lucia/utils'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from 'grace-train-lib/prisma'
 import type { ParamsObject } from 'grace-train-lib/components'
 import { decalDefs, topperDefs } from 'grace-train-lib/components'
 import type { CarDataWithIds, CarData, TopperData, DecalData } from './schemas/car'

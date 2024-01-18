@@ -21,7 +21,7 @@ const config = {
 			keyframes: {
 				fade: {
 					'0%': { opacity: 0 },
-					'100%': { opaicty: 1 },
+					'100%': { opacity: 1 },
 				},
 				pop: {
 					'0%': { transform: 'scale(0.95)', transitionTimingFunction: 'ease-out' },

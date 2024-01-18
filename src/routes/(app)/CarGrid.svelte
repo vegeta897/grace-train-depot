@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment'
 	import Icon from '$lib/components/Icon.svelte'
 	import type { CarDataWithIds } from '$lib/server/schemas/car'
 	import { getFadeGradient } from '$lib/util'
@@ -93,19 +94,21 @@
 					{/each}
 				</div>
 			</div>
-			<div
-				class="pointer-events-none absolute top-0 h-12 w-full"
-				style:background-image={topGradient}
-				style:opacity={fadeTop}
-			></div>
-			<div
-				class="pointer-events-none absolute bottom-0 w-full"
-				class:h-12={expanded}
-				class:h-20={!expanded && !small}
-				class:h-28={!expanded && small}
-				style:background-image={bottomGradient}
-				style:opacity={(overflow ? 1 : 0) * fadeBottom}
-			></div>
+			{#if browser}
+				<div
+					class="pointer-events-none absolute top-0 h-12 w-full"
+					style:background-image={topGradient}
+					style:opacity={fadeTop}
+				></div>
+				<div
+					class="pointer-events-none absolute bottom-0 w-full"
+					class:h-12={expanded}
+					class:h-20={!expanded && !small}
+					class:h-28={!expanded && small}
+					style:background-image={bottomGradient}
+					style:opacity={(overflow ? 1 : 0) * fadeBottom}
+				></div>
+			{/if}
 		</div>
 		<div
 			class="bottom-0 flex w-full items-center justify-center p-4"

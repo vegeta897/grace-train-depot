@@ -2,7 +2,7 @@ import { DEPOT_SECRET } from '$env/static/private'
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import prisma from '$lib/server/prisma'
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from 'grace-train-lib/prisma'
 import type { DepotTrainStartRequest, GraceTrainCar } from 'grace-train-lib/trains'
 import {
 	endAllTrains,
