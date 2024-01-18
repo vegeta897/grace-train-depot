@@ -6,10 +6,10 @@ import {
 	STRIPES_MAX_NODE_LENGTH,
 	STRIPES_MAX_STRIPE_COUNT,
 } from '$lib/common/constants'
-import { decalDefs, type ParamsObject, type DecalName } from 'grace-train-lib/components'
+import { decalDefs } from 'grace-train-lib/components'
 import { z } from 'zod'
 import { createParamsSchema, popColorSchema } from './common'
-import type { DecalData } from 'grace-train-lib/data'
+import type { DecalData, DecalName, ParamsObject } from 'grace-train-lib/data'
 import { schemaForType } from './common'
 
 const decalBaseSchema = z.object({

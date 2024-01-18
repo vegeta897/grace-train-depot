@@ -1,7 +1,9 @@
 import { COLORS } from 'grace-train-lib'
-import type { ParamDefinition, ParamsObject } from 'grace-train-lib/components'
+import type { ParamDefinition } from 'grace-train-lib/components'
+import type { ParamsObject } from 'grace-train-lib/data'
 import { z } from 'zod'
 
+// https://github.com/colinhacks/zod/issues/372#issuecomment-826380330
 export const schemaForType =
 	<T>() =>
 	<S extends z.ZodType<T, any, any>>(arg: S) =>

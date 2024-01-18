@@ -5,14 +5,10 @@ import {
 	TOPPER_MAX_ROTATE,
 	TOPPER_MAX_SLOTS,
 } from '$lib/common/constants'
-import {
-	topperDefs,
-	type ParamsObject,
-	type TopperName,
-} from 'grace-train-lib/components'
+import { topperDefs } from 'grace-train-lib/components'
 import { z } from 'zod'
 import { createParamsSchema } from './common'
-import type { TopperData } from 'grace-train-lib/data'
+import type { ParamsObject, TopperData, TopperName } from 'grace-train-lib/data'
 import { schemaForType } from './common'
 
 const topperBaseSchema = z.object({
