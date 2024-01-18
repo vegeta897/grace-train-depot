@@ -8,6 +8,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 	if (!userIsMod(session.user)) error(403)
 	const beforeId = Number(url.searchParams.get('before'))
 	if (!url.searchParams.has('before') || isNaN(beforeId)) error(400)
-	const logEntries = await getLogEntries(beforeId)
+	const logEntries = await getLogEntries({ beforeId })
 	return json(logEntries)
 }

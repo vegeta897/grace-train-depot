@@ -1,7 +1,7 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
 	import { getDesignStores, setHint } from '../stores'
-	import type { TopperDataWithId } from '$lib/server/schemas/car'
+	import type { TopperDataWithId } from '$lib/server/schemas/toppers'
 	import {
 		TOPPER_MAX_OFFSET,
 		TOPPER_MAX_ROTATE,
@@ -13,7 +13,7 @@
 	import TopperPicker, { type TopperChoice } from './TopperPicker.svelte'
 	import { boundsToViewbox, getCarBounds } from '$lib/car'
 	import Icon from '$lib/components/Icon.svelte'
-	import { Topper, body, topperDefs } from 'grace-train-lib/components'
+	import { Topper, bodyDefs, topperDefs } from 'grace-train-lib/components'
 	import ParamControls from '../ParamControls.svelte'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'
 	import { clickoutside } from '@svelte-put/clickoutside'
@@ -30,7 +30,7 @@
 	let carSVGwidth: number
 	let clickOutsideCooldown = false
 
-	$: topperLine = body[$designCar.body].topperLine
+	$: topperLine = bodyDefs[$designCar.body].topperLine
 	$: topperLineStartX = topperLine[0][0]
 	$: topperLineEndX = topperLine[topperLine.length - 1][0]
 	$: topperLineWidth = topperLineEndX - topperLineStartX

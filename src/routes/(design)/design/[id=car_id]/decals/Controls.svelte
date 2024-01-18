@@ -11,10 +11,10 @@
 	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
-	import type { DecalData } from '$lib/server/schemas/car'
 	import { cloneDecal } from '$lib/car'
 	import StripesControls from './StripesControls.svelte'
 	import ParamControls from '../ParamControls.svelte'
+	import type { DecalData } from 'grace-train-lib/data'
 
 	export let slot: number
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { DecalData, TopperData } from '$lib/server/schemas/car'
 	import {
 		ContainerSvg,
 		Decal,
@@ -9,6 +8,7 @@
 	} from 'grace-train-lib/components'
 	import ColorSlider from './ColorSlider.svelte'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'
+	import type { DecalData, TopperData } from 'grace-train-lib/data'
 
 	export let object:
 		| { type: 'decal'; data: DecalData; def: DecalDef }

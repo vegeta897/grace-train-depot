@@ -1,8 +1,8 @@
-import type { DecalDataWithId } from '$lib/server/schemas/car'
 import { decalDefs } from 'grace-train-lib/components'
 import type { DesignStores } from '../stores'
 import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 import { degToRad } from '$lib/util'
+import type { DecalData } from 'grace-train-lib/data'
 
 export function updateDecalTransform(
 	cars: DesignStores['localCars'],
@@ -42,7 +42,7 @@ export function removeDecal(
 	})
 }
 
-export function getDecalBoundingBox(decal: DecalDataWithId) {
+export function getDecalBoundingBox(decal: DecalData) {
 	return decalDefs[decal.name].getBoundingBox(decal.params)
 }
 

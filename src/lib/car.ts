@@ -1,13 +1,10 @@
-import type {
-	DecalData,
-	CarDataWithIds,
-	TopperData,
-	DecalDataWithId,
-	CarData,
-} from '$lib/server/schemas/car'
-import { body, getYposition, topperDefs } from 'grace-train-lib/components'
+import type { CarDataWithIds } from '$lib/server/schemas/car'
+import type { DecalDataWithId, DecalDataWithSlot } from './server/schemas/decals'
+import { bodyDefs, getYposition, topperDefs } from 'grace-train-lib/components'
 import { degToRad } from './util'
 import { COLOR_NAMES } from 'grace-train-lib'
+import type { TopperDataWithSlot } from './server/schemas/toppers'
+import type { DepotCar } from 'grace-train-lib/data'
 
 export function cloneCar(car: CarDataWithIds): CarDataWithIds {
 	return {
@@ -59,7 +56,7 @@ export function getCarChangesByPage(
 	}
 }
 
-function decalIsDifferent(original: DecalData, maybeChanged: DecalData) {
+function decalIsDifferent(original: DecalDataWithSlot, maybeChanged: DecalDataWithSlot) {
 	return (
 		maybeChanged.fill !== original.fill ||
 		maybeChanged.name !== original.name ||
@@ -71,7 +68,10 @@ function decalIsDifferent(original: DecalData, maybeChanged: DecalData) {
 	)
 }
 
-function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
+function topperIsDifferent(
+	original: TopperDataWithSlot,
+	maybeChanged: TopperDataWithSlot
+) {
 	return (
 		maybeChanged.name !== original.name ||
 		maybeChanged.position !== original.position ||
@@ -85,12 +85,12 @@ function topperIsDifferent(original: TopperData, maybeChanged: TopperData) {
 type Bounds = { top: number; left: number; right: number; bottom: number }
 
 export function getCarBounds(
-	car: CarData | CarDataWithIds,
+	car: DepotCar | CarDataWithIds,
 	minBounds: Partial<Bounds> = {}
 ) {
 	const bounds = Object.assign({ top: 0, left: 0, right: 375, bottom: 300 }, minBounds)
 	if (car.toppers.length === 0) return bounds
-	const topLine = body[car.body].topperLine
+	const topLine = bodyDefs[car.body].topperLine
 	const topLineWidth = topLine[topLine.length - 1][0] - topLine[0][0]
 	for (const topper of car.toppers) {
 		const { origin, getBoundingBox } = topperDefs[topper.name]
@@ -118,7 +118,7 @@ export function getCarBounds(
 }
 
 export const getCarViewBox = (
-	car: CarData | CarDataWithIds,
+	car: DepotCar | CarDataWithIds,
 	minBounds?: Partial<Bounds>
 ) => boundsToViewbox(getCarBounds(car, minBounds))
 

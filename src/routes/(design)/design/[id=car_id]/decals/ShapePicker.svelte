@@ -1,13 +1,7 @@
 <script lang="ts" context="module">
 	import { COLORS, COLOR_NAMES, colorRun } from 'grace-train-lib'
-	import {
-		Decal,
-		decalDefs,
-		type DecalName,
-		PRIDE_FLAGS,
-		ContainerSvg,
-		type ParamsObject,
-	} from 'grace-train-lib/components'
+	import { Decal, decalDefs, PRIDE_FLAGS, ContainerSvg } from 'grace-train-lib/components'
+	import type { DecalName, ParamsObject } from 'grace-train-lib/data'
 
 	export type DecalChoice = {
 		name: DecalName

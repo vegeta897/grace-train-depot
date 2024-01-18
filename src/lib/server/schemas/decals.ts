@@ -8,7 +8,9 @@ import {
 } from '$lib/common/constants'
 import { decalDefs, type ParamsObject, type DecalName } from 'grace-train-lib/components'
 import { z } from 'zod'
-import { createParamsSchema, popColorSchema } from './params'
+import { createParamsSchema, popColorSchema } from './common'
+import type { DecalData } from 'grace-train-lib/data'
+import { schemaForType } from './common'
 
 const decalBaseSchema = z.object({
 	x: z.number().gte(-203).lte(578),
@@ -74,7 +76,9 @@ const decalSchema = z.discriminatedUnion('name', [
 	createDecalSchema('box'),
 ])
 
-export type DecalData = z.infer<typeof decalSchema>
-export type DecalDataWithId = DecalData & { id: number }
+export type DecalDataWithSlot = DecalData & { slot: number }
+export type DecalDataWithId = DecalDataWithSlot & { id: number }
 
-export const decalsSchema = z.array(decalSchema).max(DECAL_MAX_SLOTS)
+export const decalsSchema = schemaForType<DecalDataWithSlot[]>()(
+	z.array(decalSchema).max(DECAL_MAX_SLOTS)
+)

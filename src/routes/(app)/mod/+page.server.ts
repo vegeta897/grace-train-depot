@@ -2,7 +2,7 @@ import { error, redirect, type Actions, fail } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { userIsAdmin, userIsMod } from '$lib/server/admin'
 import prisma from '$lib/server/prisma'
-import type { GraceTrainCar } from 'grace-train-lib/trains'
+import type { GraceTrainCar } from 'grace-train-lib/data'
 import { dev } from '$app/environment'
 import { hideUserFromOverlay } from '../../api/train/trains'
 

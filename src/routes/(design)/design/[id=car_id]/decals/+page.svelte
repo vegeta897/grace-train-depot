@@ -2,7 +2,7 @@
 	import { ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
 	import { DECAL_MAX_SCALE, DECAL_MAX_SLOTS } from '$lib/common/constants'
 	import Controls from './Controls.svelte'
-	import type { DecalDataWithId } from '$lib/server/schemas/car'
+	import type { DecalDataWithId } from '$lib/server/schemas/decals'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
 	import { getDesignStores, setHint } from '../stores'

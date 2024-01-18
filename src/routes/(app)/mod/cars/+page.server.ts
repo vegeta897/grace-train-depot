@@ -1,7 +1,7 @@
 import { redirect, error } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
-import type { GraceTrainCar } from 'grace-train-lib/trains'
+import type { GraceTrainCar } from 'grace-train-lib/data'
 import type { $Enums, Prisma } from 'grace-train-lib/prisma'
 import { dev } from '$app/environment'
 

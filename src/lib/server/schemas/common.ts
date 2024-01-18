@@ -2,6 +2,11 @@ import { COLORS } from 'grace-train-lib'
 import type { ParamDefinition, ParamsObject } from 'grace-train-lib/components'
 import { z } from 'zod'
 
+export const schemaForType =
+	<T>() =>
+	<S extends z.ZodType<T, any, any>>(arg: S) =>
+		arg
+
 export const listSchema = <T extends any>(list: T[] | Readonly<T[]>) =>
 	z.custom<T>((val) => list.includes(val as T))
 export const popColorSchema = listSchema(COLORS.POP)

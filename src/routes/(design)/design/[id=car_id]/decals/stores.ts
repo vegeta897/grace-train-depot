@@ -1,4 +1,4 @@
-import type { DecalDataWithId } from '$lib/server/schemas/car'
+import type { DecalDataWithId } from '$lib/server/schemas/decals'
 import { defineContext } from '$lib/util'
 import { writable } from 'svelte/store'
 import type { Transform } from './decals'

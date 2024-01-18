@@ -3,16 +3,17 @@
 	import {
 		Body,
 		type Decal,
-		type BodyName,
 		ContainerSvg,
 		Topper,
 		Wheels,
-		body,
+		bodyDefs,
 	} from 'grace-train-lib/components'
 	import type { ComponentProps } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import type { CarDataWithIds, TopperDataWithId } from '$lib/server/schemas/car'
+	import type { CarDataWithIds } from '$lib/server/schemas/car'
 	import Decals from './Decals.svelte'
+	import type { TopperDataWithId } from '$lib/server/schemas/toppers'
+	import type { BodyName } from 'grace-train-lib/data'
 
 	export let car: CarDataWithIds
 	export let bodyOverride: BodyName | null = null
@@ -74,14 +75,14 @@
 			<ContainerSvg>
 				<path
 					fill={car.bodyColor || COLOR_NAMES.BASE.BASE}
-					d={body[bodyName].decalClipPath}
+					d={bodyDefs[bodyName].decalClipPath}
 				/>
 				<g clip-path="url(#designcar-decal-clip)">
 					<Decals decals={car.decals} {transition} />
 				</g>
 				<defs>
 					<clipPath id="designcar-decal-clip">
-						<path d={body[bodyName].decalClipPath} />
+						<path d={bodyDefs[bodyName].decalClipPath} />
 					</clipPath>
 				</defs>
 			</ContainerSvg>

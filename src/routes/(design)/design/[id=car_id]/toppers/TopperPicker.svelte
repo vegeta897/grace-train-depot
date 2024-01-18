@@ -1,18 +1,10 @@
 <script lang="ts" context="module">
-	export type TopperChoice = {
-		name: TopperName
-		params?: ParamsObject
-	}
+	export type TopperChoice = { name: TopperName; params?: ParamsObject }
 </script>
 
 <script lang="ts">
-	import {
-		ContainerSvg,
-		Topper,
-		type ParamsObject,
-		type TopperName,
-		topperDefs,
-	} from 'grace-train-lib/components'
+	import { ContainerSvg, Topper, topperDefs } from 'grace-train-lib/components'
+	import type { ParamsObject, TopperName } from 'grace-train-lib/data'
 
 	export let onPick: (topper: TopperChoice) => void
 

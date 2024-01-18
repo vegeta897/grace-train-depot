@@ -1,18 +1,13 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
-	import {
-		BODY_NAMES,
-		Car,
-		type BodyName,
-		ContainerSvg,
-	} from 'grace-train-lib/components'
+	import { Car, ContainerSvg } from 'grace-train-lib/components'
 	import { getDesignStores } from '../stores'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS, COLOR_NAMES } from 'grace-train-lib'
-	import type { CarData } from '$lib/server/schemas/car'
 	import { browser } from '$app/environment'
 	import { getCarViewBox } from '$lib/car'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'
+	import { BODY_NAMES, type DepotCar, type BodyName } from 'grace-train-lib/data'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
@@ -25,14 +20,14 @@
 
 	function setBodyColor(color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].bodyColor = color as CarData['bodyColor']
+			cars[$designShortId].bodyColor = color as DepotCar['bodyColor']
 			return cars
 		})
 	}
 
 	function setBodyPopColor(color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].bodyPopColor = color as CarData['bodyPopColor']
+			cars[$designShortId].bodyPopColor = color as DepotCar['bodyPopColor']
 			return cars
 		})
 	}

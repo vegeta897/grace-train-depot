@@ -1,16 +1,16 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
-import type { CarData, DecalData, TopperData } from '$lib/server/schemas/car'
 import prisma from '$lib/server/prisma'
 import { generateCarShortId } from '$lib/server/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { carSchema } from '$lib/server/schemas/car'
+import { carSchema, type CarDataForDBWrite } from '$lib/server/schemas/car'
 import sharp from 'sharp'
 import { join } from 'node:path'
 import { PROJECT_PATH } from '$env/static/private'
 import { getCarViewBox } from '$lib/car'
 import { Car } from 'grace-train-lib/components'
 import type { ComponentProps } from 'svelte'
+import type { DecalData, TopperData } from 'grace-train-lib/data'
 
 const assetsPath = join(PROJECT_PATH, './public/assets')
 
@@ -40,7 +40,7 @@ export const actions = {
 			return fail(400, { invalid: true })
 		}
 		// Parsing strips out any extra properties
-		const carData: CarData = parseResult.data
+		const carData: CarDataForDBWrite = parseResult.data
 		// TODO: Check for changes, return early if none detected
 		if (carData.shortId === 'new') {
 			carData.shortId = generateCarShortId()
@@ -107,7 +107,7 @@ export const actions = {
 	},
 } satisfies Actions
 
-function transformCarToDB(car: CarData) {
+function transformCarToDB(car: CarDataForDBWrite) {
 	return {
 		name: car.name,
 		body: car.body,

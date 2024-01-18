@@ -9,15 +9,15 @@
 	} from '$lib/common/constants'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS, COLOR_NAMES } from 'grace-train-lib'
-	import type { CarData } from '$lib/server/schemas/car'
 	import { browser } from '$app/environment'
 	import { getCarViewBox } from '$lib/car'
+	import type { DepotCar } from 'grace-train-lib/data'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
 	function setWheelColor(color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].wheelColor = color as CarData['wheelColor']
+			cars[$designShortId].wheelColor = color as DepotCar['wheelColor']
 			return cars
 		})
 	}
