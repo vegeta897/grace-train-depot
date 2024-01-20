@@ -108,7 +108,8 @@
 		const normalizedX = ((e.clientX - dragging.x) * carWidthRatio) / topperLineWidth
 		const newPosition = Math.max(0, Math.min(1, dragging.position + normalizedX))
 		localCars.update((cars) => {
-			cars[$designShortId].toppers[dragging!.slot].position = newPosition
+			cars[$designShortId].toppers[dragging!.slot].position =
+				Math.round(newPosition * 400) / 400
 			return cars
 		})
 	}
