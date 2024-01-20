@@ -26,7 +26,6 @@
 				saveError = 'try-again'
 			} else {
 				if (result.type !== 'failure') {
-					// TODO: Prevent car from flashing
 					localCars.update((cars) => {
 						delete cars[$designShortId]
 						return cars
