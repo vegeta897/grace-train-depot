@@ -3,8 +3,9 @@
 	import { wrapNumber, draggable, degToRad } from '$lib/util'
 	import { clickoutside } from '@svelte-put/clickoutside'
 	import { fade } from 'svelte/transition'
-	import { Decal } from 'grace-train-lib/components'
+	import { Decal, bodyDefs } from 'grace-train-lib/components'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'
+	import Decals from '$lib/components/Decals.svelte'
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import DesignCar from '$lib/components/DesignCar.svelte'
@@ -18,11 +19,13 @@
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
+	import DashLine from '$lib/components/DashLine.svelte'
+	import { COLOR_NAMES } from 'grace-train-lib'
 
 	export let setTestDot: (x: number, y: number) => void = () => {}
 
 	const { localCars, designShortId, designCar, hints } = getDesignStores()
-	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas, previewDecal } =
+	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas, previewDecal, snapping } =
 		getDecalStores()
 
 	previewDecal.set(null)
@@ -113,7 +116,9 @@
 		setTimeout(() => canvasElement?.classList.add('transition-transform'))
 	})
 
-	let snapping = false
+	let snapLine: false | { x1: number; x2?: number; y1: number; y2?: number } = false
+	const halfWidth = 375 / 2
+
 	$: transforming = !!($dragging || resizing || rotating)
 
 	const onDragStart = (slot: number) => {
@@ -131,6 +136,14 @@
 		const dragY = (offsetY - $dragging.transform.y) / canvasScale
 		let newX = $dragging.transform.x + dragX
 		let newY = $dragging.transform.y + dragY
+		if ($snapping) {
+			// Move this to its own file
+			snapLine = false
+			if (Math.abs(newX - halfWidth) < 5) {
+				snapLine = { x1: halfWidth, y1: 25, y2: 200 }
+				newX = halfWidth
+			}
+		}
 		// if (transform.snapPoints.length > 0) {
 		// 	let bestSnapDistance = Infinity
 		// 	let snapToX = null
@@ -304,7 +317,27 @@
 					transition={['fill', 'stroke', 'opacity']}
 					focusDecalZone={$selectedSlot !== null}
 					cropToCar
-				/>
+				>
+					<path
+						class="delay-75 duration-75"
+						fill={$designCar.bodyColor || COLOR_NAMES.BASE.BASE}
+						d={bodyDefs[$designCar.body].decalClipPath}
+					/>
+					<g clip-path="url(#designcar-decal-clip)">
+						<Decals
+							decals={$designCar.decals}
+							transition={['fill', 'stroke', 'opacity']}
+						/>
+					</g>
+					<defs>
+						<clipPath id="designcar-decal-clip">
+							<path d={bodyDefs[$designCar.body].decalClipPath} />
+						</clipPath>
+					</defs>
+					{#if snapLine && $dragging}
+						<g transition:fade={{ duration: 75 }}> <DashLine {...snapLine} /> </g>
+					{/if}
+				</DesignCar>
 			{/if}
 			<div class="absolute left-0 top-0 w-full touch-none">
 				{#each draggables as transform, d (transform.id)}
@@ -444,9 +477,9 @@
 		{@const slot = $selectedSlot}
 		<button
 			in:fade={{ duration: 150, easing: cubicOut }}
-			on:click|preventDefault={() => (snapping = !snapping)}
+			on:click|preventDefault={() => snapping.set(!$snapping)}
 			class="glass-bg btn btn-circle absolute bottom-2 left-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:left-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
-			class:btn-secondary={snapping}
+			class:btn-secondary={$snapping}
 		>
 			🧲
 		</button>

@@ -1,25 +1,11 @@
 <script lang="ts" context="module">
 	import { degToRad } from '$lib/util'
+	import { calcDashes } from './DashLine.svelte'
 
 	const cornerAngleTrim = 25 // 25 deg trim = 40 deg sweep
 	const cornerCosUnit = 1 - Math.cos(degToRad(cornerAngleTrim))
 	const cornerSinUnit = Math.sin(degToRad(cornerAngleTrim))
 	const idealDashUnit = degToRad(90 - cornerAngleTrim * 2)
-
-	function calcDashes(ideal: number, available: number) {
-		if (available <= 0) return [1, 1]
-		const min = ideal / 2
-		let dashes = 3 // 1 dash surrounded by spaces
-		let best = [available / 3, dashes]
-		while (dashes < Math.ceil(available / min)) {
-			const size = available / dashes
-			if (Math.abs(ideal - size) < Math.abs(ideal - best[0])) {
-				best = [size, dashes]
-			}
-			dashes += 2 // Every dash has a gap of equal size
-		}
-		return best
-	}
 
 	const cornerPathNodes = [
 		[-0.5, -0.5, 1, -1],

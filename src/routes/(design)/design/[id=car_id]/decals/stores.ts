@@ -12,6 +12,7 @@ export const getDecalStores = defineContext({
 	dirtyCanvas: writable(false),
 	previewDecal: writable<DecalDataWithId | null>(null), // TODO: Still used?
 	shapePickerTab: writable(0),
+	snapping: writable(false),
 })
 
 export type DecalStores = ReturnType<typeof getDecalStores>
