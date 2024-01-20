@@ -257,11 +257,11 @@
 			calcRotate: (x: number, y: number) => {
 				let angle = Math.atan2(y - originY, x - originX) * (180 / Math.PI) - 90
 				angle = wrapNumber(angle, -180, 180)
-				if (snapping) {
-					const snapped = snapRotation(angle)
+				if ($snapping) {
+					const snapToAngle = snapRotation(angle)
 					rotating!.snap = false
-					if (snapped !== false) {
-						angle = snapped
+					if (snapToAngle !== false) {
+						angle = snapToAngle
 						rotating!.snap = true
 					}
 				}
@@ -314,12 +314,12 @@
 				<DesignCar
 					car={$designCar}
 					fadeToppers={$selectedSlot !== null}
-					transition={['fill', 'stroke', 'opacity']}
 					focusDecalZone={$selectedSlot !== null}
 					cropToCar
 				>
+					<!-- DesignCar's own decals are redundant -->
+					<g slot="decals" />
 					<path
-						class="delay-75 duration-75"
 						fill={$designCar.bodyColor || COLOR_NAMES.BASE.BASE}
 						d={bodyDefs[$designCar.body].decalClipPath}
 					/>

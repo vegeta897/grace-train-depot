@@ -16,7 +16,6 @@
 	export let car: CarDataWithIds
 	export let bodyOverride: BodyName | null = null
 	export let toppersOverride: TopperDataWithId[] | null = null
-	export let transition: ComponentProps<Decal>['transition'] = 'none'
 	export let focusDecalZone = false
 	export let fadeToppers = false
 	export let cropToCar = false
@@ -39,7 +38,7 @@
 		>
 			<Body name={bodyName} baseColor={car.bodyColor} popColor={car.bodyPopColor}>
 				<svelte:fragment slot="decals">
-					<Decals decals={car.decals} {transition} />
+					<slot name="decals"><Decals decals={car.decals} /></slot>
 				</svelte:fragment>
 				<svelte:fragment slot="toppers" let:topLine>
 					<slot name="toppers" {topLine}>
