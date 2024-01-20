@@ -7,24 +7,26 @@
 	import { browser } from '$app/environment'
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
+	import type { CarDataWithIds } from '$lib/server/schemas/car'
 
 	export let data: PageData
 	export let form: ActionData
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
+	let savedCar: CarDataWithIds
 	let saveError: 'try-again' | null = null
-
-	// TODO: Make car name required, auto-generate one for the user
 
 	const onSave: SubmitFunction = () => {
 		saveError = null
+		savedCar = $designCar
 		return async ({ result }) => {
 			if (result.type === 'error') {
 				console.log(result.error)
 				saveError = 'try-again'
 			} else {
 				if (result.type !== 'failure') {
+					// TODO: Prevent car from flashing
 					localCars.update((cars) => {
 						delete cars[$designShortId]
 						return cars
@@ -39,7 +41,7 @@
 <section class="flex flex-col items-center">
 	<div class="w-64">
 		{#if browser}<Car
-				car={{ depotCar: $designCar }}
+				car={{ depotCar: savedCar || $designCar }}
 				viewBox={getCarViewBox($designCar)}
 			/>{/if}
 	</div>
