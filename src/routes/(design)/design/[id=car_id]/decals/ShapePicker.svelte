@@ -1,6 +1,12 @@
 <script lang="ts" context="module">
 	import { COLORS, COLOR_NAMES, colorRun } from 'grace-train-lib'
-	import { Decal, decalDefs, PRIDE_FLAGS, ContainerSvg } from 'grace-train-lib/components'
+	import {
+		Decal,
+		decalDefs,
+		PRIDE_FLAGS,
+		ContainerSvg,
+		EMOTES,
+	} from 'grace-train-lib/components'
 	import type { DecalName, ParamsObject } from 'grace-train-lib/data'
 
 	export type DecalChoice = {
@@ -74,6 +80,7 @@
 			},
 		],
 		PRIDE_FLAGS.map((flag) => ({ name: 'flag', defaultParams: { flag } }) as DecalChoice),
+		EMOTES.map((emote) => ({ name: 'emote', defaultParams: { emote } }) as DecalChoice),
 		[
 			{
 				name: 'stripes',
@@ -120,7 +127,7 @@
 				class="btn join-item h-14 w-14 px-2 sm:h-16 sm:w-16 sm:px-3"
 				class:btn-neutral={t !== selectedTabIndex}
 				class:btn-active={t === selectedTabIndex}
-				class:btn-primary={t === selectedTabIndex}
+				class:btn-secondary={t === selectedTabIndex}
 			>
 				<ContainerSvg viewBox="-50 -50 100 100">
 					<Decal {name} {fill} {params} />

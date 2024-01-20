@@ -18,7 +18,7 @@ export const actions = {
 	save: async (event) => {
 		console.log('finish save action!')
 	},
-	publish: async ({ locals, params, request }) => {
+	publish: async ({ locals, params, request, fetch }) => {
 		// TODO: Check car for flag decal in combination with certain other decals (like an X)
 		// Check if X is above flag, or just flag the car as needing manual approval anyway
 		// Or always put flags on top?
@@ -91,10 +91,25 @@ export const actions = {
 			car: { depotCar: carData },
 			viewBox: getCarViewBox(carData),
 			width: '250px', // Good size for large image embed without being too large
+			noAnimation: true, // Substitutes gifs for pngs
 		})
 		// Important: Careful what css properties are used in the car SVG
 		// CSS variables are NOT supported
-		const svgString = html.substring(html.indexOf('<svg'), html.indexOf('</svg>') + 6)
+
+		let svgString = html.substring(html.indexOf('<svg'), html.lastIndexOf('</svg>') + 6)
+		svgString = await replaceAsync(
+			svgString,
+			/(?<=<image .*href=")(.*?)(?=")/g,
+			async (url) =>
+				imageCache[url] ??
+				new Promise(async (resolve) => {
+					const res = await fetch(url)
+					const buffer = Buffer.from(await res.arrayBuffer())
+					const dataUri = `data:image/png;base64,${buffer.toString('base64')}`
+					imageCache[url] = dataUri
+					resolve(dataUri)
+				})
+		)
 		try {
 			sharp(Buffer.from(svgString))
 				.png({ compressionLevel: 9 })
@@ -106,6 +121,9 @@ export const actions = {
 		redirect(302, `/c/${carData.shortId}`)
 	},
 } satisfies Actions
+
+// Cache base64 data urls for images
+const imageCache: Record<string, string> = {}
 
 function transformCarToDB(car: CarDataForDBWrite) {
 	return {
@@ -142,4 +160,17 @@ function transformTopperToDB(topper: TopperData, slot: number) {
 		rotate: topper.rotate,
 		params: topper.params,
 	}
+}
+
+// https://stackoverflow.com/a/73891404/2612679
+async function replaceAsync(
+	string: string,
+	regexp: RegExp,
+	replacerFunction: (v: string) => Promise<string> | string
+) {
+	const replacements = await Promise.all(
+		Array.from(string.matchAll(regexp), (match) => replacerFunction(match[1]))
+	)
+	let i = 0
+	return string.replace(regexp, () => replacements[i++])
 }

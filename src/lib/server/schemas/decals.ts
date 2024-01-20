@@ -12,8 +12,10 @@ import { createParamsSchema, popColorSchema } from './common'
 import type { DecalData, DecalName, ParamsObject } from 'grace-train-lib/data'
 import { schemaForType } from './common'
 
+// TODO: User .refine() on non-int numbers to prevent too many decimals
+
 const decalBaseSchema = z.object({
-	x: z.number().gte(-203).lte(578),
+	x: z.number().gte(-203).lte(578), // TODO: Replace these magic numbers
 	y: z.number().gte(-178).lte(403),
 	rotate: z.number().gte(-180).lte(180),
 	fill: popColorSchema,
@@ -74,6 +76,7 @@ const decalSchema = z.discriminatedUnion('name', [
 	),
 	createDecalSchema('flower'),
 	createDecalSchema('box'),
+	createDecalSchema('emote'),
 ])
 
 export type DecalDataWithSlot = DecalData & { slot: number }
