@@ -8,6 +8,7 @@
 		EMOTES,
 	} from 'grace-train-lib/components'
 	import type { DecalName, ParamsObject } from 'grace-train-lib/data'
+	import { getDecalStores } from './stores'
 
 	export type DecalChoice = {
 		name: DecalName
@@ -24,9 +25,8 @@
 <script lang="ts">
 	export let fillOverride: string | undefined = undefined
 	export let onPick: (decalProps: DecalChoice) => void
-	export let startingShape: DecalName | undefined = 'star' // Unnecessary?
 
-	$: selectedTabIndex = tabs.findIndex((tab) => tab.some((d) => d.name === startingShape))
+	const { shapePickerTab } = getDecalStores()
 
 	const tabs: Tab[] = [
 		[
@@ -96,7 +96,7 @@
 
 <div class="rounded-box flex items-start gap-4 bg-base-200 p-2 sm:p-4">
 	<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
-		{#each tabs[selectedTabIndex] as { name, defaultFill, defaultParams }}
+		{#each tabs[$shapePickerTab] as { name, defaultFill, defaultParams }}
 			{@const params = {
 				...decalDefs[name].getDefaultParamsObject(),
 				...defaultParams,
@@ -123,11 +123,11 @@
 				extraThickness: 2,
 			}}
 			<button
-				on:click={() => (selectedTabIndex = t)}
+				on:click={() => shapePickerTab.set(t)}
 				class="btn join-item h-14 w-14 px-2 sm:h-16 sm:w-16 sm:px-3"
-				class:btn-neutral={t !== selectedTabIndex}
-				class:btn-active={t === selectedTabIndex}
-				class:btn-secondary={t === selectedTabIndex}
+				class:btn-neutral={t !== $shapePickerTab}
+				class:btn-active={t === $shapePickerTab}
+				class:btn-secondary={t === $shapePickerTab}
 			>
 				<ContainerSvg viewBox="-50 -50 100 100">
 					<Decal {name} {fill} {params} />

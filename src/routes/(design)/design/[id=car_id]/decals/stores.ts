@@ -10,7 +10,8 @@ export const getDecalStores = defineContext({
 	selectedSlot: writable<number | null>(null),
 	dragging: writable<{ slot: number; transform: Transform } | null>(null),
 	dirtyCanvas: writable(false),
-	previewDecal: writable<DecalDataWithId | null>(null),
+	previewDecal: writable<DecalDataWithId | null>(null), // TODO: Still used?
+	shapePickerTab: writable(0),
 })
 
 export type DecalStores = ReturnType<typeof getDecalStores>
