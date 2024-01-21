@@ -22,6 +22,9 @@
 	// TODO: Embed a visual stripes editor in the decal panel
 	// Keep canvas normal for resizing/rotating/moving etc
 
+	// TODO: Maybe for now just make a bunch of preset stripes
+	// and only allow changing stripe count and colors
+
 	$: nodes = decal.params.nodes as StripesNode[]
 	$: selectedNode = adding || expandNodeTuple(nodes[nodes.length - prevNode])
 	$: if (prevNode > 0) {

@@ -7,7 +7,7 @@
 	export let transition: ComponentProps<Decal>['transition'] = 'none'
 </script>
 
-{#each decals as decal, d (decal.id)}
+{#each decals as decal (decal.id)}
 	<Decal
 		name={decal.name}
 		x={decal.x}

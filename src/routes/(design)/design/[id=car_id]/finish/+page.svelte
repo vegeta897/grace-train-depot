@@ -12,6 +12,16 @@
 	export let data: PageData
 	export let form: ActionData
 
+	// TODO: AMAZING IDEA!!!!!!
+	// Allow users to tag their cars with one or more preset tags
+	// Like "mort", "poggers", "stars", "green" etc
+	// Grace trains can have one of these tags, and will try to pick cars with this tag
+	// Tags have requirements, e.g. "mort" requires at least one "mort" decal
+	// Show car tags on car page
+	// Give user a checklist of tags they've fulfilled, to motivate more designing
+	// Show grace train theme under or above "GRACE TRAIN" block in overlay
+	// For emote themes, maybe treat messages containing the emote as a valid GRACE
+
 	const { designCar, localCars, designShortId } = getDesignStores()
 
 	let savedCar: CarDataWithIds

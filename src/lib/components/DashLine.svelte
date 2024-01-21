@@ -17,22 +17,25 @@
 
 <script lang="ts">
 	export let x1 = 0
-	export let x2 = x1
+	export let x2: number | undefined = undefined
 	export let y1 = 0
-	export let y2 = y1
+	export let y2: number | undefined = undefined
 	export let color = '#fff'
 	export let strokeWidth = 3
-	export let dashSize = 8
+	export let targetDashSize = 8
+	export let dynamicDashSize = false
 
-	$: length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-	$: [dashSize, dashes] = calcDashes(dashSize, length)
+	$: _x2 = x2 ?? x1
+	$: _y2 = y2 ?? y1
+	$: length = Math.sqrt((_x2 - x1) ** 2 + (_y2 - y1) ** 2)
+	$: dashSize = dynamicDashSize ? calcDashes(targetDashSize, length)[0] : targetDashSize
 </script>
 
 <line
 	{x1}
-	{x2}
+	x2={_x2}
 	{y1}
-	{y2}
+	y2={_y2}
 	stroke={color}
 	stroke-width={strokeWidth}
 	stroke-dasharray={dashSize}

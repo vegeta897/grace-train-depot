@@ -21,6 +21,7 @@
 	import { cubicOut } from 'svelte/easing'
 	import DashLine from '$lib/components/DashLine.svelte'
 	import { COLOR_NAMES } from 'grace-train-lib'
+	import { calculateSnapping, type SnapLine } from './snapping'
 
 	export let setTestDot: (x: number, y: number) => void = () => {}
 
@@ -30,15 +31,7 @@
 
 	previewDecal.set(null)
 
-	$: draggables = $designCar.decals.map((d) => ({
-		id: d.id,
-		x: d.x,
-		y: d.y,
-		scale: d.scale,
-		rotate: d.rotate,
-		// snapPoints:
-		// 	d.name === 'arc' ? getArcEndpoints({ ...d, ...(d.params as ArcParams) }) : [],
-	}))
+	$: decals = $designCar.decals
 
 	const canvasTop = -10
 	const canvasBottom = 310
@@ -84,6 +77,7 @@
 	let containerHeight: number
 
 	// This makes my head hurt but it works well enough
+	// TODO: Maybe move it to a function in another file
 	$: panUp = Math.max(0, Math.min(UI_PAD, Math.max(0, canvasTop + UI_PAD - decalTop)))
 	$: panDown = Math.max(
 		0,
@@ -116,14 +110,16 @@
 		setTimeout(() => canvasElement?.classList.add('transition-transform'))
 	})
 
-	let snapLine: false | { x1: number; x2?: number; y1: number; y2?: number } = false
-	const halfWidth = 375 / 2
+	let snapLines: SnapLine[] = []
 
 	$: transforming = !!($dragging || resizing || rotating)
 
 	const onDragStart = (slot: number) => {
-		const transform = { ...draggables[slot] }
-		dragging.set({ slot, transform })
+		dragging.set({
+			startX: decals[slot].x,
+			startY: decals[slot].y,
+			decal: $designCar.decals[slot],
+		})
 		selectedSlot.set(slot)
 		hoveredSlot.set(null)
 		dirtyCanvas.set(true)
@@ -131,18 +127,16 @@
 
 	function onDrag({ offsetX, offsetY }: DragEventData, slot: number) {
 		if (!$dragging) return
-		const transform = draggables[slot]
-		const dragX = (offsetX - $dragging.transform.x) / canvasScale
-		const dragY = (offsetY - $dragging.transform.y) / canvasScale
-		let newX = $dragging.transform.x + dragX
-		let newY = $dragging.transform.y + dragY
+		const transform = decals[slot]
+		const dragX = (offsetX - $dragging.startX) / canvasScale
+		const dragY = (offsetY - $dragging.startY) / canvasScale
+		let newX = $dragging.startX + dragX
+		let newY = $dragging.startY + dragY
 		if ($snapping) {
-			// Move this to its own file
-			snapLine = false
-			if (Math.abs(newX - halfWidth) < 5) {
-				snapLine = { x1: halfWidth, y1: 25, y2: 200 }
-				newX = halfWidth
-			}
+			const snapping = calculateSnapping(decals, $dragging.decal, newX, newY)
+			snapLines = snapping.snapLines
+			newX = snapping.x
+			newY = snapping.y
 		}
 		// if (transform.snapPoints.length > 0) {
 		// 	let bestSnapDistance = Infinity
@@ -184,6 +178,7 @@
 		dirtyCanvas.set(true)
 		dragging.set(null)
 		clickOutsideCooldown = true
+		snapLines.length = 0
 		setHint(hints, 'dragDecal', false)
 		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
@@ -213,7 +208,7 @@
 
 	function startResize(corner: number) {
 		if ($selectedSlot === null) return
-		const transform = draggables[$selectedSlot]
+		const transform = decals[$selectedSlot]
 		const boundingBox = getDecalBoundingBox($designCar.decals[$selectedSlot])
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + transform.x * canvasScale
@@ -245,7 +240,7 @@
 
 	function startRotate() {
 		if ($selectedSlot === null) return
-		const transform = draggables[$selectedSlot]
+		const transform = decals[$selectedSlot]
 		const canvasBox = canvasElement.getBoundingClientRect()
 		const originX = canvasBox.x + transform.x * canvasScale
 		const originY = canvasBox.y + transform.y * canvasScale
@@ -287,6 +282,15 @@
 		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
 	const outline = false // Debug outlines
+
+	let td = false
+	selectedSlot.subscribe((s) => {
+		if (s !== null) {
+			setTimeout(() => (td = true), 200)
+		} else {
+			td = false
+		}
+	})
 </script>
 
 <svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
@@ -317,30 +321,37 @@
 					focusDecalZone={$selectedSlot !== null}
 					cropToCar
 				>
-					<!-- DesignCar's own decals are redundant -->
-					<g slot="decals" />
-					<path
-						fill={$designCar.bodyColor || COLOR_NAMES.BASE.BASE}
-						d={bodyDefs[$designCar.body].decalClipPath}
-					/>
-					<g clip-path="url(#designcar-decal-clip)">
-						<Decals
-							decals={$designCar.decals}
-							transition={['fill', 'stroke', 'opacity']}
+					<g
+						style:opacity={$selectedSlot === null ? 0 : 1}
+						class:transition-opacity={td}
+						class:duration-150={$selectedSlot === null}
+						class:delay-75={$selectedSlot === null}
+					>
+						<path
+							fill={$designCar.bodyColor || COLOR_NAMES.BASE.BASE}
+							d={bodyDefs[$designCar.body].decalClipPath}
 						/>
+						<g clip-path="url(#designcar-decal-clip)">
+							<Decals
+								decals={$designCar.decals}
+								transition={['fill', 'stroke', 'opacity']}
+							/>
+						</g>
 					</g>
 					<defs>
 						<clipPath id="designcar-decal-clip">
 							<path d={bodyDefs[$designCar.body].decalClipPath} />
 						</clipPath>
 					</defs>
-					{#if snapLine && $dragging}
-						<g transition:fade={{ duration: 75 }}> <DashLine {...snapLine} /> </g>
-					{/if}
+					{#each snapLines as { line, color, id } (id)}
+						<g in:fade={{ duration: 75 }} out:fade={{ duration: 150 }}>
+							<DashLine {...line} {color} />
+						</g>
+					{/each}
 				</DesignCar>
 			{/if}
 			<div class="absolute left-0 top-0 w-full touch-none">
-				{#each draggables as transform, d (transform.id)}
+				{#each decals as transform, d (transform.id)}
 					{@const decal = $designCar.decals[d]}
 					{@const params =
 						decal.id === $previewDecal?.id ? $previewDecal.params : decal.params}
@@ -404,7 +415,7 @@
 				{/each}
 			</div>
 			{#if $selectedSlot !== null}
-				{@const transform = draggables[$selectedSlot]}
+				{@const transform = decals[$selectedSlot]}
 				{@const decal = $designCar.decals[$selectedSlot]}
 				{@const boundingBox = getDecalBoundingBox(decal)}
 				{#key decal.id}

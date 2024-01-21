@@ -24,8 +24,9 @@ export function updateDecalTransform(
 		const xComponent = Math.abs(Math.cos(radians))
 		const yComponent = Math.abs(Math.sin(radians))
 		const reach = (xComponent + yComponent) * 40 * decal.scale
-		decal.x = Math.round(Math.max(-reach, Math.min(375 + reach, transform.x)))
-		decal.y = Math.round(Math.max(25 - reach, Math.min(200 + reach, transform.y)))
+		decal.x = Math.round(Math.max(-reach, Math.min(375 + reach, transform.x)) * 10) / 10
+		decal.y =
+			Math.round(Math.max(25 - reach, Math.min(200 + reach, transform.y)) * 10) / 10
 		return c
 	})
 }

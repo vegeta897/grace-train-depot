@@ -8,7 +8,11 @@ import type { Transform } from './decals'
 export const getDecalStores = defineContext({
 	hoveredSlot: writable<number | null>(null),
 	selectedSlot: writable<number | null>(null),
-	dragging: writable<{ slot: number; transform: Transform } | null>(null),
+	dragging: writable<{
+		startX: number
+		startY: number
+		decal: DecalDataWithId
+	} | null>(null),
 	dirtyCanvas: writable(false),
 	previewDecal: writable<DecalDataWithId | null>(null), // TODO: Still used?
 	shapePickerTab: writable(0),
