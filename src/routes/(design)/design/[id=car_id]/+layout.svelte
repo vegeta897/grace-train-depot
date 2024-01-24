@@ -9,6 +9,7 @@
 	import NavTabs from './NavTabs.svelte'
 	import { browser } from '$app/environment'
 	import { onDestroy } from 'svelte'
+	import Tickets from './Tickets.svelte'
 
 	export let data: LayoutData
 
@@ -147,7 +148,7 @@
 		Finish
 	</a>
 </header>
-<div class="mx-auto w-full max-w-2xl gap-x-4 lg:max-w-full">
+<div class="mx-auto w-full max-w-2xl grow gap-x-4 lg:max-w-full">
 	<div class="flex min-w-0 grow flex-col items-center">
 		<div class="mx-2 mt-2 justify-center self-stretch xs:self-center sm:hidden">
 			<NavTabs {currentPage} carShortId={$page.params.id} />
@@ -160,12 +161,17 @@
 			</h2>
 		{/if}
 		<div
-			class="self-stretch p-2 sm:p-0 lg:grow lg:p-4"
+			class="self-stretch p-2 sm:p-0 lg:grow lg:p-4 lg:py-6"
 			style:view-transition-name="design-page-content"
 		>
 			<slot />
 		</div>
 	</div>
+</div>
+<div class=" overflow-y-hidden py-2">
+	{#if browser && currentPage}
+		<Tickets car={$designCar} />
+	{/if}
 </div>
 
 <style>
