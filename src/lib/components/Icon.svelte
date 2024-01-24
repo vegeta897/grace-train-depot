@@ -7,10 +7,12 @@
 		| 'twitch'
 		| 'downV'
 		| 'upV'
+		| 'x'
 	let className = ''
 	export { className as class }
 
 	// TODO: Get this crap organized
+	// TODO: Imported className might not work with tailwind compiler
 </script>
 
 {#if icon === 'arrow'}
@@ -104,15 +106,20 @@
 		<rect x="170" y="55" width="20" height="60" />
 		<rect x="115" y="55" width="20" height="60" />
 	</svg>
-{:else}
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9" class="w-full stroke-current">
+{:else if icon === 'x'}
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 7 7"
+		class="stroke-current {className}"
+	>
 		<path
 			stroke-linecap="round"
 			stroke-linejoin="round"
-			stroke-width="1"
-			d="M2,2 L7,7 M7,2 L2,7"
+			stroke-width="1.5"
+			d="M1,1 L6,6 M6,1 L1,6"
 		/>
 	</svg>
+{:else}
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
