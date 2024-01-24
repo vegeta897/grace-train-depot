@@ -9,6 +9,8 @@
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
 	import { pluralize } from '$lib/util'
+	import { ticketDefs } from '$lib/tickets'
+	import Ticket from '$lib/components/Ticket.svelte'
 
 	export let data: PageData
 
@@ -86,14 +88,19 @@
 	</figure>
 	<div class="card-body gap-4 p-4 xs:px-6 md:p-6 lg:max-w-[50%] lg:p-8 lg:px-8">
 		<h2
-			class="card-title grow flex-wrap content-start items-baseline gap-x-4 gap-y-0 text-3xl font-black lg:text-4xl"
+			class="card-title flex-wrap content-start items-baseline gap-x-4 gap-y-0 text-3xl font-black lg:text-4xl"
 		>
 			{data.car.name}
 			<small class="text-lg font-normal text-base-content/70">
 				by <strong>{data.car.twitchName}</strong>
 			</small>
 		</h2>
-		<div class="stats grid-cols-2">
+		<div class="flex flex-wrap gap-2 px-2">
+			{#each data.car.tickets as ticket}
+				<Ticket {ticket} />
+			{/each}
+		</div>
+		<div class="stats mt-auto grid-cols-2">
 			<div class="stat px-4 xs:px-6">
 				<div class="stat-title">appeared</div>
 				<div class="stat-value text-xl">

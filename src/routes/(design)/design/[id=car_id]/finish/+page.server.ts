@@ -11,6 +11,7 @@ import { getCarViewBox } from '$lib/car'
 import { Car } from 'grace-train-lib/components'
 import type { ComponentProps } from 'svelte'
 import type { DecalData, TopperData } from 'grace-train-lib/data'
+import { getTicketsForCar } from '$lib/tickets'
 
 const assetsPath = join(PROJECT_PATH, './public/assets')
 
@@ -126,6 +127,7 @@ function transformCarToDB(car: CarDataForDBWrite) {
 	return {
 		name: car.name,
 		published: car.published ?? true,
+		tickets: getTicketsForCar(car),
 		body: car.body,
 		bodyColor: car.bodyColor,
 		bodyPopColor: car.bodyPopColor,

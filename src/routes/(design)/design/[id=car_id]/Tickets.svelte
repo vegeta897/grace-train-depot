@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { getTicketsForCar, ticketDefs } from '$lib/tickets'
+	import Ticket from '$lib/components/Ticket.svelte'
+	import { getTicketsForCar } from '$lib/tickets'
 	import type { DepotCar } from 'grace-train-lib/data'
+	import { flip } from 'svelte/animate'
 	import { backOut } from 'svelte/easing'
 	import { fly } from 'svelte/transition'
 
-	// TODO: Make a component that just lists tickets
 	export let car: DepotCar
 
 	let showHint = false
@@ -12,10 +13,10 @@
 	$: carTickets = getTicketsForCar(car)
 </script>
 
-<div in:fly={{ y: 80, duration: 300, easing: backOut }} class="flex flex-col sm:gap-3">
+<div in:fly={{ y: 50, duration: 300, easing: backOut }} class="flex flex-col sm:gap-3">
 	{#if showHint}
 		<div
-			transition:fly={{ y: 32, duration: 200, easing: backOut }}
+			transition:fly={{ y: 50, duration: 200, easing: backOut }}
 			class="alert rounded-none border-none bg-neutral px-2 leading-snug sm:rounded-box sm:px-6 sm:text-lg"
 		>
 			<div class="w-6 text-3xl font-black">?</div>
@@ -40,9 +41,9 @@
 	<div
 		class="flex w-full flex-col gap-1 px-2 py-2 sm:flex-row sm:items-center sm:gap-3 sm:px-4"
 	>
-		<!-- TODO: Create ticket icon -->
 		<div class="flex items-center gap-3">
 			<h3 class="whitespace-nowrap text-xl font-bold text-primary/90">
+				<!-- TODO: Create ticket icon -->
 				🎟️ theme tickets
 			</h3>
 			<button on:click={() => (showHint = !showHint)} class="btn btn-circle btn-sm">
@@ -50,15 +51,8 @@
 			</button>
 		</div>
 		<div class="flex flex-wrap gap-2 p-2">
-			{#each carTickets as ticketName (ticketName)}
-				{@const ticket = ticketDefs[ticketName]}
-				<div
-					class="badge h-8 border-none px-3 text-lg font-bold"
-					style:color={ticket.colors[0]}
-					style:background={ticket.colors[1]}
-				>
-					{ticketName}
-				</div>
+			{#each carTickets as ticket (ticket)}
+				<div animate:flip={{ duration: 200 }}><Ticket {ticket} /></div>
 			{/each}
 			{#if carTickets.length === 0}
 				<div
