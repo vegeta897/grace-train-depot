@@ -41,35 +41,35 @@
 	<div class="p-4 lg:w-1/2 lg:p-6">
 		{#if browser}<DesignCar car={$designCar} viewBox={getCarViewBox($designCar)} />{/if}
 	</div>
-	<div class="rounded-box w-full bg-neutral p-4 lg:w-1/2 lg:p-5">
-		<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
-			<label for="color" class="text-lg lg:text-xl">color</label>
-			<ColorSlider
-				id="color"
-				colors={COLORS.POP}
-				color={$designCar.wheelColor || COLOR_NAMES.POP.POP}
-				onInput={setWheelColor}
-			/>
-			<label for="wheelSize" class="text-lg lg:text-xl">size</label>
-			<input
-				id="wheelSize"
-				type="range"
-				min={WHEEL_SIZE_MIN}
-				max={WHEEL_SIZE_MAX}
-				on:input={(e) => setWheelSize(e.currentTarget.valueAsNumber)}
-				value={$designCar.wheelSize}
-				class="range"
-			/>
-			<label for="wheelDistance" class="text-lg lg:text-xl">wheelbase</label>
-			<input
-				id="wheelDistance"
-				type="range"
-				min={WHEEL_DISTANCE_MIN}
-				max={WHEEL_DISTANCE_MAX}
-				on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
-				value={$designCar.wheelFromCenter}
-				class="range"
-			/>
-		</div>
+	<div
+		class="rounded-box grid w-full grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4 bg-neutral p-4 lg:w-1/2 lg:p-5"
+	>
+		<label for="color" class="text-lg lg:text-xl">color</label>
+		<ColorSlider
+			id="color"
+			colors={COLORS.POP}
+			color={$designCar.wheelColor || COLOR_NAMES.POP.POP}
+			onInput={setWheelColor}
+		/>
+		<label for="wheelSize" class="text-lg lg:text-xl">size</label>
+		<input
+			id="wheelSize"
+			type="range"
+			min={WHEEL_SIZE_MIN}
+			max={WHEEL_SIZE_MAX}
+			on:input={(e) => setWheelSize(e.currentTarget.valueAsNumber)}
+			value={$designCar.wheelSize}
+			class="range"
+		/>
+		<label for="wheelDistance" class="text-lg lg:text-xl">wheelbase</label>
+		<input
+			id="wheelDistance"
+			type="range"
+			min={WHEEL_DISTANCE_MIN}
+			max={WHEEL_DISTANCE_MAX}
+			on:input={(e) => setWheelDistance(e.currentTarget.valueAsNumber)}
+			value={$designCar.wheelFromCenter}
+			class="range"
+		/>
 	</div>
 </section>
