@@ -17,7 +17,7 @@
 	const { localCars, designShortId, designCar, hints } = getDesignStores()
 	const { hoveredSlot, selectedSlot, dirtyCanvas } = getDecalStores()
 
-	// TODO: Allow choosing body color to act as an "eraser" decal
+	// TODO: Allow choosing body color, to act as an "eraser" decal
 
 	// TODO: Add randomize button (here and on other pages)
 	// Changes shape, color, size, rotation, position, and params. Transition it if possible!
@@ -25,6 +25,9 @@
 	// TODO: Add keyboard shortcuts (delete, arrows, etc) see svelte-put shortcuts module
 
 	// TODO: Add a toast to discourage adding too many decals
+
+	// TODO: Avoid updating localCars until end of movement/rotation/scale/change
+	// Likewise on other pages with rapid changes. Test perf!
 
 	hoveredSlot.set(null)
 	selectedSlot.set(null)

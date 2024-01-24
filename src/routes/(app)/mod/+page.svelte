@@ -84,6 +84,7 @@
 </section>
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- TODO: Use daisyUI dialog classes -->
 <dialog
 	class="rounded-box bg-neutral shadow-lg shadow-black/40 backdrop:bg-black/40 open:animate-pop open:backdrop:animate-fade focus:outline-none"
 	bind:this={dialog}
