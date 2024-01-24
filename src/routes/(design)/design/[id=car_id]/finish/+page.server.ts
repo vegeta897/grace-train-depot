@@ -15,10 +15,7 @@ import type { DecalData, TopperData } from 'grace-train-lib/data'
 const assetsPath = join(PROJECT_PATH, './public/assets')
 
 export const actions = {
-	save: async (event) => {
-		console.log('finish save action!')
-	},
-	publish: async ({ locals, params, request, fetch }) => {
+	save: async ({ locals, params, request, fetch }) => {
 		// TODO: Check car for flag decal in combination with certain other decals (like an X)
 		// Check if X is above flag, or just flag the car as needing manual approval anyway
 		// Or always put flags on top?
@@ -29,7 +26,9 @@ export const actions = {
 			const formData = await request.formData()
 			const carDataJSON = formData.get('carData')
 			formCarData = JSON.parse(carDataJSON!.toString())
-			formCarData.name = formData.get('carName')?.toString() || undefined
+			formCarData.name = formData.get('carName')?.toString()
+			if (!formCarData.name) throw 'missing car name'
+			formCarData.published = formData.get('draft') !== 'draft'
 		} catch (e) {
 			return fail(400, { invalid: true })
 		}
@@ -47,7 +46,6 @@ export const actions = {
 			await prisma.car.create({
 				data: {
 					shortId: carData.shortId,
-					published: true,
 					...transformCarToDB(carData),
 					userId: session.user.userId,
 					decals: { create: carData.decals.map(transformDecalToDB) },
@@ -59,7 +57,6 @@ export const actions = {
 				await prisma.car.update({
 					where: { shortId: carData.shortId, userId: session.user.userId },
 					data: {
-						published: true,
 						...transformCarToDB(carData),
 						revision: { increment: 1 },
 						decals: {
@@ -128,6 +125,7 @@ const imageCache: Record<string, string> = {}
 function transformCarToDB(car: CarDataForDBWrite) {
 	return {
 		name: car.name,
+		published: car.published ?? true,
 		body: car.body,
 		bodyColor: car.bodyColor,
 		bodyPopColor: car.bodyPopColor,
