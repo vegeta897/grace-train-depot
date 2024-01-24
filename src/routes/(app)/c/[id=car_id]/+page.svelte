@@ -173,7 +173,7 @@
 							{:else if toStatus === 'active'}
 								<p>active cars can appear in grace trains</p>
 							{:else}
-								<p>draft cars will not appear in grace trains</p>
+								<p>drafts will not appear in grace trains</p>
 							{/if}
 							<div class="flex w-full justify-between">
 								<button type="button" class="btn" on:click={() => (managing = false)}>
