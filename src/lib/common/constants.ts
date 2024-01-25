@@ -18,10 +18,10 @@ export const STRIPES_MAX_NODE_LENGTH = 10
 export const STRIPES_MAX_STRIPE_COUNT = 5
 
 export const TOPPER_MAX_SLOTS = 3
-export const TOPPER_MIN_SCALE = 0.5
+export const TOPPER_MIN_SCALE = 0.75
 export const TOPPER_MAX_SCALE = 1.2
-export const TOPPER_MAX_ROTATE = 45
-export const TOPPER_MAX_OFFSET = 20
+export const TOPPER_MAX_ROTATE = 10
+export const TOPPER_MAX_OFFSET = 8
 
 export const WHEEL_DISTANCE_MIN = 80
 export const WHEEL_DISTANCE_MAX = 115

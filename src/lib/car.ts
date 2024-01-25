@@ -1,6 +1,6 @@
 import type { CarDataWithIds } from '$lib/server/schemas/car'
 import type { DecalDataWithId, DecalDataWithSlot } from './server/schemas/decals'
-import { bodyDefs, getYposition, topperDefs } from 'grace-train-lib/components'
+import { bodyDefs, topperDefs, getTopperBaseTransform } from 'grace-train-lib/components'
 import { degToRad } from './util'
 import { COLOR_NAMES } from 'grace-train-lib'
 import type { TopperDataWithSlot } from './server/schemas/toppers'
@@ -91,19 +91,22 @@ export function getCarBounds(
 	const bounds = Object.assign({ top: 0, left: 0, right: 375, bottom: 300 }, minBounds)
 	if (car.toppers.length === 0) return bounds
 	const topLine = bodyDefs[car.body].topperLine
-	const topLineWidth = topLine[topLine.length - 1][0] - topLine[0][0]
 	for (const topper of car.toppers) {
-		const { origin, getBoundingBox } = topperDefs[topper.name]
-		const boundingBox = getBoundingBox()
-		const x = topLine[0][0] + topLineWidth * topper.position
-		const y = getYposition(x, topLine)
-		const radians = degToRad(topper.rotate)
+		const topperDef = topperDefs[topper.name]
+		const { origin, getBoundingBox } = topperDef
+		const { x, y, rotate } = getTopperBaseTransform(
+			topper.position,
+			topper.scale,
+			topperDef,
+			topLine
+		)
+		const radians = degToRad(rotate + topper.rotate)
 		const cos = Math.cos(radians)
 		const sin = Math.sin(radians)
 		const rotatedHeight =
 			(Math.abs(origin.x * sin) + Math.abs(origin.y * cos)) * topper.scale
 		const widthCos = origin.x * cos
-		const lowerHeight = origin.y - boundingBox.height
+		const lowerHeight = origin.y - getBoundingBox().height
 		const topperLeft =
 			x +
 			Math.min(-widthCos + origin.y * sin, -widthCos + lowerHeight * sin) * topper.scale

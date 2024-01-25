@@ -13,7 +13,12 @@
 	import TopperPicker, { type TopperChoice } from './TopperPicker.svelte'
 	import { boundsToViewbox, getCarBounds } from '$lib/car'
 	import Icon from '$lib/components/Icon.svelte'
-	import { Topper, bodyDefs, topperDefs } from 'grace-train-lib/components'
+	import {
+		Topper,
+		bodyDefs,
+		topperDefs,
+		type TopperDef,
+	} from 'grace-train-lib/components'
 	import ParamControls from '../ParamControls.svelte'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'
 	import { clickoutside } from '@svelte-put/clickoutside'
@@ -30,11 +35,8 @@
 	let carSVGwidth: number
 	let clickOutsideCooldown = false
 
-	$: topperLine = bodyDefs[$designCar.body].topperLine
-	$: topperLineStartX = topperLine[0][0]
-	$: topperLineEndX = topperLine[topperLine.length - 1][0]
-	$: topperLineWidth = topperLineEndX - topperLineStartX
-	$: carBounds = getCarBounds($designCar, { left: -10, right: 385, top: -100 })
+	$: topperLineWidth = bodyDefs[$designCar.body].topperLine.width
+	$: carBounds = getCarBounds($designCar, { left: -40, right: 415, top: -120 })
 	$: carWidthRatio = (carBounds.right - carBounds.left) / carSVGwidth
 
 	$: selectedTopper = selectedSlot !== null ? $designCar.toppers[selectedSlot] : null
@@ -96,16 +98,31 @@
 		})
 	}
 
-	let dragging: { slot: number; x: number; position: number } | null = null
+	let dragging: {
+		slot: number
+		x: number
+		position: number
+		scale: number
+		def: TopperDef
+	} | null = null
 
 	function onTopperDragStart(slot: number, { clientX: x }: PointerEvent) {
 		selectedSlot = slot
-		dragging = { slot, x, position: $designCar.toppers[slot].position }
+		const topper = $designCar.toppers[slot]
+		dragging = {
+			slot,
+			x,
+			position: topper.position,
+			scale: topper.scale,
+			def: topperDefs[topper.name],
+		}
 	}
 	function onPointerMove(e: PointerEvent) {
 		if (!dragging) return
 		e.preventDefault()
-		const normalizedX = ((e.clientX - dragging.x) * carWidthRatio) / topperLineWidth
+		const normalizedX =
+			((e.clientX - dragging.x) * carWidthRatio) /
+			(topperLineWidth - dragging.def.pivots.width * dragging.scale)
 		const newPosition = Math.max(0, Math.min(1, dragging.position + normalizedX))
 		localCars.update((cars) => {
 			cars[$designShortId].toppers[dragging!.slot].position =
@@ -204,7 +221,7 @@
 	<div class="flex w-full items-start gap-1 xs:gap-3 lg:w-1/2">
 		{#if selectedTopper}
 			{@const topper = selectedTopper}
-			<div class="rounded-box grow space-y-4 bg-neutral p-2 xs:p-4">
+			<div class="rounded-box grow space-y-4 bg-neutral p-2 xs:p-6">
 				<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
 					<label for="topperPosition" class="text-lg lg:text-xl">place</label>
 					<input
@@ -248,7 +265,7 @@
 						type="range"
 						min={-TOPPER_MAX_ROTATE}
 						max={TOPPER_MAX_ROTATE}
-						step="1"
+						step="0.1"
 						value={topper.rotate}
 						on:input={(e) =>
 							setTopperProp(topper.slot, 'rotate', e.currentTarget.valueAsNumber)}
@@ -260,11 +277,11 @@
 					/>
 				</div>
 				<div class="grid grid-cols-2 gap-2 font-black">
-					<button class="btn btn-block text-lg">Change</button>
-					<button class="btn btn-block text-lg">🎲 Rando</button>
+					<button class="btn btn-block text-lg">Swap</button>
+					<button class="btn btn-block text-lg">Randomize</button>
 					<button
 						on:click={() => removeTopper(topper.slot)}
-						class="btn btn-block text-lg hover:btn-error">🗑️ Delete</button
+						class="btn btn-block text-lg hover:btn-error">Delete</button
 					>
 					<button class="btn btn-block text-lg" on:click={() => (selectedSlot = null)}
 						>Done</button
