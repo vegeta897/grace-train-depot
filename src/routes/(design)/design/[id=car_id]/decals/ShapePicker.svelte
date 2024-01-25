@@ -107,10 +107,12 @@
 				on:click={() => onPick({ name, fill, params })}
 				class="btn btn-ghost aspect-square h-auto min-h-full w-full touch-manipulation p-1"
 			>
-				<ContainerSvg viewBox="-50 -50 100 100">
-					<g transform="scale({100 / Math.max(boundingBox.width, boundingBox.height)})">
-						<Decal {name} {fill} params={{ ...params, extraThickness: 2 }} />
-					</g>
+				<ContainerSvg
+					class="max-h-full"
+					viewBox="{-boundingBox.width / 2} {-boundingBox.height /
+						2} {boundingBox.width} {boundingBox.height}"
+				>
+					<Decal {name} {fill} params={{ ...params, extraThickness: 2 }} />
 				</ContainerSvg>
 			</button>
 		{/each}

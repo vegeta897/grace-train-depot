@@ -23,7 +23,6 @@
 
 	$: decal = $designCar.decals[slot]
 	$: decalDef = decalDefs[decal.name]
-	$: paramConfig = decalDef.paramConfig
 	$: minScale = decalDef.minScale || DECAL_MIN_SCALE
 	$: maxScale = decalDef.maxScale || DECAL_MAX_SCALE
 	$: scaleRange = maxScale - minScale
