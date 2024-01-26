@@ -9,7 +9,12 @@
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import DesignCar from '$lib/components/DesignCar.svelte'
-	import { getDecalBoundingBox, updateDecalTransform, type Transform } from './decals'
+	import {
+		getDecalBoundingBox,
+		updateDecalTransform,
+		type Transform,
+		removeDecal,
+	} from './decals'
 	import { getDesignStores, setHint } from '../stores'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
@@ -278,17 +283,43 @@
 	}
 	const outline = false // Debug outlines
 
-	let td = false
-	selectedSlot.subscribe((s) => {
-		if (s !== null) {
-			setTimeout(() => (td = true), 200)
-		} else {
-			td = false
+	function onKeyDown(event: KeyboardEvent) {
+		if ($selectedSlot === null) return
+		if (event.key === 'Delete') {
+			removeDecal(localCars, $designShortId, $selectedSlot)
+			selectedSlot.set(null)
+			return
 		}
-	})
+		if (event.key === 'Escape') {
+			selectedSlot.set(null)
+			return
+		}
+		const transform = decals[$selectedSlot]
+		const nudgeDistance = event.shiftKey ? 15 : 1
+		switch (event.key) {
+			case 'ArrowLeft':
+				transform.x -= nudgeDistance
+				break
+			case 'ArrowRight':
+				transform.x += nudgeDistance
+				break
+			case 'ArrowUp':
+				transform.y -= nudgeDistance
+				break
+			case 'ArrowDown':
+				transform.y += nudgeDistance
+				break
+		}
+		updateDecalTransform(localCars, $designShortId, $selectedSlot, transform)
+		dirtyCanvas.set(true)
+	}
 </script>
 
-<svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
+<svelte:window
+	on:pointermove={onPointerMove}
+	on:pointerup={onPointerUp}
+	on:keydown={onKeyDown}
+/>
 <div
 	class="relative touch-none outline-green-700"
 	bind:this={containerElement}
@@ -318,8 +349,7 @@
 				>
 					<g
 						style:opacity={$selectedSlot === null ? 0 : 1}
-						class:transition-opacity={td}
-						class:duration-150={$selectedSlot === null}
+						class:transition-opacity={$selectedSlot === null}
 						class:delay-75={$selectedSlot === null}
 					>
 						<path

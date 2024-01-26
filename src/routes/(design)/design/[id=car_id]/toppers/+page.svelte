@@ -137,12 +137,46 @@
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
+	function onKeyDown(event: KeyboardEvent) {
+		if (selectedSlot === null) return
+		if (event.key === 'Delete') {
+			removeTopper(selectedSlot)
+			selectedSlot = null
+			return
+		}
+		if (event.key === 'Escape') {
+			selectedSlot = null
+			return
+		}
+		let nudgedPosition = $designCar.toppers[selectedSlot].position
+		const nudgeDistance = event.shiftKey ? 0.05 : 0.0025
+		switch (event.key) {
+			case 'ArrowLeft':
+				nudgedPosition -= nudgeDistance
+				break
+			case 'ArrowRight':
+				nudgedPosition += nudgeDistance
+				break
+		}
+		localCars.update((cars) => {
+			cars[$designShortId].toppers[selectedSlot!].position = Math.max(
+				0,
+				Math.min(1, nudgedPosition)
+			)
+			return cars
+		})
+	}
 </script>
 
-<svelte:window on:pointermove={onPointerMove} on:pointerup={onPointerUp} />
+<svelte:window
+	on:pointermove={onPointerMove}
+	on:pointerup={onPointerUp}
+	on:keydown={onKeyDown}
+/>
 <section
 	class="flex w-full flex-col items-center gap-1 xs:gap-3 lg:flex-row lg:items-start"
 >
+	<!-- TODO: Add title and close button, like on decals page -->
 	<div class="sticky top-0 z-10 w-full space-y-1 lg:relative lg:w-1/2">
 		<div
 			class:aspect-4-3={!showFullCar}
@@ -289,15 +323,10 @@
 				</div>
 			</div>
 		{:else if browser}
-			<div
-				class="relative grow"
-				class:min-h-[180px]={$designCar.toppers.length >= TOPPER_MAX_SLOTS}
-			>
-				{#if $designCar.toppers.length === 0}
-					<h3 class="mb-2 text-center text-2xl font-bold">pick a topper!</h3>
-				{/if}
+			{@const noMoreToppers = $designCar.toppers.length >= TOPPER_MAX_SLOTS}
+			<div class="relative grow" class:min-h-[180px]={noMoreToppers}>
 				<TopperPicker onPick={addTopper} />
-				{#if $designCar.toppers.length >= TOPPER_MAX_SLOTS}
+				{#if noMoreToppers}
 					<div
 						class="glass-bg rounded-box absolute left-0 top-0 flex h-full w-full flex-col justify-center bg-base-300 p-6 text-center"
 					>

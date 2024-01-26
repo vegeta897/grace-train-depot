@@ -101,7 +101,7 @@ export const actions = {
 			async (url) =>
 				imageCache[url] ??
 				new Promise(async (resolve) => {
-					const res = await fetch(url)
+					const res = await fetch(url) // TODO: See if $app/server read function can be used instead
 					const buffer = Buffer.from(await res.arrayBuffer())
 					const dataUri = `data:image/png;base64,${buffer.toString('base64')}`
 					imageCache[url] = dataUri
