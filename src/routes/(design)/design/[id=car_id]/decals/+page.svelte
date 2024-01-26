@@ -64,6 +64,21 @@
 			return cars
 		})
 	}
+
+	function orderDecal(upOrDown: number) {
+		if ($selectedSlot === null) return
+		const decal = $designCar.decals[$selectedSlot]
+		localCars.update((cars) => {
+			cars[$designShortId].decals = cars[$designShortId].decals.filter(
+				(_, i) => i !== $selectedSlot
+			)
+			cars[$designShortId].decals.splice($selectedSlot! + upOrDown, 0, decal)
+			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+			selectedSlot.set(decal.slot)
+			return cars
+		})
+	}
+
 	const testDot = { x: 0, y: 0 } // Position a red dot on the page
 </script>
 
@@ -88,46 +103,85 @@
 	</div>
 	<div class="flex w-full grow items-start gap-1 xs:gap-3 lg:w-1/2">
 		{#if $designCar.decals.length > 0}
-			<ol class="flex w-[3.25rem] flex-col-reverse justify-end rounded-lg bg-neutral p-1">
-				{#each $designCar.decals as decal (decal.id)}
-					{@const { width: bw, height: bh } = getDecalBoundingBox(decal)}
-					{@const normalize = 80 / Math.max(bw, bh, 100)}
-					{@const upscale =
-						(Math.log((decal.scale - 0.5) / (DECAL_MAX_SCALE - 0.5) + 0.5) + 0.7) * 0.2}
-					{@const params = { ...decal.params, extraThickness: 2 }}
-					<li class="flex" animate:flip={{ duration: 150 }}>
-						<button
-							class="btn btn-ghost btn-sm h-11 w-11 touch-manipulation p-1 hover:bg-transparent"
-							on:click={() => clickDecalSlot(decal.slot)}
-							on:pointerenter={() => hoveredSlot.set(decal.slot)}
-							on:pointerleave={() => hoveredSlot.set(null)}
-							on:focus={() => hoveredSlot.set(decal.slot)}
-							on:blur={() => hoveredSlot.set(null)}
-						>
-							<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
-								<g transform="scale({(normalize + upscale) / decal.scale})">
-									<Decal
-										name={decal.name}
-										fill={decal.fill}
-										{params}
-										scale={decal.scale}
-										rotate={decal.rotate}
-										transition={['fill', 'opacity']}
-										animateAppear
+			<div class=" w-[3.25rem] rounded-lg bg-neutral">
+				<button
+					on:click={() => orderDecal(1)}
+					class="btn btn-sm btn-block h-10 touch-manipulation rounded-b-none"
+					disabled={$selectedSlot === null ||
+						$selectedSlot === $designCar.decals.length - 1}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 1 10 10"
+						class="w-6 -scale-y-100 fill-none stroke-current"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
+						/>
+					</svg>
+				</button>
+				<ol class="flex flex-col-reverse justify-end p-1">
+					{#each $designCar.decals as decal (decal.id)}
+						{@const { width: bw, height: bh } = getDecalBoundingBox(decal)}
+						{@const normalize = 80 / Math.max(bw, bh, 100)}
+						{@const upscale =
+							(Math.log((decal.scale - 0.5) / (DECAL_MAX_SCALE - 0.5) + 0.5) + 0.7) * 0.2}
+						{@const params = { ...decal.params, extraThickness: 2 }}
+						<li class="flex" animate:flip={{ duration: 150 }}>
+							<button
+								class="btn btn-ghost btn-sm h-11 w-11 touch-manipulation p-1 hover:bg-transparent"
+								on:click={() => clickDecalSlot(decal.slot)}
+								on:pointerenter={() => hoveredSlot.set(decal.slot)}
+								on:pointerleave={() => hoveredSlot.set(null)}
+								on:focus={() => hoveredSlot.set(decal.slot)}
+								on:blur={() => hoveredSlot.set(null)}
+							>
+								<ContainerSvg viewBox="-50 -50 100 100" class="overflow-visible">
+									<g transform="scale({(normalize + upscale) / decal.scale})">
+										<Decal
+											name={decal.name}
+											fill={decal.fill}
+											{params}
+											scale={decal.scale}
+											rotate={decal.rotate}
+											transition={['fill', 'opacity']}
+											animateAppear
+										/>
+									</g>
+									<BoundingBox
+										scale={1}
+										strokeWidthScale={1.5}
+										faded={decal.slot !== $selectedSlot}
+										hidden={decal.slot !== $selectedSlot && decal.slot !== $hoveredSlot}
+										fullHitbox
 									/>
-								</g>
-								<BoundingBox
-									scale={1}
-									strokeWidthScale={1.5}
-									faded={decal.slot !== $selectedSlot}
-									hidden={decal.slot !== $selectedSlot && decal.slot !== $hoveredSlot}
-									fullHitbox
-								/>
-							</ContainerSvg>
-						</button>
-					</li>
-				{/each}
-			</ol>
+								</ContainerSvg>
+							</button>
+						</li>
+					{/each}
+				</ol>
+				<button
+					on:click={() => orderDecal(-1)}
+					class="btn btn-sm btn-block h-10 touch-manipulation rounded-t-none"
+					disabled={$selectedSlot === null || $selectedSlot === 0}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 1 10 10"
+						class="w-6 fill-none stroke-current"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
+						/>
+					</svg>
+				</button>
+			</div>
 		{/if}
 		{#if browser}
 			<div

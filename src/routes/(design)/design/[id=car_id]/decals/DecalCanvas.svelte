@@ -9,12 +9,7 @@
 	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
 	import { getDecalStores } from './stores'
 	import DesignCar from '$lib/components/DesignCar.svelte'
-	import {
-		getDecalBoundingBox,
-		removeDecal,
-		updateDecalTransform,
-		type Transform,
-	} from './decals'
+	import { getDecalBoundingBox, updateDecalTransform, type Transform } from './decals'
 	import { getDesignStores, setHint } from '../stores'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
@@ -489,21 +484,10 @@
 		<button
 			in:fade={{ duration: 150, easing: cubicOut }}
 			on:click|preventDefault={() => snapping.set(!$snapping)}
-			class="glass-bg btn btn-circle absolute bottom-2 left-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:left-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
+			class="glass-bg btn btn-circle absolute bottom-2 right-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
 			class:btn-secondary={$snapping}
 		>
 			🧲
-		</button>
-		<button
-			in:fade={{ duration: 150, easing: cubicOut }}
-			on:click|preventDefault={() => {
-				removeDecal(localCars, $designShortId, slot)
-				selectedSlot.set(null)
-				dirtyCanvas.set(true)
-			}}
-			class="glass-bg btn btn-circle absolute bottom-2 right-2 h-12 w-12 border-none !bg-opacity-40 text-2xl text-opacity-50 hover:bg-error hover:!bg-opacity-70 hover:text-opacity-100 2xs:h-14 2xs:w-14 lg:bottom-4 lg:right-4 lg:h-16 lg:w-16 lg:p-4 lg:text-3xl"
-		>
-			🗑️
 		</button>
 	{/if}
 </div>

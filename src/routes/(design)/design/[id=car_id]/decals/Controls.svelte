@@ -8,13 +8,14 @@
 	import { removeDecal, updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../stores'
-	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
+	// import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
 	import { cloneDecal } from '$lib/car'
 	import StripesControls from './StripesControls.svelte'
 	import ParamControls from '../ParamControls.svelte'
 	import type { DecalData } from 'grace-train-lib/data'
+	import Icon from '$lib/components/Icon.svelte'
 
 	export let slot: number
 
@@ -26,11 +27,6 @@
 	$: minScale = decalDef.minScale || DECAL_MIN_SCALE
 	$: maxScale = decalDef.maxScale || DECAL_MAX_SCALE
 	$: scaleRange = maxScale - minScale
-
-	let toolMode: null | 'shape' = null
-
-	const setToolMode = (mode: typeof toolMode) =>
-		(toolMode = toolMode === mode ? null : mode)
 
 	function deleteDecal() {
 		removeDecal(localCars, $designShortId, slot)
@@ -49,33 +45,19 @@
 		})
 	}
 
-	function orderDecal(upOrDown: number) {
-		const decal = $designCar.decals[slot]
-		localCars.update((cars) => {
-			cars[$designShortId].decals = cars[$designShortId].decals.filter(
-				(_, i) => i !== slot
-			)
-			cars[$designShortId].decals.splice(slot + upOrDown, 0, decal)
-			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
-			selectedSlot.set(decal.slot)
-			return cars
-		})
-	}
-
-	function setDecalShape({ name, fill, params }: DecalChoice) {
-		localCars.update((cars) => {
-			if (name !== cars[$designShortId].decals[slot].name) {
-				cars[$designShortId].decals[slot].name = name
-				if (fill) cars[$designShortId].decals[slot].fill = fill as DecalData['fill']
-				cars[$designShortId].decals[slot].params = {
-					...decalDefs[name].getDefaultParamsObject(),
-					...params,
-				}
-			}
-			return cars
-		})
-		toolMode = null
-	}
+	// function setDecalShape({ name, fill, params }: DecalChoice) {
+	// 	localCars.update((cars) => {
+	// 		if (name !== cars[$designShortId].decals[slot].name) {
+	// 			cars[$designShortId].decals[slot].name = name
+	// 			if (fill) cars[$designShortId].decals[slot].fill = fill as DecalData['fill']
+	// 			cars[$designShortId].decals[slot].params = {
+	// 				...decalDefs[name].getDefaultParamsObject(),
+	// 				...params,
+	// 			}
+	// 		}
+	// 		return cars
+	// 	})
+	// }
 
 	function setDecalColor(color: string) {
 		localCars.update((cars) => {
@@ -93,15 +75,25 @@
 	}
 </script>
 
-<div class="rounded-box space-y-4 bg-neutral p-2 xs:p-4">
-	{#if toolMode === null}
+{#key decal.id}
+	<div class="rounded-box flex flex-col gap-4 bg-neutral p-2 xs:p-4">
+		<div class="flex items-center justify-between">
+			<h3 class="text-xl font-bold sm:text-2xl" style:color={decal.fill}>
+				{decal.name}
+			</h3>
+			<button
+				class="btn btn-circle btn-sm xs:h-10 xs:w-10"
+				on:click={() => selectedSlot.set(null)}
+				><Icon class="w-3 xs:w-4" icon="x" /></button
+			>
+		</div>
 		{#if decal.name === 'stripes'}
 			<div class="col-span-4 rounded-xl bg-base-100 p-2 xs:p-4">
 				<StripesControls {decal} />
 			</div>
 		{/if}
 		<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
-			{#if !decalDefs[decal.name].noFill}
+			{#if !decalDef.noFill}
 				<!-- TODO: Make these controls into components -->
 				<label for="fill" class="text-lg lg:text-xl">color</label>
 				<ColorSlider
@@ -111,16 +103,16 @@
 					onInput={setDecalColor}
 				/>
 				<!-- (gradient to neighbor color) -->
-				<label for="mix" class="text-lg lg:text-xl">mix</label>
-				<input
-					id="mix"
-					type="range"
-					min={-Math.min(COLORS.POP.indexOf(decal.fill), 6)}
-					max={Math.min(COLORS.POP.length - COLORS.POP.indexOf(decal.fill) - 1, 6)}
-					step="1"
-					value={0}
-					class="range"
-				/>
+				<!-- <label for="mix" class="text-lg lg:text-xl">mix</label>
+					<input
+						id="mix"
+						type="range"
+						min={-Math.min(COLORS.POP.indexOf(decal.fill), 6)}
+						max={Math.min(COLORS.POP.length - COLORS.POP.indexOf(decal.fill) - 1, 6)}
+						step="1"
+						value={0}
+						class="range"
+					/> -->
 				<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
 			<input type="range" min={-180} max={180} step="1" value={0} class="range" /> -->
 			{/if}
@@ -180,51 +172,13 @@
 			class="btn btn-md touch-manipulation text-2xl hover:btn-error md:text-3xl"
 			>🗑️</button
 		> -->
-		<div class="col-span-4 grid grid-flow-row-dense grid-cols-2 gap-2">
-			<button
-				on:click={() => orderDecal(1)}
-				disabled={slot === $designCar.decals.length - 1}
-				class="btn btn-md col-start-1 touch-manipulation 2xs:text-lg md:text-xl"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 10 10"
-					class="w-6 -scale-y-100 fill-none stroke-current"
+		<div class="col-span-4 grid grid-cols-2 gap-2">
+			<!-- <button
+					on:click={() => setToolMode('shape')}
+					class="btn btn-md 2xs:text-lg md:text-xl"
 				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
-					/>
-				</svg>
-				<span class="w-16">Pull</span>
-			</button>
-			<button
-				on:click={() => orderDecal(-1)}
-				disabled={slot === 0}
-				class="btn btn-md col-start-1 touch-manipulation 2xs:text-lg md:text-xl"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 10 10"
-					class="w-6 fill-none stroke-current"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M5,2 v7 l-2.5,-2.5 m2.5,2.5 l2.5,-2.5"
-					/>
-				</svg>
-				<span class="w-16">Push</span>
-			</button>
-			<button
-				on:click={() => setToolMode('shape')}
-				class="btn btn-md 2xs:text-lg md:text-xl"
-			>
-				Shape
-			</button>
+					Swap
+				</button> -->
 			<button
 				on:click={() => duplicateDecal()}
 				class="btn btn-md 2xs:text-lg md:text-xl"
@@ -232,20 +186,25 @@
 			>
 				Copy
 			</button>
+			<button
+				on:click={() => deleteDecal()}
+				class="btn btn-md 2xs:text-lg md:text-xl"
+				disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}
+			>
+				Delete
+			</button>
 		</div>
 		<!-- </div> -->
-	{:else if toolMode === 'shape'}
-		<div class="col-span-4">
-			<ShapePicker
-				fillOverride={decalDefs[decal.name].noFill
-					? undefined
-					: $designCar.decals[slot].fill}
-				onPick={setDecalShape}
-			/>
-		</div>
-		<button
-			class="btn-nd btn col-span-2 font-black 2xs:text-lg md:text-xl lg:col-span-1"
-			on:click={() => setToolMode(null)}>Back</button
-		>
-	{/if}
-</div>
+		<!-- {:else if toolMode === 'shape'}
+			<div class="col-span-4">
+				<ShapePicker
+					fillOverride={decalDef.noFill ? undefined : $designCar.decals[slot].fill}
+					onPick={setDecalShape}
+				/>
+			</div>
+			<button
+				class="btn-nd btn col-span-2 font-black 2xs:text-lg md:text-xl lg:col-span-1"
+				on:click={() => setToolMode(null)}>Back</button
+			> -->
+	</div>
+{/key}
