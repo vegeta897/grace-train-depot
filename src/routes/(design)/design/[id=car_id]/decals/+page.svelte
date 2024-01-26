@@ -184,18 +184,13 @@
 			</div>
 		{/if}
 		{#if browser}
-			<div
-				class="relative grow"
-				class:min-h-[180px]={$designCar.decals.length >= DECAL_MAX_SLOTS}
-			>
+			{@const noMoreDecals = $designCar.decals.length >= DECAL_MAX_SLOTS}
+			<div class="relative grow" class:min-h-[180px]={noMoreDecals}>
 				{#if $selectedSlot !== null}
 					<Controls slot={$selectedSlot} />
 				{:else}
-					{#if $designCar.decals.length === 0}
-						<h3 class="mb-2 text-center text-2xl font-bold">pick a decal!</h3>
-					{/if}
 					<ShapePicker onPick={addDecal} />
-					{#if $designCar.decals.length >= DECAL_MAX_SLOTS}
+					{#if noMoreDecals}
 						<div
 							class="glass-bg rounded-box absolute left-0 top-0 flex h-full w-full flex-col justify-center bg-base-300 p-6 text-center"
 						>

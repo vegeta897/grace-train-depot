@@ -95,27 +95,30 @@
 </script>
 
 <div class="rounded-box flex items-start gap-4 bg-base-200 p-2 sm:p-4">
-	<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
-		{#each tabs[$shapePickerTab] as { name, defaultFill, defaultParams }}
-			{@const params = {
-				...decalDefs[name].getDefaultParamsObject(),
-				...defaultParams,
-			}}
-			{@const fill = fillOverride || defaultFill}
-			{@const boundingBox = decalDefs[name].getBoundingBox(params)}
-			<button
-				on:click={() => onPick({ name, fill, params })}
-				class="btn btn-ghost aspect-square h-auto min-h-full w-full touch-manipulation p-1"
-			>
-				<ContainerSvg
-					class="max-h-full"
-					viewBox="{-boundingBox.width / 2} {-boundingBox.height /
-						2} {boundingBox.width} {boundingBox.height}"
+	<div>
+		<h3 class="mb-2 pl-1 text-xl text-base-content/50">add a decal</h3>
+		<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
+			{#each tabs[$shapePickerTab] as { name, defaultFill, defaultParams }}
+				{@const params = {
+					...decalDefs[name].getDefaultParamsObject(),
+					...defaultParams,
+				}}
+				{@const fill = fillOverride || defaultFill}
+				{@const boundingBox = decalDefs[name].getBoundingBox(params)}
+				<button
+					on:click={() => onPick({ name, fill, params })}
+					class="btn btn-ghost aspect-square h-auto min-h-full w-full touch-manipulation p-1"
 				>
-					<Decal {name} {fill} params={{ ...params, extraThickness: 2 }} />
-				</ContainerSvg>
-			</button>
-		{/each}
+					<ContainerSvg
+						class="max-h-full"
+						viewBox="{-boundingBox.width / 2} {-boundingBox.height /
+							2} {boundingBox.width} {boundingBox.height}"
+					>
+						<Decal {name} {fill} params={{ ...params, extraThickness: 2 }} />
+					</ContainerSvg>
+				</button>
+			{/each}
+		</div>
 	</div>
 	<div class="join join-vertical">
 		{#each tabs as [{ name, defaultFill: fill, defaultParams }], t}

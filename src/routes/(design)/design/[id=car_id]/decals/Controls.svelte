@@ -76,7 +76,7 @@
 </script>
 
 {#key decal.id}
-	<div class="rounded-box flex flex-col gap-4 bg-neutral p-2 xs:p-4">
+	<div class="rounded-box flex flex-col gap-4 bg-neutral p-2 xs:px-4 xs:py-3">
 		<div class="flex items-center justify-between">
 			<h3 class="text-xl font-bold sm:text-2xl" style:color={decal.fill}>
 				{decal.name}
@@ -186,11 +186,7 @@
 			>
 				Copy
 			</button>
-			<button
-				on:click={() => deleteDecal()}
-				class="btn btn-md 2xs:text-lg md:text-xl"
-				disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}
-			>
+			<button on:click={() => deleteDecal()} class="btn btn-md 2xs:text-lg md:text-xl">
 				Delete
 			</button>
 		</div>
