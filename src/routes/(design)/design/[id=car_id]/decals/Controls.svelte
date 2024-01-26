@@ -1,17 +1,12 @@
 <script lang="ts">
 	import { decalDefs } from 'grace-train-lib/components'
-	import {
-		DECAL_MAX_SCALE,
-		DECAL_MAX_SLOTS,
-		DECAL_MIN_SCALE,
-	} from '$lib/common/constants'
-	import { removeDecal, updateDecalTransform } from './decals'
+	import { DECAL_MAX_SCALE, DECAL_MIN_SCALE } from '$lib/common/constants'
+	import { updateDecalTransform } from './decals'
 	import { getDecalStores } from './stores'
 	import { getDesignStores } from '../stores'
 	// import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import ColorSlider from '../ColorSlider.svelte'
 	import { COLORS } from 'grace-train-lib'
-	import { cloneDecal } from '$lib/car'
 	import StripesControls from './StripesControls.svelte'
 	import ParamControls from '../ParamControls.svelte'
 	import type { DecalData } from 'grace-train-lib/data'
@@ -28,43 +23,11 @@
 	$: maxScale = decalDef.maxScale || DECAL_MAX_SCALE
 	$: scaleRange = maxScale - minScale
 
-	function deleteDecal() {
-		removeDecal(localCars, $designShortId, slot)
-		selectedSlot.set(null)
-	}
-
-	function duplicateDecal() {
-		const decal = $designCar.decals[slot]
-		const decalCopy = cloneDecal(decal)
-		decalCopy.slot = $designCar.decals.length
-		decalCopy.id = Date.now()
-		localCars.update((cars) => {
-			cars[$designShortId].decals.push(decalCopy)
-			selectedSlot.set(decalCopy.slot)
-			return cars
-		})
-	}
-
-	// function setDecalShape({ name, fill, params }: DecalChoice) {
-	// 	localCars.update((cars) => {
-	// 		if (name !== cars[$designShortId].decals[slot].name) {
-	// 			cars[$designShortId].decals[slot].name = name
-	// 			if (fill) cars[$designShortId].decals[slot].fill = fill as DecalData['fill']
-	// 			cars[$designShortId].decals[slot].params = {
-	// 				...decalDefs[name].getDefaultParamsObject(),
-	// 				...params,
-	// 			}
-	// 		}
-	// 		return cars
-	// 	})
-	// }
-
 	function setDecalColor(color: string) {
 		localCars.update((cars) => {
 			cars[$designShortId].decals[slot].fill = color as DecalData['fill']
 			return cars
 		})
-		// toolMode = null
 	}
 
 	function setDecalParam(name: string, value: number | boolean | string) {
@@ -166,41 +129,5 @@
 				onChange={() => dirtyCanvas.set(true)}
 			/>
 		</div>
-		<!-- <div class="col-span-4"> -->
-		<!-- <button
-			on:click={() => deleteDecal()}
-			class="btn btn-md touch-manipulation text-2xl hover:btn-error md:text-3xl"
-			>🗑️</button
-		> -->
-		<div class="col-span-4 grid grid-cols-2 gap-2">
-			<!-- <button
-					on:click={() => setToolMode('shape')}
-					class="btn btn-md 2xs:text-lg md:text-xl"
-				>
-					Swap
-				</button> -->
-			<button
-				on:click={() => duplicateDecal()}
-				class="btn btn-md 2xs:text-lg md:text-xl"
-				disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}
-			>
-				Copy
-			</button>
-			<button on:click={() => deleteDecal()} class="btn btn-md 2xs:text-lg md:text-xl">
-				Delete
-			</button>
-		</div>
-		<!-- </div> -->
-		<!-- {:else if toolMode === 'shape'}
-			<div class="col-span-4">
-				<ShapePicker
-					fillOverride={decalDef.noFill ? undefined : $designCar.decals[slot].fill}
-					onPick={setDecalShape}
-				/>
-			</div>
-			<button
-				class="btn-nd btn col-span-2 font-black 2xs:text-lg md:text-xl lg:col-span-1"
-				on:click={() => setToolMode(null)}>Back</button
-			> -->
 	</div>
 {/key}

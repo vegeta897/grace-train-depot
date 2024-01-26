@@ -11,11 +11,12 @@
 	import { flip } from 'svelte/animate'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'
 	import { browser } from '$app/environment'
-	import { getDecalBoundingBox } from './decals'
+	import { getDecalBoundingBox, removeDecal } from './decals'
 	import { fade, fly } from 'svelte/transition'
+	import { cloneDecal } from '$lib/car'
 
 	const { localCars, designShortId, designCar, hints } = getDesignStores()
-	const { hoveredSlot, selectedSlot, dirtyCanvas } = getDecalStores()
+	const { hoveredSlot, selectedSlot, dirtyCanvas, snapping } = getDecalStores()
 
 	// TODO: Allow choosing body color, to act as an "eraser" decal
 
@@ -61,6 +62,23 @@
 		})
 	}
 
+	function deleteDecal(slot: number) {
+		removeDecal(localCars, $designShortId, slot)
+		selectedSlot.set(null)
+	}
+
+	function duplicateDecal(slot: number) {
+		const decal = $designCar.decals[slot]
+		const decalCopy = cloneDecal(decal)
+		decalCopy.slot = $designCar.decals.length
+		decalCopy.id = Date.now()
+		localCars.update((cars) => {
+			cars[$designShortId].decals.push(decalCopy)
+			selectedSlot.set(decalCopy.slot)
+			return cars
+		})
+	}
+
 	function orderDecal(upOrDown: number) {
 		if ($selectedSlot === null) return
 		const decal = $designCar.decals[$selectedSlot]
@@ -79,15 +97,41 @@
 </script>
 
 <section class="flex w-full flex-col items-start gap-1 xs:gap-3 lg:flex-row">
-	<div class="sticky top-0 z-10 w-full space-y-1 lg:relative lg:w-1/2">
-		<div class="lg:remove-glass-bg glass-bg rounded-box overflow-clip bg-neutral">
+	<div class="sticky top-0 z-10 w-full lg:relative lg:w-1/2">
+		<div
+			class="lg:remove-glass-bg glass-bg rounded-box overflow-clip bg-neutral"
+			class:rounded-b-none={$selectedSlot !== null}
+		>
 			<DecalCanvas setTestDot={(x, y) => Object.assign(testDot, { x, y })} />
 		</div>
+		{#if $selectedSlot !== null}
+			{@const slot = $selectedSlot}
+			<div
+				class="rounded-b-box flex w-full justify-between gap-1 bg-neutral p-1 xs:gap-2 xs:p-2"
+			>
+				<!-- TODO: Create icons for these -->
+				<button
+					on:click|preventDefault={() => snapping.set(!$snapping)}
+					class="btn btn-square rounded-xl text-xl"
+					class:btn-secondary={$snapping}>🧲</button
+				>
+				<button class="btn rounded-xl">something</button>
+				<button
+					on:click={() => duplicateDecal(slot)}
+					class="btn btn-square ml-auto rounded-xl text-xl"
+					disabled={$designCar.decals.length >= DECAL_MAX_SLOTS}>📋</button
+				>
+				<button
+					on:click={() => deleteDecal(slot)}
+					class="btn btn-square rounded-xl text-xl">🗑️</button
+				>
+			</div>
+		{/if}
 		{#if $hints.dragDecal}
 			<div
 				in:fly={{ duration: 150, y: -100 }}
 				out:fade={{ duration: 150 }}
-				class="alert alert-info flex justify-between"
+				class="alert alert-info mt-1 flex justify-between"
 			>
 				<p class="text-lg"><strong>hint:</strong> move decals by dragging!</p>
 				<button
@@ -99,10 +143,10 @@
 	</div>
 	<div class="flex w-full grow items-start gap-1 xs:gap-3 lg:w-1/2">
 		{#if $designCar.decals.length > 0}
-			<div class=" w-[3.25rem] rounded-lg bg-neutral">
+			<div class="rounded-box w-[3.25rem] bg-neutral">
 				<button
 					on:click={() => orderDecal(1)}
-					class="btn btn-sm btn-block h-10 touch-manipulation rounded-b-none"
+					class="btn rounded-box btn-sm btn-block h-10 touch-manipulation rounded-b-none"
 					disabled={$selectedSlot === null ||
 						$selectedSlot === $designCar.decals.length - 1}
 				>
@@ -161,7 +205,7 @@
 				</ol>
 				<button
 					on:click={() => orderDecal(-1)}
-					class="btn btn-sm btn-block h-10 touch-manipulation rounded-t-none"
+					class="btn rounded-box btn-sm btn-block h-10 touch-manipulation rounded-t-none"
 					disabled={$selectedSlot === null || $selectedSlot === 0}
 				>
 					<svg
