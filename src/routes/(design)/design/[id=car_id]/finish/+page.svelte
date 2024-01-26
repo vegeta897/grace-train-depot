@@ -13,19 +13,19 @@
 	export let form: ActionData
 
 	// TODO: AMAZING IDEA!!!!!!
-	// Allow users to tag their cars with one or more preset tags
+	// Railway signals are applied to cars that meet certain design criteria
 	// Like "mort", "poggers", "stars", "green" etc
-	// Grace trains can have one (or more) of these tags, and will try to pick cars with this tag
-	// Tags have requirements, e.g. "mort" requires at least one "mort" decal
-	// Show car tags on car page
-	// Give user a checklist of tags they've fulfilled, to motivate more designing
-	// Show grace train theme under or above "GRACE TRAIN" block in overlay
+	// Grace trains can have one (or more) of these signals, and will try to pick cars with these signals
+	// Signalled grace trains can be caused by the pre-train graces
+	// Analyze the cars in the initial graces to find a common signal
+	// Signals have requirements, e.g. "mort" requires at least one "mort" decal
+	// Give user a checklist of signals they've fulfilled, to motivate more designing
+	// Show grace train signal under or above "GRACE TRAIN" block in overlay with an animated signal light
 	// For emote themes, maybe treat messages containing the emote as a valid GRACE
-	// Each tag should have its own unique text/bg colors
-	// Leaderboards for each ticket
-	// Create table for many-to-many ticket/car relation records
-	// Ticket in db is just a string that matches definition in code
-	// Move ticket defs to grace-train-lib so spice bot can use them for grace trains
+	// Each signal should have its own unique text/bg colors
+	// Leaderboards for each signal
+	// Signal in db is just a string that matches definition in code
+	// Move signal defs to grace-train-lib so overlay can get the colors
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 

@@ -9,7 +9,7 @@
 	import NavTabs from './NavTabs.svelte'
 	import { browser } from '$app/environment'
 	import { onDestroy } from 'svelte'
-	import Tickets from './Tickets.svelte'
+	import Signals from './Signals.svelte'
 
 	export let data: LayoutData
 
@@ -170,7 +170,7 @@
 </div>
 <div class=" overflow-y-hidden py-2">
 	{#if browser && currentPage}
-		<Tickets car={$designCar} />
+		<Signals car={$designCar} />
 	{/if}
 </div>
 

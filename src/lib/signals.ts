@@ -1,15 +1,7 @@
 import { COLOR_NAMES } from 'grace-train-lib'
 import type { DepotCar } from 'grace-train-lib/data'
 
-// export type Ticket = {
-// 	name: string
-// 	colors: [fg: string, bg: string]
-// 	description: string
-// 	check: (car: DepotCar) => boolean
-// 	scope: TopperScope
-// }
-
-const TICKETS = [
+const SIGNALS = [
 	'stars',
 	'hearts',
 	'flowers',
@@ -18,16 +10,16 @@ const TICKETS = [
 	'many hats',
 	'party',
 ] as const
-export type TicketName = (typeof TICKETS)[number]
-type TicketScope = 'decals' | 'toppers'
+export type SignalName = (typeof SIGNALS)[number]
+type SignalScope = 'decals' | 'toppers'
 
-export const ticketDefs: Record<
-	TicketName,
+export const signalDefs: Record<
+	SignalName,
 	{
 		colors: [fg: string, bg: string]
 		// description: string
 		check: (car: DepotCar) => boolean
-		scope: TicketScope
+		scope: SignalScope
 	}
 > = {
 	stars: {
@@ -76,18 +68,6 @@ export const ticketDefs: Record<
 	},
 }
 
-// Get new list of car tickets that keeps original sorting and adds new tickets to the end
-// export function getNewAndLostTicketsForCar(car: DepotCar, oldTickets: TicketName[] = []) {
-// 	const lostTickets = oldTickets.filter((ticket) => !ticketDefs[ticket].check(car))
-// 	const newTickets = [...oldTickets]
-// 	for (const ticket of TICKETS) {
-// 		if (!oldTickets.includes(ticket) && ticketDefs[ticket].check(car)) {
-// 			newTickets.push(ticket)
-// 		}
-// 	}
-// 	return { newTickets, lostTickets }
-// }
-
-export function getTicketsForCar(car: DepotCar, scope?: TicketScope[]) {
-	return TICKETS.filter((ticket) => ticketDefs[ticket].check(car))
+export function getSignalsForCar(car: DepotCar, scope?: SignalScope[]) {
+	return SIGNALS.filter((signal) => signalDefs[signal].check(car))
 }

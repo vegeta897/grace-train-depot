@@ -9,8 +9,7 @@
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
 	import { pluralize } from '$lib/util'
-	import { ticketDefs } from '$lib/tickets'
-	import Ticket from '$lib/components/Ticket.svelte'
+	import Signal from '$lib/components/Signal.svelte'
 
 	export let data: PageData
 
@@ -96,8 +95,8 @@
 			</small>
 		</h2>
 		<div class="flex flex-wrap gap-2 px-2">
-			{#each data.car.tickets as ticket}
-				<Ticket {ticket} />
+			{#each data.car.signals as signal}
+				<Signal {signal} />
 			{/each}
 		</div>
 		<div class="stats mt-auto grid-cols-2">

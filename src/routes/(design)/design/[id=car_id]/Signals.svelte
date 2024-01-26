@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Ticket from '$lib/components/Ticket.svelte'
-	import { getTicketsForCar } from '$lib/tickets'
+	import Signal from '$lib/components/Signal.svelte'
+	import { getSignalsForCar } from '$lib/signals'
 	import type { DepotCar } from 'grace-train-lib/data'
 	import { flip } from 'svelte/animate'
 	import { backOut } from 'svelte/easing'
@@ -10,29 +10,30 @@
 
 	let showHint = false
 
-	$: carTickets = getTicketsForCar(car)
+	$: carSignals = getSignalsForCar(car)
 </script>
 
 <div in:fly={{ y: 50, duration: 300, easing: backOut }} class="flex flex-col sm:gap-3">
 	{#if showHint}
 		<div
 			transition:fly={{ y: 50, duration: 200, easing: backOut }}
-			class="alert rounded-none border-none bg-neutral px-2 leading-snug sm:rounded-box sm:px-6 sm:text-lg"
+			class="alert rounded-none border-none bg-neutral px-2 leading-snug sm:rounded-box sm:gap-6 sm:px-6 sm:text-lg"
 		>
-			<div class="w-6 text-3xl font-black">?</div>
+			<div class="w-6 text-3xl font-black">🚦</div>
 			<div>
 				<p>
-					<strong class="text-primary">🎟️ theme tickets</strong> appear down here when your
+					<strong class="text-primary">railway signals</strong> appear down here when your
 					car meets certain design criteria!
 				</p>
 				<p class="mt-1 text-base-content/70">
-					during <strong class="text-primary">themed</strong> grace trains, your graces
-					will summon cars that have a matching
-					<strong class="text-primary">theme ticket</strong>
+					gracing during
+					<strong class="text-primary">signalled grace trains</strong>
+					will call this car if it matches that train's
+					<strong class="text-primary">signal</strong>
 				</p>
 				<p class="mt-1 text-base-content/70">
-					you can include theme keywords or emotes in your grace messages to summon them
-					in <strong>any</strong> train!
+					you can call this car in <strong class="text-base-content">any</strong> train by
+					using signal keywords or emotes in your grace messages!
 				</p>
 			</div>
 			<button on:click={() => (showHint = false)} class="btn">ok</button>
@@ -43,18 +44,18 @@
 	>
 		<div class="flex items-center gap-3">
 			<h3 class="whitespace-nowrap text-xl font-bold text-primary/90">
-				<!-- TODO: Create ticket icon -->
-				🎟️ theme tickets
+				<!-- TODO: Create signal icon -->
+				🚦 railway signals
 			</h3>
 			<button on:click={() => (showHint = !showHint)} class="btn btn-circle btn-sm">
 				?
 			</button>
 		</div>
 		<div class="flex flex-wrap gap-2 p-2">
-			{#each carTickets as ticket (ticket)}
-				<div animate:flip={{ duration: 200 }}><Ticket {ticket} /></div>
+			{#each carSignals as signal (signal)}
+				<div animate:flip={{ duration: 200 }}><Signal {signal} /></div>
 			{/each}
-			{#if carTickets.length === 0}
+			{#if carSignals.length === 0}
 				<div
 					class="badge h-8 border-none px-3 text-lg font-bold text-base-content/50 opacity-50 outline-dashed outline-base-content/30"
 				>
