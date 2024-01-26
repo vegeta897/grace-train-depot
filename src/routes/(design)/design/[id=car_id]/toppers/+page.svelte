@@ -177,7 +177,7 @@
 	class="flex w-full flex-col items-center gap-1 xs:gap-3 lg:flex-row lg:items-start"
 >
 	<!-- TODO: Add title and close button, like on decals page -->
-	<div class="sticky top-0 z-10 w-full space-y-1 lg:relative lg:w-1/2">
+	<div class="sticky top-0 z-10 w-full space-y-1 lg:relative lg:w-3/5">
 		<div
 			class:aspect-4-3={!showFullCar}
 			class="lg:remove-glass-bg glass-bg rounded-box touch-none overflow-clip bg-neutral p-4 lg:aspect-auto lg:p-6"

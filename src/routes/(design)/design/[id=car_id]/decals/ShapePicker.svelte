@@ -23,7 +23,6 @@
 </script>
 
 <script lang="ts">
-	export let fillOverride: string | undefined = undefined
 	export let onPick: (decalProps: DecalChoice) => void
 
 	const { shapePickerTab } = getDecalStores()
@@ -98,12 +97,11 @@
 	<div>
 		<h3 class="mb-2 pl-1 text-xl text-base-content/50">add a decal</h3>
 		<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
-			{#each tabs[$shapePickerTab] as { name, defaultFill, defaultParams }}
+			{#each tabs[$shapePickerTab] as { name, defaultFill: fill, defaultParams }}
 				{@const params = {
 					...decalDefs[name].getDefaultParamsObject(),
 					...defaultParams,
 				}}
-				{@const fill = fillOverride || defaultFill}
 				{@const boundingBox = decalDefs[name].getBoundingBox(params)}
 				<button
 					on:click={() => onPick({ name, fill, params })}

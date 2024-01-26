@@ -97,7 +97,7 @@
 </script>
 
 <section class="flex w-full flex-col items-start gap-1 xs:gap-3 lg:flex-row">
-	<div class="sticky top-0 z-10 w-full lg:relative lg:w-1/2">
+	<div class="sticky top-0 z-10 w-full lg:relative lg:w-3/5">
 		<div
 			class="lg:remove-glass-bg glass-bg rounded-box overflow-clip bg-neutral"
 			class:rounded-b-none={$selectedSlot !== null}
