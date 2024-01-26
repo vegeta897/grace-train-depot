@@ -19,11 +19,11 @@
 			transition:fly={{ y: 50, duration: 200, easing: backOut }}
 			class="alert rounded-none border-none bg-neutral px-2 leading-snug sm:rounded-box sm:gap-6 sm:px-6 sm:text-lg"
 		>
-			<div class="w-6 text-3xl font-black">🚦</div>
+			<div class="w-6 text-4xl font-black">🚦</div>
 			<div>
 				<p>
-					<strong class="text-primary">railway signals</strong> appear down here when your
-					car meets certain design criteria!
+					<strong class="text-primary">railway signals</strong> will appear down here when
+					your car meets certain design criteria
 				</p>
 				<p class="mt-1 text-base-content/70">
 					gracing during
