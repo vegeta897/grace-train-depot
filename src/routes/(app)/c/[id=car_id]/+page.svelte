@@ -28,7 +28,7 @@
 	$: if (!managing) understandDelete = false
 
 	$: embedTitle = `"${data.car.name}" by ${data.car.twitchName}`
-	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}.png`
+	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}.png?${data.car.revision}`
 
 	const onRename: SubmitFunction = ({ cancel }) => {
 		if (toName === data.car.name) return cancel()
