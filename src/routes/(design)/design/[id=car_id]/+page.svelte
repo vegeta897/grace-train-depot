@@ -19,13 +19,9 @@ Make a unified layout component (with multiple slots, not a sveltekit layout) --
 		</div>
 		<h3 class="flex items-center gap-2 text-3xl font-black">
 			<span>{$designCar.name}</span>
-			<span
-				class="badge badge-lg"
-				class:badge-primary={$designCar.published}
-				class:badge-warning={!$designCar.published}
-			>
-				{#if $designCar.published}live{:else}draft{/if}
-			</span>
+			{#if !$designCar.published}
+				<span class="badge badge-secondary badge-lg"> draft </span>
+			{/if}
 		</h3>
 	{/if}
 	<div class="rounded-box flex flex-col items-center gap-4 bg-neutral p-6">
