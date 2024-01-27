@@ -14,7 +14,6 @@ export function transformCarFromDBWithIds(carData: DBCar): CarDataWithIds {
 		id: carData.id,
 		shortId: carData.shortId,
 		name: carData.name,
-		published: carData.published,
 		revision: carData.revision,
 		...transformCarFromDBToDepotCarWithoutDecalsToppers(carData),
 		decals: carData.decals.map((decal, d) => ({

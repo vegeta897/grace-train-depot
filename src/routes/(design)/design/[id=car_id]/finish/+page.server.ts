@@ -29,7 +29,6 @@ export const actions = {
 			formCarData = JSON.parse(carDataJSON!.toString())
 			formCarData.name = formData.get('carName')?.toString()
 			if (!formCarData.name) throw 'missing car name'
-			formCarData.published = formData.get('draft') !== 'draft'
 		} catch (e) {
 			return fail(400, { invalid: true })
 		}
@@ -126,7 +125,6 @@ const imageCache: Record<string, string> = {}
 function transformCarToDB(car: CarDataForDBWrite) {
 	return {
 		name: car.name,
-		published: car.published ?? true,
 		signals: getSignalsForCar(car),
 		body: car.body,
 		bodyColor: car.bodyColor,

@@ -16,7 +16,6 @@ export const carSchema = schemaForType<CarDataForDBWrite>()(
 		id: z.number().int().gte(0).readonly(),
 		shortId: z.string().min(1).readonly(),
 		name: z.string().min(1).max(CAR_NAME_MAX_LENGTH),
-		published: z.boolean().optional(),
 		revision: z.number().int().gte(1).optional().readonly(),
 		body: z.enum(BODY_NAMES),
 		bodyColor: baseColorSchema.optional(),
@@ -33,7 +32,6 @@ export type CarDataForDBWrite = Omit<DepotCar, 'decals' | 'toppers'> & {
 	id: number
 	shortId: string
 	name: string
-	published?: boolean
 	revision?: number
 	decals: DecalDataWithSlot[]
 	toppers: TopperDataWithSlot[]

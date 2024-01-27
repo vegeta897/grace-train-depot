@@ -16,16 +16,14 @@
 	let renaming = false
 	let renamed = false
 	let toName: string
-	let managing = false
+	let deleting = false
 	let wantDelete: boolean
 	let understandDelete: boolean
 	let copied = false
-	let toStatus: 'active' | 'draft' | 'delete'
 
 	$: if (!renaming) toName = data.car.name
-	$: if (!managing) toStatus = data.car.published ? 'active' : 'draft'
-	$: if (!managing) wantDelete = false
-	$: if (!managing) understandDelete = false
+	$: if (!deleting) wantDelete = false
+	$: if (!deleting) understandDelete = false
 
 	$: embedTitle = `"${data.car.name}" by ${data.car.twitchName}`
 	$: imageUrl = `${PUBLIC_HOST}/assets/car_${data.car.shortId}.png?${data.car.revision}`
@@ -42,19 +40,6 @@
 				setTimeout(() => (renamed = false), 3000) // Toast notification
 			} else {
 				console.log(result.type, result.status)
-			}
-		}
-	}
-
-	const onStatus: SubmitFunction = ({ cancel }) => {
-		if (toStatus === 'delete') return
-		if (toStatus === (data.car.published ? 'active' : 'draft')) return cancel()
-		return async ({ result }) => {
-			managing = false
-			if (result.type === 'success') {
-				const { data: resultData } = result as { data: { published: boolean } }
-				data.car.published = resultData.published
-				toStatus = resultData.published ? 'active' : 'draft'
 			}
 		}
 	}
@@ -78,11 +63,8 @@
 </svelte:head>
 <section class="card mb-4 rounded-none bg-neutral xs:rounded-box md:card-side xs:m-6">
 	<figure class="bg-base-200/70 p-4 md:w-1/2 md:p-6 lg:px-12 lg:py-8">
-		<div class="flex h-auto max-w-[32rem] flex-col items-center gap-2">
+		<div class="h-auto max-w-[32rem] gap-2">
 			<Car car={{ depotCar: data.car }} viewBox={getCarViewBox(data.car)} />
-			{#if !data.car.published}
-				<div class="badge badge-secondary badge-lg -mb-1 font-bold">draft</div>
-			{/if}
 		</div>
 	</figure>
 	<div class="card-body gap-4 p-4 xs:px-6 md:p-6 lg:max-w-[50%] lg:p-8 lg:px-8">
@@ -135,71 +117,38 @@
 		{#if data.car.belongsToUser}
 			<div
 				class="rounded-box box-content flex flex-col bg-base-100 px-4 py-4 xs:px-6"
-				class:h-28={!managing}
+				class:h-28={!deleting}
 			>
-				{#if managing}
+				{#if deleting}
 					<div class="flex grow flex-col gap-4">
-						<form class="flex flex-col gap-4" use:enhance={onStatus} method="POST">
-							<div class="join">
-								<!-- TODO: Add icons to these buttons -->
-								{#each ['active', 'draft', 'delete'] as status}
+						<form class="flex flex-col gap-4" use:enhance action="?/delete" method="POST">
+							<div>
+								<label class="label cursor-pointer justify-end gap-3">
+									<span class="text-lg">i want to delete this car</span>
 									<input
-										aria-label={status}
-										name="status"
-										type="radio"
-										bind:group={toStatus}
-										value={status}
-										class:!btn-secondary={status === toStatus && status === 'draft'}
-										class:!btn-error={status === toStatus && status === 'delete'}
-										class="btn join-item grow"
+										required
+										type="checkbox"
+										bind:checked={wantDelete}
+										class="checkbox-error checkbox"
 									/>
-								{/each}
+								</label>
+								<label class="label cursor-pointer justify-end gap-3">
+									<span class="text-lg">i know it can't be undone</span>
+									<input
+										required
+										type="checkbox"
+										bind:checked={understandDelete}
+										class="checkbox-error checkbox"
+									/>
+								</label>
 							</div>
-							{#if toStatus === 'delete'}
-								<div>
-									<label class="label cursor-pointer justify-end gap-3">
-										<span class="text-lg">i want to delete this car</span>
-										<input
-											required
-											type="checkbox"
-											bind:checked={wantDelete}
-											class="checkbox-error checkbox"
-										/>
-									</label>
-									<label class="label cursor-pointer justify-end gap-3">
-										<span class="text-lg">i know it can't be undone</span>
-										<input
-											required
-											type="checkbox"
-											bind:checked={understandDelete}
-											class="checkbox-error checkbox"
-										/>
-									</label>
-								</div>
-							{:else if toStatus === 'active'}
-								<p>active cars can appear in grace trains</p>
-							{:else}
-								<p>drafts will not appear in grace trains</p>
-							{/if}
 							<div class="flex w-full justify-between">
-								<button type="button" class="btn" on:click={() => (managing = false)}>
+								<button type="button" class="btn" on:click={() => (deleting = false)}>
 									Cancel
 								</button>
-								{#if toStatus === 'delete'}
-									<button
-										disabled={!wantDelete || !understandDelete}
-										formaction="?/delete"
-										class="btn btn-error">Delete</button
-									>
-								{:else}
-									<button
-										formaction="?/status"
-										disabled={toStatus === (data.car.published ? 'active' : 'draft')}
-										class:btn-primary={toStatus === 'active'}
-										class:btn-secondary={toStatus === 'draft'}
-										class="btn">Save</button
-									>
-								{/if}
+								<button disabled={!wantDelete || !understandDelete} class="btn btn-error">
+									Delete
+								</button>
 							</div>
 						</form>
 					</div>
@@ -239,11 +188,11 @@
 					</a>
 					<div class="divider my-2" />
 					<div class="grid grid-cols-3 gap-3">
+						<button class="btn btn-ghost btn-sm" on:click={() => (deleting = true)}>
+							Delete
+						</button>
 						<button class="btn btn-ghost btn-sm" on:click={() => (renaming = true)}>
 							Rename
-						</button>
-						<button class="btn btn-ghost btn-sm" on:click={() => (managing = true)}>
-							Manage
 						</button>
 						<button class="btn btn-ghost btn-sm" on:click={copyLink}> Share </button>
 					</div>

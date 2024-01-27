@@ -7,7 +7,6 @@
 	import { tick } from 'svelte'
 
 	export let cars: CarDataWithIds[]
-	export let title = 'my cars'
 
 	const fadeGradient = getFadeGradient('var(--b3)')
 	const topGradient = `linear-gradient(to top, ${fadeGradient})`
@@ -45,7 +44,7 @@
 
 <div class="rounded-xl bg-base-200" bind:this={containerElement}>
 	<div class="mb-2 flex items-center gap-4 p-4 xs:gap-6">
-		<h2 class="text-xl font-black sm:text-3xl">{title}</h2>
+		<h2 class="text-xl font-black sm:text-3xl">my cars</h2>
 		<div class="flex items-center gap-2">
 			<Icon icon="grid-large" class="h-4 w-4" />
 			<input type="checkbox" class="toggle" bind:checked={small} />

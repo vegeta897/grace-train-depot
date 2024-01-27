@@ -17,12 +17,7 @@ Make a unified layout component (with multiple slots, not a sveltekit layout) --
 		<div class="w-48 lg:w-64">
 			<Car car={{ depotCar: $designCar }} viewBox={getCarViewBox($designCar)} />
 		</div>
-		<h3 class="flex items-center gap-2 text-3xl font-black">
-			<span>{$designCar.name}</span>
-			{#if !$designCar.published}
-				<span class="badge badge-secondary badge-lg"> draft </span>
-			{/if}
-		</h3>
+		<h3 class="text-3xl font-black">{$designCar.name}</h3>
 	{/if}
 	<div class="rounded-box flex flex-col items-center gap-4 bg-neutral p-6">
 		{#if $designShortId === 'new'}

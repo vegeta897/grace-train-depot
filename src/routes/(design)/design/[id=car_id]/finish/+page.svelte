@@ -31,7 +31,6 @@
 
 	let savedCar: CarDataWithIds
 	let saveError: 'try-again' | null = null
-	let saveAsDraft = $designCar.published === false
 
 	const onSave: SubmitFunction = () => {
 		saveError = null
@@ -92,7 +91,7 @@
 				action="?/save"
 				method="POST"
 				use:enhance={onSave}
-				class="flex flex-col gap-4"
+				class="flex flex-col gap-6"
 			>
 				<input type="hidden" name="carData" value={JSON.stringify($designCar)} />
 				<div class="form-control">
@@ -111,34 +110,7 @@
 						maxlength={CAR_NAME_MAX_LENGTH}
 					/>
 				</div>
-				<label class="label cursor-pointer">
-					<div>
-						<p class="label-text text-lg">save as a draft</p>
-						<p class="label-text text-base-content/70">
-							drafts won't appear in grace trains
-						</p>
-					</div>
-					<input
-						type="checkbox"
-						name="draft"
-						class="checkbox checkbox-lg"
-						bind:checked={saveAsDraft}
-						value="draft"
-					/>
-				</label>
-				<button class="btn btn-primary btn-lg">
-					{#if saveAsDraft}
-						Save draft
-					{:else if $designCar.published === false}
-						Save &amp; activate
-					{:else}
-						Save car
-					{/if}
-				</button>
-				<!-- <div class="divider my-1">or</div>
-				<button formaction="?/save" class="link text-lg"
-					>save {#if $designCar.published}and move to drafts{:else}without publishing{/if}</button
-				> -->
+				<button class="btn btn-primary btn-lg"> Save car </button>
 			</form>
 		{:else}
 			<div class="alert mt-4">

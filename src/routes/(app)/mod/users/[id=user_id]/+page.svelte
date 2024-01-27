@@ -78,7 +78,7 @@
 		<div class="stat">
 			<div class="stat-title">total designs</div>
 			<div class="stat-value">{data.pageUser.carCount}</div>
-			<div class="stat-desc text-sm">including drafts</div>
+			<div class="stat-desc"></div>
 		</div>
 	</div>
 	<div class="flex flex-wrap items-start gap-4">

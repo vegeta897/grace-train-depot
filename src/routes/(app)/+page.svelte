@@ -9,8 +9,7 @@
 
 	export let data: PageData
 
-	$: publishedCars = data.savedCars?.filter((c) => c.published) || []
-	$: draftCars = data.savedCars?.filter((c) => !c.published) || []
+	$: cars = data.savedCars || []
 
 	const carDeleted = $page.url.searchParams.get('carDeleted')
 
@@ -57,10 +56,7 @@
 					<a href="/mod" class="btn">🛡️ Mod view</a>
 				{/if}
 			</div>
-			<CarGrid cars={publishedCars} />
-			{#if draftCars.length > 0}
-				<CarGrid title="my drafts" cars={draftCars} />
-			{/if}
+			<CarGrid {cars} />
 		</div>
 	</section>
 {:else}
