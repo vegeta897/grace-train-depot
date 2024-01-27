@@ -215,6 +215,7 @@
 								<input
 									required
 									type="text"
+									autocomplete="off"
 									name="carName"
 									class="input input-bordered w-full invalid:input-warning"
 									bind:value={toName}

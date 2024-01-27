@@ -103,6 +103,7 @@
 					<input
 						required
 						type="text"
+						autocomplete="off"
 						name="carName"
 						class="input input-lg invalid:input-warning"
 						value={$designCar.name}
