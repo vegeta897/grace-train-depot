@@ -49,7 +49,7 @@
 <svelte:head><title>Choo Choo Mod!</title></svelte:head>
 <section class="py-4 xs:px-4">
 	<div class="flex flex-col gap-4 bg-neutral p-4 xs:rounded-box">
-		<div class="flex justify-between">
+		<div class="flex items-center justify-between">
 			<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
 			<a href="/mod/log" class="btn"><span>📄</span>Audit log</a>
 		</div>
@@ -79,7 +79,10 @@
 				</li>
 			{/each}
 		</ol>
-		<p><strong>note:</strong> these trains do not include generic cars</p>
+		<p>
+			<strong>note:</strong> these trains only show the last 50 cars and do not include generic
+			cars
+		</p>
 	</div>
 </section>
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->

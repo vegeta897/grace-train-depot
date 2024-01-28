@@ -3,10 +3,41 @@ import type { PageServerLoad } from './$types'
 import { userIsAdmin, userIsMod } from '$lib/server/admin'
 import prisma from '$lib/server/prisma'
 import type { GraceTrainCar } from 'grace-train-lib/data'
+import type { Prisma } from 'grace-train-lib/prisma'
 import { dev } from '$app/environment'
 import { hideUserFromOverlay } from './mod'
 
 const EIGHT_HOURS = 8 * 60 * 60 * 1000
+const CARS_LIMIT = 50
+
+const NOT_NULL_USER = { user: { isNot: null } } satisfies Prisma.GraceTrainCarWhereInput
+const TRAIN_SELECT = {
+	id: true,
+	ended: true,
+	_count: { select: { cars: { where: NOT_NULL_USER } } },
+	cars: {
+		take: CARS_LIMIT,
+		orderBy: { index: 'desc' },
+		select: {
+			index: true,
+			addedAt: true,
+			carData: true,
+			user: {
+				select: {
+					twitchUsername: true,
+					twitchDisplayName: true,
+					id: true,
+					trustLevel: true,
+				},
+			},
+			car: { select: { shortId: true } },
+		},
+		where: {
+			car: { isNot: null }, // Only include designed cars
+			user: { isNot: null }, // Don't include deleted users
+		},
+	},
+} satisfies Prisma.GraceTrainSelect
 
 export const load = (async ({ locals }) => {
 	const session = await locals.auth.validate()
@@ -17,34 +48,10 @@ export const load = (async ({ locals }) => {
 			"you don't belong here, you're not a mod! ... but if you want to be one, ask vegeta!"
 		)
 	const trains = await prisma.graceTrain.findMany({
-		// TODO: Make this a const
-		select: {
-			id: true,
-			ended: true,
-			cars: {
-				orderBy: { index: 'desc' },
-				select: {
-					index: true,
-					addedAt: true,
-					carData: true,
-					user: {
-						select: {
-							twitchUsername: true,
-							twitchDisplayName: true,
-							id: true,
-							trustLevel: true,
-						},
-					},
-					car: { select: { shortId: true } },
-				},
-				where: {
-					car: { isNot: null }, // Only include designed cars
-					user: { isNot: null }, // Don't include deleted users
-				},
-			},
-		},
+		select: TRAIN_SELECT,
+		take: 8,
 		where: {
-			cars: { some: { user: { isNot: null } } }, // Has at least one designed car
+			cars: { some: NOT_NULL_USER }, // Has at least one designed car
 			id: dev ? {} : { gt: Date.now() - EIGHT_HOURS },
 		},
 		orderBy: { id: 'desc' },
@@ -54,6 +61,7 @@ export const load = (async ({ locals }) => {
 		trains: trains.map((train) => ({
 			id: Number(train.id),
 			ended: train.ended,
+			truncatedCars: Math.max(0, train._count.cars - CARS_LIMIT),
 			cars: train.cars.map((car) => ({
 				...car,
 				carData: car.carData as GraceTrainCar,

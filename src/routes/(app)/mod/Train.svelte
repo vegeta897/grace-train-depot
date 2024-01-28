@@ -31,4 +31,9 @@
 			</a>
 		</li>
 	{/each}
+	{#if train.truncatedCars > 0}
+		<li class="w-32 shrink-0 px-3 py-8 text-base-content/70">
+			{train.truncatedCars} older cars not shown
+		</li>
+	{/if}
 </ol>
