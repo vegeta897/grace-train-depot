@@ -23,7 +23,7 @@ export const load = (async (event) => {
 				select: { carId: true, carRevision: true, carData: true },
 				where: {
 					trainId: dev ? {} : { gt: Date.now() - EIGHT_HOURS }, // Show all trains in dev mode
-					carId: { not: null }, // Only include designed cars
+					carRevision: { not: null }, // Only include designed cars
 				},
 				distinct: ['carId', 'carRevision'],
 				orderBy: [{ trainId: 'desc' }, { index: 'desc' }],

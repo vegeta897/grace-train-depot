@@ -20,6 +20,7 @@ export const GET = (async ({ url, cookies, locals }) => {
 			await twitchAuth.validateCallback(code)
 		const existingUser = await getExistingUser()
 		// TODO: Call spice bot endpoint to see if user is following/subscribed
+		// TODO: Check if twitch user id is in BannedUsers table
 		const getUser = async () => {
 			if (existingUser) return existingUser
 			newUser = true

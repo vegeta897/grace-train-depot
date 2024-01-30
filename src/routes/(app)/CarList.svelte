@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { CarDataWithIds } from '$lib/server/schemas/car'
+	import type { DesignCar } from '$lib/server/schemas/car'
 	import { getSideFadeGradient } from '$lib/util'
 	import { Car } from 'grace-train-lib/components'
 
-	export let cars: CarDataWithIds[]
+	export let cars: DesignCar[]
 	export let size = 1
 
 	const baseWidth = 146 // Car width (incl padding) in pixels

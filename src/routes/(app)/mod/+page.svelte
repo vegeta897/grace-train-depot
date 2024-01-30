@@ -14,6 +14,7 @@
 	let dialog: HTMLDialogElement
 	let confirmingHide = false
 
+	$: endedTrains = data.trains.filter((t) => t.ended)
 	$: urlTrainId = Number($page.url.searchParams.get('t'))
 	$: urlCarIndex = Number($page.url.searchParams.get('i'))
 	$: selectedCar =
@@ -53,6 +54,9 @@
 			<h2 class="text-2xl font-black uppercase tracking-wide">🛡️ Mod view</h2>
 			<a href="/mod/log" class="btn"><span>📄</span>Audit log</a>
 		</div>
+		{#if data.trains.length === 0}
+			<p class="text-xl">no recent trains that need moderating!</p>
+		{/if}
 		{#if data.trains[0] && !data.trains[0].ended}
 			{@const train = data.trains[0]}
 			<div class="flex flex-col gap-2">
@@ -66,22 +70,23 @@
 				<Train {train} {selectedCar} />
 			</div>
 		{/if}
-		<h3 class="text-2xl font-black">ended trains</h3>
-		<ol class="space-y-4">
-			{#each data.trains.filter((t) => t.ended) as train}
-				{@const lastCarTimeRelative = getRelativeTime(new Date(train.cars[0].addedAt))}
-				<li class="flex flex-col gap-2">
-					<span class="badge badge-lg font-bold" class:badge-primary={!train.ended}>
-						{lastCarTimeRelative[0]}
-						{lastCarTimeRelative[1]} ago
-					</span>
-					<Train {train} {selectedCar} />
-				</li>
-			{/each}
-		</ol>
+		{#if endedTrains.length > 0}
+			<h3 class="text-2xl font-black">ended trains</h3>
+			<ol class="space-y-4">
+				{#each endedTrains as train}
+					{@const lastCarTimeRelative = getRelativeTime(new Date(train.cars[0].addedAt))}
+					<li class="flex flex-col gap-2">
+						<span class="badge badge-lg font-bold" class:badge-primary={!train.ended}>
+							{lastCarTimeRelative[0]}
+							{lastCarTimeRelative[1]} ago
+						</span>
+						<Train {train} {selectedCar} />
+					</li>
+				{/each}
+			</ol>
+		{/if}
 		<p>
-			<strong>note:</strong> these trains only show the last 50 cars and do not include generic
-			cars
+			<strong>note:</strong> only cars with decals are included on this page
 		</p>
 	</div>
 </section>
@@ -112,6 +117,9 @@
 					<a class="link" href="/mod/users/{selectedCar.user.id}">user page</a>
 				{/if}
 			</div>
+			{#if !selectedCar.car}
+				(this car was deleted)
+			{/if}
 			{#if selectedCar.user && (selectedCar.user.trustLevel === 'default' || (selectedCar.user.trustLevel === 'trusted' && data.admin))}
 				<form
 					method="POST"

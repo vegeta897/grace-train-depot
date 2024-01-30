@@ -9,7 +9,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+		"seedDev": "npx tsx ./scripts/seedDev.ts"
 	},
 	"devDependencies": {
 		"@fontsource-variable/nunito": "^5.0.17",
@@ -46,11 +47,10 @@
 	"dependencies": {
 		"@lucia-auth/adapter-prisma": "^3.0.2",
 		"@lucia-auth/oauth": "^3.5.2",
+		"@prisma/client": "^5.8.1",
 		"lucia": "^2.7.6",
+		"prisma": "^5.8.1",
 		"sharp": "^0.33.2",
 		"zod": "^3.22.4"
-	},
-	"prisma": {
-		"schema": "../grace-train-lib/prisma/schema.prisma"
 	}
 }

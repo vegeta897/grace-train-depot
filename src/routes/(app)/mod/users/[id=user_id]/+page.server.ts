@@ -2,10 +2,10 @@ import { error, redirect, type Actions, fail } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import { getRelativeTime } from '$lib/util'
-import type { $Enums } from 'grace-train-lib/prisma'
 import { userIsAdmin, userIsMod } from '$lib/server/admin'
 import { getLogEntries } from '../../log/log'
 import { hideUserFromOverlay } from '../../mod'
+import type { $Enums } from '@prisma/client'
 
 const pageUserIncludeQuery = {
 	_count: { select: { cars: true } },

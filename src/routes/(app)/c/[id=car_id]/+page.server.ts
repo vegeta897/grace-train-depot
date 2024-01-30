@@ -5,7 +5,6 @@ import { fail, redirect, type Actions, error } from '@sveltejs/kit'
 import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 import { getRelativeTime } from '$lib/util'
 import fs from 'node:fs'
-import type { SignalName } from '$lib/signals'
 
 const carIncludeQuery = {
 	decals: { orderBy: { slot: 'asc' } },
@@ -38,7 +37,6 @@ export const load = (async ({ params, parent }) => {
 			belongsToUser: carData.userId === parentData.user?.userId,
 			stats,
 			twitchName: carData.user.twitchDisplayName,
-			signals: carData.signals as SignalName[],
 		},
 	}
 }) satisfies PageServerLoad

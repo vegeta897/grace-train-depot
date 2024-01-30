@@ -2,7 +2,7 @@ import { redirect, error } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import type { GraceTrainCar } from 'grace-train-lib/data'
-import type { $Enums, Prisma } from 'grace-train-lib/prisma'
+import type { $Enums, Prisma } from '@prisma/client'
 import { dev } from '$app/environment'
 
 const EIGHT_HOURS = 8 * 60 * 60 * 1000

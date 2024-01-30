@@ -1,20 +1,22 @@
 import { generateRandomString } from 'lucia/utils'
-import type { Prisma } from 'grace-train-lib/prisma'
-import type { CarDataWithIds } from './schemas/car'
-import {
-	transformCarFromDBToDepotCarWithoutDecalsToppers,
-	transformDecalFromDB,
-	transformTopperFromDB,
-} from 'grace-train-lib/data'
+import type { DesignCar } from './schemas/car'
+import type { SignalName } from '$lib/signals'
+import type { DecalData, DepotCar, TopperData } from 'grace-train-lib/data'
+import type { Prisma } from '@prisma/client'
 
 export type DBCar = Prisma.CarGetPayload<{ include: { decals: true; toppers: true } }>
 
-export function transformCarFromDBWithIds(carData: DBCar): CarDataWithIds {
+// TODO: Clean up types and functions for db car, display car, and design car
+// Design car doesn't need signals, only signalGoals
+// Only db car and display car need signals
+export function transformCarFromDBWithIds(carData: DBCar): DesignCar {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
 		name: carData.name,
 		revision: carData.revision,
+		signals: carData.signals as SignalName[],
+		signalGoals: [],
 		...transformCarFromDBToDepotCarWithoutDecalsToppers(carData),
 		decals: carData.decals.map((decal, d) => ({
 			...transformDecalFromDB(decal),
@@ -26,6 +28,48 @@ export function transformCarFromDBWithIds(carData: DBCar): CarDataWithIds {
 			id: t,
 			slot: topper.slot,
 		})),
+	}
+}
+
+export const transformDecalFromDB = (
+	decal: DBCar['decals'][number]
+): DepotCar['decals'][number] => ({
+	name: decal.name as DecalData['name'],
+	x: decal.x,
+	y: decal.y,
+	rotate: decal.rotate,
+	scale: decal.scale,
+	fill: decal.fill as DecalData['fill'],
+	params: decal.params as DecalData['params'],
+})
+
+export const transformTopperFromDB = (topper: DBCar['toppers'][number]): TopperData => ({
+	name: topper.name as TopperData['name'],
+	position: topper.position,
+	offset: topper.offset,
+	scale: topper.scale,
+	rotate: topper.rotate,
+	params: topper.params as TopperData['params'],
+})
+
+export function transformCarFromDBToDepotCarWithoutDecalsToppers(
+	car: DBCar
+): Omit<DepotCar, 'toppers' | 'decals'> {
+	return {
+		body: car.body as DepotCar['body'],
+		bodyColor: car.bodyColor || (undefined as DepotCar['bodyColor']),
+		bodyPopColor: car.bodyPopColor || (undefined as DepotCar['bodyPopColor']),
+		wheelColor: car.wheelColor || (undefined as DepotCar['wheelColor']),
+		wheelFromCenter: car.wheelFromCenter,
+		wheelSize: car.wheelSize,
+	}
+}
+
+export function transformCarFromDBToDepotCar(car: DBCar): DepotCar {
+	return {
+		...transformCarFromDBToDepotCarWithoutDecalsToppers(car),
+		decals: car.decals.map(transformDecalFromDB),
+		toppers: car.toppers.map(transformTopperFromDB),
 	}
 }
 

@@ -10,6 +10,7 @@ import { decalsSchema, type DecalDataWithId, type DecalDataWithSlot } from './de
 import { baseColorSchema, popColorSchema, schemaForType } from './common'
 import { toppersSchema, type TopperDataWithId, type TopperDataWithSlot } from './toppers'
 import { BODY_NAMES, type DepotCar } from 'grace-train-lib/data'
+import { SIGNALS, type SignalName } from '$lib/signals'
 
 export const carSchema = schemaForType<CarDataForDBWrite>()(
 	z.object({
@@ -17,6 +18,7 @@ export const carSchema = schemaForType<CarDataForDBWrite>()(
 		shortId: z.string().min(1).readonly(),
 		name: z.string().min(1).max(CAR_NAME_MAX_LENGTH),
 		revision: z.number().int().gte(1).optional().readonly(),
+		signals: z.array(z.enum(SIGNALS)),
 		body: z.enum(BODY_NAMES),
 		bodyColor: baseColorSchema.optional(),
 		bodyPopColor: popColorSchema.optional(),
@@ -33,11 +35,13 @@ export type CarDataForDBWrite = Omit<DepotCar, 'decals' | 'toppers'> & {
 	shortId: string
 	name: string
 	revision?: number
+	signals: SignalName[]
 	decals: DecalDataWithSlot[]
 	toppers: TopperDataWithSlot[]
 }
 
-export type CarDataWithIds = Omit<CarDataForDBWrite, 'decals' | 'toppers'> & {
+export type DesignCar = Omit<CarDataForDBWrite, 'decals' | 'toppers'> & {
+	signalGoals: SignalName[]
 	decals: DecalDataWithId[]
 	toppers: TopperDataWithId[]
 }

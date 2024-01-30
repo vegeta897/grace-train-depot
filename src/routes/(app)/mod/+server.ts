@@ -5,6 +5,7 @@ import prisma from '$lib/server/prisma'
 import type { ModPageTrainCar } from './Train.svelte'
 
 // TODO: Move this into mod folder
+// Share query/functions with page.server.ts
 
 export const GET: RequestHandler = async ({ locals, url }) => {
 	const session = await locals.auth.validate()
@@ -24,13 +25,21 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			index: true,
 			addedAt: true,
 			carData: true,
-			user: { select: { twitchUsername: true, twitchDisplayName: true } },
+			user: {
+				select: {
+					twitchUsername: true,
+					twitchDisplayName: true,
+					id: true,
+					trustLevel: true,
+				},
+			},
+			car: { select: { shortId: true } },
 		},
 		orderBy: { index: 'desc' },
 		where: {
 			trainId: id,
 			index: { gt: afterIndex },
-			carId: { not: null }, // Only include designed cars
+			hasDecals: true, // Only include cars with decals
 			user: { isNot: null }, // Don't include deleted users
 		},
 	})
@@ -40,6 +49,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			...car,
 			carData: car.carData as ModPageTrainCar['carData'],
 			addedAt: car.addedAt.getTime(), // Because we can't use sveltekit's serializer
+			hidden:
+				!car.user || car.user.trustLevel === 'hidden' || car.user.trustLevel === 'banned',
 		})) as (Omit<ModPageTrainCar, 'addedAt'> & { addedAt: number })[],
 	})
 }

@@ -6,14 +6,17 @@
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
 	import Icon from '$lib/components/Icon.svelte'
+	import { SIGNALS } from '$lib/signals'
+	import Signal from '$lib/components/Signal.svelte'
 
 	export let data: PageData
 
 	$: cars = data.savedCars || []
 
 	const carDeleted = $page.url.searchParams.get('carDeleted')
-
 	const sideFadeGradient = getSideFadeGradient(20)
+
+	let showSignalsInfo = false
 </script>
 
 <svelte:head>
@@ -28,12 +31,12 @@
 </svelte:head>
 {#if data.user}
 	<!-- TODO: Move this to a /me or /depot route? -->
-	<section class="flex flex-col items-center gap-4 p-4 md:p-8">
+	<section class="flex flex-col items-stretch gap-4 p-4 md:p-8">
 		{#if carDeleted}
 			<div class="alert alert-info w-auto">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6 shrink-0 stroke-current"
+					class="size-6 shrink-0 stroke-current"
 					fill="none"
 					viewBox="0 0 24 24"
 					><path
@@ -46,18 +49,73 @@
 				Car deleted
 			</div>
 		{/if}
-		<div class="rounded-box flex w-full flex-col gap-4 bg-neutral p-4 md:px-10 md:py-8">
-			<div class="flex flex-wrap items-center justify-between gap-2">
-				<h2 class="flex items-end gap-2 text-lg font-bold">
-					<Icon icon="twitch" class="h-6 w-6" />
-					{data.user.twitchDisplayName}
-				</h2>
-				{#if data.user.isMod}
-					<a href="/mod" class="btn">🛡️ Mod view</a>
-				{/if}
-			</div>
-			<CarGrid {cars} />
+		<!-- <div class="rounded-box flex w-full flex-col gap-4 bg-neutral p-4 md:px-10 md:py-8"> -->
+		<div class="flex flex-wrap items-center justify-between gap-2">
+			<h2 class="flex items-end gap-2 text-lg font-bold">
+				<Icon icon="twitch" class="size-6" />
+				{data.user.twitchDisplayName}
+			</h2>
+			{#if data.user.isMod}
+				<a href="/mod" class="btn">🛡️ Mod view</a>
+			{/if}
 		</div>
+		<CarGrid {cars} />
+		<div class="flex items-center gap-3">
+			<h2 class="text-2xl font-bold">🚦 railway signals</h2>
+			<button
+				on:click={() => (showSignalsInfo = !showSignalsInfo)}
+				class="btn btn-circle btn-sm size-10 text-lg"
+			>
+				?
+			</button>
+		</div>
+		{#if showSignalsInfo}
+			<div
+				class="alert rounded-none border-none bg-neutral px-2 leading-snug sm:rounded-box sm:gap-6 sm:px-6 sm:text-lg"
+			>
+				<div class="w-6 text-4xl font-black">🚦</div>
+				<div>
+					<p>
+						every car you create is automatically tagged with
+						<strong class="text-primary">railway signals</strong> based on its design
+					</p>
+					<p class="mt-1">
+						gracing during
+						<strong class="text-primary">signalled grace trains</strong>
+						will call any cars that match that train's
+						<strong class="text-primary">signal</strong>
+					</p>
+					<p class="mt-1">
+						you can prepare for any railway signal by designing cars for all of them!
+					</p>
+				</div>
+				<button on:click={() => (showSignalsInfo = false)} class="btn">ok</button>
+			</div>
+		{/if}
+		<div class="grid grid-cols-4 gap-3">
+			<!-- TODO: List incompleted and completed signals separately -->
+			{#each SIGNALS as signal}
+				{@const signalCars = cars.filter((car) => car.signals.includes(signal))}
+				<!-- {@const { colors } = signalDefs[signal]} -->
+				<div class="rounded-box flex flex-col items-center bg-neutral p-4">
+					<Signal {signal} inactive={signalCars.length === 0} />
+					{#if signalCars.length > 0}
+						<div class="px-6 pt-[30%]">
+							<Car car={{ depotCar: signalCars[0] }} />
+						</div>
+						{#if signalCars.length > 1}
+							{@const moreCars = signalCars.length - 1}
+							<p class="mt-2 text-lg font-bold text-base-content/70">+{moreCars} more</p>
+						{/if}
+					{:else}
+						<div class="flex grow flex-col justify-center">
+							<button class="btn btn-outline btn-lg">Design</button>
+						</div>
+					{/if}
+				</div>
+			{/each}
+		</div>
+		<!-- </div> -->
 	</section>
 {:else}
 	<section class="flex grow flex-col items-center justify-center p-4 md:p-8">

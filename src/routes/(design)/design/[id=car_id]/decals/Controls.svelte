@@ -45,7 +45,7 @@
 				{decal.name}
 			</h3>
 			<button
-				class="btn btn-circle btn-sm xs:h-10 xs:w-10"
+				class="btn btn-circle btn-sm xs:size-10"
 				on:click={() => selectedSlot.set(null)}
 				><Icon class="w-3 xs:w-4" icon="x" /></button
 			>

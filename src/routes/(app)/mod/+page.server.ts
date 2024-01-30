@@ -3,18 +3,21 @@ import type { PageServerLoad } from './$types'
 import { userIsAdmin, userIsMod } from '$lib/server/admin'
 import prisma from '$lib/server/prisma'
 import type { GraceTrainCar } from 'grace-train-lib/data'
-import type { Prisma } from 'grace-train-lib/prisma'
 import { dev } from '$app/environment'
 import { hideUserFromOverlay } from './mod'
+import type { Prisma } from '@prisma/client'
 
 const EIGHT_HOURS = 8 * 60 * 60 * 1000
 const CARS_LIMIT = 50
 
-const NOT_NULL_USER = { user: { isNot: null } } satisfies Prisma.GraceTrainCarWhereInput
+const MODDABLE_CARS = {
+	user: { isNot: null },
+	hasDecals: true,
+} satisfies Prisma.GraceTrainCarWhereInput
 const TRAIN_SELECT = {
 	id: true,
 	ended: true,
-	_count: { select: { cars: { where: NOT_NULL_USER } } },
+	_count: { select: { cars: { where: MODDABLE_CARS } } },
 	cars: {
 		take: CARS_LIMIT,
 		orderBy: { index: 'desc' },
@@ -32,10 +35,7 @@ const TRAIN_SELECT = {
 			},
 			car: { select: { shortId: true } },
 		},
-		where: {
-			car: { isNot: null }, // Only include designed cars
-			user: { isNot: null }, // Don't include deleted users
-		},
+		where: MODDABLE_CARS,
 	},
 } satisfies Prisma.GraceTrainSelect
 
@@ -51,7 +51,7 @@ export const load = (async ({ locals }) => {
 		select: TRAIN_SELECT,
 		take: 8,
 		where: {
-			cars: { some: NOT_NULL_USER }, // Has at least one designed car
+			cars: { some: MODDABLE_CARS },
 			id: dev ? {} : { gt: Date.now() - EIGHT_HOURS },
 		},
 		orderBy: { id: 'desc' },

@@ -7,7 +7,9 @@
 	import { browser } from '$app/environment'
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
-	import type { CarDataWithIds } from '$lib/server/schemas/car'
+	import type { DesignCar } from '$lib/server/schemas/car'
+	import SignalGoals from '../SignalGoals.svelte'
+	import { signalDefs } from '$lib/signals'
 
 	export let data: PageData
 	export let form: ActionData
@@ -29,8 +31,12 @@
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
-	let savedCar: CarDataWithIds
+	let savedCar: DesignCar
 	let saveError: 'try-again' | null = null
+
+	$: incompleteSignalGoals = $designCar.signalGoals.filter(
+		(goal) => signalDefs[goal].getProgress($designCar) < 1
+	)
 
 	const onSave: SubmitFunction = () => {
 		saveError = null
@@ -69,7 +75,7 @@
 				<!-- TODO: Move to Icon.svelte -->
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6 shrink-0 stroke-current"
+					class="size-6 shrink-0 stroke-current"
 					fill="none"
 					viewBox="0 0 24 24"
 				>
@@ -83,8 +89,11 @@
 				there was a problem saving your design.<br />please refresh the page and try
 				again.
 			</div>
-		{:else if $page.params.id === 'new' && data.user}
-			<p class="text-lg"><strong>lovely design!</strong> what do you call it?</p>
+		{:else if data.firstCar}
+			<p class="text-lg">
+				<strong>lovely design!</strong>
+				{#if data.user}what do you call it?{/if}
+			</p>
 		{/if}
 		{#if data.user}
 			<form
@@ -106,10 +115,21 @@
 						name="carName"
 						class="input input-lg invalid:input-warning"
 						value={$designCar.name}
-						placeholder="type a name here"
+						placeholder="enter a name here"
 						maxlength={CAR_NAME_MAX_LENGTH}
 					/>
 				</div>
+				{#if incompleteSignalGoals.length > 0}
+					<div class="alert">
+						<div class="w-5 text-2xl">🚦</div>
+						<div>
+							<p class="font-bold">you didn't meet all your signal goals</p>
+							<p class="mt-1 text-base-content/70">
+								but that's okay! your car is still rad
+							</p>
+						</div>
+					</div>
+				{/if}
 				<button class="btn btn-primary btn-lg"> Save car </button>
 			</form>
 		{:else}
@@ -117,7 +137,7 @@
 				<!-- TODO: Replace with <Icon /> -->
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6 shrink-0 stroke-current"
+					class="size-6 shrink-0 stroke-current"
 					fill="none"
 					viewBox="0 0 24 24"
 					><path

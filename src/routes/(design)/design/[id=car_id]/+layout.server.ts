@@ -3,17 +3,22 @@ import type { LayoutServerLoad } from './$types'
 import prisma from '$lib/server/prisma'
 import { transformCarFromDBWithIds } from '$lib/server/car'
 import type { User } from 'lucia'
-import type { CarDataWithIds } from '$lib/server/schemas/car'
+import type { DesignCar } from '$lib/server/schemas/car'
 
 const carIncludeQuery = { decals: true, toppers: true } as const
 
 export const load = (async ({ params, locals }) => {
-	console.log('/design/ layout server load')
+	// console.log('/design/ layout server load')
 	// Redirect bots to car page
 	if (locals.botAgent) redirect(302, params.id === 'new' ? '/' : `/c/${params.id}`)
-	const data: { user?: User; savedCar?: CarDataWithIds } = {}
+	const data: { user?: User; savedCar?: DesignCar; firstCar: boolean } = {
+		firstCar: true,
+	}
 	const session = await locals.auth.validate()
-	if (session) data.user = session.user
+	if (session) {
+		data.user = session.user
+		data.firstCar = !(await prisma.car.findFirst())
+	}
 	if (params.id === 'new') return data
 	if (!session) redirect(302, `/login?redirectTo=/design/${params.id}`)
 	const savedCar = await prisma.car.findUnique({

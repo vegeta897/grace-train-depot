@@ -1,4 +1,4 @@
-import type { CarDataWithIds } from '$lib/server/schemas/car'
+import type { DesignCar } from '$lib/server/schemas/car'
 import type { DecalDataWithId, DecalDataWithSlot } from './server/schemas/decals'
 import { bodyDefs, topperDefs, getTopperBaseTransform } from 'grace-train-lib/components'
 import { degToRad } from './util'
@@ -6,9 +6,10 @@ import { COLOR_NAMES } from 'grace-train-lib'
 import type { TopperDataWithSlot } from './server/schemas/toppers'
 import type { DepotCar } from 'grace-train-lib/data'
 
-export function cloneCar(car: CarDataWithIds): CarDataWithIds {
+export function cloneCar(car: DesignCar): DesignCar {
 	return {
 		...car,
+		signalGoals: [...car.signalGoals],
 		toppers: car.toppers.map((t) => ({ ...t })),
 		decals: car.decals.map(cloneDecal),
 	}
@@ -18,27 +19,26 @@ export function cloneDecal(decal: DecalDataWithId): DecalDataWithId {
 	return { ...decal, params: JSON.parse(JSON.stringify(decal.params)) }
 }
 
-export function getNewCar(): CarDataWithIds {
+export function getNewDesignCar(): DesignCar {
 	return {
 		id: 0,
 		name: '',
 		shortId: 'new',
 		body: 'boxy',
+		signals: [],
+		signalGoals: [],
 		decals: [],
+		toppers: [],
 		wheelFromCenter: 100,
 		wheelSize: 25,
 		wheelColor: COLOR_NAMES.POP.POP,
-		toppers: [],
 	}
 }
 
 // TODO: This is overkill
 // Just add a "modified" boolean in the design stores that gets changed to true whenever you change anything
 // Maybe run this function once before saving to allow the server to silently skip updating the db
-export function getCarChangesByPage(
-	original: CarDataWithIds,
-	maybeChanged: CarDataWithIds
-) {
+export function getCarChangesByPage(original: DesignCar, maybeChanged: DesignCar) {
 	if (original === maybeChanged) return {}
 	return {
 		body: maybeChanged.body !== original.body,
@@ -84,10 +84,7 @@ function topperIsDifferent(
 
 type Bounds = { top: number; left: number; right: number; bottom: number }
 
-export function getCarBounds(
-	car: DepotCar | CarDataWithIds,
-	minBounds: Partial<Bounds> = {}
-) {
+export function getCarBounds(car: DepotCar | DesignCar, minBounds: Partial<Bounds> = {}) {
 	const bounds = Object.assign({ top: 0, left: 0, right: 375, bottom: 300 }, minBounds)
 	if (car.toppers.length === 0) return bounds
 	const topLine = bodyDefs[car.body].topperLine
@@ -120,10 +117,8 @@ export function getCarBounds(
 	return bounds
 }
 
-export const getCarViewBox = (
-	car: DepotCar | CarDataWithIds,
-	minBounds?: Partial<Bounds>
-) => boundsToViewbox(getCarBounds(car, minBounds))
+export const getCarViewBox = (car: DepotCar | DesignCar, minBounds?: Partial<Bounds>) =>
+	boundsToViewbox(getCarBounds(car, minBounds))
 
 export const boundsToViewbox = (bounds: Bounds) =>
 	`${bounds.left} ${bounds.top} ${bounds.right - bounds.left} ${

@@ -445,7 +445,7 @@
 				{@const boundingBox = getDecalBoundingBox(decal)}
 				{#key decal.id}
 					<div
-						class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 h-0 w-0 select-none"
+						class="pointer-events-none absolute left-[-50px] top-[-50px] z-10 size-0 select-none"
 						style:transform-origin="50px 50px"
 						style:transform="translate({transform.x}px,{transform.y}px) rotate({transform.rotate}deg)"
 						transition:fade={{ duration: 50, easing: cubicOut }}
@@ -462,7 +462,7 @@
 										on:pointerdown={() => startResize(c)}
 										style:transform="scale({((resizing && getCornerScale(c)) ||
 											(rotating || $dragging ? 0.5 : 1)) / canvasScale})"
-										class="rounded-box pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none border-5 border-white bg-primary"
+										class="rounded-box pointer-events-auto absolute left-[34px] top-[34px] size-8 origin-center touch-none border-5 border-white bg-primary"
 										class:transition-transform={!resizing}
 										class:transition-opacity={!resizing}
 										class:opacity-30={transforming}
@@ -482,7 +482,7 @@
 							<button
 								on:pointerdown={() => startRotate()}
 								style:transform="scale({(rotating ? 1.5 : 1) / canvasScale})"
-								class="rounded-box pointer-events-auto absolute left-[34px] top-[34px] h-8 w-8 origin-center touch-none border-5 border-white bg-secondary"
+								class="rounded-box pointer-events-auto absolute left-[34px] top-[34px] size-8 origin-center touch-none border-5 border-white bg-secondary"
 								class:transition-all={!resizing}
 								class:opacity-60={rotating}
 								class:opacity-0={resizing || $dragging}

@@ -95,7 +95,7 @@
 
 <div class="rounded-box flex items-start gap-4 bg-base-200 p-2 sm:p-4">
 	<div>
-		<h3 class="mb-2 pl-1 text-xl text-base-content/50">add a decal</h3>
+		<p class="mb-2 pl-1 text-xl text-base-content/50">pick a decal to add</p>
 		<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(3rem,_1fr))] gap-1">
 			{#each tabs[$shapePickerTab] as { name, defaultFill: fill, defaultParams }}
 				{@const params = {
@@ -127,7 +127,7 @@
 			}}
 			<button
 				on:click={() => shapePickerTab.set(t)}
-				class="btn join-item h-14 w-14 px-2 sm:h-16 sm:w-16 sm:px-3"
+				class="btn join-item size-14 px-2 sm:size-16 sm:px-3"
 				class:btn-neutral={t !== $shapePickerTab}
 				class:btn-active={t === $shapePickerTab}
 				class:btn-secondary={t === $shapePickerTab}

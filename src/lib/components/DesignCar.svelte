@@ -8,12 +8,12 @@
 		Wheels,
 	} from 'grace-train-lib/components'
 	import type { ComponentProps } from 'svelte'
-	import type { CarDataWithIds } from '$lib/server/schemas/car'
+	import type { DesignCar } from '$lib/server/schemas/car'
 	import Decals from './Decals.svelte'
 	import type { TopperDataWithId } from '$lib/server/schemas/toppers'
 	import type { BodyName } from 'grace-train-lib/data'
 
-	export let car: CarDataWithIds
+	export let car: DesignCar
 	export let bodyOverride: BodyName | null = null
 	export let toppersOverride: TopperDataWithId[] | null = null
 	export let focusDecalZone = false

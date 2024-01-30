@@ -214,9 +214,10 @@
 			class="alert alert-info grid-flow-col"
 			out:fade={{ duration: 200, easing: cubicIn }}
 		>
+			<!-- TODO: Move to Icon.svelte -->
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="h-6 w-6 shrink-0 stroke-current"
+				class="size-6 shrink-0 stroke-current"
 				fill="none"
 				viewBox="0 0 24 24"
 				><path
@@ -234,9 +235,10 @@
 			class="alert alert-success grid-flow-col"
 			out:fade={{ duration: 200, easing: cubicIn }}
 		>
+			<!-- TODO: Move to Icon.svelte -->
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
-				class="h-6 w-6 shrink-0 stroke-current"
+				class="size-6 shrink-0 stroke-current"
 				fill="none"
 				viewBox="0 0 24 24"
 				><path

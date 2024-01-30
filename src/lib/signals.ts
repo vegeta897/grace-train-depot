@@ -1,73 +1,73 @@
 import { COLOR_NAMES } from 'grace-train-lib'
-import type { DepotCar } from 'grace-train-lib/data'
+import type { DecalName, DepotCar } from 'grace-train-lib/data'
 
-const SIGNALS = [
+export const SIGNALS = [
 	'stars',
 	'hearts',
 	'flowers',
 	'poggers',
 	'mort',
-	'many hats',
+	'hat trick',
 	'party',
 ] as const
 export type SignalName = (typeof SIGNALS)[number]
 type SignalScope = 'decals' | 'toppers'
+type SignalProgressFn = (car: DepotCar) => number
 
 export const signalDefs: Record<
 	SignalName,
 	{
 		colors: [fg: string, bg: string]
-		// description: string
-		check: (car: DepotCar) => boolean
+		getProgress: SignalProgressFn
 		scope: SignalScope
 	}
 > = {
 	stars: {
 		colors: [COLOR_NAMES.POP.CANARY, COLOR_NAMES.BASE.VIOLET],
-		// description: 'have at least 2 star decals',
 		scope: 'decals',
-		check: (car) => car.decals.filter((d) => d.name === 'star').length >= 2,
+		getProgress: decalQuantity('star', 2),
 	},
 	hearts: {
 		colors: ['#fff', COLOR_NAMES.POP.POP],
-		// description: 'have at least 2 heart decals',
 		scope: 'decals',
-		check: (car) => car.decals.filter((d) => d.name === 'heart').length >= 2,
+		getProgress: decalQuantity('heart', 2),
 	},
 	flowers: {
 		colors: [COLOR_NAMES.POP.CANARY, COLOR_NAMES.BASE.HEAT],
-		// description: 'have at least 3 flower decals',
 		scope: 'decals',
-		check: (car) => car.decals.filter((d) => d.name === 'flower').length >= 3,
+		getProgress: decalQuantity('flower', 3),
 	},
 	poggers: {
 		colors: ['#f04734', '#453093'],
-		// description: 'have at least 1 POGGER decal',
 		scope: 'decals',
-		check: (car) =>
-			car.decals.some((d) => d.name === 'emote' && d.params.emote === 'pogger'),
+		getProgress: (car) =>
+			car.decals.some((d) => d.name === 'emote' && d.params.emote === 'pogger') ? 1 : 0,
 	},
 	mort: {
 		colors: ['#c21718', '#080c0d'],
-		// description: 'have at least 1 MORT decal',
 		scope: 'decals',
-		check: (car) =>
-			car.decals.some((d) => d.name === 'emote' && d.params.emote === 'mort'),
+		getProgress: (car) =>
+			car.decals.some((d) => d.name === 'emote' && d.params.emote === 'mort') ? 1 : 0,
 	},
-	'many hats': {
+	'hat trick': {
 		colors: [COLOR_NAMES.POP.CANARY, COLOR_NAMES.BASE.HEAT], // TODO: colors
-		// description: 'have 3 toppers',
 		scope: 'toppers',
-		check: (car) => car.toppers.length >= 3,
+		getProgress: (car) => Math.min(1, car.toppers.length / 3),
 	},
 	party: {
 		colors: [COLOR_NAMES.POP.CANARY, COLOR_NAMES.BASE.HEAT], // TODO: colors
-		// description: 'have at least 2 party hat toppers',
 		scope: 'toppers',
-		check: (car) => car.toppers.filter((t) => t.name === 'party_hat').length >= 2,
+		getProgress: (car) => (car.toppers.some((t) => t.name === 'party_hat') ? 1 : 0),
 	},
 }
 
+function decalQuantity(decal: DecalName, quantity = 1): SignalProgressFn {
+	return (car) => {
+		const count = car.decals.filter((d) => d.name === decal).length
+		return Math.min(1, count / quantity)
+	}
+}
+
 export function getSignalsForCar(car: DepotCar, scope?: SignalScope[]) {
-	return SIGNALS.filter((signal) => signalDefs[signal].check(car))
+	return SIGNALS.filter((signal) => signalDefs[signal].getProgress(car) >= 1)
 }

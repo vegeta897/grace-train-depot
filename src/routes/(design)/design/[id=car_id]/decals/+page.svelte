@@ -172,7 +172,7 @@
 						{@const params = { ...decal.params, extraThickness: 2 }}
 						<li class="flex" animate:flip={{ duration: 150 }}>
 							<button
-								class="btn btn-ghost btn-sm h-11 w-11 touch-manipulation p-1 hover:bg-transparent"
+								class="btn btn-ghost btn-sm size-11 touch-manipulation p-1 hover:bg-transparent"
 								on:click={() => clickDecalSlot(decal.slot)}
 								on:pointerenter={() => hoveredSlot.set(decal.slot)}
 								on:pointerleave={() => hoveredSlot.set(null)}

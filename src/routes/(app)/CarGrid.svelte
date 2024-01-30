@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
 	import Icon from '$lib/components/Icon.svelte'
-	import type { CarDataWithIds } from '$lib/server/schemas/car'
+	import type { DesignCar } from '$lib/server/schemas/car'
 	import { getFadeGradient } from '$lib/util'
 	import { Car } from 'grace-train-lib/components'
 	import { tick } from 'svelte'
 
-	export let cars: CarDataWithIds[]
+	export let cars: DesignCar[]
 
 	const fadeGradient = getFadeGradient('var(--b3)')
 	const topGradient = `linear-gradient(to top, ${fadeGradient})`
@@ -46,9 +46,9 @@
 	<div class="mb-2 flex items-center gap-4 p-4 xs:gap-6">
 		<h2 class="text-xl font-black sm:text-3xl">my cars</h2>
 		<div class="flex items-center gap-2">
-			<Icon icon="grid-large" class="h-4 w-4" />
+			<Icon icon="grid-large" class="size-4" />
 			<input type="checkbox" class="toggle" bind:checked={small} />
-			<Icon icon="grid-small" class="h-4 w-4" />
+			<Icon icon="grid-small" class="size-4" />
 		</div>
 		<a
 			href="/design/new"

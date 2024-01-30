@@ -13,7 +13,7 @@
 
 <div class="rounded-box flex items-start gap-2 bg-base-200 p-2 sm:gap-0 sm:p-4">
 	<div>
-		<h3 class="mb-2 pl-1 text-xl text-base-content/50">add a topper</h3>
+		<p class="mb-2 pl-1 text-xl text-base-content/50">pick a topper to add</p>
 		<div class="grid grow grid-cols-[repeat(auto-fill,_minmax(4rem,_1fr))] gap-1">
 			{#each toppers as { name, params: defaultParams }}
 				{@const topperDef = topperDefs[name]}

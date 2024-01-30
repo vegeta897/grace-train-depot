@@ -1,9 +1,10 @@
 export const PAGES = [
+	['📝', 'plan'],
 	['🚃', 'body'],
 	['🎡', 'wheels'],
 	['💟', 'decals'],
 	['🎓', 'toppers'],
-	['✨', 'effects'],
+	// ['✨', 'effects'],
 	// ['🚥', 'finish'],
 ] as const
 

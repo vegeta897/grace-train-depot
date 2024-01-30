@@ -1,15 +1,15 @@
-import { getNewCar } from '$lib/car'
-import type { CarDataWithIds } from '$lib/server/schemas/car'
+import { getNewDesignCar } from '$lib/car'
+import type { DesignCar } from '$lib/server/schemas/car'
 import { defineContext } from '$lib/util'
 import { persisted } from 'svelte-persisted-store'
 import { derived, get, writable } from 'svelte/store'
 
-const localCars = persisted<Record<string, CarDataWithIds>>('choochoo-localCars', {})
+const localCars = persisted<Record<string, DesignCar>>('choochoo-localCars', {})
 const designShortId = writable<string>('new')
 const designCar = derived(
 	[localCars, designShortId],
 	([$localCars, $designShortId]) =>
-		($localCars[$designShortId] || getNewCar()) as Readonly<CarDataWithIds>
+		($localCars[$designShortId] || getNewDesignCar()) as Readonly<DesignCar>
 )
 type Hint = 'dragDecal' | 'dragTopper'
 

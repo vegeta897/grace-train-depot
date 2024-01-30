@@ -1,0 +1,176 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["windows", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String          @id @unique
+  auth_session      Session[]
+  auth_key          Key[]
+  createdAt         DateTime        @default(now())
+  twitchUserId      String          @unique
+  twitchUsername    String          @unique
+  twitchDisplayName String          @unique
+  trustLevel        TrustLevel      @default(default)
+  cars              Car[]
+  graceTrainCars    GraceTrainCar[]
+  logEntriesAsMod   AuditLog[]      @relation("LogEntriesAsMod")
+  logEntriesAsUser  AuditLog[]      @relation("LogEntriesAsUser")
+
+  @@index([id], type: Hash)
+  @@map("auth_user")
+}
+
+enum TrustLevel {
+  default
+  trusted
+  hidden
+  banned
+}
+
+model Session {
+  id             String @id @unique
+  user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+
+  @@index([user_id])
+  @@map("auth_session")
+}
+
+model Key {
+  id              String  @id @unique
+  hashed_password String?
+  user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  user_id         String
+
+  @@index([user_id])
+  @@map("auth_key")
+}
+
+model Car {
+  id                 Int                 @id @default(autoincrement())
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  shortId            String              @unique @db.VarChar(8)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  revision           Int                 @default(1)
+  name               String
+  body               String              @default("boxy")
+  bodyColor          String?
+  bodyPopColor       String?
+  wheelColor         String?
+  wheelFromCenter    Int                 @default(100)
+  wheelSize          Int                 @default(25)
+  decals             Decal[]
+  toppers            Topper[]
+  signals            String[]
+  graceTrainCars     GraceTrainCar[]
+  graceTrainCarStats GraceTrainCarStats?
+}
+
+model Decal {
+  car    Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId  Int
+  name   String
+  slot   Int
+  fill   String
+  x      Float
+  y      Float
+  scale  Float
+  rotate Float
+  params Json   @default("{}")
+
+  @@id([carId, slot])
+}
+
+model Topper {
+  car      Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId    Int
+  name     String
+  slot     Int
+  position Float
+  offset   Float  @default(0)
+  scale    Float  @default(1)
+  rotate   Float  @default(0)
+  params   Json   @default("{}")
+
+  @@id([carId, slot])
+}
+
+model GraceTrain {
+  id     BigInt          @id @unique
+  cars   GraceTrainCar[]
+  ended  Boolean         @default(false)
+  score  Float
+  signal String?
+}
+
+model GraceTrainCar {
+  train        GraceTrain @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  trainId      BigInt
+  index        Int
+  car          Car?       @relation(fields: [carId], references: [id])
+  carId        Int?
+  carRevision  Int?
+  user         User?      @relation(fields: [userId], references: [id])
+  userId       String?
+  twitchUserId String
+  addedAt      DateTime   @default(now())
+  hasDecals    Boolean    @default(false)
+  carData      Json
+
+  @@id([trainId, index], name: "trainCarId")
+}
+
+model GraceTrainCarStats {
+  car              Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+  carId            Int    @unique
+  graceTrainCount  Int    @default(0)
+  totalAppearances Int    @default(0)
+  lastGraceTrainId BigInt @default(0)
+}
+
+model AuditLog {
+  id       Int       @id @default(autoincrement())
+  addedAt  DateTime  @default(now())
+  // modUser needs to be nullable in case user is deleted
+  modUser  User?     @relation("LogEntriesAsMod", fields: [modId], references: [id])
+  modId    String
+  onUser   User?     @relation("LogEntriesAsUser", fields: [onUserId], references: [id])
+  onUserId String?
+  action   ModAction
+  data     String?
+}
+
+enum ModAction {
+  changeUserLevel
+  deleteUser
+}
+
+model BannedUsers {
+  twitchUserId String @id
+}
+
+// model Streams {
+//  id String @id @unique
+//  startTime DateTime
+//  endTime DateTime?
+//  videoURL String?
+//  status String 
+//  info Boolean?
+//  title String?
+//  games String[]
+//  thumbURL String?
+//  thumbIndex Int?
+//  messageID String? 
+//  pingButtons String? 
+//  parentStreamID String?
+// }

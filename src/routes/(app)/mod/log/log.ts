@@ -1,5 +1,5 @@
 import prisma from '$lib/server/prisma'
-import type { Prisma } from 'grace-train-lib/prisma'
+import type { Prisma } from '@prisma/client'
 
 export const AUDIT_LOG_PAGE_SIZE = 15
 

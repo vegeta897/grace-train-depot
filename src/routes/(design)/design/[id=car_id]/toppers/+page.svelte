@@ -193,7 +193,7 @@
 						{#each $designCar.toppers as { id, slot, name, params, position, offset, scale, rotate }, t (id)}
 							{@const topperData = { name, params, position, offset, scale, rotate }}
 							<g
-								class=" cursor-ew-resize select-none outline-none"
+								class="cursor-ew-resize select-none outline-none"
 								on:click={() => (selectedSlot = t)}
 								use:clickoutside={{
 									limit: { parent: canvasContainer },
@@ -229,7 +229,7 @@
 				<div class="absolute bottom-0 left-0 flex w-full justify-center pb-2 lg:hidden">
 					<button
 						on:click|preventDefault={() => (showFullCar = !showFullCar)}
-						class="glass-bg btn btn-circle h-16 w-16 border-none !bg-opacity-60 p-4 text-3xl text-opacity-50 hover:!bg-opacity-80 hover:text-opacity-100"
+						class="glass-bg btn btn-circle size-16 border-none !bg-opacity-60 p-4 text-3xl text-opacity-50 hover:!bg-opacity-80 hover:text-opacity-100"
 					>
 						<Icon class="w-full" icon={showFullCar ? 'upV' : 'downV'} />
 					</button>

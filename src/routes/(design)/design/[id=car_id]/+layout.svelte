@@ -2,14 +2,14 @@
 	import { page } from '$app/stores'
 	import { getDesignStores } from './stores'
 	import type { LayoutData } from './$types'
-	import { cloneCar, getCarChangesByPage, getNewCar } from '$lib/car'
+	import { cloneCar, getCarChangesByPage, getNewDesignCar } from '$lib/car'
 	import { PAGES } from '$lib/common/constants'
 	import { onNavigate } from '$app/navigation'
 	import { capitalize, objectContainsTrue } from '$lib/util'
 	import NavTabs from './NavTabs.svelte'
 	import { browser } from '$app/environment'
 	import { onDestroy } from 'svelte'
-	import Signals from './Signals.svelte'
+	import SignalGoals from './SignalGoals.svelte'
 
 	export let data: LayoutData
 
@@ -22,7 +22,7 @@
 		designShortId.set($page.params.id)
 		if ($designShortId === 'new' && !$localCars.new) {
 			localCars.update((lc) => {
-				lc.new = getNewCar()
+				lc.new = getNewDesignCar()
 				return lc
 			})
 		}
@@ -40,9 +40,7 @@
 		}
 	}
 
-	// TODO: For first car, add new pages as they are visited
-
-	const routePageName = (routeID?: string | null) => routeID?.split('/')[4] || ''
+	const routePageName = (routeID?: string | null) => routeID?.split('/')[4] || PAGES[0][1]
 
 	$: currentPage = routePageName($page.route.id)
 	$: designChanges = getCarChangesByPage(data.savedCar || $designCar, $designCar)
@@ -168,9 +166,9 @@
 		</div>
 	</div>
 </div>
-<div class=" overflow-y-hidden py-2">
-	{#if browser && currentPage}
-		<Signals car={$designCar} />
+<div class="overflow-y-hidden">
+	{#if browser && $designCar.signalGoals.length > 0}
+		<SignalGoals car={$designCar} />
 	{/if}
 </div>
 
