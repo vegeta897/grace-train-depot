@@ -11,13 +11,19 @@
 	import { COLORS, COLOR_NAMES } from 'grace-train-lib'
 	import { browser } from '$app/environment'
 	import { getCarViewBox } from '$lib/car'
-	import type { DepotCar } from 'grace-train-lib/data'
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
-	function setWheelColor(color: string) {
+	function setColor(prop: 'wheelBaseColor' | 'wheelPopColor', color: string) {
 		localCars.update((cars) => {
-			cars[$designShortId].wheelColor = color as DepotCar['wheelColor']
+			cars[$designShortId][prop] = color
+			return cars
+		})
+	}
+
+	function setFlipColors(flip: boolean) {
+		localCars.update((cars) => {
+			cars[$designShortId].wheelFlipColors = flip
 			return cars
 		})
 	}
@@ -44,12 +50,27 @@
 	<div
 		class="rounded-box grid w-full grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4 bg-neutral p-4 lg:w-1/2 lg:p-5"
 	>
-		<label for="color" class="text-lg lg:text-xl">color</label>
+		<label for="popColor" class="text-lg lg:text-xl">pop color</label>
 		<ColorSlider
-			id="color"
+			id="popColor"
 			colors={COLORS.POP}
-			color={$designCar.wheelColor || COLOR_NAMES.POP.POP}
-			onInput={setWheelColor}
+			color={$designCar.wheelPopColor || COLOR_NAMES.POP.POP}
+			onInput={(color) => setColor('wheelPopColor', color)}
+		/>
+		<label for="baseColor" class="text-lg lg:text-xl">base color</label>
+		<ColorSlider
+			id="baseColor"
+			colors={COLORS.BASE}
+			color={$designCar.wheelBaseColor || COLOR_NAMES.BASE.BASE}
+			onInput={(color) => setColor('wheelBaseColor', color)}
+		/>
+		<label for="flipColors" class="text-lg lg:text-xl">flip colors</label>
+		<input
+			id="flipColors"
+			type="checkbox"
+			on:change={(e) => setFlipColors(e.currentTarget.checked)}
+			value={$designCar.wheelFlipColors}
+			class="toggle"
 		/>
 		<label for="wheelSize" class="text-lg lg:text-xl">size</label>
 		<input

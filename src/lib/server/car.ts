@@ -57,9 +57,11 @@ export function transformCarFromDBToDepotCarWithoutDecalsToppers(
 ): Omit<DepotCar, 'toppers' | 'decals'> {
 	return {
 		body: car.body as DepotCar['body'],
-		bodyColor: car.bodyColor || (undefined as DepotCar['bodyColor']),
-		bodyPopColor: car.bodyPopColor || (undefined as DepotCar['bodyPopColor']),
-		wheelColor: car.wheelColor || (undefined as DepotCar['wheelColor']),
+		bodyColor: car.bodyColor || undefined,
+		bodyPopColor: car.bodyPopColor || undefined,
+		wheelBaseColor: car.wheelBaseColor || undefined,
+		wheelPopColor: car.wheelPopColor || undefined,
+		wheelFlipColors: car.wheelFlipColors || false,
 		wheelFromCenter: car.wheelFromCenter,
 		wheelSize: car.wheelSize,
 	}

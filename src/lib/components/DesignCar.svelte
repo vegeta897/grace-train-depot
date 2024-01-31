@@ -1,13 +1,5 @@
 <script lang="ts">
-	import { COLOR_NAMES } from 'grace-train-lib'
-	import {
-		Body,
-		type Decal,
-		ContainerSvg,
-		Topper,
-		Wheels,
-	} from 'grace-train-lib/components'
-	import type { ComponentProps } from 'svelte'
+	import { Body, ContainerSvg, Topper, Wheels } from 'grace-train-lib/components'
 	import type { DesignCar } from '$lib/server/schemas/car'
 	import Decals from './Decals.svelte'
 	import type { TopperDataWithId } from '$lib/server/schemas/toppers'
@@ -51,8 +43,9 @@
 					</slot>
 				</svelte:fragment>
 				<Wheels
-					rimColor={car.wheelColor}
-					capColor={car.bodyColor || COLOR_NAMES.BASE.BASE}
+					baseColor={car.wheelBaseColor}
+					popColor={car.wheelPopColor}
+					flipColors={car.wheelFlipColors}
 					fromCenter={car.wheelFromCenter}
 					size={car.wheelSize}
 					slot="wheels"

@@ -70,19 +70,19 @@
 			</div>
 		</div>
 		<div class="grid grid-cols-[max-content_auto] items-center gap-x-3 gap-y-4">
-			<label for="baseColor" class="text-lg lg:text-xl">base color</label>
-			<ColorSlider
-				id="baseColor"
-				colors={COLORS.BASE}
-				color={$designCar.bodyColor || COLOR_NAMES.BASE.BASE}
-				onInput={setBodyColor}
-			/>
 			<label for="popColor" class="text-lg lg:text-xl">pop color</label>
 			<ColorSlider
 				id="popColor"
 				colors={COLORS.POP}
 				color={$designCar.bodyPopColor || COLOR_NAMES.POP.POP}
 				onInput={setBodyPopColor}
+			/>
+			<label for="baseColor" class="text-lg lg:text-xl">base color</label>
+			<ColorSlider
+				id="baseColor"
+				colors={COLORS.BASE}
+				color={$designCar.bodyColor || COLOR_NAMES.BASE.BASE}
+				onInput={setBodyColor}
 			/>
 		</div>
 	</div>

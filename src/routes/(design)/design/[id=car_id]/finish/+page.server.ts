@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
 import prisma from '$lib/server/prisma'
-import { generateCarShortId } from '$lib/server/car'
+import { generateCarShortId, type DBCar } from '$lib/server/car'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { carSchema, type CarDataForDBWrite } from '$lib/server/schemas/car'
 import sharp from 'sharp'
@@ -129,7 +129,9 @@ function transformCarToDB(car: CarDataForDBWrite) {
 		body: car.body,
 		bodyColor: car.bodyColor,
 		bodyPopColor: car.bodyPopColor,
-		wheelColor: car.wheelColor,
+		wheelBaseColor: car.wheelBaseColor,
+		wheelPopColor: car.wheelPopColor,
+		wheelFlipColors: car.wheelFlipColors,
 		wheelFromCenter: car.wheelFromCenter,
 		wheelSize: car.wheelSize,
 	}

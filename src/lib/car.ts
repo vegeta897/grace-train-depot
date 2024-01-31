@@ -31,7 +31,9 @@ export function getNewDesignCar(): DesignCar {
 		toppers: [],
 		wheelFromCenter: 100,
 		wheelSize: 25,
-		wheelColor: COLOR_NAMES.POP.POP,
+		wheelBaseColor: COLOR_NAMES.BASE.BASE,
+		wheelPopColor: COLOR_NAMES.POP.POP,
+		wheelFlipColors: false,
 	}
 }
 
@@ -46,7 +48,9 @@ export function getCarChangesByPage(original: DesignCar, maybeChanged: DesignCar
 			maybeChanged.toppers.length !== original.toppers.length ||
 			maybeChanged.toppers.some((md, i) => topperIsDifferent(original.toppers[i], md)),
 		wheels:
-			maybeChanged.wheelColor !== original.wheelColor ||
+			maybeChanged.wheelBaseColor !== original.wheelBaseColor ||
+			maybeChanged.wheelPopColor !== original.wheelPopColor ||
+			maybeChanged.wheelFlipColors !== original.wheelFlipColors ||
 			maybeChanged.wheelFromCenter !== original.wheelFromCenter ||
 			maybeChanged.wheelSize !== original.wheelSize,
 		decals:
