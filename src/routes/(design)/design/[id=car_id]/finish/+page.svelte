@@ -120,10 +120,16 @@
 					/>
 				</div>
 				{#if incompleteSignalGoals.length > 0}
+					{@const plural = $designCar.signalGoals.length > 1}
 					<div class="alert">
 						<div class="w-5 text-2xl">🚦</div>
 						<div>
-							<p class="font-bold">you didn't meet all your signal goals</p>
+							<p class="font-bold">
+								you didn't reach {#if plural}all{/if} your
+								<strong class="text-primary"
+									>theme goal{#if plural}s{/if}</strong
+								>
+							</p>
 							<p class="mt-1 text-base-content/70">
 								but that's okay! your car is still rad
 							</p>
