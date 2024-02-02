@@ -14,12 +14,11 @@
 	export let data: PageData
 
 	let renaming = false
-	let renamed = false
 	let toName: string
 	let deleting = false
 	let wantDelete: boolean
 	let understandDelete: boolean
-	let copied = false
+	let toastMessage: string | null = null
 
 	$: if (!renaming) toName = data.car.name
 	$: if (!deleting) wantDelete = false
@@ -36,8 +35,7 @@
 				data.car.name = resultData.name
 				toName = resultData.name
 				renaming = false
-				renamed = true
-				setTimeout(() => (renamed = false), 3000) // Toast notification
+				setToast('car renamed!')
 			} else {
 				console.log(result.type, result.status)
 			}
@@ -46,8 +44,19 @@
 
 	function copyLink() {
 		navigator.clipboard.writeText(PUBLIC_HOST + $page.url.pathname)
-		copied = true
-		setTimeout(() => (copied = false), 3000)
+		setToast('link copied!')
+	}
+
+	function copyGraceMessage(identifier: string) {
+		navigator.clipboard.writeText(`GRACE ${identifier}`)
+		setToast('message copied!')
+	}
+
+	let toastTimeout: number
+	function setToast(message: string) {
+		toastMessage = message
+		clearTimeout(toastTimeout)
+		toastTimeout = window.setTimeout(() => (toastMessage = null), 3000)
 	}
 </script>
 
@@ -115,11 +124,13 @@
 			</div>
 		</div>
 		{#if data.car.belongsToUser}
-			<div
-				class="rounded-box box-content flex flex-col bg-base-100 px-4 py-4 xs:px-6"
-				class:h-28={!deleting}
-			>
+			<div class="rounded-box box-content flex flex-col bg-base-100 px-4 py-4 xs:px-6">
+				<a href="/design/{data.car.shortId}" class="btn btn-secondary w-full text-xl">
+					Design
+				</a>
+				<div class="divider my-2" />
 				{#if deleting}
+					<!-- TODO: Make this a modal dialog -->
 					<div class="flex grow flex-col gap-4">
 						<form class="flex flex-col gap-4" use:enhance action="?/delete" method="POST">
 							<div>
@@ -183,18 +194,31 @@
 						</form>
 					</div>
 				{:else}
-					<a href="/design/{data.car.shortId}" class="btn btn-secondary w-full text-xl">
-						Design
-					</a>
-					<div class="divider my-2" />
-					<div class="grid grid-cols-3 gap-3">
-						<button class="btn btn-ghost btn-sm" on:click={() => (deleting = true)}>
+					<div class="-my-2 grid grid-cols-3 gap-3">
+						<button class="btn btn-ghost" on:click={() => (deleting = true)}>
 							Delete
 						</button>
-						<button class="btn btn-ghost btn-sm" on:click={() => (renaming = true)}>
+						<button class="btn btn-ghost" on:click={() => (renaming = true)}>
 							Rename
 						</button>
-						<button class="btn btn-ghost btn-sm" on:click={copyLink}> Share </button>
+						<button class="btn btn-ghost" on:click={copyLink}> Share </button>
+					</div>
+					<div class="divider my-2" />
+					<div class="rounded-lg bg-base-200 p-2">
+						<p class="text-center">call this car during grace trains!</p>
+						<ol>
+							{#each [data.car.name, data.car.shortId] as identifier}
+								<li class="my-1">
+									<button
+										on:click={() => copyGraceMessage(identifier)}
+										class="btn btn-ghost btn-xs block h-auto max-h-none text-left text-base font-normal normal-case"
+									>
+										<strong class="text-primary">{data.car.twitchName}</strong>: GRACE
+										<strong>{identifier}</strong>
+									</button>
+								</li>
+							{/each}
+						</ol>
 					</div>
 				{/if}
 			</div>
@@ -209,7 +233,7 @@
 	</div>
 {/if}
 <div class="toast toast-center toast-top">
-	{#if copied}
+	{#if toastMessage !== null}
 		<div
 			class="alert alert-info grid-flow-col"
 			out:fade={{ duration: 200, easing: cubicIn }}
@@ -227,28 +251,7 @@
 					d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
 				/></svg
 			>
-			<span>link copied!</span>
-		</div>
-	{/if}
-	{#if renamed}
-		<div
-			class="alert alert-success grid-flow-col"
-			out:fade={{ duration: 200, easing: cubicIn }}
-		>
-			<!-- TODO: Move to Icon.svelte -->
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="size-6 shrink-0 stroke-current"
-				fill="none"
-				viewBox="0 0 24 24"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-				/></svg
-			>
-			<span>car renamed!</span>
+			<span>{toastMessage}</span>
 		</div>
 	{/if}
 </div>
