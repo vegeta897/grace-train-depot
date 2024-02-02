@@ -41,7 +41,7 @@
 		previewDecal.set(null)
 	}
 
-	const { localCars } = getDesignStores()
+	const { updateDesignCar } = getDesignStores()
 	const { dirtyCanvas, selectedSlot, previewDecal } = getDecalStores()
 	previewDecal.set(null)
 
@@ -64,13 +64,12 @@
 		if (adding) updatePreviewDecal()
 		else {
 			const updatedNode = trimNodeTuple(selectedNode)
-			localCars.update((lc) => {
+			updateDesignCar((_car) => {
 				const metrics = getStripesMetrics(decal.params as StripesParams)
 				nodes[nodes.length - prevNode] = updatedNode
 				const newMetrics = getStripesMetrics(decal.params as StripesParams)
 				applyNewDecalParams(decal, metrics, newMetrics)
 				dirtyCanvas.set(true)
-				return lc
 			})
 		}
 	}
@@ -121,7 +120,7 @@
 	function addNode() {
 		if (!adding) return
 		const addedNode = trimNodeTuple(adding)
-		localCars.update((cars) => {
+		updateDesignCar((_car) => {
 			const metrics = getStripesMetrics(decal.params as StripesParams)
 			const newMetrics = getStripesMetrics({
 				...decal.params,
@@ -132,18 +131,16 @@
 			adding = null
 			dirtyCanvas.set(true) // Decal has changed size and position
 			previewDecal.set(null)
-			return cars
 		})
 	}
 
 	function removeNode() {
-		localCars.update((cars) => {
+		updateDesignCar((_car) => {
 			const metrics = getStripesMetrics(decal.params as StripesParams)
 			nodes.splice(nodes.length - prevNode, 1)
 			const newMetrics = getStripesMetrics(decal.params as StripesParams)
 			applyNewDecalParams(decal, metrics, newMetrics)
 			dirtyCanvas.set(true)
-			return cars
 		})
 	}
 
@@ -163,29 +160,26 @@
 			adding = adding
 			updatePreviewDecal()
 		} else if (prevNode > 0) {
-			localCars.update((cars) => {
+			updateDesignCar((_car) => {
 				toggleStripe(nodes[nodes.length - prevNode], stripe)
-				return cars
 			})
 		}
 	}
 
 	function setStripeColor(stripe: number, color: string) {
-		localCars.update((cars) => {
+		updateDesignCar((_car) => {
 			decal.params.colors[stripe] = color
-			return cars
 		})
 	}
 
 	function setStripeCount(count: number) {
-		localCars.update((cars) => {
+		updateDesignCar((_car) => {
 			for (let s = 0; s < count; s++) {
 				decal.params.colors[s] ||= lastColors[s]
 			}
 			decal.params.colors.length = count
 			decal.params.stripeCount = count
 			dirtyCanvas.set(true)
-			return cars
 		})
 	}
 </script>

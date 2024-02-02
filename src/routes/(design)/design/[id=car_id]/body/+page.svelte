@@ -7,28 +7,25 @@
 	import { browser } from '$app/environment'
 	import { getCarViewBox } from '$lib/car'
 	import BoundingBox from '$lib/components/BoundingBox.svelte'
-	import { BODY_NAMES, type DepotCar, type BodyName } from 'grace-train-lib/data'
+	import { BODY_NAMES, type BodyName } from 'grace-train-lib/data'
 
-	const { designCar, localCars, designShortId } = getDesignStores()
+	const { designCar, updateDesignCar } = getDesignStores()
 
 	function setBody(name: BodyName) {
-		localCars.update((cars) => {
-			cars[$designShortId].body = name
-			return cars
+		updateDesignCar((car) => {
+			car.body = name
 		})
 	}
 
 	function setBodyColor(color: string) {
-		localCars.update((cars) => {
-			cars[$designShortId].bodyColor = color as DepotCar['bodyColor']
-			return cars
+		updateDesignCar((car) => {
+			car.bodyColor = color
 		})
 	}
 
 	function setBodyPopColor(color: string) {
-		localCars.update((cars) => {
-			cars[$designShortId].bodyPopColor = color as DepotCar['bodyPopColor']
-			return cars
+		updateDesignCar((car) => {
+			car.bodyPopColor = color
 		})
 	}
 </script>

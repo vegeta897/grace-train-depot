@@ -15,7 +15,7 @@
 		type Transform,
 		removeDecal,
 	} from './decals'
-	import { getDesignStores, setHint } from '../stores'
+	import { getDesignStores } from '../stores'
 	import { browser } from '$app/environment'
 	import { onMount } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
@@ -25,7 +25,7 @@
 
 	export let setTestDot: (x: number, y: number) => void = () => {}
 
-	const { localCars, designShortId, designCar, hints } = getDesignStores()
+	const { localCars, designShortId, designCar, hints, setHint } = getDesignStores()
 	const { hoveredSlot, selectedSlot, dragging, dirtyCanvas, previewDecal, snapping } =
 		getDecalStores()
 
@@ -179,7 +179,7 @@
 		dragging.set(null)
 		clickOutsideCooldown = true
 		snapLines.length = 0
-		setHint(hints, 'dragDecal', false)
+		setHint('dragDecal', false)
 		setTimeout(() => (clickOutsideCooldown = false), 100)
 	}
 

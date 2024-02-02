@@ -1,7 +1,6 @@
 import type { DecalDataWithId } from '$lib/server/schemas/decals'
 import { defineContext } from '$lib/util'
 import { writable } from 'svelte/store'
-import type { Transform } from './decals'
 
 // Maybe merge this into design stores?
 

@@ -9,14 +9,13 @@
 
 	export let data: PageData
 
-	const { localCars, designCar, designShortId } = getDesignStores()
+	const { designCar, designShortId, updateDesignCar } = getDesignStores()
 
 	function toggleSignalGoal(signal: SignalName) {
-		localCars.update((cars) => {
-			cars[$designShortId].signalGoals = SIGNALS.filter((s) =>
-				cars[$designShortId].signalGoals.includes(s) ? s !== signal : s === signal
+		updateDesignCar((car) => {
+			car.signalGoals = SIGNALS.filter((s) =>
+				car.signalGoals.includes(s) ? s !== signal : s === signal
 			)
-			return cars
 		})
 	}
 </script>

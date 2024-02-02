@@ -5,7 +5,7 @@
 	import type { DecalDataWithId } from '$lib/server/schemas/decals'
 	import DecalCanvas from './DecalCanvas.svelte'
 	import { getDecalStores } from './stores'
-	import { getDesignStores, setHint } from '../stores'
+	import { getDesignStores } from '../stores'
 	import ShapePicker, { type DecalChoice } from './ShapePicker.svelte'
 	import { COLOR_NAMES } from 'grace-train-lib'
 	import { flip } from 'svelte/animate'
@@ -15,7 +15,8 @@
 	import { fade, fly } from 'svelte/transition'
 	import { cloneDecal } from '$lib/car'
 
-	const { localCars, designShortId, designCar, hints } = getDesignStores()
+	const { localCars, designShortId, designCar, hints, updateDesignCar, setHint } =
+		getDesignStores()
 	const { hoveredSlot, selectedSlot, dirtyCanvas, snapping } = getDecalStores()
 
 	// TODO: Allow choosing body color, to act as an "eraser" decal
@@ -51,14 +52,12 @@
 			},
 		} as DecalDataWithId
 		if ($hints.dragDecal === undefined && $designCar.decals.length === 0) {
-			setHint(hints, 'dragDecal', true)
+			setHint('dragDecal', true)
 		}
-		localCars.update((cars) => {
-			const decals = cars[$designShortId].decals
-			decals.push(newDecal)
-			decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+		updateDesignCar((car) => {
+			car.decals.push(newDecal)
+			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
 			selectedSlot.set(newDecal.slot)
-			return cars
 		})
 	}
 
@@ -72,24 +71,20 @@
 		const decalCopy = cloneDecal(decal)
 		decalCopy.slot = $designCar.decals.length
 		decalCopy.id = Date.now()
-		localCars.update((cars) => {
-			cars[$designShortId].decals.push(decalCopy)
+		updateDesignCar((car) => {
+			car.decals.push(decalCopy)
 			selectedSlot.set(decalCopy.slot)
-			return cars
 		})
 	}
 
 	function orderDecal(upOrDown: number) {
 		if ($selectedSlot === null) return
 		const decal = $designCar.decals[$selectedSlot]
-		localCars.update((cars) => {
-			cars[$designShortId].decals = cars[$designShortId].decals.filter(
-				(_, i) => i !== $selectedSlot
-			)
-			cars[$designShortId].decals.splice($selectedSlot! + upOrDown, 0, decal)
-			cars[$designShortId].decals.forEach((d, i) => (d.slot = i)) // Re-number slots
+		updateDesignCar((car) => {
+			car.decals = car.decals.filter((_, i) => i !== $selectedSlot)
+			car.decals.splice($selectedSlot! + upOrDown, 0, decal)
+			car.decals.forEach((d, i) => (d.slot = i)) // Re-number slots
 			selectedSlot.set(decal.slot)
-			return cars
 		})
 	}
 
@@ -136,7 +131,7 @@
 				<p class="text-lg"><strong>hint:</strong> move decals by dragging!</p>
 				<button
 					class="btn btn-neutral lg:btn-sm"
-					on:click={() => setHint(hints, 'dragDecal', false)}>OK</button
+					on:click={() => setHint('dragDecal', false)}>OK</button
 				>
 			</div>
 		{/if}

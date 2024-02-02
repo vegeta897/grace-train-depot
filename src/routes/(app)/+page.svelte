@@ -111,7 +111,7 @@
 					{:else}
 						<div class="flex grow flex-col justify-center">
 							<a
-								href="/design/new?theme={signal.replace(/ /g, '+')}"
+								href="/design/new?theme={encodeURIComponent(signal)}"
 								class="btn btn-outline btn-lg">Design</a
 							>
 						</div>

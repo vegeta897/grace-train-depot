@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DesignCar from '$lib/components/DesignCar.svelte'
-	import { getDesignStores, setHint } from '../stores'
+	import { getDesignStores } from '../stores'
 	import type { TopperDataWithId } from '$lib/server/schemas/toppers'
 	import {
 		TOPPER_MAX_OFFSET,
@@ -26,7 +26,7 @@
 
 	// TODO: Use "indicator" daisyUI class to indicate new/unique items
 
-	const { designCar, localCars, designShortId, hints } = getDesignStores()
+	const { designCar, hints, updateDesignCar, setHint } = getDesignStores()
 
 	let selectedSlot: number | null = null
 	let hoveredSlot: number | null = null
@@ -42,13 +42,13 @@
 	$: selectedTopper = selectedSlot !== null ? $designCar.toppers[selectedSlot] : null
 
 	function addTopper({ name, params }: TopperChoice) {
-		localCars.update((cars) => {
-			const toppers = cars[$designShortId].toppers
+		updateDesignCar((car) => {
+			const toppers = car.toppers
 			const slot = toppers.length
-			if ($hints.dragTopper === undefined && cars[$designShortId].toppers.length === 0) {
-				setHint(hints, 'dragTopper', true)
+			if ($hints.dragTopper === undefined && car.toppers.length === 0) {
+				setHint('dragTopper', true)
 			}
-			cars[$designShortId].toppers.push({
+			car.toppers.push({
 				name,
 				id: Date.now(),
 				slot,
@@ -65,18 +65,14 @@
 				rotate: 0,
 			})
 			selectedSlot = slot
-			return cars
 		})
 	}
 
 	function removeTopper(slot: number) {
-		localCars.update((cars) => {
-			cars[$designShortId].toppers = cars[$designShortId].toppers.filter(
-				(_, i) => i !== slot
-			)
-			cars[$designShortId].toppers.forEach((t, i) => (t.slot = i)) // Re-number slots
+		updateDesignCar((car) => {
+			car.toppers = car.toppers.filter((_, i) => i !== slot)
+			car.toppers.forEach((t, i) => (t.slot = i)) // Re-number slots
 			selectedSlot = null
-			return cars
 		})
 	}
 
@@ -85,16 +81,14 @@
 		prop: K,
 		value: TopperDataWithId[K]
 	) {
-		localCars.update((cars) => {
-			cars[$designShortId].toppers[slot][prop] = value
-			return cars
+		updateDesignCar((car) => {
+			car.toppers[slot][prop] = value
 		})
 	}
 
 	function setTopperParam(name: string, value: number | boolean | string) {
-		localCars.update((cars) => {
-			cars[$designShortId].toppers[selectedSlot!].params[name] = value
-			return cars
+		updateDesignCar((car) => {
+			car.toppers[selectedSlot!].params[name] = value
 		})
 	}
 
@@ -124,15 +118,13 @@
 			((e.clientX - dragging.x) * carWidthRatio) /
 			(topperLineWidth - dragging.def.pivots.width * dragging.scale)
 		const newPosition = Math.max(0, Math.min(1, dragging.position + normalizedX))
-		localCars.update((cars) => {
-			cars[$designShortId].toppers[dragging!.slot].position =
-				Math.round(newPosition * 400) / 400
-			return cars
+		updateDesignCar((car) => {
+			car.toppers[dragging!.slot].position = Math.round(newPosition * 400) / 400
 		})
 	}
 	function onPointerUp() {
 		if (!dragging) return
-		setHint(hints, 'dragTopper', false)
+		setHint('dragTopper', false)
 		dragging = null
 		clickOutsideCooldown = true
 		setTimeout(() => (clickOutsideCooldown = false), 100)
@@ -158,12 +150,8 @@
 				nudgedPosition += nudgeDistance
 				break
 		}
-		localCars.update((cars) => {
-			cars[$designShortId].toppers[selectedSlot!].position = Math.max(
-				0,
-				Math.min(1, nudgedPosition)
-			)
-			return cars
+		updateDesignCar((car) => {
+			car.toppers[selectedSlot!].position = Math.max(0, Math.min(1, nudgedPosition))
 		})
 	}
 </script>
@@ -247,7 +235,7 @@
 				</p>
 				<button
 					class="btn btn-neutral lg:btn-sm"
-					on:click={() => setHint(hints, 'dragTopper', false)}>OK</button
+					on:click={() => setHint('dragTopper', false)}>OK</button
 				>
 			</div>
 		{/if}

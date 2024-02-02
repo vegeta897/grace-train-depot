@@ -12,33 +12,29 @@
 	import { browser } from '$app/environment'
 	import { getCarViewBox } from '$lib/car'
 
-	const { designCar, localCars, designShortId } = getDesignStores()
+	const { designCar, updateDesignCar } = getDesignStores()
 
 	function setColor(prop: 'wheelBaseColor' | 'wheelPopColor', color: string) {
-		localCars.update((cars) => {
-			cars[$designShortId][prop] = color
-			return cars
+		updateDesignCar((car) => {
+			car[prop] = color
 		})
 	}
 
 	function setFlipColors(flip: boolean) {
-		localCars.update((cars) => {
-			cars[$designShortId].wheelFlipColors = flip
-			return cars
+		updateDesignCar((car) => {
+			car.wheelFlipColors = flip
 		})
 	}
 
 	function setWheelDistance(fromCenter: number) {
-		localCars.update((cars) => {
-			cars[$designShortId].wheelFromCenter = fromCenter
-			return cars
+		updateDesignCar((car) => {
+			car.wheelFromCenter = fromCenter
 		})
 	}
 
 	function setWheelSize(size: number) {
-		localCars.update((cars) => {
-			cars[$designShortId].wheelSize = size
-			return cars
+		updateDesignCar((car) => {
+			car.wheelSize = size
 		})
 	}
 </script>

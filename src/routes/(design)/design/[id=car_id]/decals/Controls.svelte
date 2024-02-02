@@ -14,7 +14,7 @@
 
 	export let slot: number
 
-	const { localCars, designCar, designShortId } = getDesignStores()
+	const { localCars, designCar, designShortId, updateDesignCar } = getDesignStores()
 	const { selectedSlot, dirtyCanvas } = getDecalStores()
 
 	$: decal = $designCar.decals[slot]
@@ -24,16 +24,14 @@
 	$: scaleRange = maxScale - minScale
 
 	function setDecalColor(color: string) {
-		localCars.update((cars) => {
-			cars[$designShortId].decals[slot].fill = color as DecalData['fill']
-			return cars
+		updateDesignCar((car) => {
+			car.decals[slot].fill = color as DecalData['fill']
 		})
 	}
 
 	function setDecalParam(name: string, value: number | boolean | string) {
-		localCars.update((cars) => {
-			cars[$designShortId].decals[slot].params[name] = value
-			return cars
+		updateDesignCar((car) => {
+			car.decals[slot].params[name] = value
 		})
 	}
 </script>

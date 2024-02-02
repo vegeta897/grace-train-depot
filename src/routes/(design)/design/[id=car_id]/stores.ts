@@ -22,13 +22,19 @@ export const getDesignStores = defineContext({
 	designShortId,
 	designCar,
 	hints,
+	// TODO: Export similar function(s) for decal stores
+	updateDesignCar(update: (car: DesignCar) => DesignCar | void) {
+		const shortId = get(designShortId)
+		localCars.update((localCars) => {
+			const localCar = localCars[shortId]
+			const updated = update(localCar)
+			if (updated) localCars[shortId] = updated
+			return localCars
+		})
+	},
+	setHint(hint: Hint, value?: boolean) {
+		hints.set({ ...get(hints), [hint]: value })
+	},
 })
 
 export type DesignStores = ReturnType<typeof getDesignStores>
-
-export function setHint(hints: DesignStores['hints'], hint: Hint, value?: boolean) {
-	hints.set({ ...get(hints), [hint]: value })
-}
-
-// TODO: Export function to update currently designed car
-// hasContext?

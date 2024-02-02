@@ -14,7 +14,7 @@
 
 	export let data: LayoutData
 
-	const { localCars, designShortId, designCar } = getDesignStores()
+	const { localCars, designShortId, designCar, updateDesignCar } = getDesignStores()
 
 	// TODO: Warn if refresh/navigate is attempted without saving?
 
@@ -22,17 +22,13 @@
 		// Do not modify any stores on the server!
 		designShortId.set($page.params.id)
 		if ($designShortId === 'new' && !$localCars.new) {
-			localCars.update((lc) => {
-				lc.new = getNewDesignCar()
-				return lc
-			})
+			updateDesignCar(() => getNewDesignCar())
 		}
 		if ($page.url.searchParams.has('theme')) {
 			const themeGoal = $page.url.searchParams.get('theme') as SignalName
 			if (SIGNALS.includes(themeGoal) && !$designCar.signalGoals.includes(themeGoal)) {
-				localCars.update((lc) => {
-					lc[$designShortId].signalGoals.push(themeGoal)
-					return lc
+				updateDesignCar((car) => {
+					car.signalGoals.push(themeGoal)
 				})
 			}
 			goto($page.url.pathname, { replaceState: true }) // Consume searchParams
@@ -43,10 +39,7 @@
 				!$localCars[$designShortId] ||
 				(savedCar.revision || 0) > ($localCars[$designShortId].revision || 0)
 			) {
-				localCars.update((lc) => {
-					lc[$designShortId] = cloneCar(savedCar)
-					return lc
-				})
+				updateDesignCar(() => cloneCar(savedCar))
 			}
 		}
 	}
