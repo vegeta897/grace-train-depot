@@ -25,14 +25,13 @@
 			<div class="w-6 text-4xl">🚦</div>
 			<div>
 				<p>
-					<strong class="text-primary">railway signals</strong> will appear down here when
-					your car meets certain design criteria
+					<strong class="text-primary">themes</strong> will appear down here when your car
+					meets certain design criteria
 				</p>
 				<p class="mt-2">
 					gracing during
-					<strong class="text-primary">signalled grace trains</strong>
-					will call any of your cars that match that train's
-					<strong class="text-primary">signal</strong>
+					<strong class="text-primary">themed grace trains</strong>
+					will call any of your cars that match that train's theme
 				</p>
 			</div>
 			<button on:click={() => (showInfo = false)} class="btn">ok</button>
@@ -45,9 +44,9 @@
 		<h3
 			class="flex items-center justify-center gap-2 text-center text-xl font-bold text-primary/90"
 		>
-			<!-- TODO: Create signal icon -->
+			<!-- TODO: Create theme icon -->
 			<span class="text-3xl">🚦</span><span class="leading-tight sm:w-min"
-				>railway signals</span
+				>theme goals</span
 			>
 		</h3>
 		<!-- <button

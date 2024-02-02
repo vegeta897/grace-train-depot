@@ -115,7 +115,7 @@
 		>
 			{#if overflow || expanded}
 				<button on:click={onExpand} class="btn btn-neutral h-10 min-h-[2.5rem]"
-					>{expanded ? 'show less' : 'show all'}</button
+					>{expanded ? 'show less' : 'show more'}</button
 				>
 			{/if}
 		</div>

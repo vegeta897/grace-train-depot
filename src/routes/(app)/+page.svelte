@@ -61,10 +61,11 @@
 		</div>
 		<CarGrid {cars} />
 		<div class="flex items-center gap-3">
-			<h2 class="text-2xl font-bold">🚦 railway signals</h2>
+			<h2 class="text-2xl font-bold">🚦 themes</h2>
 			<button
 				on:click={() => (showSignalsInfo = !showSignalsInfo)}
 				class="btn btn-circle btn-sm size-10 text-lg"
+				class:btn-primary={showSignalsInfo}
 			>
 				?
 			</button>
@@ -77,16 +78,15 @@
 				<div>
 					<p>
 						every car you create is automatically tagged with
-						<strong class="text-primary">railway signals</strong> based on its design
+						<strong class="text-primary">themes</strong> based on its design
 					</p>
 					<p class="mt-1">
 						gracing during
-						<strong class="text-primary">signalled grace trains</strong>
-						will call any cars that match that train's
-						<strong class="text-primary">signal</strong>
+						<strong class="text-primary">themed grace trains</strong>
+						will call any cars that match that train's theme
 					</p>
 					<p class="mt-1">
-						you can prepare for any railway signal by designing cars for all of them!
+						you can prepare for any train by designing one or more cars for each theme!
 					</p>
 				</div>
 				<button on:click={() => (showSignalsInfo = false)} class="btn">ok</button>
@@ -100,8 +100,9 @@
 				<div class="rounded-box flex flex-col items-center bg-neutral p-4">
 					<Signal {signal} inactive={signalCars.length === 0} />
 					{#if signalCars.length > 0}
-						<div class="px-6 pt-[30%]">
+						<div class="relative overflow-clip px-6 pt-[30%]">
 							<Car car={{ depotCar: signalCars[0] }} />
+							<div class="absolute top-0 h-full w-full bg-neutral/50" />
 						</div>
 						{#if signalCars.length > 1}
 							{@const moreCars = signalCars.length - 1}
@@ -109,7 +110,10 @@
 						{/if}
 					{:else}
 						<div class="flex grow flex-col justify-center">
-							<button class="btn btn-outline btn-lg">Design</button>
+							<a
+								href="/design/new?theme={signal.replace(/ /g, '+')}"
+								class="btn btn-outline btn-lg">Design</a
+							>
 						</div>
 					{/if}
 				</div>

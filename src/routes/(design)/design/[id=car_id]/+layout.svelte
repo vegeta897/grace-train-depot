@@ -4,12 +4,13 @@
 	import type { LayoutData } from './$types'
 	import { cloneCar, getCarChangesByPage, getNewDesignCar } from '$lib/car'
 	import { PAGES } from '$lib/common/constants'
-	import { onNavigate } from '$app/navigation'
+	import { goto, onNavigate } from '$app/navigation'
 	import { capitalize, objectContainsTrue } from '$lib/util'
 	import NavTabs from './NavTabs.svelte'
 	import { browser } from '$app/environment'
 	import { onDestroy } from 'svelte'
 	import SignalGoals from './SignalGoals.svelte'
+	import { SIGNALS, type SignalName } from '$lib/signals'
 
 	export let data: LayoutData
 
@@ -25,6 +26,16 @@
 				lc.new = getNewDesignCar()
 				return lc
 			})
+		}
+		if ($page.url.searchParams.has('theme')) {
+			const themeGoal = $page.url.searchParams.get('theme') as SignalName
+			if (SIGNALS.includes(themeGoal) && !$designCar.signalGoals.includes(themeGoal)) {
+				localCars.update((lc) => {
+					lc[$designShortId].signalGoals.push(themeGoal)
+					return lc
+				})
+			}
+			goto($page.url.pathname, { replaceState: true }) // Consume searchParams
 		}
 		const savedCar = data.savedCar
 		if ($designShortId !== 'new' && savedCar) {
@@ -53,8 +64,9 @@
 	}
 
 	onNavigate((navigation) => {
-		if (!navigation.to?.route.id?.startsWith('/(design)/design/')) return
 		if (!document.startViewTransition) return
+		if (!navigation.to?.route.id?.startsWith('/(design)/design/')) return
+		if (navigation.to?.route.id === navigation.from?.route.id) return
 		if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
 		// if (matchMedia('(min-width: 1024px)').matches) return
 		return new Promise((resolve) => {

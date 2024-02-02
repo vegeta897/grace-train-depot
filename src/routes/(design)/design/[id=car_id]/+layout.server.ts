@@ -4,6 +4,7 @@ import prisma from '$lib/server/prisma'
 import { transformCarFromDBWithIds } from '$lib/server/car'
 import type { User } from 'lucia'
 import type { DesignCar } from '$lib/server/schemas/car'
+import { SIGNALS, type SignalName } from '$lib/signals'
 
 const carIncludeQuery = { decals: true, toppers: true } as const
 
@@ -11,13 +12,26 @@ export const load = (async ({ params, locals }) => {
 	// console.log('/design/ layout server load')
 	// Redirect bots to car page
 	if (locals.botAgent) redirect(302, params.id === 'new' ? '/' : `/c/${params.id}`)
-	const data: { user?: User; savedCar?: DesignCar; firstCar: boolean } = {
+	const data: {
+		user?: User
+		savedCar?: DesignCar
+		firstCar: boolean
+		missingThemes?: SignalName[]
+	} = {
 		firstCar: true,
 	}
 	const session = await locals.auth.validate()
 	if (session) {
 		data.user = session.user
 		data.firstCar = !(await prisma.car.findFirst())
+		// TODO: Move this to +page.server.ts
+		const designedThemes: Set<string> = new Set()
+		const carThemeLists = await prisma.car.groupBy({
+			by: ['signals'],
+			where: { userId: session.user.userId, signals: { isEmpty: false } },
+		})
+		carThemeLists.forEach((l) => l.signals.forEach((s) => designedThemes.add(s)))
+		data.missingThemes = SIGNALS.filter((theme) => !designedThemes.has(theme))
 	}
 	if (params.id === 'new') return data
 	if (!session) redirect(302, `/login?redirectTo=/design/${params.id}`)

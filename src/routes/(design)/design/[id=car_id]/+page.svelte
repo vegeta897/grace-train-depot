@@ -4,7 +4,8 @@
 	import { browser } from '$app/environment'
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
-	import { SIGNALS, signalDefs, type SignalName } from '$lib/signals'
+	import { SIGNALS, type SignalName } from '$lib/signals'
+	import Signal from '$lib/components/Signal.svelte'
 
 	export let data: PageData
 
@@ -30,7 +31,7 @@
 		</div>
 		<h3 class="text-3xl font-black">{$designCar.name}</h3>
 	</div>
-	<div class="rounded-box flex flex-col bg-neutral p-6 xs:px-10 xs:py-8 lg:w-2/3">
+	<div class="rounded-box flex flex-col gap-4 bg-neutral p-6 sm:px-10 sm:py-8 lg:w-2/3">
 		{#if data.firstCar}
 			<p class="text-xl">let's design your first <strong>grace train</strong> car!</p>
 			<p>start with the basics:</p>
@@ -46,29 +47,39 @@
 		{/if}
 		{#if !data.firstCar}
 			<p class="text-lg">
-				choose the <strong class="text-primary">railway signals</strong> you want to design
-				for
+				choose the <strong class="text-primary">themes</strong> you want to design for
+				<br />
+				<span class="text-base text-base-content/50">optional</span>
 			</p>
-			<p class="text-base text-base-content/50">optional</p>
-			<div class="mt-4 grid grid-cols-2 gap-4 xs:grid-cols-3">
+			<div class="mt-4 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:gap-x-5">
 				{#each SIGNALS as signal}
-					{@const { colors } = signalDefs[signal]}
 					{@const inGoals = $designCar.signalGoals.includes(signal)}
-					<button
-						on:click={() => toggleSignalGoal(signal)}
-						class="btn btn-block h-10 min-h-10 rounded-full border-[3px] px-3 text-lg font-bold lowercase"
-						style:color={colors[0]}
-						style:background={inGoals ? colors[1] : 'transparent'}
-						style:border-color={colors[1]}
-						class:opacity-75={!inGoals}
-						class:saturate-50={!inGoals}
-						aria-checked={inGoals}
-						role="checkbox"
+					{@const notDesigned = data.missingThemes?.includes(signal)}
+					<label
+						class="flex cursor-pointer items-center justify-between gap-3 rounded-full bg-base-100 p-3"
 					>
-						{signal}
-					</button>
+						<div class="indicator">
+							{#if notDesigned}
+								<span
+									class="badge indicator-item badge-primary badge-xs indicator-start left-1 top-1 border-base-content bg-base-content"
+								/>
+							{/if}
+							<Signal {signal} />
+						</div>
+						<input
+							type="checkbox"
+							class="toggle toggle-lg"
+							checked={inGoals}
+							on:change={() => toggleSignalGoal(signal)}
+						/>
+					</label>
 				{/each}
 			</div>
+			<p>
+				<span
+					class="badge badge-primary badge-xs mr-2 border-base-content bg-base-content"
+				/>themes you haven't designed any cars for
+			</p>
 		{/if}
 	</div>
 </section>
