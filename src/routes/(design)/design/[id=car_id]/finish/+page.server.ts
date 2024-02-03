@@ -20,6 +20,7 @@ export const actions = {
 		// TODO: Check car for flag decal in combination with certain other decals (like an X)
 		// Check if X is above flag, or just flag the car as needing manual approval anyway
 		// Or always put flags on top?
+		// TODO: Limit max cars a user can create
 		const session = await locals.auth.validate()
 		if (!session) redirect(302, `/login?redirectTo=/design/${params.id}/finish`)
 		let formCarData: any

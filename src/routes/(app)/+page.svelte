@@ -6,9 +6,8 @@
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
 	import Icon from '$lib/components/Icon.svelte'
-	import { SIGNALS } from '$lib/signals'
-	import Signal from '$lib/components/Signal.svelte'
 	import { browser } from '$app/environment'
+	import ThemeShowcase from './ThemeShowcase.svelte'
 
 	export let data: PageData
 
@@ -93,35 +92,7 @@
 			</div>
 		{/if}
 		{#if browser}
-			<div class="grid grid-cols-4 gap-3">
-				{#each SIGNALS as signal}
-					{@const signalCars = cars
-						.filter((car) => car.signals.includes(signal))
-						.sort((a, b) => a.signals.length - b.signals.length)}
-					<div class="rounded-box flex flex-col items-center bg-neutral p-4">
-						<Signal {signal} inactive={signalCars.length === 0} />
-						{#if signalCars.length > 0}
-							<div class="relative overflow-clip px-6 pt-[30%]">
-								<Car car={{ depotCar: signalCars[0] }} />
-								<div class="absolute top-0 h-full w-full bg-neutral/50" />
-							</div>
-							{#if signalCars.length > 1}
-								{@const moreCars = signalCars.length - 1}
-								<p class="mt-2 text-lg font-bold text-base-content/70">
-									+{moreCars} more
-								</p>
-							{/if}
-						{:else}
-							<div class="flex grow flex-col justify-center">
-								<a
-									href="/design/new?theme={encodeURIComponent(signal)}"
-									class="btn btn-outline btn-lg">Design</a
-								>
-							</div>
-						{/if}
-					</div>
-				{/each}
-			</div>
+			<ThemeShowcase {cars} />
 		{:else}
 			<div class="text-center">
 				<span class="loading loading-dots loading-lg text-primary"></span>
