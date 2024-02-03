@@ -1,5 +1,6 @@
 import { COLOR_NAMES } from 'grace-train-lib'
 import type { DecalName, DepotCar } from 'grace-train-lib/data'
+import { WHEEL_SIZE_MAX } from './common/constants'
 
 export const SIGNALS = [
 	'stars',
@@ -9,9 +10,10 @@ export const SIGNALS = [
 	'mort',
 	'hat trick',
 	'party',
+	'big wheels',
 ] as const
 export type SignalName = (typeof SIGNALS)[number]
-type SignalScope = 'decals' | 'toppers'
+type SignalScope = 'decals' | 'toppers' | 'wheels'
 type SignalProgressFn = (car: DepotCar) => number
 
 export const signalDefs: Record<
@@ -58,6 +60,11 @@ export const signalDefs: Record<
 		colors: [COLOR_NAMES.POP.CANARY, COLOR_NAMES.BASE.HEAT], // TODO: colors
 		scope: 'toppers',
 		getProgress: (car) => (car.toppers.some((t) => t.name === 'party_hat') ? 1 : 0),
+	},
+	'big wheels': {
+		colors: [COLOR_NAMES.POP.LIME, COLOR_NAMES.BASE.PLAYDOUGH], // TODO: colors
+		scope: 'wheels',
+		getProgress: (car) => Math.max(0, (car.wheelSize ?? 25) - 25) / (WHEEL_SIZE_MAX - 25),
 	},
 }
 
