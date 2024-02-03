@@ -8,7 +8,7 @@
 	export let cars: DesignCar[]
 </script>
 
-<div class="flex flex-wrap gap-3 lg:gap-x-8 lg:gap-y-6">
+<div class="flex flex-wrap gap-4 sm:gap-x-8 sm:gap-y-6">
 	{#each THEMES as theme}
 		{@const themeCars = cars
 			.filter((car) => car.themes.includes(theme))

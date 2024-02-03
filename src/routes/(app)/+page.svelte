@@ -79,12 +79,12 @@
 						every car you create is automatically tagged with
 						<strong class="text-primary">themes</strong> based on its design
 					</p>
-					<p class="mt-1">
+					<p class="mt-2">
 						gracing during
 						<strong class="text-primary">themed grace trains</strong>
 						will call any cars that match that train's theme
 					</p>
-					<p class="mt-1">
+					<p class="mt-2">
 						you can prepare for any train by designing one or more cars for each theme!
 					</p>
 				</div>

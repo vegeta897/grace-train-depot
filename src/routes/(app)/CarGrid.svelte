@@ -113,7 +113,7 @@
 				class:absolute={!expanded}
 			>
 				{#if overflow || expanded}
-					<button on:click={onExpand} class="btn btn-neutral h-10 min-h-[2.5rem]"
+					<button on:click={onExpand} class="btn btn-neutral min-h-12"
 						>{expanded ? 'show less' : 'show more'}</button
 					>
 				{/if}
