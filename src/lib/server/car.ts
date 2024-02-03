@@ -75,9 +75,9 @@ export function transformCarFromDBToDepotCar(car: DBCar): DepotCar {
 	}
 }
 
-// Length of 8 = 1M IDs before 1% chance of collision (https://zelark.github.io/nano-id-cc/)
-// IMPORTANT: If this changes, update /params/car_id.ts
+// Length of 6 = 27K IDs before 1% chance of collision (https://zelark.github.io/nano-id-cc/)
+// IMPORTANT: If this changes, update /params/car_id.ts and schema and seedDev.ts
 const shortIdAlphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-const shortIdLength = 8
+const shortIdLength = 6
 export const generateCarShortId = () =>
 	generateRandomString(shortIdLength, shortIdAlphabet)

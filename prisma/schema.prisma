@@ -58,7 +58,7 @@ model Car {
   id                 Int                 @id @default(autoincrement())
   user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             String
-  shortId            String              @unique @db.VarChar(8)
+  shortId            String              @unique @db.VarChar(6)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   revision           Int                 @default(1)

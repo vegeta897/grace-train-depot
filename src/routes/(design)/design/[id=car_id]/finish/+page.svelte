@@ -43,7 +43,6 @@
 		savedCar = $designCar
 		return async ({ result }) => {
 			if (result.type === 'error') {
-				console.log(result.error)
 				saveError = 'try-again'
 			} else {
 				if (result.type !== 'failure') {

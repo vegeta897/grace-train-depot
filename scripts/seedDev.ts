@@ -18,7 +18,7 @@ async function main() {
 	const cars = await prisma.car.createMany({
 		data: userNumbers.map((number) => ({
 			userId: getUserId(number),
-			shortId: 'test' + `${number}`.padStart(4, '0'),
+			shortId: 'test' + `${number}`.padStart(2, '0'),
 			name: `Test Car ${number}`,
 			bodyColor: COLORS.BASE[number * 2],
 			bodyPopColor: COLORS.POP[number * 3],
