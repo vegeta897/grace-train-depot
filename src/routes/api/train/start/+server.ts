@@ -13,7 +13,7 @@ import {
 import { transformCarFromDBToDepotCar } from '$lib/server/car'
 import { randomChance, randomElementWeighted } from '$lib/random'
 
-const MIN_SIGNAL_USERS = 4
+const MIN_THEME_USERS = 4
 const RECENT_TRAIN_SPAN = 2 * 60 * 60 * 1000
 
 export const POST = (async ({ request }) => {
@@ -34,19 +34,19 @@ export const POST = (async ({ request }) => {
 		},
 		include: userCarsIncludeQuery,
 	})
-	let signal: string | null = null
-	if (users.length >= MIN_SIGNAL_USERS && randomChance(0.2)) {
-		const mostRecentSignal =
+	let theme: string | null = null
+	if (users.length >= MIN_THEME_USERS && randomChance(0.2)) {
+		const mostRecentTheme =
 			(
 				await prisma.graceTrain.findFirst({
 					where: {
 						id: { gt: Date.now() - RECENT_TRAIN_SPAN },
-						signal: { not: null },
+						theme: { not: null },
 					},
 					orderBy: { id: 'desc' },
 				})
-			)?.signal || undefined
-		signal = pickSignal(users, mostRecentSignal)
+			)?.theme || undefined
+		theme = pickTheme(users, mostRecentTheme)
 	}
 	const graceTrainCars: GraceTrainCar[] = []
 	const createGraceTrainCars: Prisma.GraceTrainCarUncheckedCreateWithoutTrainInput[] = []
@@ -61,7 +61,7 @@ export const POST = (async ({ request }) => {
 		}
 		const user = users.find((u) => u.twitchUserId === grace.userId)
 		if (user) {
-			const pickedCar = pickUserCar(user.cars, pickedCars, signal)
+			const pickedCar = pickUserCar(user.cars, pickedCars, theme)
 			await incrementGraceTrainTotalAppearances(pickedCar.id)
 			const pickedCarData = { depotCar: transformCarFromDBToDepotCar(pickedCar) }
 			graceTrainCars.push(pickedCarData)
@@ -79,7 +79,7 @@ export const POST = (async ({ request }) => {
 	}
 	await updateGraceTrainCarStatsForTrain([...pickedCarIds], trainId)
 	await prisma.graceTrain.create({
-		data: { id: trainId, score, cars: { create: createGraceTrainCars }, signal },
+		data: { id: trainId, score, cars: { create: createGraceTrainCars }, theme },
 	})
 	return json(graceTrainCars)
 }) satisfies RequestHandler
@@ -88,29 +88,28 @@ type UserAndCarData = Prisma.UserGetPayload<{
 	include: typeof userCarsIncludeQuery
 }>
 
-// TODO: Track who is chatting in current stream and pick signal based on their cars
+// TODO: Track who is chatting in current stream and pick theme based on their cars
 // in addition to the initial graces
-function pickSignal(users: UserAndCarData[], except?: string) {
-	const signalPool: Map<string, { users: Set<string> /*; cars: Set<number>*/ }> =
-		new Map()
+function pickTheme(users: UserAndCarData[], except?: string) {
+	const themePool: Map<string, { users: Set<string> /*; cars: Set<number>*/ }> = new Map()
 	for (const user of users) {
 		for (const car of user.cars) {
-			for (const signal of car.signals) {
-				if (signal === except) continue
-				const entry = signalPool.get(signal) || {
+			for (const theme of car.themes) {
+				if (theme === except) continue
+				const entry = themePool.get(theme) || {
 					users: new Set(),
 					//cars: new Set(),
 				}
 				entry.users.add(user.id)
 				//entry.cars.add(car.id)
-				signalPool.set(signal, entry)
+				themePool.set(theme, entry)
 			}
 		}
 	}
-	const signalOptions = [...signalPool.entries()]
-		.map(([signal, stats]) => ({ signal, ...stats }))
-		.filter((s) => s.users.size >= MIN_SIGNAL_USERS)
-	const weights = signalOptions.map((s) => s.users.size)
-	const signalChoice = randomElementWeighted(signalOptions, weights)
-	return signalChoice.signal
+	const themeOptions = [...themePool.entries()]
+		.map(([theme, stats]) => ({ theme, ...stats }))
+		.filter((s) => s.users.size >= MIN_THEME_USERS)
+	const weights = themeOptions.map((s) => s.users.size)
+	const themeChoice = randomElementWeighted(themeOptions, weights)
+	return themeChoice.theme
 }

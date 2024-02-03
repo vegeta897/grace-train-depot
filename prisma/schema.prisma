@@ -73,7 +73,7 @@ model Car {
   wheelSize          Int                 @default(25)
   decals             Decal[]
   toppers            Topper[]
-  signals            String[]
+  themes             String[]
   graceTrainCars     GraceTrainCar[]
   graceTrainCarStats GraceTrainCarStats?
 }
@@ -108,11 +108,11 @@ model Topper {
 }
 
 model GraceTrain {
-  id     BigInt          @id @unique
-  cars   GraceTrainCar[]
-  ended  Boolean         @default(false)
-  score  Float
-  signal String?
+  id    BigInt          @id @unique
+  cars  GraceTrainCar[]
+  ended Boolean         @default(false)
+  score Float
+  theme String?
 }
 
 model GraceTrainCar {

@@ -8,34 +8,34 @@
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
 	import type { DesignCar } from '$lib/server/schemas/car'
-	import SignalGoals from '../SignalGoals.svelte'
-	import { signalDefs } from '$lib/signals'
+	import { themeDefs } from '$lib/themes'
 
 	export let data: PageData
 	export let form: ActionData
 
 	// TODO: AMAZING IDEA!!!!!!
-	// Railway signals are applied to cars that meet certain design criteria
+	// "Themes" are applied to cars that meet certain design criteria
 	// Like "mort", "poggers", "stars", "green" etc
-	// Grace trains can have one (or more) of these signals, and will try to pick cars with these signals
-	// Signalled grace trains can be caused by the pre-train graces
-	// Analyze the cars in the initial graces to find a common signal
-	// Signals have requirements, e.g. "mort" requires at least one "mort" decal
-	// Give user a checklist of signals they've fulfilled, to motivate more designing
-	// Show grace train signal under or above "GRACE TRAIN" block in overlay with an animated signal light
+	// Grace trains can have one (or more) of these themes, and will try to pick cars with these themes
+	// Themed grace trains can be caused by the pre-train graces
+	// Analyze the cars in the initial graces to find a common theme
+	// Themes have requirements, e.g. "mort" requires at least one "mort" decal
+	// Give user a checklist of themes they've fulfilled, to motivate more designing
+	// Show grace train theme under or above "GRACE TRAIN" block in overlay
+	// Train engine should be themed
 	// For emote themes, maybe treat messages containing the emote as a valid GRACE
-	// Each signal should have its own unique text/bg colors
-	// Leaderboards for each signal
-	// Signal in db is just a string that matches definition in code
-	// Move signal defs to grace-train-lib so overlay can get the colors
+	// Each theme should have its own unique text/bg colors
+	// Leaderboards for each theme
+	// Theme in db is just a string that matches definition in code
+	// Move theme defs to grace-train-lib so overlay can get the colors
 
 	const { designCar, localCars, designShortId } = getDesignStores()
 
 	let savedCar: DesignCar
 	let saveError: 'try-again' | null = null
 
-	$: incompleteSignalGoals = $designCar.signalGoals.filter(
-		(goal) => signalDefs[goal].getProgress($designCar) < 1
+	$: incompleteThemeGoals = $designCar.themeGoals.filter(
+		(goal) => themeDefs[goal].getProgress($designCar) < 1
 	)
 
 	const onSave: SubmitFunction = () => {
@@ -118,8 +118,8 @@
 						maxlength={CAR_NAME_MAX_LENGTH}
 					/>
 				</div>
-				{#if incompleteSignalGoals.length > 0}
-					{@const plural = $designCar.signalGoals.length > 1}
+				{#if incompleteThemeGoals.length > 0}
+					{@const plural = $designCar.themeGoals.length > 1}
 					<div class="alert">
 						<div class="w-5 text-2xl">🚦</div>
 						<div>

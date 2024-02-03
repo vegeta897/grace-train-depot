@@ -11,7 +11,7 @@ type TrainCarData = Prisma.GraceTrainCarGetPayload<{}>
 export function pickUserCar(
 	userCars: DBCar[],
 	trainCars: Pick<TrainCarData, 'userId' | 'carId'>[],
-	signal: string | null
+	theme: string | null
 ): DBCar {
 	if (userCars.length === 1) return userCars[0] // Only one option
 	const userId = userCars[0].userId

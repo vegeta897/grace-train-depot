@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { DesignCar } from '$lib/server/schemas/car'
-	import { signalDefs } from '$lib/signals'
+	import { themeDefs } from '$lib/themes'
 	import { flip } from 'svelte/animate'
 	import { backOut } from 'svelte/easing'
 	import { fly } from 'svelte/transition'
@@ -10,7 +10,7 @@
 
 	let showInfo = false
 
-	$: signalGoals = car.signalGoals
+	$: signalGoals = car.themeGoals
 </script>
 
 <div
@@ -60,7 +60,7 @@
 			class="grid grow grid-cols-[repeat(auto-fill,_minmax(var(--goal-width),_1fr))] gap-2 [--goal-width:6rem] xs:gap-4 xs:[--goal-width:8rem]"
 		>
 			{#each signalGoals as goal (goal)}
-				{@const { colors, getProgress } = signalDefs[goal]}
+				{@const { colors, getProgress } = themeDefs[goal]}
 				{@const progress = getProgress(car)}
 				<div
 					class="flex w-full flex-col items-center gap-1 rounded-full pb-2 pt-1 text-lg font-bold leading-tight transition-[opacity,_filter] duration-300"

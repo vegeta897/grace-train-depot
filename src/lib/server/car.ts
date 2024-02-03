@@ -1,22 +1,22 @@
 import { generateRandomString } from 'lucia/utils'
 import type { DesignCar } from './schemas/car'
-import type { SignalName } from '$lib/signals'
+import type { ThemeName } from '$lib/themes'
 import type { DecalData, DepotCar, TopperData } from 'grace-train-lib/data'
 import type { Prisma } from '@prisma/client'
 
 export type DBCar = Prisma.CarGetPayload<{ include: { decals: true; toppers: true } }>
 
 // TODO: Clean up types and functions for db car, display car, and design car
-// Design car doesn't need signals, only signalGoals
-// Only db car and display car need signals
+// Design car doesn't need themes, only themeGoals
+// Only db car and display car need themes
 export function transformCarFromDBWithIds(carData: DBCar): DesignCar {
 	return {
 		id: carData.id,
 		shortId: carData.shortId,
 		name: carData.name,
 		revision: carData.revision,
-		signals: carData.signals as SignalName[],
-		signalGoals: [],
+		themes: carData.themes as ThemeName[],
+		themeGoals: [],
 		...transformCarFromDBToDepotCarWithoutDecalsToppers(carData),
 		decals: carData.decals.map((decal, d) => ({
 			...transformDecalFromDB(decal),

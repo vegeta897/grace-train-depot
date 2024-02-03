@@ -4,17 +4,17 @@
 	import { browser } from '$app/environment'
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
-	import { SIGNALS, type SignalName } from '$lib/signals'
-	import Signal from '$lib/components/Signal.svelte'
+	import { THEMES, type ThemeName } from '$lib/themes'
+	import Theme from '$lib/components/Theme.svelte'
 
 	export let data: PageData
 
 	const { designCar, designShortId, updateDesignCar } = getDesignStores()
 
-	function toggleSignalGoal(signal: SignalName) {
+	function toggleThemeGoal(theme: ThemeName) {
 		updateDesignCar((car) => {
-			car.signalGoals = SIGNALS.filter((s) =>
-				car.signalGoals.includes(s) ? s !== signal : s === signal
+			car.themeGoals = THEMES.filter((s) =>
+				car.themeGoals.includes(s) ? s !== theme : s === theme
 			)
 		})
 	}
@@ -51,9 +51,9 @@
 				<span class="text-base text-base-content/50">optional</span>
 			</p>
 			<div class="mt-4 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:gap-x-5">
-				{#each SIGNALS as signal}
-					{@const inGoals = $designCar.signalGoals.includes(signal)}
-					{@const notDesigned = data.missingThemes?.includes(signal)}
+				{#each THEMES as theme}
+					{@const inGoals = $designCar.themeGoals.includes(theme)}
+					{@const notDesigned = data.missingThemes?.includes(theme)}
 					<label
 						class="flex cursor-pointer items-center justify-between gap-3 rounded-full bg-base-100 p-3"
 					>
@@ -63,13 +63,13 @@
 									class="badge indicator-item badge-primary badge-xs indicator-start left-1 top-1 border-base-content bg-base-content"
 								/>
 							{/if}
-							<Signal {signal} />
+							<Theme {theme} />
 						</div>
 						<input
 							type="checkbox"
 							class="toggle toggle-lg"
 							checked={inGoals}
-							on:change={() => toggleSignalGoal(signal)}
+							on:change={() => toggleThemeGoal(theme)}
 						/>
 					</label>
 				{/each}

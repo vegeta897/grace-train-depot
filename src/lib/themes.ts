@@ -2,7 +2,7 @@ import { COLOR_NAMES } from 'grace-train-lib'
 import type { DecalName, DepotCar } from 'grace-train-lib/data'
 import { WHEEL_SIZE_MAX } from './common/constants'
 
-export const SIGNALS = [
+export const THEMES = [
 	'stars',
 	'hearts',
 	'flowers',
@@ -12,16 +12,16 @@ export const SIGNALS = [
 	'party',
 	'big wheels',
 ] as const
-export type SignalName = (typeof SIGNALS)[number]
-type SignalScope = 'decals' | 'toppers' | 'wheels'
-type SignalProgressFn = (car: DepotCar) => number
+export type ThemeName = (typeof THEMES)[number]
+type ThemeScope = 'decals' | 'toppers' | 'wheels'
+type ThemeProgressFn = (car: DepotCar) => number
 
-export const signalDefs: Record<
-	SignalName,
+export const themeDefs: Record<
+	ThemeName,
 	{
 		colors: [fg: string, bg: string]
-		getProgress: SignalProgressFn
-		scope: SignalScope
+		getProgress: ThemeProgressFn
+		scope: ThemeScope
 	}
 > = {
 	stars: {
@@ -68,13 +68,13 @@ export const signalDefs: Record<
 	},
 }
 
-function decalQuantity(decal: DecalName, quantity = 1): SignalProgressFn {
+function decalQuantity(decal: DecalName, quantity = 1): ThemeProgressFn {
 	return (car) => {
 		const count = car.decals.filter((d) => d.name === decal).length
 		return Math.min(1, count / quantity)
 	}
 }
 
-export function getSignalsForCar(car: DepotCar, scope?: SignalScope[]) {
-	return SIGNALS.filter((signal) => signalDefs[signal].getProgress(car) >= 1)
+export function getThemesForCar(car: DepotCar, scope?: ThemeScope[]) {
+	return THEMES.filter((theme) => themeDefs[theme].getProgress(car) >= 1)
 }

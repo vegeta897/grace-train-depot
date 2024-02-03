@@ -9,8 +9,8 @@
 	import NavTabs from './NavTabs.svelte'
 	import { browser } from '$app/environment'
 	import { onDestroy } from 'svelte'
-	import SignalGoals from './SignalGoals.svelte'
-	import { SIGNALS, type SignalName } from '$lib/signals'
+	import ThemeGoals from './ThemeGoals.svelte'
+	import { THEMES, type ThemeName } from '$lib/themes'
 
 	export let data: LayoutData
 
@@ -25,10 +25,10 @@
 			updateDesignCar(() => getNewDesignCar())
 		}
 		if ($page.url.searchParams.has('theme')) {
-			const themeGoal = $page.url.searchParams.get('theme') as SignalName
-			if (SIGNALS.includes(themeGoal) && !$designCar.signalGoals.includes(themeGoal)) {
+			const themeGoal = $page.url.searchParams.get('theme') as ThemeName
+			if (THEMES.includes(themeGoal) && !$designCar.themeGoals.includes(themeGoal)) {
 				updateDesignCar((car) => {
-					car.signalGoals.push(themeGoal)
+					car.themeGoals.push(themeGoal)
 				})
 			}
 			goto($page.url.pathname, { replaceState: true }) // Consume searchParams
@@ -172,8 +172,8 @@
 	</div>
 </div>
 <div class="overflow-y-hidden">
-	{#if browser && $designCar.signalGoals.length > 0}
-		<SignalGoals car={$designCar} />
+	{#if browser && $designCar.themeGoals.length > 0}
+		<ThemeGoals car={$designCar} />
 	{/if}
 </div>
 

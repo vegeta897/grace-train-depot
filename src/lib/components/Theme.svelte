@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { signalDefs, type SignalName } from '$lib/signals'
+	import { themeDefs, type ThemeName } from '$lib/themes'
 
-	export let signal: SignalName
+	export let theme: ThemeName
 	export let inactive = false
 	export let small = false
-	$: colors = signalDefs[signal].colors
+	$: colors = themeDefs[theme].colors
 </script>
 
 <div
@@ -20,5 +20,5 @@
 	class:opacity-75={inactive}
 	class:saturate-50={inactive}
 >
-	{signal}
+	{theme}
 </div>

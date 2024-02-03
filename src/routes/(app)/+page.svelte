@@ -16,7 +16,7 @@
 	const carDeleted = $page.url.searchParams.get('carDeleted')
 	const sideFadeGradient = getSideFadeGradient(20)
 
-	let showSignalsInfo = false
+	let showThemesInfo = false
 </script>
 
 <svelte:head>
@@ -62,14 +62,14 @@
 		<div class="flex items-center gap-3">
 			<h2 class="text-2xl font-bold">🚦 themes</h2>
 			<button
-				on:click={() => (showSignalsInfo = !showSignalsInfo)}
+				on:click={() => (showThemesInfo = !showThemesInfo)}
 				class="btn btn-circle btn-sm size-10 text-lg"
-				class:btn-primary={showSignalsInfo}
+				class:btn-primary={showThemesInfo}
 			>
 				?
 			</button>
 		</div>
-		{#if showSignalsInfo}
+		{#if showThemesInfo}
 			<div
 				class="alert rounded-none border-none bg-neutral px-2 leading-snug sm:rounded-box sm:gap-6 sm:px-6 sm:text-lg"
 			>
@@ -88,7 +88,7 @@
 						you can prepare for any train by designing one or more cars for each theme!
 					</p>
 				</div>
-				<button on:click={() => (showSignalsInfo = false)} class="btn">ok</button>
+				<button on:click={() => (showThemesInfo = false)} class="btn">ok</button>
 			</div>
 		{/if}
 		{#if browser}

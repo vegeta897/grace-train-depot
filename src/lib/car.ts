@@ -9,7 +9,7 @@ import type { DepotCar } from 'grace-train-lib/data'
 export function cloneCar(car: DesignCar): DesignCar {
 	return {
 		...car,
-		signalGoals: [...car.signalGoals],
+		themeGoals: [...car.themeGoals],
 		toppers: car.toppers.map((t) => ({ ...t })),
 		decals: car.decals.map(cloneDecal),
 	}
@@ -25,8 +25,8 @@ export function getNewDesignCar(): DesignCar {
 		name: '',
 		shortId: 'new',
 		body: 'boxy',
-		signals: [],
-		signalGoals: [],
+		themes: [],
+		themeGoals: [],
 		decals: [],
 		toppers: [],
 		wheelFromCenter: 100,
