@@ -58,42 +58,42 @@
 			<!-- <Icon icon="plus" /> -->new
 		</a>
 	</div>
-	<div class="relative" class:pb-6={!expanded && !overflow}>
-		<div class="relative overflow-clip" class:rounded-xl={!expanded}>
-			<div
-				class="max-h-[100vh]"
-				class:overflow-clip={!expanded || !overflow}
-				class:overflow-y-scroll={expanded && overflow}
-				class:grid-expanded={expanded}
-				class:grid-not-expanded={!expanded}
-				style:--not-expanded-height={small ? '12rem' : '14rem'}
-				style:--grid-width={small ? '5rem' : '8rem'}
-				bind:clientHeight={gridOuterHeight}
-				on:scroll={(e) => onScroll(e.currentTarget.scrollTop)}
-			>
+	{#if browser}
+		<div class="relative" class:pb-6={!expanded && !overflow}>
+			<div class="relative overflow-clip" class:rounded-xl={!expanded}>
 				<div
-					class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center px-2"
-					bind:clientHeight={gridInnerHeight}
+					class="max-h-[100vh]"
+					class:overflow-clip={!expanded || !overflow}
+					class:overflow-y-scroll={expanded && overflow}
+					class:grid-expanded={expanded}
+					class:grid-not-expanded={!expanded}
+					style:--not-expanded-height={small ? '12rem' : '14rem'}
+					style:--grid-width={small ? '5rem' : '8rem'}
+					bind:clientHeight={gridOuterHeight}
+					on:scroll={(e) => onScroll(e.currentTarget.scrollTop)}
 				>
-					{#each cars as car (car.id)}
-						<a href="/c/{car.shortId}" data-sveltekit-preload-data="tap" class="group">
-							<div class="flex shrink flex-col items-center gap-1 overflow-clip">
-								<div
-									class="px-[10%] pt-[30%] transition-transform group-hover:-translate-y-2"
-								>
-									<Car car={{ depotCar: car }} />
-								</div>
-								{#if !small}
-									<div class="badge badge-neutral block max-w-full truncate">
-										{car.name}
+					<div
+						class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center px-2"
+						bind:clientHeight={gridInnerHeight}
+					>
+						{#each cars as car (car.id)}
+							<a href="/c/{car.shortId}" data-sveltekit-preload-data="tap" class="group">
+								<div class="flex shrink flex-col items-center gap-1 overflow-clip">
+									<div
+										class="px-[10%] pt-[30%] transition-transform group-hover:-translate-y-2"
+									>
+										<Car car={{ depotCar: car }} />
 									</div>
-								{/if}
-							</div>
-						</a>
-					{/each}
+									{#if !small}
+										<div class="badge badge-neutral block max-w-full truncate">
+											{car.name}
+										</div>
+									{/if}
+								</div>
+							</a>
+						{/each}
+					</div>
 				</div>
-			</div>
-			{#if browser}
 				<div
 					class="pointer-events-none absolute top-0 h-12 w-full"
 					style:background-image={topGradient}
@@ -107,19 +107,23 @@
 					style:background-image={bottomGradient}
 					style:opacity={(overflow ? 1 : 0) * fadeBottom}
 				></div>
-			{/if}
+			</div>
+			<div
+				class="bottom-0 flex w-full items-center justify-center p-4"
+				class:absolute={!expanded}
+			>
+				{#if overflow || expanded}
+					<button on:click={onExpand} class="btn btn-neutral h-10 min-h-[2.5rem]"
+						>{expanded ? 'show less' : 'show more'}</button
+					>
+				{/if}
+			</div>
 		</div>
-		<div
-			class="bottom-0 flex w-full items-center justify-center p-4"
-			class:absolute={!expanded}
-		>
-			{#if overflow || expanded}
-				<button on:click={onExpand} class="btn btn-neutral h-10 min-h-[2.5rem]"
-					>{expanded ? 'show less' : 'show more'}</button
-				>
-			{/if}
+	{:else}
+		<div class="text-center">
+			<span class="loading loading-dots loading-lg text-primary"></span>
 		</div>
-	</div>
+	{/if}
 </div>
 
 <style>

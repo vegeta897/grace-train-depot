@@ -8,6 +8,7 @@
 	import Icon from '$lib/components/Icon.svelte'
 	import { SIGNALS } from '$lib/signals'
 	import Signal from '$lib/components/Signal.svelte'
+	import { browser } from '$app/environment'
 
 	export let data: PageData
 
@@ -30,7 +31,6 @@
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
 {#if data.user}
-	<!-- TODO: Move this to a /me or /depot route? -->
 	<section class="flex flex-col items-stretch gap-4 p-4 md:p-8">
 		{#if carDeleted}
 			<div class="alert alert-info w-auto">
@@ -49,7 +49,6 @@
 				Car deleted
 			</div>
 		{/if}
-		<!-- <div class="rounded-box flex w-full flex-col gap-4 bg-neutral p-4 md:px-10 md:py-8"> -->
 		<div class="flex flex-wrap items-center justify-between gap-2">
 			<h2 class="flex items-end gap-2 text-lg font-bold">
 				<Icon icon="twitch" class="size-6" />
@@ -59,6 +58,7 @@
 				<a href="/mod" class="btn">🛡️ Mod view</a>
 			{/if}
 		</div>
+		<!-- TODO: Car grid doesn't look great before hydration -->
 		<CarGrid {cars} />
 		<div class="flex items-center gap-3">
 			<h2 class="text-2xl font-bold">🚦 themes</h2>
@@ -92,34 +92,41 @@
 				<button on:click={() => (showSignalsInfo = false)} class="btn">ok</button>
 			</div>
 		{/if}
-		<div class="grid grid-cols-4 gap-3">
-			<!-- TODO: List incompleted and completed signals separately -->
-			{#each SIGNALS as signal}
-				{@const signalCars = cars.filter((car) => car.signals.includes(signal))}
-				<!-- {@const { colors } = signalDefs[signal]} -->
-				<div class="rounded-box flex flex-col items-center bg-neutral p-4">
-					<Signal {signal} inactive={signalCars.length === 0} />
-					{#if signalCars.length > 0}
-						<div class="relative overflow-clip px-6 pt-[30%]">
-							<Car car={{ depotCar: signalCars[0] }} />
-							<div class="absolute top-0 h-full w-full bg-neutral/50" />
-						</div>
-						{#if signalCars.length > 1}
-							{@const moreCars = signalCars.length - 1}
-							<p class="mt-2 text-lg font-bold text-base-content/70">+{moreCars} more</p>
+		{#if browser}
+			<div class="grid grid-cols-4 gap-3">
+				{#each SIGNALS as signal}
+					{@const signalCars = cars
+						.filter((car) => car.signals.includes(signal))
+						.sort((a, b) => a.signals.length - b.signals.length)}
+					<div class="rounded-box flex flex-col items-center bg-neutral p-4">
+						<Signal {signal} inactive={signalCars.length === 0} />
+						{#if signalCars.length > 0}
+							<div class="relative overflow-clip px-6 pt-[30%]">
+								<Car car={{ depotCar: signalCars[0] }} />
+								<div class="absolute top-0 h-full w-full bg-neutral/50" />
+							</div>
+							{#if signalCars.length > 1}
+								{@const moreCars = signalCars.length - 1}
+								<p class="mt-2 text-lg font-bold text-base-content/70">
+									+{moreCars} more
+								</p>
+							{/if}
+						{:else}
+							<div class="flex grow flex-col justify-center">
+								<a
+									href="/design/new?theme={encodeURIComponent(signal)}"
+									class="btn btn-outline btn-lg">Design</a
+								>
+							</div>
 						{/if}
-					{:else}
-						<div class="flex grow flex-col justify-center">
-							<a
-								href="/design/new?theme={encodeURIComponent(signal)}"
-								class="btn btn-outline btn-lg">Design</a
-							>
-						</div>
-					{/if}
-				</div>
-			{/each}
-		</div>
-		<!-- </div> -->
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<div class="text-center">
+				<span class="loading loading-dots loading-lg text-primary"></span>
+			</div>
+		{/if}
 	</section>
 {:else}
 	<section class="flex grow flex-col items-center justify-center p-4 md:p-8">
