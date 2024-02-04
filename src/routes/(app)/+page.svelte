@@ -6,7 +6,6 @@
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
 	import Icon from '$lib/components/Icon.svelte'
-	import { browser } from '$app/environment'
 	import ThemeShowcase from './ThemeShowcase.svelte'
 
 	export let data: PageData
@@ -91,13 +90,7 @@
 				<button on:click={() => (showThemesInfo = false)} class="btn">ok</button>
 			</div>
 		{/if}
-		{#if browser}
-			<ThemeShowcase {cars} />
-		{:else}
-			<div class="text-center">
-				<span class="loading loading-dots loading-lg text-primary"></span>
-			</div>
-		{/if}
+		<ThemeShowcase {cars} />
 	</section>
 {:else}
 	<section class="flex grow flex-col items-center justify-center p-4 md:p-8">

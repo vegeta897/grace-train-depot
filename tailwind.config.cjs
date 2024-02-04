@@ -16,6 +16,7 @@ const config = {
 			},
 			animation: {
 				fade: 'fade 150ms ease-out',
+				'fade-in': 'fade 1s ease-in',
 				pop: 'pop 150ms',
 			},
 			keyframes: {

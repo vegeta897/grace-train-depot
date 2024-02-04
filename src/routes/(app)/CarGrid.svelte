@@ -42,7 +42,7 @@
 	}
 </script>
 
-<div class="rounded-xl bg-base-200" bind:this={containerElement}>
+<div class="rounded-xl bg-base-200" class:min-h-64={!small} bind:this={containerElement}>
 	<div class="mb-2 flex items-center gap-4 p-4 xs:gap-6">
 		<h2 class="text-xl font-black sm:text-3xl">my cars</h2>
 		<div class="flex items-center gap-2">
@@ -120,8 +120,8 @@
 			</div>
 		</div>
 	{:else}
-		<div class="text-center">
-			<span class="loading loading-dots loading-lg text-primary"></span>
+		<div class="flex h-32 items-center justify-center">
+			<span class="loading loading-dots loading-lg animate-fade-in text-primary"></span>
 		</div>
 	{/if}
 </div>
