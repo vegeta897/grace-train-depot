@@ -6,7 +6,7 @@
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
 	import Icon from '$lib/components/Icon.svelte'
-	import ThemeShowcase from './ThemeShowcase.svelte'
+	import ThemeShowcase from './ThemeGrid.svelte'
 
 	export let data: PageData
 
