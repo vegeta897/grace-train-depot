@@ -5,13 +5,14 @@ import { fail, redirect, type Actions, error } from '@sveltejs/kit'
 import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 import { getRelativeTime } from '$lib/util'
 import fs from 'node:fs'
+import type { Prisma } from '@prisma/client'
 
 const carIncludeQuery = {
 	decals: { orderBy: { slot: 'asc' } },
-	toppers: true,
+	toppers: { orderBy: { slot: 'asc' } },
 	graceTrainCarStats: true,
 	user: { select: { twitchDisplayName: true } },
-} as const
+} satisfies Prisma.CarInclude
 
 export const load = (async ({ params, parent }) => {
 	console.log('/c/ page server load')
