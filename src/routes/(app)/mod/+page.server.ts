@@ -10,14 +10,14 @@ import type { Prisma } from '@prisma/client'
 const EIGHT_HOURS = 8 * 60 * 60 * 1000
 const CARS_LIMIT = 50
 
-const MODDABLE_CARS = {
+const moddableCarsQuery = {
 	user: { isNot: null },
 	hasDecals: true,
 } satisfies Prisma.GraceTrainCarWhereInput
-const TRAIN_SELECT = {
+const trainSelectQuery = {
 	id: true,
 	ended: true,
-	_count: { select: { cars: { where: MODDABLE_CARS } } },
+	_count: { select: { cars: { where: moddableCarsQuery } } },
 	cars: {
 		take: CARS_LIMIT,
 		orderBy: { index: 'desc' },
@@ -35,7 +35,7 @@ const TRAIN_SELECT = {
 			},
 			car: { select: { shortId: true } },
 		},
-		where: MODDABLE_CARS,
+		where: moddableCarsQuery,
 	},
 } satisfies Prisma.GraceTrainSelect
 
@@ -48,10 +48,10 @@ export const load = (async ({ locals }) => {
 			"you don't belong here, you're not a mod! ... but if you want to be one, ask vegeta!"
 		)
 	const trains = await prisma.graceTrain.findMany({
-		select: TRAIN_SELECT,
+		select: trainSelectQuery,
 		take: 8,
 		where: {
-			cars: { some: MODDABLE_CARS },
+			cars: { some: moddableCarsQuery },
 			id: dev ? {} : { gt: Date.now() - EIGHT_HOURS },
 		},
 		orderBy: { id: 'desc' },

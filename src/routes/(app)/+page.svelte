@@ -1,14 +1,18 @@
 <script lang="ts">
-	import { Car } from 'grace-train-lib/components'
+	import { Car, ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
 	import type { PageData } from './$types'
 	import { COLORS } from 'grace-train-lib'
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
 	import ThemeGrid from './ThemeGrid.svelte'
+	import LatestCars from './LatestCars.svelte'
+	import type { DecalName } from 'grace-train-lib/data'
 
 	export let data: PageData
 
 	const sideFadeGradient = getSideFadeGradient(20)
+
+	const shapes: DecalName[] = ['circle', 'star', 'heart', 'box']
 </script>
 
 <svelte:head>
@@ -33,12 +37,86 @@
 				<a href="/mod" class="btn">🛡️ Mod view</a>
 			{/if}
 		</div> -->
-		{#if data.savedCars}
+		{#if data.cars}
+			{@const oneCar = data.cars.length === 1}
+			{@const moreCars = data.cars.length > 2}
+			<!-- <h2 class="text-4xl font-black">your cars</h2> -->
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+				{#each data.cars.slice(0, moreCars ? 1 : 2) as car}
+					<a
+						href="/c/{car.shortId}"
+						class="rounded-box overflow-clip bg-base-200 transition-transform hover:scale-105"
+					>
+						<div class="px-[20%] pt-[25%]">
+							<Car car={{ depotCar: car }} />
+						</div>
+						<h2 class="px-6 py-4 text-center text-xl font-bold">
+							{car.name}
+						</h2>
+					</a>
+				{/each}
+				{#if oneCar}
+					<div
+						class="rounded-box flex flex-col gap-4 bg-neutral px-8 py-6 text-lg font-bold"
+					>
+						<p>you could start GRACE-ing now and see your car...</p>
+						<div class="-mx-4 rounded-lg bg-base-200 px-3 py-1 text-base font-normal">
+							<strong class="text-primary">{data.user.twitchDisplayName}</strong>: GRACE
+						</div>
+						<p>but you should really design more cars!</p>
+						<p class="mt-auto text-base-content/80">
+							remember:<br />
+							<span class="text-secondary">more variety = cooler trains</span>
+						</p>
+					</div>
+				{:else if moreCars}
+					<div class="rounded-box relative min-h-[12rem] bg-base-200">
+						<div class="absolute flex h-full items-center overflow-clip opacity-40">
+							<figure class="grid grid-cols-2 p-8 sm:pt-2">
+								{#each data.cars.slice(-4) as car}
+									<div class="px-[10%] pt-[30%]">
+										<Car car={{ depotCar: car }} />
+									</div>
+								{/each}
+							</figure>
+						</div>
+						<div class="flex h-full flex-col justify-center px-8 py-6 sm:justify-end">
+							<a
+								class="glass-bg btn btn-neutral btn-lg btn-block whitespace-nowrap"
+								href="/cars">View your cars</a
+							>
+						</div>
+					</div>
+				{/if}
+				<div
+					class="rounded-box flex flex-col items-center justify-between gap-4 bg-neutral px-8 py-6"
+				>
+					<p class="text-2xl font-bold">design more cars!</p>
+					<div class="grid w-1/2 grid-cols-2">
+						{#each shapes as decal}
+							<ContainerSvg viewBox="-60 -60 120 120">
+								<Decal
+									name={decal}
+									fill="#fff"
+									params={decalDefs[decal].getDefaultParamsObject()}
+								/>
+							</ContainerSvg>
+						{/each}
+					</div>
+					<a href="/design/new" class="btn btn-primary btn-lg btn-block">Design</a>
+				</div>
+				<div
+					class="rounded-box flex flex-col items-center justify-between gap-4 bg-neutral px-8 py-6"
+				>
+					<p class="text-xl font-bold">hey, finish your themes!</p>
+				</div>
+			</div>
+			<LatestCars cars={data.cars} count={data.carCount} />
 			<p>This car grid sucks too!</p>
 			<p>Be less afraid of whitespace</p>
 			<p>Maybe make a modal for showing all cars (with same faded vertical scrolling)</p>
-			<CarGrid cars={data.savedCars} />
-			<ThemeGrid cars={data.savedCars} />
+			<CarGrid cars={data.cars} />
+			<ThemeGrid cars={data.cars} />
 		{/if}
 	</section>
 {:else}

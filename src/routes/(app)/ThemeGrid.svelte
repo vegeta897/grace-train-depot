@@ -3,19 +3,15 @@
 	import { THEMES } from '$lib/themes'
 	import ThemeGridItem from './ThemeGridItem.svelte'
 
-	export let cars: Promise<DesignCar[]>
+	export let cars: DesignCar[]
 
-	$: themeCars = cars.then((cars) =>
-		THEMES.map((theme) => ({
-			theme,
-			cars: cars
-				.filter((car) => car.themes.includes(theme))
-				.sort((a, b) => a.themes.length - b.themes.length),
-		}))
-	)
-	$: completed = themeCars.then(
-		(themeCars) => themeCars.filter(({ cars }) => cars.length > 0).length
-	)
+	$: themeCars = THEMES.map((theme) => ({
+		theme,
+		cars: cars
+			.filter((car) => car.themes.includes(theme))
+			.sort((a, b) => a.themes.length - b.themes.length),
+	}))
+	$: completed = themeCars.filter(({ cars }) => cars.length > 0).length
 
 	let showInfo = false
 </script>

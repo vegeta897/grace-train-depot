@@ -5,7 +5,7 @@
 	import { Car } from 'grace-train-lib/components'
 	import { tick } from 'svelte'
 
-	export let cars: Promise<DesignCar[]>
+	export let cars: DesignCar[]
 
 	const fadeGradient = getFadeGradient('var(--b3)')
 	const topGradient = `linear-gradient(to top, ${fadeGradient})`
