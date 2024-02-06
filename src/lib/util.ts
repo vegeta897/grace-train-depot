@@ -20,6 +20,9 @@ export const randomIntRange = (minOrMax: number, max?: number) => {
 
 export const randomElement = <T>(arr: T[]): T => arr[randomIntRange(0, arr.length - 1)]
 
+// TODO: Remove if unused in production
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 // TODO: Ensure this doesn't leak store data across clients
 export function defineContext<T>(data: T): () => T {
 	const key = Symbol()

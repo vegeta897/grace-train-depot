@@ -1,21 +1,14 @@
 <script lang="ts">
 	import { Car } from 'grace-train-lib/components'
 	import type { PageData } from './$types'
-	import { page } from '$app/stores'
 	import { COLORS } from 'grace-train-lib'
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient } from '$lib/util'
-	import Icon from '$lib/components/Icon.svelte'
-	import ThemeShowcase from './ThemeGrid.svelte'
+	import ThemeGrid from './ThemeGrid.svelte'
 
 	export let data: PageData
 
-	$: cars = data.savedCars || []
-
-	const carDeleted = $page.url.searchParams.get('carDeleted')
 	const sideFadeGradient = getSideFadeGradient(20)
-
-	let showThemesInfo = false
 </script>
 
 <svelte:head>
@@ -28,26 +21,10 @@
 	<meta property="twitter:description" content="Customize your Grace Train car" />
 	<meta name="description" content="Customize your Grace Train car" />
 </svelte:head>
+<!-- TODO: Separate logged in and logged out views into components -->
 {#if data.user}
 	<section class="flex flex-col items-stretch gap-4 p-4 md:p-8">
-		{#if carDeleted}
-			<div class="alert alert-info w-auto">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="size-6 shrink-0 stroke-current"
-					fill="none"
-					viewBox="0 0 24 24"
-					><path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-					/></svg
-				>
-				Car deleted
-			</div>
-		{/if}
-		<div class="flex flex-wrap items-center justify-between gap-2">
+		<!-- <div class="flex flex-wrap items-center justify-between gap-2">
 			<h2 class="flex items-end gap-2 text-lg font-bold">
 				<Icon icon="twitch" class="size-6" />
 				{data.user.twitchDisplayName}
@@ -55,42 +32,14 @@
 			{#if data.user.isMod}
 				<a href="/mod" class="btn">🛡️ Mod view</a>
 			{/if}
-		</div>
-		<!-- TODO: Car grid doesn't look great before hydration -->
-		<CarGrid {cars} />
-		<div class="flex items-center gap-3">
-			<h2 class="text-2xl font-bold">🚦 themes</h2>
-			<button
-				on:click={() => (showThemesInfo = !showThemesInfo)}
-				class="btn btn-circle btn-sm size-10 text-lg"
-				class:btn-primary={showThemesInfo}
-			>
-				?
-			</button>
-		</div>
-		{#if showThemesInfo}
-			<div
-				class="alert rounded-none border-none bg-neutral px-2 leading-snug sm:rounded-box sm:gap-6 sm:px-6 sm:text-lg"
-			>
-				<div class="w-6 text-4xl font-black">🚦</div>
-				<div>
-					<p>
-						every car you create is automatically tagged with
-						<strong class="text-primary">themes</strong> based on its design
-					</p>
-					<p class="mt-2">
-						gracing during
-						<strong class="text-primary">themed grace trains</strong>
-						will call any cars that match that train's theme
-					</p>
-					<p class="mt-2">
-						you can prepare for any train by designing one or more cars for each theme!
-					</p>
-				</div>
-				<button on:click={() => (showThemesInfo = false)} class="btn">ok</button>
-			</div>
+		</div> -->
+		{#if data.savedCars}
+			<p>This car grid sucks too!</p>
+			<p>Be less afraid of whitespace</p>
+			<p>Maybe make a modal for showing all cars (with same faded vertical scrolling)</p>
+			<CarGrid cars={data.savedCars} />
+			<ThemeGrid cars={data.savedCars} />
 		{/if}
-		<ThemeShowcase {cars} />
 	</section>
 {:else}
 	<section class="flex grow flex-col items-center justify-center p-4 md:p-8">

@@ -11,7 +11,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.auth = auth.handleRequest(event)
 	event.locals.botAgent = botRegex.test(event.request.headers.get('user-agent') ?? '')
 	if (dev && SKIP_AUTH === 'true') {
-		console.log('skipping auth')
+		console.log('(skipping auth)', event.url.pathname)
 		const userWithSessions = await prisma.user.findUniqueOrThrow({
 			include: { auth_session: true },
 			where: { twitchUsername: 'vegeta897' },

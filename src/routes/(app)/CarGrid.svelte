@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { browser } from '$app/environment'
 	import Icon from '$lib/components/Icon.svelte'
 	import type { DesignCar } from '$lib/server/schemas/car'
 	import { getFadeGradient } from '$lib/util'
 	import { Car } from 'grace-train-lib/components'
 	import { tick } from 'svelte'
 
-	export let cars: DesignCar[]
+	export let cars: Promise<DesignCar[]>
 
 	const fadeGradient = getFadeGradient('var(--b3)')
 	const topGradient = `linear-gradient(to top, ${fadeGradient})`
@@ -43,11 +42,15 @@
 </script>
 
 <div class="rounded-xl bg-base-200" class:min-h-64={!small} bind:this={containerElement}>
-	<div class="mb-2 flex items-center gap-4 p-4 xs:gap-6">
+	<div class="mb-2 flex items-center gap-6 p-4">
 		<h2 class="text-xl font-black sm:text-3xl">my cars</h2>
 		<div class="flex items-center gap-2">
 			<Icon icon="grid-large" class="size-4" />
-			<input type="checkbox" class="toggle" bind:checked={small} />
+			<input
+				type="checkbox"
+				class="toggle border-opacity-100 bg-opacity-100"
+				bind:checked={small}
+			/>
 			<Icon icon="grid-small" class="size-4" />
 		</div>
 		<a
@@ -58,9 +61,13 @@
 			<!-- <Icon icon="plus" /> -->new
 		</a>
 	</div>
-	{#if browser}
+	{#await cars}
+		<div class="flex h-32 items-center justify-center">
+			<span class="loading loading-dots loading-lg animate-fade-in text-primary"></span>
+		</div>
+	{:then cars}
 		<div class="relative" class:pb-6={!expanded && !overflow}>
-			<div class="relative overflow-clip" class:rounded-xl={!expanded}>
+			<div class="relative overflow-clip" class:rounded-b-xl={!expanded}>
 				<div
 					class="max-h-[100vh]"
 					class:overflow-clip={!expanded || !overflow}
@@ -73,7 +80,7 @@
 					on:scroll={(e) => onScroll(e.currentTarget.scrollTop)}
 				>
 					<div
-						class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center px-2"
+						class="grid grid-cols-[repeat(auto-fill,_var(--grid-width))] justify-center px-1 xs:px-2"
 						bind:clientHeight={gridInnerHeight}
 					>
 						{#each cars as car (car.id)}
@@ -119,17 +126,17 @@
 				{/if}
 			</div>
 		</div>
-	{:else}
+	{:catch error}
 		<div class="flex h-32 items-center justify-center">
-			<span class="loading loading-dots loading-lg animate-fade-in text-primary"></span>
+			<div class="alert alert-error">error loading your cars, try reloading the page</div>
 		</div>
-	{/if}
+	{/await}
 </div>
 
 <style>
 	.grid-expanded {
-		max-height: calc(100vh - 10.5rem); /* fallback */
-		max-height: calc(100svh - 10.5rem);
+		max-height: calc(100vh - 14rem); /* fallback */
+		max-height: calc(100svh - 14rem);
 	}
 
 	.grid-not-expanded {

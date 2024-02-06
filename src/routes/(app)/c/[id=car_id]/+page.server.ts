@@ -66,6 +66,6 @@ export const actions = {
 		})
 		// Delete car image
 		fs.rm(`./public/assets/car_${params.id}.png`, () => {})
-		redirect(302, '/?carDeleted=true')
+		redirect(302, '/')
 	},
 } satisfies Actions

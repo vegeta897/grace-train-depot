@@ -2,23 +2,23 @@
 	import type { PageData, SubmitFunction } from './$types'
 	import { page } from '$app/stores'
 	import { PUBLIC_HOST } from '$env/static/public'
-	import { fade } from 'svelte/transition'
-	import { cubicIn } from 'svelte/easing'
-	import { enhance } from '$app/forms'
+	import { applyAction, enhance } from '$app/forms'
 	import { CAR_NAME_MAX_LENGTH } from '$lib/common/constants'
 	import { Car } from 'grace-train-lib/components'
 	import { getCarViewBox } from '$lib/car'
 	import { pluralize } from '$lib/util'
 	import Theme from '$lib/components/Theme.svelte'
+	import { getAppStores } from '../../store'
 
 	export let data: PageData
+
+	const { addToast } = getAppStores()
 
 	let renaming = false
 	let toName: string
 	let deleting = false
 	let wantDelete: boolean
 	let understandDelete: boolean
-	let toastMessage: string | null = null
 
 	$: if (!renaming) toName = data.car.name
 	$: if (!deleting) wantDelete = false
@@ -35,7 +35,17 @@
 				data.car.name = resultData.name
 				toName = resultData.name
 				renaming = false
-				setToast('car renamed!')
+				addToast('success', 'car renamed!')
+			} else {
+				console.log(result.type, result.status)
+			}
+		}
+	}
+	const onDelete: SubmitFunction = () => {
+		return async ({ result }) => {
+			if (result.type === 'redirect') {
+				addToast('info', 'car deleted!')
+				await applyAction(result)
 			} else {
 				console.log(result.type, result.status)
 			}
@@ -44,19 +54,12 @@
 
 	function copyLink() {
 		navigator.clipboard.writeText(PUBLIC_HOST + $page.url.pathname)
-		setToast('link copied!')
+		addToast('info', 'link copied!')
 	}
 
 	function copyGraceMessage(identifier: string) {
 		navigator.clipboard.writeText(`GRACE ${identifier}`)
-		setToast('message copied!')
-	}
-
-	let toastTimeout: number
-	function setToast(message: string) {
-		toastMessage = message
-		clearTimeout(toastTimeout)
-		toastTimeout = window.setTimeout(() => (toastMessage = null), 3000)
+		addToast('info', 'message copied!')
 	}
 </script>
 
@@ -132,7 +135,12 @@
 				{#if deleting}
 					<!-- TODO: Make this a modal dialog -->
 					<div class="flex grow flex-col gap-4">
-						<form class="flex flex-col gap-4" use:enhance action="?/delete" method="POST">
+						<form
+							class="flex flex-col gap-4"
+							use:enhance={onDelete}
+							action="?/delete"
+							method="POST"
+						>
 							<div>
 								<label class="label cursor-pointer justify-end gap-3">
 									<span class="text-lg">i want to delete this car</span>
@@ -232,26 +240,3 @@
 		<a href="/" class="btn btn-lg">Home</a>
 	</div>
 {/if}
-<div class="toast toast-center toast-top">
-	{#if toastMessage !== null}
-		<div
-			class="alert alert-info grid-flow-col"
-			out:fade={{ duration: 200, easing: cubicIn }}
-		>
-			<!-- TODO: Move to Icon.svelte -->
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="size-6 shrink-0 stroke-current"
-				fill="none"
-				viewBox="0 0 24 24"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-				/></svg
-			>
-			<span>{toastMessage}</span>
-		</div>
-	{/if}
-</div>
