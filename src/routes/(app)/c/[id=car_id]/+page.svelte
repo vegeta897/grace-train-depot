@@ -128,7 +128,7 @@
 		</div>
 		{#if data.car.belongsToUser}
 			<div class="rounded-box box-content flex flex-col bg-base-100 px-4 py-4 xs:px-6">
-				<a href="/design/{data.car.shortId}" class="btn btn-secondary w-full text-xl">
+				<a href="/design/{data.car.shortId}" class="btn btn-primary w-full text-xl">
 					Design
 				</a>
 				<div class="divider my-2" />
