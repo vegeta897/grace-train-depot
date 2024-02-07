@@ -26,9 +26,9 @@
 		}
 		if ($page.url.searchParams.has('theme')) {
 			const themeGoal = $page.url.searchParams.get('theme') as ThemeName
-			if (THEMES.includes(themeGoal) && !$designCar.themeGoals.includes(themeGoal)) {
+			if (THEMES.includes(themeGoal)) {
 				updateDesignCar((car) => {
-					car.themeGoals.push(themeGoal)
+					car.themeGoals = [themeGoal]
 				})
 			}
 			goto($page.url.pathname, { replaceState: true }) // Consume searchParams
