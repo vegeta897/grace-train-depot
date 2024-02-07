@@ -3,16 +3,21 @@
 	import type { PageData } from './$types'
 	import { COLORS } from 'grace-train-lib'
 	import CarGrid from './CarGrid.svelte'
-	import { getSideFadeGradient } from '$lib/util'
+	import { getSideFadeGradient, pluralize } from '$lib/util'
 	import ThemeGrid from './ThemeGrid.svelte'
 	import LatestCars from './LatestCars.svelte'
 	import type { DecalName } from 'grace-train-lib/data'
+	import { THEMES, themeDefs } from '$lib/themes'
+	import { fade, fly } from 'svelte/transition'
+	import { backIn, backOut } from 'svelte/easing'
 
 	export let data: PageData
 
 	const sideFadeGradient = getSideFadeGradient(20)
-
 	const shapes: DecalName[] = ['circle', 'star', 'heart', 'box']
+
+	let showThemeInfo = false
+	let chooSquared = false
 </script>
 
 <svelte:head>
@@ -39,32 +44,30 @@
 		</div> -->
 		{#if data.cars}
 			{@const oneCar = data.cars.length === 1}
-			{@const moreCars = data.cars.length > 2}
+			{@const moreCars = data.cars.length > 1}
 			<!-- <h2 class="text-4xl font-black">your cars</h2> -->
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
-				{#each data.cars.slice(0, moreCars ? 1 : 2) as car}
-					<a
-						href="/c/{car.shortId}"
-						class="rounded-box overflow-clip bg-base-200 transition-transform hover:scale-105"
-					>
-						<div class="px-[20%] pt-[25%]">
-							<Car car={{ depotCar: car }} />
-						</div>
-						<h2 class="px-6 py-4 text-center text-xl font-bold">
-							{car.name}
-						</h2>
-					</a>
-				{/each}
+				<a
+					href="/c/{data.cars[0].shortId}"
+					class="rounded-box flex flex-col justify-center overflow-clip bg-base-200 transition-transform hover:scale-105"
+				>
+					<div class="px-[20%] pt-[25%]">
+						<Car car={{ depotCar: data.cars[0] }} />
+					</div>
+					<h2 class="p-6 text-center text-xl font-bold">
+						{data.cars[0].name}
+					</h2>
+				</a>
 				{#if oneCar}
 					<div
-						class="rounded-box flex flex-col gap-4 bg-neutral px-8 py-6 text-lg font-bold"
+						class="rounded-box flex flex-col justify-center gap-4 bg-neutral px-8 py-6 text-lg font-bold"
 					>
 						<p>you could start GRACE-ing now and see your car...</p>
 						<div class="-mx-4 rounded-lg bg-base-200 px-3 py-1 text-base font-normal">
 							<strong class="text-primary">{data.user.twitchDisplayName}</strong>: GRACE
 						</div>
 						<p>but you should really design more cars!</p>
-						<p class="mt-auto text-base-content/80">
+						<p class="text-base-content/80">
 							remember:<br />
 							<span class="text-secondary">more variety = cooler trains</span>
 						</p>
@@ -88,10 +91,50 @@
 						</div>
 					</div>
 				{/if}
+				<div class="hidden flex-col items-center justify-center sm:max-lg:flex">
+					<button
+						on:click={() => (chooSquared = !chooSquared)}
+						class="grid w-52 grid-cols-1 grid-rows-1 text-left text-6xl font-black leading-none text-base-content/20 transition-transform hover:scale-105"
+					>
+						{#if chooSquared}
+							<div
+								in:fade={{ duration: 50, delay: 250 }}
+								out:fade={{ duration: 50 }}
+								class="col-start-1 row-start-1 flex h-32 items-center"
+							>
+								CHOO<sup>2</sup>!
+							</div>
+						{:else}
+							<div class="col-start-1 row-start-1 h-32">
+								<div
+									out:fly={{ y: 50, easing: backIn, duration: 300 }}
+									in:fly={{ y: 50, easing: backOut, duration: 300 }}
+								>
+									CHOO
+								</div>
+								<div
+									out:fly={{ y: -50, easing: backIn, duration: 300 }}
+									in:fly={{ y: -50, easing: backOut, duration: 300 }}
+								>
+									CHOO!
+								</div>
+							</div>
+						{/if}
+					</button>
+				</div>
 				<div
-					class="rounded-box flex flex-col items-center justify-between gap-4 bg-neutral px-8 py-6"
+					class="rounded-box flex flex-col items-center justify-center gap-4 bg-neutral px-8 py-6"
 				>
-					<p class="text-2xl font-bold">design more cars!</p>
+					<div>
+						<p class="text-xl font-bold">
+							you have
+							{data.carCount}
+							{pluralize(data.carCount, 'car')}<br />
+						</p>
+						<p class="text-base-content/70">
+							but you could have {data.carCount + 1}
+						</p>
+					</div>
 					<div class="grid w-1/2 grid-cols-2">
 						{#each shapes as decal}
 							<ContainerSvg viewBox="-60 -60 120 120">
@@ -103,20 +146,73 @@
 							</ContainerSvg>
 						{/each}
 					</div>
-					<a href="/design/new" class="btn btn-primary btn-lg btn-block">Design</a>
+					<a href="/design/new" class="btn btn-primary btn-lg btn-block">Design a car</a>
 				</div>
 				<div
-					class="rounded-box flex flex-col items-center justify-between gap-4 bg-neutral px-8 py-6"
+					class="rounded-box col-span-full flex flex-col justify-between gap-6 bg-neutral px-8 py-6"
 				>
-					<p class="text-xl font-bold">hey, finish your themes!</p>
+					<div class="flex items-baseline gap-4">
+						<h2 class="text-2xl font-bold">🚦 themes</h2>
+						<span class="text-base-content/70"
+							>{Object.keys(data.themeCarCount).length} of {THEMES.length}</span
+						>
+						<button
+							on:click={() => (showThemeInfo = !showThemeInfo)}
+							class="btn btn-circle ml-auto text-xl"
+							class:btn-primary={showThemeInfo}
+						>
+							?
+						</button>
+					</div>
+					<!-- TODO: Links go to design page if no cars, or cars page with filter applied if have
+					cars -->
+					{#if showThemeInfo}
+						<ul class="-mt-4 list-disc px-8 text-lg leading-snug">
+							<li>
+								every car you create is automatically tagged with
+								<strong class="text-primary">themes</strong> based on its design
+							</li>
+							<li class="mt-2">
+								gracing during
+								<strong class="text-primary">themed grace trains</strong>
+								will call any cars that match that train's theme
+							</li>
+							<li class="mt-2">
+								you can prepare for any train by designing one or more cars for each
+								theme!
+							</li>
+						</ul>
+					{/if}
+					<div
+						class="grid grid-cols-[repeat(auto-fill,_minmax(16rem,_1fr))] gap-3 sm:gap-4"
+					>
+						{#each THEMES as theme}
+							{@const { colors } = themeDefs[theme]}
+							{@const carCount = data.themeCarCount[theme] || 0}
+							<a
+								href="/{carCount > 0 ? '/cars' : 'design/new'}?theme={encodeURIComponent(
+									theme
+								)}"
+								class="rounded-box flex items-baseline justify-between gap-4 bg-neutral px-5 py-3 text-lg font-bold outline-offset-[-6px] transition-transform hover:scale-105"
+								style:background-color={colors[1]}
+								style:outline-color={colors[1]}
+								class:outline={carCount === 0}
+								class:outline-[6px]={carCount === 0}
+								class:!bg-transparent={carCount === 0}
+							>
+								<h3 style:color={colors[0]}>{theme}</h3>
+								<span>{carCount} {pluralize(carCount, 'car')}</span>
+							</a>
+						{/each}
+					</div>
 				</div>
 			</div>
-			<LatestCars cars={data.cars} count={data.carCount} />
+			<!-- <LatestCars cars={data.cars} count={data.carCount} />
 			<p>This car grid sucks too!</p>
 			<p>Be less afraid of whitespace</p>
 			<p>Maybe make a modal for showing all cars (with same faded vertical scrolling)</p>
 			<CarGrid cars={data.cars} />
-			<ThemeGrid cars={data.cars} />
+			<ThemeGrid cars={data.cars} /> -->
 		{/if}
 	</section>
 {:else}
