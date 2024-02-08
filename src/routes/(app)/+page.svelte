@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { Car, ContainerSvg, Decal, decalDefs } from 'grace-train-lib/components'
+	import { Car } from 'grace-train-lib/components'
 	import type { PageData } from './$types'
 	import { COLORS } from 'grace-train-lib'
 	import CarGrid from './CarGrid.svelte'
 	import { getSideFadeGradient, pluralize } from '$lib/util'
 	import ThemeGrid from './ThemeGrid.svelte'
 	import LatestCars from './LatestCars.svelte'
-	import type { DecalName } from 'grace-train-lib/data'
 	import { THEMES, themeDefs } from '$lib/themes'
 	import { fade, fly } from 'svelte/transition'
 	import { backIn, backOut } from 'svelte/easing'
+	import CarTally from './CarTally.svelte'
 
 	export let data: PageData
 
 	const sideFadeGradient = getSideFadeGradient(20)
-	const shapes: DecalName[] = ['circle', 'star', 'heart', 'box']
 
 	let showThemeInfo = false
 	let chooSquared = false
@@ -91,10 +90,10 @@
 						</div>
 					</div>
 				{/if}
-				<div class="hidden flex-col items-center justify-center sm:max-lg:flex">
+				<div class="hidden flex-col items-center justify-center p-8 sm:max-lg:flex">
 					<button
 						on:click={() => (chooSquared = !chooSquared)}
-						class="grid w-52 grid-cols-1 grid-rows-1 text-left text-6xl font-black leading-none text-base-content/20 transition-transform hover:scale-105"
+						class="grid w-52 grid-cols-1 text-left text-6xl font-black leading-none text-base-content/20 transition-transform hover:scale-105"
 					>
 						{#if chooSquared}
 							<div
@@ -108,13 +107,13 @@
 							<div class="col-start-1 row-start-1 h-32">
 								<div
 									out:fly={{ y: 50, easing: backIn, duration: 300 }}
-									in:fly={{ y: 50, easing: backOut, duration: 300 }}
+									in:fly={{ y: 50, easing: backOut, duration: 200 }}
 								>
 									CHOO
 								</div>
 								<div
 									out:fly={{ y: -50, easing: backIn, duration: 300 }}
-									in:fly={{ y: -50, easing: backOut, duration: 300 }}
+									in:fly={{ y: -50, easing: backOut, duration: 200 }}
 								>
 									CHOO!
 								</div>
@@ -135,17 +134,7 @@
 							but you could have {data.carCount + 1}
 						</p>
 					</div>
-					<div class="grid w-1/2 grid-cols-2">
-						{#each shapes as decal}
-							<ContainerSvg viewBox="-60 -60 120 120">
-								<Decal
-									name={decal}
-									fill="#fff"
-									params={decalDefs[decal].getDefaultParamsObject()}
-								/>
-							</ContainerSvg>
-						{/each}
-					</div>
+					<CarTally carCount={data.carCount} />
 					<a href="/design/new" class="btn btn-primary btn-lg btn-block">Design a car</a>
 				</div>
 				<div
