@@ -20,7 +20,9 @@
 
 {#each paramConfig as param}
 	{#if param.type !== 'listPicker'}
-		<label for={param.name} class="whitespace-nowrap text-lg lg:text-xl"
+		<label
+			for={param.name}
+			class="whitespace-nowrap text-lg text-base-content/80 lg:text-xl"
 			>{param.displayName}</label
 		>
 	{/if}

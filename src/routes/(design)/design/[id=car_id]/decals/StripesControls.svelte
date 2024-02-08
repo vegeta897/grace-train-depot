@@ -246,7 +246,7 @@
 	>
 	{#if selectedNode}
 		<div class="col-span-3 flex flex-col">
-			<label for="length" class="w-16 text-lg">length</label>
+			<label for="length" class="w-16 text-lg text-base-content/80">length</label>
 			<input
 				id="length"
 				type="range"
@@ -261,7 +261,7 @@
 			/>
 		</div>
 		<div class="col-span-3 flex flex-col">
-			<label for="angle" class="w-16 text-lg">angle</label>
+			<label for="angle" class="w-16 text-lg text-base-content/80">angle</label>
 			<input
 				id="angle"
 				type="range"
@@ -293,7 +293,7 @@
 		</fieldset>
 	{:else}
 		<div class="col-span-3 flex flex-col">
-			<label for="count" class="h-8 text-lg">count</label>
+			<label for="count" class="h-8 text-lg text-base-content/80">count</label>
 			<input
 				id="count"
 				type="range"

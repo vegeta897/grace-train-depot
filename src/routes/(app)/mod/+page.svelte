@@ -85,7 +85,7 @@
 				{/each}
 			</ol>
 		{/if}
-		<p>
+		<p class="my-2 text-base-content/70">
 			<strong>note:</strong> only cars with decals are included on this page
 		</p>
 	</div>

@@ -104,7 +104,7 @@
 				<input type="hidden" name="carData" value={JSON.stringify($designCar)} />
 				<div class="form-control">
 					<label for="carName" class="label">
-						<span class="label-text text-base">car name</span>
+						<span class="label-text text-xl font-bold">car name</span>
 						<span class="text-base text-base-content/50">required</span>
 					</label>
 					<input

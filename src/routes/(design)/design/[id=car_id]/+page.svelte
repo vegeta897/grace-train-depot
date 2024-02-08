@@ -74,7 +74,7 @@
 					</label>
 				{/each}
 			</div>
-			<p>
+			<p class="text-base-content/70">
 				<span
 					class="badge badge-primary badge-xs mr-2 border-base-content bg-base-content"
 				/>themes you haven't designed any cars for

@@ -245,7 +245,9 @@
 			{@const topper = selectedTopper}
 			<div class="rounded-box grow space-y-4 bg-neutral p-2 xs:p-6">
 				<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
-					<label for="topperPosition" class="text-lg lg:text-xl">place</label>
+					<label for="topperPosition" class="text-lg text-base-content/80 lg:text-xl"
+						>place</label
+					>
 					<input
 						name="topperPosition"
 						type="range"
@@ -257,7 +259,9 @@
 							setTopperProp(topper.slot, 'position', e.currentTarget.valueAsNumber)}
 						class="range"
 					/>
-					<label for="topperOffset" class="text-lg lg:text-xl">offset</label>
+					<label for="topperOffset" class="text-lg text-base-content/80 lg:text-xl"
+						>offset</label
+					>
 					<input
 						name="topperOffset"
 						type="range"
@@ -269,7 +273,9 @@
 							setTopperProp(topper.slot, 'offset', e.currentTarget.valueAsNumber)}
 						class="range"
 					/>
-					<label for="topperScale" class="text-lg lg:text-xl">size</label>
+					<label for="topperScale" class="text-lg text-base-content/80 lg:text-xl"
+						>size</label
+					>
 					<input
 						name="topperScale"
 						type="range"
@@ -281,7 +287,9 @@
 							setTopperProp(topper.slot, 'scale', e.currentTarget.valueAsNumber)}
 						class="range range-primary"
 					/>
-					<label for="topperRotate" class="text-lg lg:text-xl">tilt</label>
+					<label for="topperRotate" class="text-lg text-base-content/80 lg:text-xl"
+						>tilt</label
+					>
 					<input
 						name="topperRotate"
 						type="range"

@@ -46,21 +46,26 @@
 	<div
 		class="rounded-box grid w-full grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4 bg-neutral p-4 lg:w-1/2 lg:p-5"
 	>
-		<label for="popColor" class="text-lg lg:text-xl">pop color</label>
+		<label for="popColor" class="text-lg text-base-content/80 lg:text-xl">pop color</label
+		>
 		<ColorSlider
 			id="popColor"
 			colors={COLORS.POP}
 			color={$designCar.wheelPopColor || COLOR_NAMES.POP.POP}
 			onInput={(color) => setColor('wheelPopColor', color)}
 		/>
-		<label for="baseColor" class="text-lg lg:text-xl">base color</label>
+		<label for="baseColor" class="text-lg text-base-content/80 lg:text-xl"
+			>base color</label
+		>
 		<ColorSlider
 			id="baseColor"
 			colors={COLORS.BASE}
 			color={$designCar.wheelBaseColor || COLOR_NAMES.BASE.BASE}
 			onInput={(color) => setColor('wheelBaseColor', color)}
 		/>
-		<label for="flipColors" class="text-lg lg:text-xl">flip colors</label>
+		<label for="flipColors" class="text-lg text-base-content/80 lg:text-xl"
+			>flip colors</label
+		>
 		<input
 			id="flipColors"
 			type="checkbox"
@@ -68,7 +73,7 @@
 			value={$designCar.wheelFlipColors}
 			class="toggle"
 		/>
-		<label for="wheelSize" class="text-lg lg:text-xl">size</label>
+		<label for="wheelSize" class="text-lg text-base-content/80 lg:text-xl">size</label>
 		<input
 			id="wheelSize"
 			type="range"
@@ -78,7 +83,9 @@
 			value={$designCar.wheelSize}
 			class="range"
 		/>
-		<label for="wheelDistance" class="text-lg lg:text-xl">wheelbase</label>
+		<label for="wheelDistance" class="text-lg text-base-content/80 lg:text-xl"
+			>wheelbase</label
+		>
 		<input
 			id="wheelDistance"
 			type="range"

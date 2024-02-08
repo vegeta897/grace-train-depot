@@ -87,9 +87,7 @@
 	{/if}
 </header>
 <slot />
-<footer
-	class="footer footer-center mt-auto gap-y-4 bg-base-200 p-6 text-base-content sm:rounded-box"
->
+<footer class="footer footer-center mt-auto gap-y-4 bg-base-200 p-6 sm:rounded-box">
 	<nav class="grid grid-flow-col gap-4">
 		<a class="link-hover link" href="/">home</a>
 		<a class="link-hover link" href="/terms">terms of use</a>
@@ -100,7 +98,7 @@
 		>
 	</nav>
 	<aside>
-		<p class="text-base-content/75">created by vegeta897<br />for the sweeties</p>
+		<p class="text-base-content/60">created by vegeta897<br />for the sweeties</p>
 	</aside>
 </footer>
 <div class="toast toast-center toast-top">

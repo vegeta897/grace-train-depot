@@ -56,7 +56,7 @@
 		<div class="grid grid-cols-[min-content_auto] items-center gap-x-3 gap-y-4">
 			{#if !decalDef.noFill}
 				<!-- TODO: Make these controls into components -->
-				<label for="fill" class="text-lg lg:text-xl">color</label>
+				<label for="fill" class="text-lg text-base-content/80 lg:text-xl">color</label>
 				<ColorSlider
 					id="fill"
 					colors={COLORS.POP}
@@ -77,7 +77,7 @@
 				<!-- Direction (rotate +/- 180) (or just a flip checkbox, other angles might clash)
 			<input type="range" min={-180} max={180} step="1" value={0} class="range" /> -->
 			{/if}
-			<label for="size" class="text-lg lg:text-xl">size</label>
+			<label for="size" class="text-lg text-base-content/80 lg:text-xl">size</label>
 			<input
 				id="size"
 				type="range"
@@ -101,7 +101,7 @@
 			<datalist id="sizes">
 				<option>{Math.round(((1 - minScale) / scaleRange) ** (1 / 1.5) * 100)}</option>
 			</datalist>
-			<label for="size" class="text-lg lg:text-xl">spin</label>
+			<label for="size" class="text-lg text-base-content/80 lg:text-xl">spin</label>
 			<input
 				id="spin"
 				type="range"
