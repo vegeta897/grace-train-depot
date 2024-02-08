@@ -9,7 +9,6 @@
 	import { THEMES, themeDefs } from '$lib/themes'
 	import { fade, fly } from 'svelte/transition'
 	import { backIn, backOut } from 'svelte/easing'
-	import CarTally from './CarTally.svelte'
 
 	export let data: PageData
 
@@ -122,19 +121,19 @@
 					</button>
 				</div>
 				<div
-					class="rounded-box flex flex-col items-center justify-center gap-4 bg-neutral px-8 py-6"
+					class="rounded-box flex flex-col items-center gap-4 self-end bg-neutral px-8 py-6"
 				>
 					<div>
-						<p class="text-xl font-bold">
+						<p class="text-2xl font-bold">
 							you have
-							{data.carCount}
-							{pluralize(data.carCount, 'car')}<br />
+							<span class="font-black text-primary">{data.carCount}</span>
+							{pluralize(data.carCount, 'car')}!<br />
 						</p>
-						<p class="text-base-content/70">
+						<p class="text-lg text-base-content/70">
 							but you could have {data.carCount + 1}
 						</p>
 					</div>
-					<CarTally carCount={data.carCount} />
+					<!-- <CarTally carCount={data.carCount} /> -->
 					<a href="/design/new" class="btn btn-primary btn-lg btn-block">Design a car</a>
 				</div>
 				<div
