@@ -13,6 +13,8 @@ import {
 import { transformCarFromDBToDepotCar } from '$lib/server/car'
 import { randomChance, randomElementWeighted } from '$lib/random'
 
+// TODO: Themed trains shoot out something besides smoke
+
 const MIN_THEME_USERS = 4
 const RECENT_TRAIN_SPAN = 2 * 60 * 60 * 1000
 

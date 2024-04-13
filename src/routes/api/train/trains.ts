@@ -3,6 +3,8 @@ import prisma from '$lib/server/prisma'
 import { randomElement } from '$lib/util'
 import type { Prisma } from '@prisma/client'
 
+// TODO: Show featured cars in info panel on stream
+
 type TrainCarData = Prisma.GraceTrainCarGetPayload<{}>
 
 // Round-robin algorithm randomly picks among the user's cars
