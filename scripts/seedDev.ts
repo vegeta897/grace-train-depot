@@ -22,7 +22,7 @@ async function main() {
 			name: `Test Car ${number}`,
 			bodyColor: COLORS.BASE[number * 2],
 			bodyPopColor: COLORS.POP[number * 3],
-			wheelColor: COLORS.POP[number * 3],
+			wheelPopColor: COLORS.POP[number * 3],
 		})),
 	})
 	console.log('created', cars.count, 'cars')
