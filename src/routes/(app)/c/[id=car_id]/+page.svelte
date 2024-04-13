@@ -213,7 +213,11 @@
 					</div>
 					<div class="divider my-2" />
 					<div class="rounded-lg bg-base-200 p-2">
-						<p class="pl-2 text-base-content/60">call this car during grace trains!</p>
+						<p class="pl-2 text-base-content/60">
+							call this car in grace trains <span class="whitespace-nowrap"
+								>by name or ID</span
+							>
+						</p>
 						<ol>
 							{#each [data.car.name, data.car.shortId] as identifier}
 								<li class="my-1">
