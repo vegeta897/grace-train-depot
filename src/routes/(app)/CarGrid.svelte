@@ -87,7 +87,7 @@
 							<a href="/c/{car.shortId}" data-sveltekit-preload-data="tap" class="group">
 								<div class="flex shrink flex-col items-center gap-1 overflow-clip">
 									<div
-										class="px-[10%] pt-[30%] transition-transform group-hover:-translate-y-2"
+										class="px-[10%] pt-[30%] transition-transform group-hover:-translate-y-1 group-hover:scale-110"
 									>
 										<Car car={{ depotCar: car }} />
 									</div>
