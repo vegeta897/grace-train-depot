@@ -77,6 +77,7 @@ const decalSchema = z.discriminatedUnion('name', [
 	createDecalSchema('flower'),
 	createDecalSchema('box'),
 	createDecalSchema('emote'),
+	createDecalSchema('eyes'),
 ])
 
 export type DecalDataWithSlot = DecalData & { slot: number }
