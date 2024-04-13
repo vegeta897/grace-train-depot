@@ -20,23 +20,22 @@ export const load = (async ({ params, locals }) => {
 	} = {
 		firstCar: true,
 	}
-	const session = await locals.auth.validate()
-	if (session) {
-		data.user = session.user
+	if (locals.user) {
+		data.user = locals.user
 		data.firstCar = !(await prisma.car.findFirst())
 		// TODO: Move this to +page.server.ts
 		const designedThemes: Set<string> = new Set()
 		const carThemeLists = await prisma.car.groupBy({
 			by: ['themes'],
-			where: { userId: session.user.userId, themes: { isEmpty: false } },
+			where: { userId: locals.user.id, themes: { isEmpty: false } },
 		})
 		carThemeLists.forEach((l) => l.themes.forEach((theme) => designedThemes.add(theme)))
 		data.missingThemes = THEMES.filter((theme) => !designedThemes.has(theme))
 	}
 	if (params.id === 'new') return data
-	if (!session) redirect(302, `/login?redirectTo=/design/${params.id}`)
+	if (!locals.user) redirect(302, `/login?redirectTo=/design/${params.id}`)
 	const savedCar = await prisma.car.findUnique({
-		where: { shortId: params.id, userId: session.user.userId },
+		where: { shortId: params.id, userId: locals.user.id },
 		include: carIncludeQuery,
 	})
 	if (savedCar) {

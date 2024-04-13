@@ -44,26 +44,24 @@ export const load = (async ({ params, parent }) => {
 
 export const actions = {
 	rename: async ({ locals, params, request }) => {
-		const session = await locals.auth.validate()
-		if (!session) redirect(302, `/login?redirectTo=/c/${params.id}`)
+		if (!locals.user) redirect(302, `/login?redirectTo=/c/${params.id}`)
 		const formData = await request.formData()
 		const nameString = formData.get('carName')?.toString()
 		if (nameString === undefined) return fail(400, { invalid: true })
 		const name = nameString.substring(0, CAR_NAME_MAX_LENGTH).trim()
 		await prisma.car.update({
-			where: { shortId: params.id, userId: session.user.userId },
+			where: { shortId: params.id, userId: locals.user.id },
 			data: { name },
 		})
 		return { name }
 	},
 	delete: async ({ locals, params }) => {
 		console.log('deleting car', params.id)
-		const session = await locals.auth.validate()
-		if (!session) redirect(302, `/login?redirectTo=/design/${params.id}`)
+		if (!locals.user) redirect(302, `/login?redirectTo=/design/${params.id}`)
 		// TODO: Flag for deletion instead of immediate delete
 		// This will make grace train car selection a bit safer
 		const deletedCar = await prisma.car.delete({
-			where: { shortId: params.id, userId: session.user.userId },
+			where: { shortId: params.id, userId: locals.user.id },
 		})
 		// Delete car image
 		fs.rm(`./public/assets/car_${params.id}.png`, () => {})

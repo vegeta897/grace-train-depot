@@ -51,15 +51,14 @@ const trustLevels: $Enums.TrustLevel[] = ['trusted', 'default', 'hidden', 'banne
 
 export const actions = {
 	setUserLevel: async ({ locals, params, request }) => {
-		const session = await locals.auth.validate()
-		if (!session) redirect(302, `/login?redirectTo=/mod/user/${params.id}`)
-		if (!userIsMod(session.user)) return fail(403)
+		if (!locals.user) redirect(302, `/login?redirectTo=/mod/user/${params.id}`)
+		if (!userIsMod(locals.user)) return fail(403)
 		const formData = await request.formData()
 		const trustLevel = formData.get('trustLevel')?.toString() as $Enums.TrustLevel
 		if (!params.id || !trustLevels.includes(trustLevel))
 			return fail(400, { invalid: true })
 		// Don't allow non-admins to modify other mods
-		if (userIsMod(params.id) && !userIsAdmin(session.user)) return fail(403)
+		if (userIsMod(params.id) && !userIsAdmin(locals.user)) return fail(403)
 		const user = await prisma.user.update({
 			where: { id: params.id },
 			data: { trustLevel },
@@ -69,7 +68,7 @@ export const actions = {
 		prisma.auditLog
 			.create({
 				data: {
-					modId: session.user.userId,
+					modId: locals.user.id,
 					onUserId: params.id,
 					action: 'changeUserLevel',
 					data: trustLevel,

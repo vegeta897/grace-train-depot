@@ -10,8 +10,7 @@ datasource db {
 
 model User {
   id                String          @id @unique
-  auth_session      Session[]
-  auth_key          Key[]
+  sessions          Session[]
   createdAt         DateTime        @default(now())
   twitchUserId      String          @unique
   twitchUsername    String          @unique
@@ -23,7 +22,6 @@ model User {
   logEntriesAsUser  AuditLog[]      @relation("LogEntriesAsUser")
 
   @@index([id], type: Hash)
-  @@map("auth_user")
 }
 
 enum TrustLevel {
@@ -34,24 +32,10 @@ enum TrustLevel {
 }
 
 model Session {
-  id             String @id @unique
-  user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
-  user_id        String
-  active_expires BigInt
-  idle_expires   BigInt
-
-  @@index([user_id])
-  @@map("auth_session")
-}
-
-model Key {
-  id              String  @id @unique
-  hashed_password String?
-  user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
-  user_id         String
-
-  @@index([user_id])
-  @@map("auth_key")
+  id        String   @id @unique
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Car {

@@ -1,8 +1,8 @@
-import { generateRandomString } from 'lucia/utils'
 import type { DesignCar } from './schemas/car'
 import type { ThemeName } from '$lib/themes'
 import type { DecalData, DepotCar, TopperData } from 'grace-train-lib/data'
 import type { Prisma } from '@prisma/client'
+import { generateRandomString } from 'oslo/crypto'
 
 export type DBCar = Prisma.CarGetPayload<{ include: { decals: true; toppers: true } }>
 

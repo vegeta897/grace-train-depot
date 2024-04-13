@@ -1,12 +1,13 @@
 import { dev } from '$app/environment'
 import { twitchAuth } from '$lib/server/lucia.js'
 import { redirect, type RequestHandler } from '@sveltejs/kit'
+import { generateState } from 'arctic'
 
 export const GET = (async ({ cookies, locals, url }) => {
 	const redirectTo = url.searchParams.get('redirectTo')
-	const session = await locals.auth.validate()
-	if (session) redirect(302, redirectTo || '/')
-	const [authUrl, state] = await twitchAuth.getAuthorizationUrl()
+	if (locals.user) redirect(302, redirectTo || '/')
+	const state = generateState()
+	const authUrl = await twitchAuth.createAuthorizationURL(state)
 	cookies.set('twitch_oauth_state', state, {
 		secure: !dev,
 		path: '/',

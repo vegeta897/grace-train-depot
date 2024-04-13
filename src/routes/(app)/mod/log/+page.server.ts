@@ -4,9 +4,8 @@ import type { PageServerLoad } from './$types'
 import { AUDIT_LOG_PAGE_SIZE, getLogEntries } from './log'
 
 export const load = (async ({ locals }) => {
-	const session = await locals.auth.validate()
-	if (!session) redirect(302, '/login?redirectTo=/mod')
-	if (!userIsMod(session.user))
+	if (!locals.user) redirect(302, '/login?redirectTo=/mod')
+	if (!userIsMod(locals.user))
 		error(
 			403,
 			"you don't belong here, you're not a mod! ... but if you want to be one, ask vegeta!"

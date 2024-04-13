@@ -1,13 +1,16 @@
-import { auth } from '$lib/server/lucia'
+import { lucia } from '$lib/server/lucia'
 import { redirect, type RequestHandler } from '@sveltejs/kit'
 
-export const GET = (async ({ url, cookies, locals }) => {
-	const session = await locals.auth.validate()
-	if (session) {
-		locals.auth.setSession(null)
-		auth.invalidateSession(session.sessionId)
+export const GET = (async ({ cookies, locals }) => {
+	if (locals.session) {
+		await lucia.invalidateSession(locals.session.id)
+		const sessionCookie = lucia.createBlankSessionCookie()
+		cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '/',
+			...sessionCookie.attributes,
+		})
 		// TODO: Provide a link to log out of all sessions
-		// auth.invalidateAllUserSessions(session.user.userId)
+		// lucia.invalidateUserSessions(locals.user.id)
 	}
 	redirect(302, '/')
 }) satisfies RequestHandler

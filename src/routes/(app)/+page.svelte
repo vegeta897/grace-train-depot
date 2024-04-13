@@ -178,7 +178,7 @@
 							{@const { colors } = themeDefs[theme]}
 							{@const carCount = data.themeCarCount[theme] || 0}
 							<a
-								href="/{carCount > 0 ? '/cars' : 'design/new'}?theme={encodeURIComponent(
+								href="/{carCount > 0 ? 'cars' : 'design/new'}?theme={encodeURIComponent(
 									theme
 								)}"
 								class="rounded-box flex items-baseline justify-between gap-4 bg-neutral px-5 py-3 text-lg font-bold outline-offset-[-6px] transition-transform hover:scale-105"

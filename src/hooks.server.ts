@@ -1,6 +1,6 @@
 import { dev } from '$app/environment'
 import { SKIP_AUTH } from '$env/static/private'
-import { auth } from '$lib/server/lucia'
+import { lucia } from '$lib/server/lucia'
 import prisma from '$lib/server/prisma'
 import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 
@@ -8,20 +8,40 @@ import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 const botRegex = /((apple|discord|twitter|slack|telegram)bot|facebookexternalhit)/gi
 
 export const handle: Handle = async ({ event, resolve }) => {
-	event.locals.auth = auth.handleRequest(event)
-	event.locals.botAgent = botRegex.test(event.request.headers.get('user-agent') ?? '')
+	let sessionId = event.cookies.get(lucia.sessionCookieName)
 	if (dev && SKIP_AUTH === 'true') {
 		console.log('(skipping auth)', event.url.pathname)
 		const userWithSessions = await prisma.user.findUniqueOrThrow({
-			include: { auth_session: true },
+			include: { sessions: true },
 			where: { twitchUsername: 'vegeta897' },
 		})
-		const session = userWithSessions.auth_session[0]
-		const luciaSession = await auth.getSession(session.id)
-		event.locals.auth.setSession(luciaSession)
+		const session = userWithSessions.sessions[0]
+		if (session) sessionId = session.id
 	}
-	const response = await resolve(event)
-	return response
+	if (!sessionId) {
+		event.locals.user = null
+		event.locals.session = null
+		return resolve(event)
+	}
+	const { session, user } = await lucia.validateSession(sessionId)
+	if (session && session.fresh) {
+		const sessionCookie = lucia.createSessionCookie(session.id)
+		event.cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '/',
+			...sessionCookie.attributes,
+		})
+	}
+	if (!session) {
+		const sessionCookie = lucia.createBlankSessionCookie()
+		event.cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '/',
+			...sessionCookie.attributes,
+		})
+	}
+	event.locals.user = user
+	event.locals.session = session
+	event.locals.botAgent = botRegex.test(event.request.headers.get('user-agent') ?? '')
+	return resolve(event)
 }
 
 export const handleError: HandleServerError = async ({ error, event }) => {

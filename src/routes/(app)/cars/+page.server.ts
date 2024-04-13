@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async ({ parent }) => {
 	const parentData = await parent()
-	if (!parentData.user) return
+	if (!parentData.user) redirect(302, '/')
 	const cars = await getUserCars(parentData.user.userId)
 	if (cars.length === 0) redirect(302, '/design/new')
 	return { cars }

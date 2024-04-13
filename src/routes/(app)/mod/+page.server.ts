@@ -40,9 +40,8 @@ const trainSelectQuery = {
 } satisfies Prisma.GraceTrainSelect
 
 export const load = (async ({ locals }) => {
-	const session = await locals.auth.validate()
-	if (!session) redirect(302, '/login?redirectTo=/mod')
-	if (!userIsMod(session.user))
+	if (!locals.user) redirect(302, '/login?redirectTo=/mod')
+	if (!userIsMod(locals.user))
 		error(
 			403,
 			"you don't belong here, you're not a mod! ... but if you want to be one, ask vegeta!"
@@ -57,7 +56,7 @@ export const load = (async ({ locals }) => {
 		orderBy: { id: 'desc' },
 	})
 	return {
-		admin: userIsAdmin(session.user),
+		admin: userIsAdmin(locals.user),
 		trains: trains.map((train) => ({
 			id: Number(train.id),
 			ended: train.ended,
@@ -77,14 +76,13 @@ export const load = (async ({ locals }) => {
 
 export const actions = {
 	hideUser: async ({ locals, request }) => {
-		const session = await locals.auth.validate()
-		if (!session) redirect(302, `/login?redirectTo=/mod`)
-		if (!userIsMod(session.user)) return fail(403)
+		if (!locals.user) redirect(302, `/login?redirectTo=/mod`)
+		if (!userIsMod(locals.user)) return fail(403)
 		const formData = await request.formData()
 		const userId = formData.get('userId')?.toString()
 		if (!userId) return fail(400, { invalidUser: true, notAllowed: false })
 		// Don't allow non-admins to hide other mods
-		if (userIsMod(userId) && !userIsAdmin(session.user))
+		if (userIsMod(userId) && !userIsAdmin(locals.user))
 			return fail(403, { invalidUser: false, notAllowed: true })
 		try {
 			const user = await prisma.user.update({
@@ -96,7 +94,7 @@ export const actions = {
 			prisma.auditLog
 				.create({
 					data: {
-						modId: session.user.userId,
+						modId: locals.user.id,
 						onUserId: userId,
 						action: 'changeUserLevel',
 						data: 'hidden',

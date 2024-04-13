@@ -8,9 +8,8 @@ import type { ModPageTrainCar } from './Train.svelte'
 // Share query/functions with page.server.ts
 
 export const GET: RequestHandler = async ({ locals, url }) => {
-	const session = await locals.auth.validate()
-	if (!session) error(401)
-	if (!userIsMod(session.user)) error(403)
+	if (!locals.user) error(401)
+	if (!userIsMod(locals.user)) error(403)
 	const id = Number(url.searchParams.get('id'))
 	const afterIndex = Number(url.searchParams.get('afterIndex'))
 	// Empty search param results in 0 afterIndex

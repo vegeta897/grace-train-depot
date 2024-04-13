@@ -21,8 +21,7 @@ export const actions = {
 		// Check if X is above flag, or just flag the car as needing manual approval anyway
 		// Or always put flags on top?
 		// TODO: Limit max cars a user can create
-		const session = await locals.auth.validate()
-		if (!session) redirect(302, `/login?redirectTo=/design/${params.id}/finish`)
+		if (!locals.user) redirect(302, `/login?redirectTo=/design/${params.id}/finish`)
 		let formCarData: any
 		try {
 			const formData = await request.formData()
@@ -48,7 +47,7 @@ export const actions = {
 				data: {
 					shortId: carData.shortId,
 					...transformCarToDB(carData),
-					userId: session.user.userId,
+					userId: locals.user.id,
 					decals: { create: carData.decals.map(transformDecalToDB) },
 					toppers: { create: carData.toppers.map(transformTopperToDB) },
 				},
@@ -56,7 +55,7 @@ export const actions = {
 		} else {
 			try {
 				await prisma.car.update({
-					where: { shortId: carData.shortId, userId: session.user.userId },
+					where: { shortId: carData.shortId, userId: locals.user.id },
 					data: {
 						...transformCarToDB(carData),
 						revision: { increment: 1 },
